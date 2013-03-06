@@ -19,6 +19,7 @@ class post_control extends common_control {
 	}
 	
 	// create ajax
+	// 
 	public function on_thread() {
 		$this->_title[] = '发表帖子';
 		$this->_nav[] = '发表帖子';
@@ -27,8 +28,10 @@ class post_control extends common_control {
 		$this->check_forbidden_group();
 		
 		$fid = intval(core::gpc('fid'));
-		
+		empty($fid) && list($fid, $forumname) = each($this->conf['forumarr']);
 		$forum = $this->mcache->read('forum', $fid);
+		$forumselect = form::get_select('fid', $this->conf['forumarr'], $fid);
+		$this->view->assign('forumselect', $forumselect);
 		
 		$uid = $this->_user['uid'];
 		$username = $this->_user['username'];

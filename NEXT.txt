@@ -1,4 +1,4 @@
-﻿forum.color
+forum.color
 
 <code>.br 
 

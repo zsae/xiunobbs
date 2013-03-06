@@ -45,11 +45,12 @@ class index_control extends common_control {
 		$this->_seo_keywords = $this->conf['seo_keywords'];
 		$this->_seo_description = $this->conf['seo_description'];
 		
+		$readtids = '';
 		$page = misc::page();
 		$threadlist = $this->thread->get_list($page);
 		foreach($threadlist as &$thread) {
 			$readtids .= ','.$thread['tid'];
-			$this->thread->format($thread, $forum);
+			$this->thread->format($thread);
 		}
 		
 		// 在线会员
