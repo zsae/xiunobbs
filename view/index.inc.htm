@@ -1,0 +1,93 @@
+	<div class="div shadow">
+		<div class="header">
+			<span class="left"><a href="?index-forum-fid-$cate[fid].htm">$cate[name]</a><!--{hook index_inc_header_left.htm}--></span>
+			<span class="right clear">
+			<!--{hook index_inc_header_right.htm}-->
+			
+		<!--{if !empty($cate[modlist])}-->
+			<span class="grey">大区版主：</span>
+			<!--{loop $cate[modlist] $modid $modname}-->
+				<a href="?you-profile-uid-$modid-ajax-1.htm" target="_blank" class="ajaxdialog grey" ajaxdialog="{position: 6, modal: false}" rel="nofollow">$modname</a>
+			<!--{/loop}-->
+			</span>
+		<!--{/if}-->
+			
+			</span>
+		</div>
+		<div class="body" style="padding: 0px;">
+			<!--{if isset($cate[forumlist_chunk])}-->
+			
+			<!--{loop $cate[forumlist_chunk] $chunk}-->
+			<table width="100%" cellspacing="4" cellpadding="0">
+				<tr>
+					<!--{loop $chunk $forum}-->
+					<td style="width: {$cate[width]}; padding-left: 8px; padding-top: 0px;" valign="top">
+					<!--{if !empty($forum)}-->
+						<a href="?forum-index-fid-$forum[fid].htm"><span class="forumicon_middle{if !$forum[todayposts]} xgrey{/if}" style="float: left; {if $forum[forumicon_middle]}background-image: url($forum[forumicon_middle]);{/if}"></span></a>
+						<div style="margin-left: 52px; lie-height: 2;">
+							<div>
+								<a href="?forum-index-fid-$forum[fid].htm" style="font-size: 14px; display: inline-block;"><b>$forum[name]</b></a>
+								<!--{if $forum[todayposts]}-->
+								<span class="blue" title="今日发帖：$forum[todayposts]">(<b>$forum[todayposts]</b>)</span>
+								<!--{/if}-->
+							</div>
+							<p class="grey">
+								主题: <span class="grey">$forum[threads]</span> 贴数: <span class="grey"> $forum[posts]</span>
+							</p>
+							
+						</div>
+					<!--{/if}-->
+					</td>
+					<!--{/loop}-->
+				</tr>
+			</table>
+			<div class="hr" style="margin-left: 4px; margin-right: 4px;"></div>
+			<!--{/loop}-->
+			
+			<!--{else}-->
+			
+			<!--{loop $cate[forumlist] $forum}-->
+			<table cellpadding="2" cellspacing="0" width="100%" class="forum">
+				<tr valign="top"> 
+					<td width="40" align="center" style="padding: 6px;"><a href="?forum-index-fid-$forum[fid].htm"><span class="forumicon_middle{if !$forum[todayposts]} xgrey{/if}" {if $forum[forumicon_middle]}style="background-image: url($forum[forumicon_middle]);"{/if}></span></a></td>
+					<td>
+						<a href="?forum-index-fid-$forum[fid].htm" style="font-size: 14px; display: inline-block;"><b>$forum[name]</b></a>
+					
+						<!--{if $forum[todayposts]}-->
+						<span class="blue" title="今日发帖：$forum[todayposts]">(<b>$forum[todayposts]</b>)</span>
+						<!--{/if}-->
+					
+						<!--{if $forum[brief]}-->
+						<p class="grey">$forum[brief]</p>
+						<!--{/if}-->
+					
+						<!--{if $forum[modlist]}-->
+						<p class="grey">
+							<b>版主:</b>
+							<!--{loop $forum[modlist] $modid $modname}-->
+							<a href="?you-profile-uid-$modid-ajax-1.htm" target="_blank" class="ajaxdialog" ajaxdialog="{position: 6, modal: false}" rel="nofollow">$modname</a>
+							<!--{/loop}-->
+						</p>
+						<!--{/if}-->
+					
+						<!--{hook index_inc_mod_after.htm}-->
+					
+					</td>
+					
+					<!--{hook index_inc_forum_name_td_after.htm}-->
+					
+					<td width="80" valign="middle" align="center" title="版块贴数">
+						<span class="blue">$forum[threads]</span> <span class="grey">/ $forum[posts]</span>
+					</td>
+					<td width="200" valign="middle">
+						
+					</td>
+				</tr>
+			</table>
+			<div class="hr" style="margin-left: 4px; margin-right: 4px;"></div>
+			<!--{/loop}-->
+			
+			<!--{/if}-->
+		</div>
+		<div class="footer"></div>
+	</div>

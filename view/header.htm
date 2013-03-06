@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title><!--{loop $_title $title}-->$title <!--{/loop}--></title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="keywords" content="$_seo_keywords" />
+	<meta name="description" content="$_seo_description " />
+	<meta name="generator" content="Xiuno BBS" />
+	<meta name="author" content="Xiuno Team" />
+	<meta name="copyright" content="2008-2012 xiuno.com" />
+	<meta name="MSSmartTagsPreventParsing" content="True" />
+	<meta http-equiv="MSThemeCompatible" content="Yes" />
+	<!--<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />-->
+	<!--{hook header_css_before.htm}-->
+	<link href="view/common.css" type="text/css" rel="stylesheet" />
+	<!--{hook header_css_after.htm}-->
+	<script type="text/javascript">
+	var cookie_pre = '$conf[cookie_pre]';
+	</script>
+</head>
+<body>
+
+<!--{hook header_menu_before.htm}-->
+<div id="menu">
+	<div class="width">
+		<table cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td class="left"><a href="./" title="点击进入首页"><span id="logo"></span></a></td>
+				<td class="center">
+					<!--{hook header_menu_start.htm}-->
+					<!--{loop $conf[forumarr] $_fid $_name}-->
+					<span class="sep"></span>
+					<a href="?forum-index-fid-$_fid.htm" $_checked[forum_$_fid]>$_name</a>	
+					<!--{/loop}-->
+					<!--{hook header_menu_middle.htm}-->
+					<!--{hook header_menu_end.htm}-->
+				</td>
+				<td class="right">
+					<span id="user">
+					<!--{hook header_user_start.htm}-->
+					<!--{if $_user['groupid'] == 0}-->
+						<a href="?user-login.htm" class="ajaxdialog" onclick="return false" rel="nofollow">登录</a>
+						<a href="?user-create.htm" class="ajaxdialog" onclick="return false" rel="nofollow">注册</a>
+					<!--{else}-->
+						<a href="?my-profile.htm" title="$_user[groupname]">$_user[username]</a>
+						
+						<!--{if $_user['groupid'] == 6}-->
+						<a href="?user-reactive.htm">重新获取激活码</a>
+						<!--{/if}-->
+						
+						<span id="pm">
+							<a href="?my-pm.htm" class="icon icon-pm"></a><a href="?my-pm.htm" class="icon icon-newpm" style="display: none;"></a>
+						</span>
+
+						<!--{if $_user['groupid'] > 0 && $_user['groupid'] < 6}-->
+						<a href="admin/" target="_blank">后台管理</a>
+						<!--{/if}-->
+			
+						<a href="?user-logout.htm" class="ajaxdialog" onclick="return false">退出</a>
+					<!--{/if}-->
+					<a href="?search-index.htm" rel="nofollow">搜索</a>
+					<!--{hook header_user_end.htm}-->
+					</span>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+
+<!--{hook header_menu_after.htm}-->
+
+<div id="body">
+
+<!--{hook header_body_start.htm}-->

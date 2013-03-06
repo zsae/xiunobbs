@@ -1,0 +1,526 @@
+<!--{include header.htm}-->
+
+<!--{hook thread_index_start.htm}-->
+
+<div class="width">
+
+	<!--{hook thread_index_nav_before.htm}-->
+	<table id="nav" cellpadding="0" cellspacing="0" style="margin-bottom: 4px;">
+		<tr>
+			<td class="left"></td>
+			<td class="center" style="white-space:nowrap; overflow: hidden;">
+				<a class="icon icon-home" href="./"></a>
+				<span class="sep"></span>
+				<span><a href="?forum-index-fid-$fid-page-1.htm" id="forum_link">$forum[name]</a></span>
+				<span class="sep"></span>
+				<span><a href="?thread-index-fid-$fid-tid-$tid.htm">$thread[subject_substr]</a></span>
+				<!--{hook thread_index_nav_end.htm}-->
+			</td>
+			<!--{hook thread_index_nav_td_1_after.htm}-->
+			<td width="160" align="right">
+				<input type="button" value=" 发新帖 " class="button smallblue ajaxdialog" href="?post-thread-fid-$fid-ajax-1.htm" ajaxdialog="{fullicon: true, cache: true}" onclick="return false;" id="create_thread" />
+			</td>
+			<td class="right"></td>
+		</tr>
+	</table>
+	
+	<!--{hook thread_index_nav_after.htm}-->
+	
+	<!--{loop $postlist $post}-->
+	<!--{php $u = isset($userlist[$post['uid']]) ? $userlist[$post['uid']] : array('uid'=>0, 'username'=>'', 'groupname'=>'', 'avatar_middle'=>'');}-->
+	<!--{hook thread_index_post_loop_start.htm}-->
+	<table border="0" cellpadding="0" cellspacing="0" width="100%" align="center" style="margin-top: 4px; margin-bottom: 8px; table-layout: fixed;">
+		<!--{hook thread_index_post_tr_loop_start.htm}-->
+		<tr>
+			<!--{hook thread_index_post_td_1_before.htm}-->
+			<td width="70" valign="top">
+				<div>
+					<a href_real="?you-index-uid-$u[uid].htm" target="_blank" href="?you-profile-uid-$u[uid]-ajax-1.htm" class="ajaxdialog_hover" ajaxdialog="{position: 5, modal: false, timeout: 1000, showtitle: false}" onclick="return false;" style="display: block" rel="nofollow">
+						<span class="avatar_middle border bg1" {if $u[avatar_middle]}style="background-image: url($u[avatar_middle])"{/if}></span>
+					</a>
+				</div>
+				<p><b>$u[username]</b></p>
+				<p style="margin-top: 0px;" class="grey">$u[groupname]</p>
+				<!--{hook thread_index_userinfo.htm}-->
+			</td>
+			<!--{hook thread_index_post_td_1_after.htm}-->
+			<td width="15"></td>
+			<!--{hook thread_index_post_td_2_after.htm}-->
+			<td class="post_td" valign="top">
+				<span class="icon icon-left-arrow" style="position: absolute; z-index: 9; float: left; margin-left: -9px; margin-top: 10px;"></span>
+				<div class="bg1 border shadow post" style="padding: 8px;">
+				
+					<!--{if $thread[firstpid] == $post[pid]}-->
+					<h2 id="subject_$tid">
+					
+						<!--{if $thread[top]}--><span class="icon icon-top-$thread[top]" style="margin-right: 2px;" title="置顶主题"></span><!--{/if}-->
+					
+						<!--{if $thread[typeid1]}--><a href="?forum-index-fid-$fid-typeid1-$thread[typeid1].htm" target="_blank">[{$thread[typename1]}]</a><!--{/if}-->
+						<!--{if $thread[typeid2]}--><a href="?forum-index-fid-$fid-typeid2-$thread[typeid2].htm" target="_blank">[{$thread[typename2]}]</a><!--{/if}-->
+						<!--{if $thread[typeid3]}--><a href="?forum-index-fid-$fid-typeid3-$thread[typeid3].htm" target="_blank">[{$thread[typename3]}]</a><!--{/if}-->
+					
+						$thread[subject]
+						
+						<!--{hook thread_index_subject_end.htm}-->
+					</h2>
+					<!--{/if}-->
+					
+					<div id="message_$post[pid]" class="message">$post[message] <!--{hook thread_index_message_end.htm}--><span class="small grey"> ($post[dateline])</span> </div>
+					
+					<!--{hook thread_index_message_after.htm}-->
+					
+					<!--{if !empty($post[attachlist])}-->
+					<br />
+					<div class="attachlist">
+						<table width="100%" cellpadding="2" class="noborder">
+							<tr>
+								<td class="bold"><span class="red" style="font-size: 18px">$post[attachnum] </span>个附件</td>
+								<td width="70" class="grey">售价</td>
+								<td width="70" class="grey">大小</td>
+								<td width="70" class="grey">下载</td>
+								<td width="70" class="grey">时间</td>
+							</tr>
+							<tr><td colspan="6"><hr /></td></tr>
+							<!--{loop $post[attachlist] $attach}-->
+							<tr>
+								<td>
+									<a href="?attach-dialog-aid-$attach[aid]-ajax-1.htm" class="ajaxdialog" ajaxdialog="{showtitle: false, cache: true, position: 6, modal: false}" onclick="return false;" target="_blank" rel="nofollow"><img src="view/image/filetype/$attach[filetype].gif" width="16" height="16" />$attach[orgfilename]</a>
+								</td>
+								<td class="red">$attach[golds] 金币</td>
+								<td class="grey">$attach[filesize_fmt]</td>
+								<td>$attach[downloads] 次</td>
+								<td class="grey">$attach[dateline_fmt]</td>
+							</tr>
+							<tr><td colspan="6"><hr /></td></tr>
+							<!--{/loop}-->
+						</table>
+					</div>
+					<!--{/if}-->
+					
+					<!--{if $post[replies] > 0}-->
+					<div class="replylist" fid="$post[fid]" pid="$post[pid]" replies="$post[replies]" totalpage="$post[totalpage]" id="replylist_{$post[fid]}_{$post[pid]}">
+						<table width="100%" cellpadding="2" class="noborder" style="table-layout: fixed;">
+						<tr>
+							<td class="bold"><span class="red replies" style="font-size: 18px">$post[replies]</span> 条回复</td>
+							<td width="90">&nbsp;</td>
+							<td width="70" class="grey">时间</td>
+						</tr>
+						<tr><td colspan="3"><hr /></td></tr>
+						<tr>
+							<td colspan="3" class="loading" style="padding: 0px;"><p>正在加载...</p></td>
+						</tr>
+						</table>
+						<!--{if !empty($post[totalpage])}-->
+						<div class="minipage"></div>
+						<!--{/if}-->
+					</div>
+					<!--{/if}-->
+					
+					<!--{if $thread[firstpid] == $post[pid] && $thread[modnum] > 0}-->
+					<br />
+					<div class="modlist">
+						<table width="100%" cellpadding="2" class="noborder">
+							<tr>
+								<td width="100" class="bold"><span class="red" style="font-size: 18px">$thread[modnum] </span>条管理记录</td>
+								<td width="50" class="grey">操作</td>
+								<td width="50" class="grey">积分</td>
+								<td width="50" class="grey">金币</td>
+								<td class="grey">备注</td>
+								<td width="70" class="grey">时间</td>
+							</tr>
+							<tr><td colspan="6"><hr /></td></tr>
+							<!--{loop $modlist $mod}-->
+							<tr>
+								<td>
+									<a href_real="?you-index-uid-$mod[user][uid].htm" target="_blank" href="?you-profile-uid-$mod[user][uid]-ajax-1.htm" class="ajaxdialog" ajaxdialog="{position: 5, modal: false, timeout: 1000, showtitle: false}" onclick="return false;" style="display: block" rel="nofollow">
+										<span class="avatar_small bg1" {if $mod[user][avatar_small]}style="background-image: url($mod[user][avatar_small])"{/if}></span>
+										<span class="">$mod[user][username]</span>
+									</a>
+								</td>
+								<td class="grey">$mod[action_fmt]</td>
+								<td>$mod[credits_fmt]</td>
+								<td class="red">$mod[golds_fmt]</td>
+								<td class="grey">$mod[comment]</td>
+								<td class="grey">$mod[dateline_fmt]</td>
+							</tr>
+							<tr><td colspan="6"><hr /></td></tr>
+							<!--{/loop}-->
+						</table>
+					</div>
+					<!--{/if}-->
+					
+					<!--{if $post[rates] > 0}-->
+					<br />
+					<div class="ratelist">
+						<table width="100%" cellpadding="2" class="noborder">
+							<tr>
+								<td width="100" class="bold"><span class="red" style="font-size: 18px">$post[rates] </span>条评分记录</td>
+								<td width="50" class="grey">操作</td>
+								<td width="50" class="grey">积分</td>
+								<td width="50" class="grey">金币</td>
+								<td class="grey">点评</td>
+								<td width="70" class="grey">时间</td>
+							</tr>
+							<tr><td colspan="6"><hr /></td></tr>
+							<!--{loop $post[ratelist] $rate}-->
+							<tr>
+								<td>
+									<a href_real="?you-index-uid-$rate[user][uid].htm" target="_blank" href="?you-profile-uid-$rate[user][uid]-ajax-1.htm" class="ajaxdialog" ajaxdialog="{position: 5, modal: false, timeout: 1000, showtitle: false}" onclick="return false;" style="display: block" rel="nofollow">
+										<span class="avatar_small bg1" {if $rate[user][avatar_small]}style="background-image: url($rate[user][avatar_small])"{/if}></span>
+										<span class="">$rate[user][username]</span>
+									</a>
+								</td>
+								<td class="grey">评分</td>
+								<td>$rate[credits_fmt]</td>
+								<td class="red">$rate[golds_fmt]</td>
+								<td class="grey">$rate[comment]</td>
+								<td class="grey">$rate[dateline_fmt]</td>
+							</tr>
+							<tr><td colspan="6"><hr /></td></tr>
+							<!--{/loop}-->
+						</table>
+					</div>
+					<!--{/if}-->
+					
+					<!--{hook thread_index_attachlist_after.htm}-->
+					
+					<div class="grey mod" pid="$post[pid]">
+						<!--{if $thread[firstpid] == $post[pid]}-->
+						<span class="grey middle" style="font-weight: normal;">(回帖:<span class="blue">$thread[posts_fmt]</span> 查看:<span id="thread_views">$thread[views]</span>)</span>
+						<!--{/if}-->
+						
+						<!--{if $_user[uid] && $thread[firstpid] != $post[pid]}-->
+						<a href="?reply-create-fid-$fid-pid-$post[pid]-toreplyid-0-ajax-1.htm" class="ajaxdialog" ajaxdialog="{position: 1, modal: false, cache: false}">回复</a>
+						<!--{/if}-->
+						
+						<!--{if $ismod}-->	
+						<a href="?mod-rate-fid-$fid-pid-$post[pid].htm" class="ajaxdialog" ajaxdialog="{position: 1, modal: false, cache: false}">评分</a>
+						<!--{/if}-->
+						<!--{if $ismod || $_user[uid] == $post[uid]}-->	
+						<a href="?post-update-fid-$thread[fid]-pid-$post[pid]-ajax-1.htm" class="ajaxdialog" ajaxdialog="{fullicon: true, modal: false, cache: false}" onclick="return false;">编辑</a>
+						<a href="?post-delete-fid-$fid-pid-$post[pid].htm" onclick="return window.confirm('您确定删除吗？');">删除</a>
+						<!--{/if}-->
+						#$post[floor]楼
+					</div>
+				</div>
+			</td>
+			<!--{hook thread_index_post_td_3_after.htm}-->
+		</tr>
+		<!--{hook thread_index_post_tr_loop_end.htm}-->
+	</table>
+	<!--{hook thread_index_post_loop_end.htm}-->
+	<!--{/loop}-->
+	
+	<!--{hook thread_index_quick_post_start.htm}-->
+	<table border="0" cellpadding="0" cellspacing="0" width="100%" align="center" style="margin-top: 4px;">
+		<tr>
+			<!--{hook thread_index_quick_post_td_1_before.htm}-->
+			<td width="70" valign="top">
+				<div>
+					<a href_real="?you-index-uid-$_user[uid].htm" target="_blank" href="?you-profile-uid-$_user[uid]-ajax-1.htm" class="ajaxdialog_hover" ajaxdialog="{position: 5, modal: false, timeout: 1000, showtitle: false}" onclick="return false;" style="display: block" rel="nofollow">
+						<span class="avatar_middle border bg1" {if !empty($_user[avatar_middle])}style="background-image: url($_user[avatar_middle])"{/if}></span>
+					</a>
+				</div>
+				<p><b>$_user[username]</b></p>
+				<p class="grey">$_user[groupname]</p>
+			</td>
+			<!--{hook thread_index_quick_post_td_1_after.htm}-->
+			<td width="15"></td>
+			<!--{hook thread_index_quick_post_td_2_after.htm}-->
+			<td class="post_td" valign="top">
+				<span class="icon icon-left-arrow" style="position: absolute; z-index: 9; float: left; margin-left: -9px; margin-top: 10px;"></span>
+				<div class="bg1 border shadow" style="padding: 8px;">
+					<form action="?post-post-fid-$thread[fid]-tid-$thread[tid]-ajax-1-quickpost-1.htm" method="post" id="quick_post_form" target="_blank">
+						<input type="hidden" name="FORM_HASH" value="{FORM_HASH}" />
+						<textarea name="message" id="quick_message" style="width: 100%; height: 80px; font-size: 14px; overflow: hidden;"></textarea>
+						<div style="margin-top: 4px;">
+							<div style="width: 50%; float: left;">
+								<input type="submit" class="button smallblue" id="quick_post_submit" value="快速回复" />
+								<!--{hook thread_index_quick_post_after.htm}-->
+							</div>
+							<div style="width: 50%; float: left; text-align: right;">
+								<a href="?post-post-fid-$fid-tid-$tid-ajax-1.htm" class="grey ajaxdialog" ajaxdialog="{fullicon: true, cache: true}" onclick="return false;" id="create_post" >高级回复</a>
+								<!--{hook thread_index_advanced_post_after.htm}-->
+							</div>
+						</div>
+					</form>
+				</div>
+			</td>
+			<!--{hook thread_index_quick_post_td_3_after.htm}-->
+		</tr>
+	</table>
+	<!--{hook thread_index_quick_post_end.htm}-->
+	
+	<div class="box">
+		<div class="page" style="text-align: center;">$pages</div>
+		<!--{if $ismod}-->
+		<div style="text-align: center;">
+			<input type="checkbox" name="tidarr[]" value="$thread[fid]-$thread[tid]" checked="checked" style="display: none;" />
+			<input type="button" class="button smallblue" id="mod_top"  value="置顶" />
+			<input type="button" class="button smallblue" id="mod_type"  value="主题分类" />
+			<input type="button" class="button smallblue" id="mod_move"  value="移动" />
+			<!--{hook thread_index_mod_before_delete.htm}-->
+			<input type="button" class="button smallblue" id="mod_delete"  value="删除" />
+			<!--{hook thread_index_mod_end.htm}-->
+		</div>
+		<!--{/if}-->
+		<p style="text-align: center; padding: 8px;"><input type="button" value=" 返回 " class="button bigblue" onclick="history.back()" /></p>
+	</div>
+	
+	<!--{hook thread_index_mod_after.htm}-->
+	
+</div>
+
+<!--{include footer.htm}-->
+
+<!--{if $ismod}-->
+<script type="text/javascript">
+// copy from forum_index.htm
+var sep = $conf[urlrewrite] ? '?' : '&';
+
+// 置顶 弹出 dialog 设置为置顶
+$('#mod_top').click(function() {
+	var postdata = sep;
+	$.each($('#body input[name="tidarr[]"]:checked'), function(k, v) {
+		postdata += '&tidarr[]='+v.value;
+	});
+	ajaxdialog_request('?mod-top-fid-$fid.htm'+postdata, function() {
+		window.location.reload();
+	});
+});
+
+// 主题分类 
+$('#mod_type').click(function() {
+	var postdata = sep;
+	$.each($('#body input[name="tidarr[]"]:checked'), function(k, v) {
+		postdata += '&tidarr[]='+v.value;
+	});
+	ajaxdialog_request('?mod-type-fid-$fid.htm'+sep+postdata, function() {
+		window.location.reload();
+	});
+});
+
+// 删除
+$('#mod_delete').click(function() {
+	var postdata = sep;
+	$.each($('#body input[name="tidarr[]"]:checked'), function(k, v) {
+		postdata += '&tidarr[]='+v.value;
+	});
+	ajaxdialog_request('?mod-delete-fid-$fid.htm'+postdata, function() {
+		window.location = '?forum-index-fid-$fid.htm';
+	});
+});
+
+// 移动
+$('#mod_move').click(function() {
+	var postdata = sep;
+	$.each($('#body input[name="tidarr[]"]:checked'), function(k, v) {
+		postdata += '&tidarr[]='+v.value;
+	});
+	ajaxdialog_request('?mod-move-fid-$fid.htm'+postdata, function() {
+		window.location = '?forum-index-fid-$fid.htm';
+	});
+});
+
+</script>
+<!--{/if}-->
+
+<script type="text/javascript">
+
+// 数据格式： {tids:{"2012-1-12":[1 2 3 4],"2012-1-13":[5 6 7 8]},fids:{1:1234567890,2:1234567890}}
+tid_add_read($tid, $_SERVER[time]);
+//fid_update_lasttime($fid, $_SERVER[time]);
+//$.pdata(cookie_pre + 'readtids', '');
+//alert($.pdata(cookie_pre + 'readfids'));
+//alert($.pdata(cookie_pre + 'readtids'));
+
+// 登陆后才能发帖
+{if $_user[uid] == 0}
+$('#create_thread').click(function() {
+	ajaxdialog_request('?user-login-ajax-1.htm', function() {
+		$('#create_thread').unbind('click');
+		ajaxdialog_request($('#create_thread').attr('href'));
+		$('#create_thread').click(function() {
+			ajaxdialog_request($('#create_thread').attr('href'));
+		});
+	});
+	return false;
+});
+{/if}
+
+// 发帖按钮，判断未登录状态
+{if $_user[uid] == 0}
+$('#create_post').click(function() {
+	ajaxdialog_request('?user-login-ajax-1.htm', function() {
+		$('#create_post').unbind('click');
+		ajaxdialog_request($('#create_post').attr('href'));
+		$('#create_post').click(function() {
+			ajaxdialog_request($('#create_post').attr('href'));
+		});
+	});
+	return false;
+});
+{/if}
+
+// 点击数服务器
+$.getScript('$click_server&'+Math.random(), function() {
+	if(typeof xn_json == 'undefined') return;
+	var json = xn_json;
+	$('#thread_views').html(json['$tid']);
+});
+
+// 自动伸缩，自动提交
+$('#quick_message').keyup(function(e) {
+	if(e.ctrlKey && e.which == 13 || e.which == 10) {
+		$('#quick_post_submit').trigger('click');
+		return false;
+	}
+        
+	var h = $(this)[0].scrollHeight;
+	if(h <= 100) {
+		return true;
+	} else {
+		$(this).height($(this)[0].scrollHeight);
+		return true;
+	}
+});
+
+// 快速回复
+$('#quick_post_submit').click(function() {
+	if(!$('#quick_message').val()) {
+		$('#quick_message').alert('请填写内容！', {width: 150, delay: 3000}).focus();
+		return false;
+	}
+	
+	$('#quick_post_submit').disable();
+	
+{if $_user[uid] == 0}
+	ajaxdialog_request('?user-login-ajax-1.htm', function() {
+{/if}
+	
+	var postdata = $("#quick_post_form").serialize();
+	$.post($('#quick_post_form').attr('action'), postdata,  function(s){
+		var json = json_decode(s);
+		if(error = json_error(json)) {alert(error); return false;}
+		if(json.status <= 0) {
+			alert(json.message);
+			return false;
+		} else {
+			json = json.message;
+			if(json.message) {
+				$('#quick_message').alert(json.message, {width:250, delay: 3000}).focus();
+				return false;
+			}
+			// hook thread_index_post_succeed_js.htm
+			var page = Math.max(1, intval(json.page));
+			window.location= '?thread-index-fid-$fid-tid-$tid-page-'+page+'-scrollbottom-1.htm';
+		}
+	});
+	return false;
+	
+{if $_user[uid] == 0}
+	});
+{/if}
+
+});
+
+// 滚动回复的到最底部
+{if $scrollbottom}
+var offset = $('#quick_message').offset();
+document.documentElement.scrollTop = offset.top - 300;
+$('#quick_message').focus();
+{/if}
+
+// 记录当前页码
+var fid_page = $.parseJSON($.pdata(cookie_pre + 'fid_page'));
+var page = fid_page ? fid_page[''+$fid] : '';
+if(page && page > 1) {
+	var href = $('#pforum_link').attr('href').replace(/page-1/ig, "page-"+page);
+	$('#pforum_link').attr('href', href);
+	
+	var href = $('#forum_link').attr('href').replace(/page-1/ig, "page-"+page);
+	$('#forum_link').attr('href', href);
+}
+
+// 鼠标放在头像上弹出用户信息 ajaxdialog_hover
+var jajaxdialoglinks = $('a.ajaxdialog_hover');
+jajaxdialoglinks.die('click').live('click', function() {window.open($(this).attr('href_real'))});
+jajaxdialoglinks.die('mouseover').live('mouseover', ajaxdialog_mouseover);
+jajaxdialoglinks.die('mouseout').live('mouseout', ajaxdialog_mouseout);
+
+// post_td 下的图片调整大小
+$(function() {
+	var td_width = $('td.post_td').width() - 16;
+	td_width = Math.min($('#body').width() - 170, td_width);
+	$('td.post_td img').each(function() {
+		if($(this).width() > td_width) {
+			this.height = Math.ceil((this.height /this.width) * td_width);
+			this.width = Math.ceil(td_width);
+			
+			this.style.cursor = 'pointer';
+			this.onclick = function() {
+				window.open(this.src);
+			}
+		}
+	});
+});
+
+// 快捷键翻页
+bind_document_keyup_page();
+
+// 语法高亮
+if($('pre').length > 0) {
+	xiuno_load_css('view/js/syntaxlighter/syntax.css');
+	$.xload('view/js/syntaxlighter/syntax.js', function() {
+		SyntaxHighlighter.all();
+	});
+}
+
+// 加载盖楼，合并请求
+var fid = $fid;
+var reply_pids = '$reply_pids';
+var reply_replies = '$reply_replies';
+if(reply_replies != '') {
+	$.get('?reply-list-fid-$fid-pidarr-$reply_pids-replyarr-$reply_replies-ajax-1.htm', function(s) {
+		var json = json_decode(s);
+		if(error = json_error(json)) {alert(error); return false;}
+		if(json.status < 1) {alert(s); return false; }
+		
+		//alert(s);
+		
+		var replylists = json.message.body.split('<!--sep-->');
+		var pidarr = reply_pids.split('_');
+		for(var i=0; i<pidarr.length; i++) {
+			pid = pidarr[i];
+			replylist = replylists[i];
+			var div = $('#replylist_'+fid+'_'+pid);
+			var replies = $(div).attr('replies');
+			var totalpage = $(div).attr('totalpage');
+			$('td.loading', div).html(replylist);
+			function reply_hover(div) {
+				// 盖楼的编辑，删除链接
+				$('tr.reply', div).hover(function() {
+					$('span.mod', this).show();
+					$(this).addClass('bg2');
+				}, function() {
+					$('span.mod', this).hide();
+					$(this).removeClass('bg2');
+				});
+			}
+			pages_add_event('?reply-list-fid-'+fid+'-pidarr-'+pid+'-replyarr-'+replies+'-ajax-1.htm', totalpage, totalpage, $('td.loading', div), $('div.minipage', div), function(div) {
+				reply_hover();
+			});
+			reply_hover();
+		}
+	});
+}
+
+</script>
+
+<!--{hook thread_index_end.htm}-->
+
+$conf[footer_js]
+
+</body>
+
+</html>

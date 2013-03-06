@@ -1,0 +1,1 @@
+0 4 * * * /usr/local/bin/backup.sh > /dev/null 2>&1

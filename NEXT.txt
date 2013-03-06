@@ -1,0 +1,37 @@
+﻿forum.color
+
+<code>.br 
+
+framework2.4 -> XiunoPHP1.0 git xiunophp
+
+auto/tpl*.php
+
+
+replies 插件
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+附件消耗积分
+上传资源审核通过后，奖励积分。
+管理员 COOKIE 绑定IP
+安装的时候判断是否支持INNODB，默认采用INNODB
+数据库备份，回复
+后台批量导入会员插件

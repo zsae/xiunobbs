@@ -1,0 +1,369 @@
+<!--{json width:"880",title:"发表新帖"}-->
+<style type="text/css">
+#post_thread_form dt {width: 7%;}
+#post_thread_form dd {width: 91%;}
+</style>
+<form action="?post-thread-fid-$fid-ajax-1.htm" method="post" id="post_thread_form" target="_blank">
+	<input type="hidden" name="FORM_HASH" value="{FORM_HASH}" />
+	<!--{hook common_form_hash_after.htm}-->
+	<dl>
+		<!--{hook post_thread_subject_before.htm}-->
+		<dt><label for="subject">标题：</label></dt>
+		<dd>
+			<!--{if $typeselect1}-->$typeselect1<!--{/if}-->
+			<!--{if $typeselect2}-->$typeselect2<!--{/if}-->
+			<!--{if $typeselect3}-->$typeselect3<!--{/if}-->
+			<input type="text" name="subject" id="subject" value="$thread[subject]" style="width: 500px;" /> <span class="small grey">(200字)</span>
+		</dd>
+		
+		<!--{hook post_thread_subject_after.htm}-->
+		
+		<dt><label for="thread_message">内容：</label></dt>
+		<dd style="position: relative;"><textarea name="message" id="thread_message" style="width: 780px; height: 400px;"></textarea></dd>
+		
+		<!--{hook post_thread_message_after.htm}-->
+		
+		<dt></dt>
+		<dd>
+			<input type="submit" class="button bigblue" id="post_thread_submit" value="发表新帖" />
+			<input type="button" class="button biggrey" value="取消" id="post_thread_cancel" />
+			<!--{hook post_thread_button_end.htm}-->
+		</dd>
+		
+	</dl>
+</form>
+
+<!--{include attach_list.inc.htm}-->
+
+<link href="view/js/editor/editor.css" type="text/css" rel="stylesheet" />
+
+<script type="text/javascript">
+
+function attach_file_type(type) {
+	var type = type.substr(1).toLowerCase();
+	var filetypes = $filetyps;
+	for(k in filetypes) {
+		if($.inArray(type, filetypes[k]) != -1) {
+			return k;
+		}
+	}
+	return 'unknown';
+}
+
+function delay_execute(dialog, recall) {
+	var attachnum = $attachnum;
+	$('#post_thread_form').submit(function() {return false;});
+	$.xload('view/js/editor/swfupload.js', "view/js/editor/editor.js", function() {
+		
+		// hook post_thread_js_start.htm
+		
+		$('#thread_message').editor({
+			onmax: function() {
+				var width = $(window).width() * 90 / 100;
+				var height = $(window).height() - 110;
+				$('#thread_message')[0].editor.set_width(width);
+				$('#thread_message')[0].editor.set_height(height);
+				dialog.set_position('center');
+			}, 
+			onmin: function() {
+				$('#thread_message')[0].editor.set_width(650);
+				$('#thread_message')[0].editor.set_height(300);
+				dialog.set_position('center');
+			},
+			onctrlenter: function() {
+				$('#post_thread_submit').trigger('click');
+			},
+			onhook: function(_this) {
+				// --------------------------------------> 设置上传图片的回调函数
+				// append 一个 div 放在 a.image 图标上， swfupload 会替换此 div
+				var upload_button_id   = _this._textarea.id + '_upload_button_0';
+				$('a.image', _this.toolbar).append('<div id="' + upload_button_id + '" style=" width: 49px; height: 22px;"></div>');
+				var swf_settings = {
+					flash_url : 'view/js/editor/swfupload.swf',
+					upload_url: '?attach-uploadimage-fid-$fid-pid-$pid-$conf[cookie_pre]sid-$_sid-$conf[cookie_pre]auth-$_auth-ajax-1.htm',
+					prevent_swf_caching : false,
+					preserve_relative_urls : false,
+					//post_params: {"sid":"","auth":""},	// 我只能说 swfupload 很狗屎，传个参数还不稳定
+					file_size_limit : '$upload_max_filesize',
+					file_types : "*.jpg;*.gif;*.png",
+					file_types_description : "图片文件",
+					file_upload_limit : 100,
+					file_queue_limit : 0,
+					custom_settings : {
+						thumbnail_height: 120000,
+						thumbnail_width: 1600,
+						thumbnail_quality: 90
+					},					debug: false,
+					button_image_url: "view/js/editor/uploadimage.png",
+					button_width: "49",
+					button_height: "22",
+					button_placeholder_id: upload_button_id,
+					button_text: '<span class="theFont">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>',
+					button_text_style: ".theFont {font-size: 16;}",
+					button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,	// chrome may be does not work!
+					file_dialog_complete_handler : function(numFilesSelected, numFilesQueued) {
+						this.startUpload();
+					},
+					upload_start_handler : function(file) {
+						$('a.image', _this.toolbar).width(0);
+						$('a.imageloading', _this.toolbar).show();
+						return true;
+					},
+					upload_progress_handler : function(file, bytesLoaded, bytesTotal) {
+						var w = Math.ceil((bytesLoaded / bytesTotal) * 26);
+						$('span.imageprocess_body', _this.toolbar).width(w);
+					},
+					upload_error_handler : function(file, errorCode, message) {
+						alert('upload_error: file:'+file.name+', errorCode:'+errorCode+', message:'+message);
+					},
+					upload_success_handler : function(file, serverData) {
+						var json = json_decode(serverData);
+						if(error = json_error(json)) {alert(error); return false;}
+						if(json.status <= 0) {alert(json.message); return false;}
+						var s = json.message;
+						_this._focus();
+						_this.paste(s);
+						return true;
+					},
+					file_queue_error_handler : function(file, errorCode, message) {
+						if(errorCode == SWFUpload.QUEUE_ERROR.FILE_EXCEEDS_SIZE_LIMIT) {
+							alert('您选择的文件：'+file+' 尺寸太大！错误信息：'+message);
+							$('.toolbar a.imageloading', _this).hide();
+							return true;
+						} else {
+							alert('upload_queue_error: file:'+file+', errorCode:'+errorCode+', message:'+message);
+						}
+						return false;
+					},
+					queue_complete_handler : function(numFilesUploaded) {
+						$('a.image', _this.toolbar).width(49);
+						$('a.imageloading', _this.toolbar).hide();
+					}
+				};
+				var swfu = new SWFUpload(swf_settings);
+				// --------------------------------------> 设置上传附件的回调附件
+				
+				// 定位编辑器位置
+				var jiframe = $('#thread_message').closest('div.iframe');
+				var pos = jiframe.position();
+				pos.left += ($(jiframe).width() - 621) / 2;	// 621 为附件列表框的宽度
+				pos.top += 10;
+				$('#file_upload_0').dialog({width: 621, open: false, position: pos});
+				
+				// live 删除 
+				$('#file_upload_form_0 span.delete').live('click', function() {
+					// ajax 请求，仅判断服务端返回的状态位，确定是否删除成功。
+					if(window.confirm('确认删除附件吗？')) {
+						var jtr = $(this).closest('tr');
+						var aid = jtr.attr('aid');
+						$.get('?attach-deletefile-aid-'+aid+'-ajax-1.htm', function(s) {
+							var json = json_decode(s);
+							if(error = json_error(json)) {alert(error); return false;}
+							if(json.status <= 0) {alert(json.message); return false;}
+							jtr.next('tr').remove();
+							jtr.remove();
+							
+							attachnum--;
+							$('a.file', _this.toolbar).alert(attachnum, {alerticon: 0, width: 16});
+						
+						});
+					}
+				});
+				
+				// 附件数
+				if(attachnum > 0) {
+					$('a.file', _this.toolbar).alert('$attachnum', {alerticon: 0, width: 16});
+				}
+				
+				// -------------------------------------->上传文件部分
+				
+				var swf_settings = {
+					flash_url : 'view/js/editor/swfupload.swf',
+					upload_url: '?attach-uploadfile-fid-$fid-pid-$pid-$conf[cookie_pre]sid-$_sid-$conf[cookie_pre]auth-$_auth-ajax-1.htm',
+					prevent_swf_caching : false,
+					preserve_relative_urls : false,
+					//post_params: {"sid":"","auth":""},
+					file_size_limit : '$upload_max_filesize',
+					file_types : "*.*", //"*.*"
+					file_types_description : "所有文件",
+					file_upload_limit : 100,
+					file_queue_limit : 0,
+					custom_settings : {
+						thumbnail_height: 120000,
+						thumbnail_width: 1600,
+						thumbnail_quality: 80
+					},
+					debug: false,
+					button_image_url: "view/js/editor/uploadfile.png",
+					button_width: "74",
+					button_height: "22",
+					button_placeholder_id: 'file_upload_button_0',
+					button_text: '<span class="theFont">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>',
+					button_text_style: ".theFont {font-size: 16;}",
+					button_window_mode: SWFUpload.WINDOW_MODE.TRANSPARENT,	// chrome may be does not work!
+					file_dialog_complete_handler : function(numFilesSelected, numFilesQueued) {
+						if(numFilesSelected > 0) {}
+						try {this.startUpload(); return false;
+						} catch(ex) { this.debug(ex); }
+					},
+					upload_start_handler : function(file) {
+						var _swf = this;
+						var jtrs = $('#file_upload_form_0 tr');
+						var jtr = jtrs.eq(jtrs.last().index() - 1).clone();	// 最后一行
+						jtr.appendTo(jtrs.parent()).attr('file', $.escape(file.name + file.index)).show();
+						var jtds = $('td', jtr);
+						
+						var newsrc = jtds.eq(0).find('img').attr('src').replace(/\/\w+\.gif$/i, '/'+attach_file_type(file.type)+'.gif');
+						jtds.eq(0).find('img').attr('src', newsrc);			// filetype
+						jtds.eq(0).find('span.filename').html(file.name);		// filename
+						jtds.eq(1).html(humansize(file.size));				// filesize
+						jtds.eq(2).find('span.stop, span.start, span.complete').hide();
+						jtds.eq(2).find('span.start').click(function() {
+							_swf.startUpload();
+							jtds.eq(2).find('span.start').hide();
+							jtds.eq(2).find('span.stop').show();
+						});
+						jtds.eq(2).find('span.stop').click(function() {
+							_swf.stopUpload();
+							jtds.eq(2).find('span.start').show();
+							jtds.eq(2).find('span.stop').hide();
+						}).show();
+						jtds.eq(3).find('input').attr('disabled', 'disabled');		// gold
+						jtds.eq(4).find('span.delete').hide();				// 删除
+						
+						jtrs.last().clone().appendTo(jtrs.parent()).show();
+						return true;
+					},
+					upload_progress_handler : function(file, bytesLoaded, bytesTotal) {
+						var jtr = $('#file_upload_form_0 tr[file='+$.escape(file.name + file.index)+']');
+						var jtds = $('td', jtr);
+						jtds.eq(1).html(bytesTotal);	
+						$('span span', jtds.eq(2)).width(100 * (bytesLoaded / bytesTotal));// progress
+					},
+					upload_error_handler : function(file, errorCode, message) {},
+					upload_success_handler : function(file, serverData) {
+						var json = json_decode(serverData);
+						if(error = json_error(json)) {alert(error); return false;}
+						var jtr = $('#file_upload_form_0 tr[file='+$.escape(file.name + file.index)+']');
+						var jtds = $('td', jtr);
+						if(json.status <= 0) {
+							jtds.eq(2).find('span.complete').html('失败').addClass('error').attr('title', json.message).show();
+							jtds.eq(2).find('span.start').hide();
+							jtds.eq(2).find('span.stop').hide();
+							return false;
+						}
+						var s = json.message;
+						var aid = s.aid;
+						jtds.eq(0).find('a').attr('href', s.desturl);			// filetype
+						jtds.eq(0).find('span.filename').html(s.orgfilename);		// filename
+						jtds.eq(1).html(humansize(s.filesize));					// filesize
+						jtds.eq(2).find('span.complete').html('完成').addClass('ok').show();
+						jtds.eq(2).find('span.start').hide();
+						jtds.eq(2).find('span.stop').hide();
+						jtds.eq(3).find('input').attr('disabled', '').attr('name', 'gold['+aid+']');	// gold
+						jtds.eq(4).find('span.delete').show();		// delete
+						
+						attachnum++;
+						$('a.file', _this.toolbar).alert(attachnum, {alerticon: 0, width: 16});
+						
+						return true;
+					},
+					upload_complete_handler : function(file) {},
+					file_queued_handler : function(file) {},
+					file_queue_error_handler : function(file, errorCode, message) {
+						if(errorCode == SWFUpload.QUEUE_ERROR.FILE_EXCEEDS_SIZE_LIMIT) {
+							alert('您选择的文件'+file.name+'大小为'+humansize(file.size)+'，超出了服务器端允许的最大值:$upload_max_filesize！');
+							return true;
+						} else {
+							alert('upload_queue_error: file:'+file+', errorCode:'+errorCode+', message:'+message);
+						}
+						return false;
+					},
+					queue_complete_handler : function(numFilesUploaded){}
+				};
+				var swfu = new SWFUpload(swf_settings);
+				
+				$('#file_upload_submit_0').click(function() {
+					var jform = $('#file_upload_form_0');
+					$('#file_upload_submit_0').disable();
+					var postdata = jform.serialize();
+					$.post(jform.attr('action'), postdata,  function(s){
+						$('#file_upload_submit_0').enable();
+						var json = json_decode(s);
+						if(error = json_error(json)) {alert(error); return false;}
+						if(json.status <= 0) {alert(json.message); return false;}
+						json = json.message;
+						
+						$.alert('设置完毕', 'ok', 1000);
+						setTimeout(function() {
+							$('#file_upload_0').dialog('close');
+						}, 1000);
+					});
+				});
+				
+				$('#file_upload_cancel_0').click(function() {
+					$('#file_upload_0').dialog('close');
+				});
+				
+				$('a.file', _this.toolbar).click(function() {
+					$('#file_upload_0').dialog('open');
+				});
+			},
+			baseurl: 'view/js/editor/'
+		});
+		$('#subject').focus().keydown(function(e) {
+			// TAB 切换键到 message
+			var keycode = e.keyCode ? e.keyCode : e.which;
+			if(keycode == 9) {
+				$('#thread_message')[0].editor._focus();
+			}
+		});
+		$('#post_thread_submit').click(function() {
+			$('div.alert').remove();
+			$('#post_thread_submit').disable();
+			var postdata = $("#post_thread_form").serialize();
+			$.post($('#post_thread_form').attr('action'), postdata,  function(s){
+				$('#post_thread_submit').enable();
+				var json = json_decode(s);
+				if(error = json_error(json)) {alert(error); return false;}
+				if(json.status <=0) {
+					alert(json.message);
+					return false;
+				}
+				
+				json = json.message;
+				if(json.subject) {
+					$('#subject').alert(json.subject, {width: 250, delay: 3000}).focus();
+					return false;
+				}
+				if(json.message) {
+					$('#thread_message').parent().alert(json.message, {width: 250, delay: 3000}).focus();
+					return false;
+				}
+				var thread = json.thread;
+		 		
+				// hook post_thread_submit_after_js.htm
+				
+				// 清空编辑器内容
+				$('#thread_message')[0].editor.set('');
+		 		
+		 		dialog.set_body('<div class="ok">发表成功！</div><p><a href="?thread-index-fid-$fid-tid-'+thread.tid+'.htm">【点击查看】</a></p>');
+		 		setTimeout(function() {
+		 			dialog.close();
+		 			window.location= '?forum-index-fid-$fid-tid-'+thread.tid+'.htm';
+		 		}, 500);
+			  });
+			  return false;
+		});
+		$('#post_thread_cancel').click(function() {
+			dialog.close();
+		});
+		
+		// hook post_thread_js_end.htm
+		
+	}); // end xload()
+	
+	// hook common_form_hash_after_js.htm
+}
+</script>
+

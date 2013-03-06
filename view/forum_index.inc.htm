@@ -1,0 +1,47 @@
+<!--{hook forum_index_inc_start.htm}-->
+<table width="100%" cellspacing="0" cellpadding="0" tid="$thread[tid]" style="table-layout: fixed;">
+	<tr height="32">
+		<td valign="middle" class="subject">
+			<!--{if $ismod}-->
+			<input type="checkbox" name="tidarr[]" value="$thread[fid]-$thread[tid]" />
+			<!--{/if}-->
+		
+			<a href="?thread-index-fid-$thread[fid]-tid-$thread[tid].htm" target="_blank" title="点击图标，新窗口打开" style="margin-right: 1px;">	
+				<!--{if $thread[isnew]}-->
+				<span class="icon icon-post-blue" tid="$thread[tid]" lastpost="$thread[lastpost]"></span>
+				<!--{else}-->
+				<span class="icon icon-post-grey" tid="$thread[tid]" lastpost="$thread[lastpost]"></span>
+				<!--{/if}-->
+			</a>
+			
+			<!--{if $thread[top]}--><span class="icon icon-top-$thread[top]" style="margin-right: 2px;" title="置顶主题"></span><!--{/if}-->
+		
+			<!--{if $thread[forumname]}--><a href="?forum-index-fid-$thread[fid].htm" target="_blank">[{$thread[forumname]}]</a><!--{/if}-->
+			
+			<!--{if $thread[typename1]}--><a href="?forum-index-fid-$thread[fid]-typeid1-$thread[typeid1].htm" target="_blank">[{$thread[typename1]}]</a><!--{/if}-->
+			<!--{if $thread[typename2]}--><a href="?forum-index-fid-$thread[fid]-typeid2-$thread[typeid2].htm" target="_blank">[{$thread[typename2]}]</a><!--{/if}-->
+			<!--{if $thread[typename3]}--><a href="?forum-index-fid-$thread[fid]-typeid3-$thread[typeid3].htm" target="_blank">[{$thread[typename3]}]</a><!--{/if}-->
+		 	
+			 <!--{hook forum_index_inc_subject_before.htm}-->
+			<a href="?thread-index-fid-$thread[fid]-tid-$thread[tid].htm" title="$thread[subject]">$thread[subject]</a>
+			<!--{hook forum_index_inc_subject_after.htm}-->
+		</td>
+		<!--{hook forum_index_inc_username_before.htm}-->
+		<td width="80" class="grey username">
+			<a href="?you-profile-uid-$thread[uid]-ajax-1.htm" target="_blank" class="ajaxdialog" ajaxdialog="{position: 6, modal: false}" title="$thread[username]">$thread[username]</a><br />
+			<i>$thread[dateline_fmt]</i>
+		</td>
+		<td width="80" class="views"><span class="blue">$thread[posts_fmt]</span><br /><span class="tiny grey">$thread[views]</span></td>
+		<!--{hook forum_index_inc_views_after.htm}-->
+		<td width="80" class="grey last">
+			<!--{if $thread[lastuid]}-->
+			<a href="?you-profile-uid-$thread[lastuid]-ajax-1.htm" target="_blank" class="ajaxdialog" ajaxdialog="{position: 6, modal: false}" title="$thread[lastusername]">$thread[lastusername]</a><br />
+			<i>$thread[lastpost_fmt]</i>
+			<!--{/if}-->
+		</td>
+		<!--{hook forum_index_inc_lastpost_after.htm}-->
+	</tr>
+</table>
+<!--{hook forum_index_inc_end.htm}-->
+<hr />
+	

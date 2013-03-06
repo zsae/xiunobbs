@@ -1,0 +1,37 @@
+<!--{json width:"400",title:"附件下载"}-->
+
+<dl>
+	<dt>附件名：</dt>
+	<dd><img src="view/image/filetype/$attach[filetype].gif" width="16" height="16" /> $attach[orgfilename]</dd>
+	
+	<dt>大小：</dt>
+	<dd>$attach[filesize_fmt]</dd>
+	
+	<dt>下载次数：</dt>
+	<dd>$attach[downloads] 次</dd>
+	
+	<dt>最后更新时间：</dt>
+	<dd>$attach[dateline_fmt]</dd>
+	
+	<dt>售价：</dt>
+	<dd><span class="red">$attach[golds] 金币</span></dd>
+	
+	<dt>您账户剩余：</dt>
+	<dd>$_user[golds] 金币 <!--{if $pay_on && $_user[golds] < $attach[golds]}--><span class="red">(余额不足，<a href="?pay-select.htm" target="_blank"><b>充值</b></a>)</span><!--{/if}--></dd>
+	
+	<dt></dt>
+	<dd>
+		<input type="submit" class="button bigblue" onclick="window.open('?attach-download-aid-$attach[aid].htm');" value="点击下载" />
+		<input type="button" class="button biggrey" value="关闭" id="down_cancel_$attach[aid]"/>
+	</dd>
+</dl>
+
+<script type="text/javascript">
+
+// 延迟执行的脚本，约定名字为：delay_execute()
+function delay_execute(dialog, recall) {
+	$('#down_cancel_$attach[aid]').click(function() {
+		dialog.close();
+	});
+}
+</script>

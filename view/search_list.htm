@@ -1,0 +1,83 @@
+<!--{include header.htm}-->
+
+<div class="width">
+	<table id="nav" cellpadding="0" cellspacing="0" style="margin-bottom: 4px;">
+		<tr>
+			<td class="left"></td>
+			<td class="center">
+				<a class="icon icon-home" href="./"></a>
+				<span class="sep"></span>
+				<span>论坛搜索</span>
+			</td>
+			<td class="right"></td>
+		</tr>
+	</table>
+	
+	<div style="padding: 8px;">
+		<input type="text" id="srchkeyword" name="keyword" value="$keyword" style="width: 328px; height: 18px;" />
+		<input type="button" class="button smallblue" value="搜索" id="srchsubmit">
+	</div>
+	
+	<div class="div">
+		<div class="header">搜索结果</div>
+		<div class="body">
+		<!--{if empty($threadlist)}-->
+			<p>无匹配结果</p>
+		<!--{else}-->
+			<!--{loop $threadlist $thread}-->
+			<div>
+				<div class="tiny grey" style="width: 100px; height: 30px; float: right;">$thread[dateline_fmt]</div>
+				<div class="small grey" style="width: 100px; height: 30px; float: right; overflow: hidden;">$thread[username]</div> 
+				<div style="overflow: hidden; height: 30px; font-size: 14px; word-break: break-all">
+					<span class="icon icon-post-blue" tid="$thread[tid]" style="vertical-align: middle; _margin-top: 8px; _margin-right: 4px; *margin-top: 8px; *margin-right: 4px;"></span>
+					<!--{if $thread[top]}--><span class="icon icon-top-$thread[top]" style="margin-right: 2px;" title="置顶主题"></span><!--{/if}-->
+					<a href="?forum-index-fid-$thread[fid].htm" target="_blank">【$thread[forumname]】</a>
+					<a href="?thread-index-fid-$thread[fid]-tid-$thread[tid]-fpage-$page.htm" target="_blank">$thread[subject]</a>
+					<span class="tiny grey">($thread[posts_fmt]/<span class="views" tid="$thread[tid]">$thread[views]</span>)</span>
+					
+				</div>
+			</div>
+			<div class="hr"></div>
+			<!--{/loop}-->
+			
+			<!--{if $pages}--><div class="page">$pages</div><!--{/if}-->
+		<!--{/if}-->
+		</div>
+	</div>
+	
+	
+	
+</div>	
+
+<!--{include footer.htm}-->
+<script type="text/javascript">
+$('#srchsubmit').click(function() {
+	window.location = '?search-index-keyword-'+encodeURIComponent($('#srchkeyword').val())+'.htm';
+});
+$('#srchkeyword').keyup(function(e) {
+	if(e.which == 13 || e.which == 10) {
+		$('#srchsubmit').trigger('click');
+	}
+}).focus();
+
+// 点击服务器
+{if !empty($readtids)}
+$.getScript('$click_server&'+Math.random(), function() {
+	if(!xn_json) return;
+	var json = xn_json;
+	for(tid in json) {
+		var viewspan = $('#body span.views[tid='+tid+']');
+		viewspan.html(json[tid]);
+		if(json[tid] > $conf[threadlist_hotviews]) {
+			viewspan.addClass('red bold');
+			viewspan.html(viewspan.html() + '<span class="icon icon-post-fire"></span>');
+		}
+	}
+});
+{/if}
+</script>
+
+$conf[footer_js]
+
+</body>
+</html>

@@ -1,0 +1,42 @@
+body {background: #16345A;}
+a.icon-pm {background: url(icon-pm.gif)}
+
+/* 页面架构, 从上到下，几大块： #header, #menu, #body, #footer */
+#header {background: url(header_bg.gif)}
+	#header #logo {width: 260px; height: 64px; background: url(logo.gif);}
+#menu {background: url(menu_bg.gif);}
+	#menu td.center a{background: none; color: #FFFFFF; font-weight: normal;}
+	#menu td.center a:hover{background: url(menu_checked.gif) top center no-repeat;}
+	#menu td.center a.checked{background: url(menu_checked.gif) top center no-repeat; font-weight: 800;  cursor: pointer;}
+	#menu td.center span.sep {background: url(menu_sep.gif) top center no-repeat; width: 6px; height: 6px; margin-top: 12px;}
+	#user {line-height: 12px; float: right; margin: 4px; color: #38ABFF; *padding-top: 8px; vertical-align: bottom;}
+	#user a {color: #38ABFF;}
+	#user span.grey{color: #38ABFF;}
+#body {background: #FFFFFF url(body_bg.gif) repeat-x;}
+#footer {border-top: 4px solid #3D7DC0; color: #248CD8; background: none;}
+#footer .grey, #footer .grey a {color: #2770BC;}
+
+div.div {background: #ECF0F4 url(div_header.gif) repeat-x; border: 1px solid #3975B5;}
+div.div div.header, div.div div.header a {color: #FFFFFF; border-bottom: 1px solid #3E6A9D;  text-shadow: none;}
+.page a, .page b{ background: url(page.gif) repeat-x;}
+.page a:hover, .page b, .page a.checked{background-position: 0px -30px;}
+
+.minipage a, .minipage a.bold{ background: url(page.gif) repeat-x;}
+
+#search {background: url(nav_search.gif) no-repeat;}
+
+/* BUTTON */
+a.button {background: url(button-right.png) 100% 0 no-repeat;}
+a.button span{background: url("button.png") no-repeat;}
+
+a.button.bigblue {background-position: 100% 0px; height: 40px;}
+a.button.bigblue span {background-position: 0px 0px; color: #FFFFFF; text-shadow: 0 -1px #367BBB;}
+
+a.button.biggrey {background-position: 100% -150px; height: 40px;}
+a.button.biggrey span {background-position: 0px -150px; color: #888888; text-shadow: 0 -1px #CCCCCC;}
+
+a.button.smallblue {background-position: 100% -300px;  height: 21px;}
+a.button.smallblue span {background-position: 0px -300px; color: #FFFFFF; text-shadow: 0 -1px #888888;}
+
+a.button.smallgrey {background-position: 100% -450px; height: 21px;}
+a.button.smallgrey span {background-position: 0px -450px;color: #888888; text-shadow: 0 -1px #CCCCCC;}

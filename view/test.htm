@@ -1,0 +1,97 @@
+<!--{include header.htm}-->
+
+<div id="body">
+	<!--#ajax width="780" title="回复帖子"-->
+	
+	<style type="text/css">
+	#thread_post_form dt {width: 7%;}
+	#thread_post_form dd {width: 92%; _width: 91%;}
+	</style>
+	<form action="?post-post-fid-$fid-tid-$tid-ajax-1.htm" method="post" id="thread_post_form" target="_blank">
+		<input type="hidden" name="FORM_HASH" value="{FORM_HASH}" />
+		<dl>
+			<dt>回复：</dt>
+			<dd>$thread[subject]</dd>
+			
+			<dt><label for="message">内容：</label></dt>
+			<dd><textarea name="message" id="message" style="width: 650px; height: 300px;"></textarea></dd>
+			
+			<dt></dt>
+			<dd>
+				<input type="submit" class="button bigblue" id="thread_post_submit" value="回复" />
+				<input type="button" class="button biggrey" value="取消" id="thread_post_cancel" />
+				<div class="notice" id="thread_post_notice" style="display: none;"></div>
+			</dd>
+		</dl>
+	</form>
+</div>
+	
+<!--{include footer.htm}-->
+
+<link href="view/js/editor/index.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript">
+	
+// post 参数
+var postparams = {};
+postparams[cookie_pre + 'sid'] = '$_sid';
+postparams[cookie_pre + 'auth'] = '$_auth';
+$.xload('view/js/swfupload/index.js', "view/js/editor-color/index.js", "view/js/editor/index.js", function() {
+	$('#message').editor({imageupload:"?post-uploadimage-fid-$fid-ajax-1.htm", 
+		videoupload: "?post-uploadvideo-fid-$fid-ajax-1.htm",
+		onmax: function() {
+			var width = $(window).width() * 90 / 100;
+			var height = $(window).height() - 165;
+			$('#message')[0].editor.set_width(width);
+			$('#message')[0].editor.set_height(height);
+		}, 
+		onmin: function() {
+			$('#message')[0].editor.set_width(650);
+			$('#message')[0].editor.set_height(300);
+		},
+		onctrlenter: function() {
+			$('#thread_post_submit').trigger('click');
+		},
+		baseurl: 'view/js/editor/', 
+		postparams: postparams});
+	
+	postparams = null;// 销毁，防止跨站！
+	
+	$('#message')[0].editor._focus();
+});
+$('#thread_post_submit').click(function() {
+		
+	$('div.alert').remove();
+	$('#thread_post_notice').html('正在提交，请稍后 ...').show();
+	var postdata = $("#thread_post_form").serialize();
+	$.post($('#thread_post_form').attr('action'), postdata,  function(json){
+		$('#thread_post_notice').html('').hide();
+		if(error = json_error(json)) {alert(error); return false;}
+
+		json = json.message;
+		if(json.message) {
+			$('#message').parent().alert(json.message, {width: 250, delay: 3000}).focus();
+			return false;
+		}
+		var page = json.page;
+		
+		$('#message')[0].editor.set('');
+		dialog.set_body('<div class="ok">回复成功！</div><p><a href="?thread-index-fid-$fid-tid-$tid.htm">【点击查看】</a></p>');
+		
+		setTimeout(function(){
+ 			dialog.close();
+ 			$('#thread_post_notice').html('');
+ 			window.location= '?thread-index-fid-$fid-tid-$tid-page-'+page+'-scrollbottom-1.htm';
+ 		}, 500);
+	  }, "json");
+	return false;
+});
+$('#thread_post_cancel').click(function() {
+	dialog.close();
+});
+</script>
+
+
+
+</body>
+
+</html>

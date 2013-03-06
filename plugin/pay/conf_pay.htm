@@ -1,0 +1,167 @@
+<!--{include header.htm}-->
+
+<div class="width">
+	<div class="page tab" style="width:700px; margin: auto;">
+		<a href="?conf-pay-tab-setting.htm" $_checked[setting]>支付设置</a>
+		<a href="?conf-pay-tab-ebank.htm" $_checked[ebank]>网银</a>
+		<a href="?conf-pay-tab-alipay.htm" $_checked[alipay]>支付宝</a>
+		<a href="?conf-pay-tab-banklist.htm" $_checked[banklist]>线下支付</a>
+		<!--<a href="?conf-pay-tab-sms.htm" $_checked[sms]>手机短信网关</a>-->
+	</div>
+	<!--{if $tab == 'setting'}-->
+	<div class="div" style="width:700px;">
+		<div class="header">支付设置</div>
+		<div class="body">
+			<form action="?conf-pay-tab-setting.htm" method="post" id="conf_form">
+				<input type="hidden" name="FORM_HASH" value="{FORM_HASH}" />
+				<dl>
+					<dt><label for="pay_on">开启支付：</label></dt>
+					<dd>$input[pay_on]</dd>
+					
+					<dt><label for="pay_rate">兑换比率：</label></dt>
+					<dd>$input[pay_rate] <span class="grey">1元金钱 =  N金币。</span></dd>
+					
+					<!--{hook admin_conf_pay_submit_before.htm}-->
+					
+					<dt></dt>
+					<dd>
+						<input type="submit" class="button bigblue" id="conf_submit" value="确认设置" />
+						<input type="button" class="button biggrey" value="取消" onclick="history.back()" />
+						<div id="notice" class="notice" style="display: none;"></div>
+					</dd>
+				</dl>
+			</form>
+		</div>
+		<div class="footer"></div>
+	</div>
+	<!--{elseif $tab == 'ebank'}-->
+	<div class="div" style="width:700px;">
+		<div class="header">网银设置</div>
+		<div class="body">
+			<form action="?conf-pay-tab-ebank.htm" method="post" id="conf_form">
+				<input type="hidden" name="FORM_HASH" value="{FORM_HASH}" />
+				<dl>
+					<dt><label for="ebank_on">开启网银支付：</label></dt>
+					<dd>$input[ebank_on]</dd>
+					
+					<dt><label for="v_mid">v_mid：</label></dt>
+					<dd>$input[v_mid]</dd>
+					
+					<dt><label for="key">key：</label></dt>
+					<dd>$input[key]</dd>
+					
+					<!--{hook admin_conf_ebank_submit_before.htm}-->
+					
+					<dt></dt>
+					<dd>
+						<input type="submit" class="button bigblue" id="conf_submit" value="确认设置" />
+						<input type="button" class="button biggrey" value="取消" onclick="history.back()" />
+						<div id="notice" class="notice" style="display: none;"></div>
+					</dd>
+				</dl>
+			</form>
+		</div>
+		<div class="footer"></div>
+	</div>
+	<!--{/if}-->
+	
+	
+	<!--{if $tab == 'alipay'}-->
+	<div class="div" style="width:700px;">
+		<div class="header">支付宝设置</div>
+		<div class="body">
+			<form action="?conf-pay-tab-alipay.htm" method="post" id="conf_form">
+				<input type="hidden" name="FORM_HASH" value="{FORM_HASH}" />
+				<dl>
+					<dt><label for="alipay_on">开启支付宝支付：</label></dt>
+					<dd>$input[alipay_on]</dd>
+					
+					<dt><label for="partner">partner：</label></dt>
+					<dd>$input[partner]</dd>
+					
+					<dt><label for="security_code">security_code：</label></dt>
+					<dd>$input[security_code]</dd>
+					
+					
+					<dt><label for="seller_email">seller_email：</label></dt>
+					<dd>$input[seller_email]</dd>
+					
+					<!--{hook admin_conf_alipay_submit_before.htm}-->
+					
+					<dt></dt>
+					<dd>
+						<input type="submit" class="button bigblue" id="conf_submit" value="确认设置" />
+						<input type="button" class="button biggrey" value="取消" onclick="history.back()" />
+						<div id="notice" class="notice" style="display: none;"></div>
+					</dd>
+					
+					<dt></dt>
+					<dd>注意：整合的<b>支付宝及时到账</b>的接口。</dd>
+				</dl>
+			</form>
+		</div>
+		<div class="footer"></div>
+	</div>
+	<!--{/if}-->
+	
+	<!--{if $tab == 'banklist'}-->
+	<div class="div" style="width:700px;">
+		<div class="header">银行列表</div>
+		<div class="body">
+			<form action="?conf-pay-tab-banklist.htm" method="post" id="conf_form">
+				<input type="hidden" name="FORM_HASH" value="{FORM_HASH}" />
+				<dl>
+					<dt><label for="banklist_on">开启线下支付：</label></dt>
+					<dd>$input[banklist_on]</dd>
+					
+					<dt><label for="banklist">银行列表：</label></dt>
+					<dd style="position: relative;"><textarea style="width: 500px; height: 300px;" id="banklist" name="banklist">$banklist</textarea></dd>
+					
+					<!--{hook admin_conf_banklist_submit_before.htm}-->
+					
+					<dt></dt>
+					<dd>
+						<input type="submit" class="button bigblue" id="conf_submit" value="确认设置" />
+						<input type="button" class="button biggrey" value="取消" onclick="history.back()" />
+						<div id="notice" class="notice" style="display: none;"></div>
+					</dd>
+				</dl>
+			</form>
+		</div>
+		<div class="footer"></div>
+	</div>
+	<!--{/if}-->
+	
+	<!--{hook admin_conf_pay_end.htm}-->
+</div>
+
+<!--{include footer.htm}-->
+
+<!--{if $tab == 'banklist'}-->
+<link href="view/js/editor/editor.css" type="text/css" rel="stylesheet" />
+<script src="view/js/editor/editor.js" type="text/javascript" ></script>
+
+<script type="text/javascript">
+$('#banklist').editor({"baseurl": 'view/js/editor/'});
+</script>
+<!--{/if}-->
+
+<script type="text/javascript">
+$('#conf_submit').click(function() {
+	$('#conf_form').submit();
+	return false;
+});
+
+<!--{loop $error $k $v}-->
+<!--{if $v}-->
+	$('#$k').alert('$v');
+<!--{/if}-->
+<!--{/loop}-->
+
+<!--{if !empty($_POST) && empty($error)}-->
+	$('#notice').html('设置成功！').show();
+<!--{/if}-->
+
+</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+Disallow: /service/
+Disallow: /user*
+Disallow: /my*
+Disallow: /you*
+Disallow: /admin/
+User-agent: *

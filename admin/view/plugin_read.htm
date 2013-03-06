@@ -1,0 +1,129 @@
+<!--{include header.htm}-->
+
+<style>
+dt {width: 15%;}
+dd {width: 84%;}
+</style>
+<div class="width">
+	<div class="div">
+		<div class="header">
+			$plugin[name] v$plugin[version]
+			
+		</div>
+		<div class="body">
+			<dl>
+				<dt>插件名：</dt>
+				<dd>
+					$plugin[name] v$plugin[version]
+					<!--{if $local && $official && $plugin[have_new_version]}--><a href="http://plugin.xiuno.net/?plugin-upgrade-dir-$dir.htm" target="_blank" title="点击升级"><span class="red small">(NEW! v$official[version])</span></a><!--{/if}-->
+				</dd>
+				
+				<dt>目录：</dt>
+				<dd>$dir</dd>
+				
+				<!--{if !empty($plugin[username])}-->
+				<dt>作者：</dt>
+				<dd>$plugin[username]</dd>
+				<!--{/if}-->
+				
+				<!--{if !empty($plugin[email])}-->
+				<dt>Email：</dt>
+				<dd>$plugin[email]</dd>
+				<!--{/if}-->
+				
+				<dt>brief：</dt>
+				<dd>$plugin[brief]</dd>
+				
+				<dt>插件图标：</dt>
+				<dd>
+					<img src="$plugin[icon_url]" width="54" height="54" />
+				</dd>
+				
+				<dt>截图：</dt>
+				<dd>
+					<table width="100%" border="0">
+						<tr>
+							<td width="25%">
+								<img src="$plugin[img1_url]" width="160" style="cursor: pointer;" onclick="window.open(this.src)" class="border" /><br />
+							</td>
+							<td width="25%">
+								<img src="$plugin[img2_url]" width="160" style="cursor: pointer;" onclick="window.open(this.src)" class="border" /><br />
+							</td>
+							<td width="25%">
+								<img src="$plugin[img3_url]" width="160" style="cursor: pointer;" onclick="window.open(this.src)" class="border" /><br />
+							</td>
+							<td width="25%">
+								<img src="$plugin[img4_url]" width="160" style="cursor: pointer;" onclick="window.open(this.src)" class="border" /><br />
+							</td>
+						</tr>
+					</table
+				</dd>
+				
+			<!--{if $official}-->
+				<dt>价格：</dt>
+				<dd>$official[price]</dd>
+				
+				<dt>官方综合评级：</dt>
+				<dd><img src="view/image/star_$official[stars].gif" width="63" height="11" align="middle" /></dd>
+				
+				<dt>官方功能评级：</dt>
+				<dd><img src="view/image/star_$official[function_stars].gif" width="63" height="11" align="middle" /></dd>
+				
+				<dt>官方安全评级：</dt>
+				<dd><img src="view/image/star_$official[safe_stars].gif" width="63" height="11" align="middle" /></dd>
+				
+				<dt>官方性能评级：</dt>
+				<dd><img src="view/image/star_$official[perfemance_stars].gif" width="63" height="11" align="middle" /></dd>
+				
+				<!--
+				<dt>用户评级均值：</dt>
+				<dd><img src="view/image/star_$official[user_stars].gif" width="63" height="11" align="middle" /></dd>
+				-->
+				
+				<dt>安装次数：</dt>
+				<dd>$official[installs]</dd>
+				
+				<dt>销售次数：</dt>
+				<dd>$official[sells]</dd>
+				
+				<dt>通过官方认证：</dt>
+				<dd><!--{if $official[is_cert]}-->是<!--{else}-->否<!--{/if}--></dd>
+			<!--{else}-->
+				<dt>通过官方认证：</dt>
+				<dd>否</dd>
+			<!--{/if}-->
+			
+			<!--{if $local && $official}-->
+				<dt>MD5 校验：</dt>
+				<dd>
+					<!--{if $plugin[md5_ok]}-->OK<!--{else}-->失败(文件可能被修改)<!--{/if}-->
+				</dd>
+			<!--{/if}-->
+			</dl>	
+		</div>
+	</div>
+	
+	<p style="text-align: center; margin-top: 16px; margin-bottom: 16px;">
+		<!--{if empty($plugin[installed])}-->
+			<input type="button" class="button bigblue" onclick="window.location='?plugin-install-dir-$dir.htm'" value="安装" />
+		<!--{else}-->
+			<!--{if empty($plugin[enable])}-->
+			<input type="button" class="button bigblue" onclick="window.location='?plugin-enable-dir-$dir.htm'" value="启用" />
+			<!--{else}-->
+			<input type="button" class="button bigblue" onclick="window.location='?plugin-disable-dir-$dir.htm'" value="禁用" />
+			<!--{/if}-->
+			<!--{if $plugin[have_setting]}-->
+			<input type="button" class="button bigblue" onclick="window.location='?plugin-setting-dir-$dir.htm'" value="设置" />
+			<!--{/if}-->
+		<!--{/if}-->
+		<input type="button" class="button biggrey" onclick="if(window.confirm('确定删除?'))window.location='?plugin-unstall-dir-$dir.htm'" value="删除" />
+	</p>
+
+</div>
+
+<!--{include footer.htm}-->
+
+<script type="text/javascript">
+</script>
+</body>
+</html>

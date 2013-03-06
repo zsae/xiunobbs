@@ -1,0 +1,111 @@
+<!--{include header.htm}-->
+
+<div class="width">
+	<div class="div" style="width: 700px;">
+		<div class="header">第三方登录 - 完善资料</div>
+		<div class="body">
+			<form action="?denglu-profile-muid-$muid-mediaid-$mediaid-username_url-$username-avatarurl-$avatarurl_url-verify-$verify.htm" method="post" id="form">
+				<input type="hidden" name="FORM_HASH" value="{FORM_HASH}" />
+				<dl>
+					<dt></dt><dd>$username，还需要最后一步完善资料，完成注册。</dd>
+					<dt><label for="username">用户名：</label></dt>
+					<dd><input type="text" name="username" id="username" size="24" value="$username" title="请输入用户名" tabindex="1" style="width: 250px;" />
+						<span id="check_username"></span>
+					</dd>
+					
+					<dt><label for="email">Email：</label></dt>
+					<dd><input type="text" name="email" id="email" value="$email" tabindex="2" style="width: 250px;" />
+						<span id="check_email">用来取回密码</span>
+					</dd>
+					
+					<dt><label for="password">密　码：</label></dt>
+					<dd><input type="password" name="password" id="password" size="24" value="" title="请输入密码" tabindex="3" style="width: 250px;" /></dd>
+					<dt><label for="password2">重复密码：</label></dt>
+					<dd><input type="password" name="password2" id="password2" size="24" value="" title="请输入密码" tabindex="4" style="width: 250px;" /></dd>
+					<!--{hook user_create_submit_before.htm}-->
+					<dt></dt>
+					<dd>
+						<input type="submit" class="button bigblue" id="submit" value="完成" tabindex="5" />
+						<div class="notice" id="notice" style="display: none;"></div>
+					</dd>
+					<!--{hook user_create_submit_after.htm}-->
+				</dl>
+			</form>
+		</div>
+	</div>
+</div>
+
+<!--{include footer.htm}-->
+
+<script type="text/javascript">
+$('#submit').click(function() {
+	$('#form').submit();
+	return false;
+});
+
+function check_username(username) {
+	if(!username) {
+		return false;
+	}
+	$.get('?user-checkname-username-'+username+'-ajax-1.htm', function(s) {
+		var json = json_decode(s);
+		if(error = json_error(json)) {alert(error); return false;}
+		if(json.status <= 0) {
+			$('#check_username').html('<span class="red">'+json.message+'<span>');
+			$('username').focus();
+			return false;
+		} else {
+			$('#check_username').html('<span class="green">'+json.message+'<span>');
+			$('email').focus();
+			return false;
+		}
+	});
+}
+function check_email(email) {
+	if(!email) {
+		return false;
+	}
+	$.get('?user-checkemail-email-'+email+'-ajax-1.htm', function(s) {
+		var json = json_decode(s);
+		if(error = json_error(json)) {alert(error); return false;}
+		if(json.status <= 0) {
+			$('#check_email').html('<span class="red">'+json.message+'<span>');
+			$('email').focus();
+			return false;
+		} else {
+			$('#check_email').html('<span class="green">'+json.message+'<span>');
+			return false;
+		}
+	});
+}
+
+<!--{if empty($_POST)}-->
+check_username($('#username').val());
+check_email($('#email').val());
+<!--{/if}-->
+
+$('#email').blur(function() {
+	check_email($('#email').val());
+});
+$('#username').blur(function() {
+	check_username($('#username').val());
+});
+
+<!--{loop $error $k $v}-->
+<!--{if $v}-->
+$('#$k').alert('$v');
+<!--{/if}-->
+<!--{/loop}-->
+
+<!--{if !empty($_POST)}-->
+<!--{if empty($error)}-->
+	$('#notice').html('完善资料成功！').show();
+	setTimeout(function() {window.location='./';}, 1000);
+<!--{else}-->
+	$('#notice').html('完善资料失败！').show();
+<!--{/if}-->
+<!--{/if}-->
+
+</script>
+</body>
+</html>

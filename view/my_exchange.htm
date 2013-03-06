@@ -1,0 +1,85 @@
+<!--{include header.htm}-->
+
+<link href="view/my.css" type="text/css" rel="stylesheet" />
+
+<div class="width">
+
+	<!--{include my_nav.inc.htm}-->
+
+	<div class="left border shadow bg2">
+		<!--{include my_menu.inc.htm}-->
+	</div>
+	
+	<div class="right">
+		
+		<div class="page tab" style="margin-bottom: 4px;">
+			<!--{include my_pay.inc.htm}-->
+		</div>
+		<div class="bg1 border shadow">
+			<form action="?my-exchange.htm" method="post" id="my_exchange_form">
+				<input type="hidden" name="FORM_HASH" value="{FORM_HASH}" />
+				<div class="body" style="width: 500px;">
+					<dl>
+						<dt><label for="username">用户名：</label></dt>
+						<dd>$_user[username]</dd>
+						
+						<dt><label for="money">金钱：</label></dt>
+						<dd><input type="text" name="money" id="money" size="8" value="$_user[money]" title="请输入金钱数额" /></dd>
+						
+						<dt><label for="golds">转换金币：</label></dt>
+						<dd><input type="text" name="golds" id="golds" size="8" value="$initgolds"/></dd>
+						
+						<dt></dt>
+						<dd>
+							<input type="submit" class="button bigblue" id="my_exchange_submit" value="开始转换" />
+							<input type="button" class="button biggrey" value="取消" onclick="history.back()" />
+							<div class="notice" id="notice" style="display: none;"></div>
+						</dd>
+					</dl>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>	
+
+<!--{include footer.htm}-->
+
+<script type="text/javascript">
+var rate = $rate;
+$('#my_exchange_submit').click(function() {
+	if($_user[money] == 0) {
+		$('#money').alert('您的余额为0，不能转换。', {width: 200});
+	} else if($('#money').val() <=0) {
+		$('#money').alert('请输入金额。');
+	} else {
+		$('#my_exchange_form').submit();
+	}
+});
+
+$('#money').keyup(function() {
+	var v = intval($(this).val());
+	if(v >= $_user[money]) v = $_user[money];
+	$('#money').val(v);
+	$('#golds').val(v * rate);
+});
+
+$('#golds').keyup(function() {
+	var v = intval($(this).val());
+	if(v >= $_user[money] * rate) v = $_user[money] * rate;
+	$('#money').val(v);
+	$('#golds').val(v * rate);
+});
+
+{loop $error $k $v}
+$('#$k').error('$v');
+{/loop}
+
+{if empty($error) && isset($_POST['FORM_HASH'])}
+$('#notice').html('转换成功！').show().delay(3000).hide('slow');
+{/if}
+</script>
+
+$conf[footer_js]
+
+</body>
+</html>

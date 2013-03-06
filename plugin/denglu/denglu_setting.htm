@@ -1,0 +1,64 @@
+<!--{include header.htm}-->
+
+<div class="width">
+	<form action="?plugin-setting-dir-$dir.htm" method="post" id="conf_form">
+		<input type="hidden" name="FORM_HASH" value="{FORM_HASH}" />
+		<div class="div" style="width: 700px;">
+			<div class="header">灯鹭-第三方登录接口设置</div>
+			<div class="body">
+				<dl>
+				
+					<dt><label for="denglu_appid">灯鹭APPID：</label></dt>
+					<dd>$input[denglu_appid]</dd>
+					
+					<dt><label for="denglu_appkey">灯鹭APPKEY：</label></dt>
+					<dd>$input[denglu_appkey]</dd>
+					
+					<dt><label for="denglu_appkey">META：</label></dt>
+					<dd>$input[denglu_meta] <span class="grey">以腾讯为首的部分平台需要站点加入 meta 标签作为验证。</span></dd>
+					
+					<!--{loop $sites $k $v}-->
+					<dt><label for="host">开启<b>{$v}</b>登录：</label></dt>
+					<dd>$input[$k]</dd>
+					<!--{/loop}-->
+					
+					<dt></dt>
+					<dd>
+						<input type="submit" class="button bigblue" id="conf_submit" value="确认设置" />
+						<input type="button" class="button biggrey" value="返回" onclick="window.location='?plugin-list.htm'" />
+						<div id="notice" class="notice" style="display: none;"></div>
+					</dd>
+					
+					<dt></dt>
+					<dd>
+						<p>如何设置灯鹭：<a href="http://www.xiuno.com/thread-index-fid-35-tid-277.htm" target="_blank">查看流程</a></p>
+					</dd>
+				</dl>
+			</div>
+		</div>
+	</form>
+</div>
+
+<!--{include footer.htm}-->
+
+<script type="text/javascript">
+$('#conf_submit').click(function() {
+	$('#conf_form').submit();
+	return false;
+});
+
+<!--{loop $error $k $v}-->
+$('#$k').alert('$v');
+<!--{/loop}-->
+
+<!--{if !empty($_POST)}-->
+<!--{if empty($error)}-->
+	$('#notice').html('设置成功！').show();
+<!--{else}-->
+	$('#notice').html('设置失败！').show();
+<!--{/if}-->
+<!--{/if}-->
+
+</script>
+</body>
+</html>

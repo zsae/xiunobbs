@@ -1,0 +1,1 @@
+不依赖 uc_client, 根据协议自行编写了简单的 ucenter_simple_client.php

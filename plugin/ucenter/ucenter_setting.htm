@@ -1,0 +1,64 @@
+<!--{include header.htm}-->
+
+<div class="width">
+	<form action="?plugin-setting-dir-$dir.htm" method="post" id="conf_form">
+		<input type="hidden" name="FORM_HASH" value="{FORM_HASH}" />
+		<div class="div" style="width: 700px;">
+			<div class="header">UCenter</div>
+			<div class="body">
+				<dl>
+					<dt><label for="uc_url">UCenter URL：</label></dt>
+					<dd>$input[uc_url] <span class="grey">如：http://www.domain.com/dz7/uc_server/</span></dd>
+					
+					<dt><label for="uc_appid">APPID：</label></dt>
+					<dd>$input[uc_appid]</dd>
+					
+					<dt><label for="uc_appkey">APPKEY：</label></dt>
+					<dd>$input[uc_appkey] <span class="grey">通信密钥，Ucenter 应用详情中可以获得</span></dd>
+					
+					<dt><label for="uc_charset">字符集：</label></dt>
+					<dd>$input[uc_charset]<span class="grey">一般为GBK或者UTF-8，必须正确。</span></dd>
+					
+					<dt></dt>
+					<dd>
+						<input type="submit" class="button bigblue" id="conf_submit" value="确认设置" />
+						<input type="button" class="button biggrey" value="返回" onclick="window.location='?plugin-list.htm'" />
+						<div id="notice" class="notice" style="display: none;"></div>
+					</dd>
+					
+					<dt></dt>
+					<dd>
+						<p>登录 Ucenter, 获取 APPID, APPKEY(通信密钥)。<a href="http://www.xiuno.com/thread-index-fid-35-tid-270.htm" target="_blank">查看帮助文章</a></p>
+						<p>设置 UCenter 以后登录将从 UCenter 校验账户密码。</p>
+						<p>我们并不建议您使用 UCener，请谨慎开启 UCenter。</p>
+					</dd>
+				</dl>
+			</div>
+		</div>
+	</form>
+</div>
+
+<!--{include footer.htm}-->
+
+<script type="text/javascript">
+$('#conf_submit').click(function() {
+	$('#notice').html('正在提交...').show();
+	$('#conf_form').submit();
+	return false;
+});
+
+<!--{loop $error $k $v}-->
+$('#$k').alert('$v');
+<!--{/loop}-->
+
+<!--{if !empty($_POST)}-->
+<!--{if empty($error)}-->
+	$('#notice').html('设置成功！').show();
+<!--{else}-->
+	$('#notice').html('设置失败！').show().delay(3000).html('').hide();
+<!--{/if}-->
+<!--{/if}-->
+
+</script>
+</body>
+</html>

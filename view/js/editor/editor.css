@@ -1,0 +1,90 @@
+.editor {
+	background: #F6F6F6; border:solid 1px #dbdbdb;
+}
+.editor .toolbar {
+	height: 25px; overflow: hidden; _zoom: 1; margin-bottom: 0px; border-bottom: 1px solid #dbdbdb; padding: 2px; padding-bottom: 0px;
+}
+.editor .toolbar a {
+	width: 22px; height: 22px; float: left; display: block; background: url(bg-default.gif); margin-right: 2px;
+}
+.editor .toolbar a:hover {
+	background-image: url(bg-hover.gif);
+}
+.editor .toolbar a.checked {
+	background-image: url(bg-checked.gif);
+}
+.editor .toolbar a.disabled{
+	background-image: url(bg-disabled.gif);
+}
+
+.editor a.undo{background-position: -537px 0px;}
+.editor a.bold{background-position: 0px 0px;}
+.editor a.italic{background-position: -30px 0px;}
+.editor a.underline{background-position: -58px 0px;}
+.editor a.fontsize{background-position: -86px 0px; width: 73px; height: 22px; line-height: 20px; text-indent: 4px; text-decoration: none;}
+.editor a.fontcolor{background-position: -164px 0px; background-color: #000;}
+.editor a.link{background-position: -194px 0px;}
+.editor a.unlink{background-position: -840px 0px;}
+.editor a.justifyleft{background-position: -674px 0px;}
+.editor a.justifycenter{background-position: -702px 0px;}
+.editor a.justifyright{background-position: -730px 0px;}
+.editor a.insertcode{background-position: -810px 0px;}
+.editor a.marklist{background-position: -228px 0px;}
+.editor a.numberlist{background-position: -256px 0px;}
+
+.editor a.image{background-position: -290px  0px; width: 49px; overflow: hidden;}
+.editor a.imageloading{background:none; width: 49px; display: none;}
+.editor a.imageloading:hover{background:none;}
+.editor span.imageprocess {background:#94EB8D; border:1px solid #097C00; float:right; display: block; height:8px; width:26px; margin-top: 6px;}
+.editor span.imageprocess_body {width: 1px; height:8px; background: #097C00; display: block;}
+
+.editor a.file{background-position: -756px  0px; width: 49px;}
+
+.editor a.video{background-position: -346px 0px; width: 49px;}
+.editor a.face{background-position: -403px 0px;}
+.editor a.justifyfull{background-position: -460px 0px; width: 46px;}
+.editor a.sep{width: 1px; background: #c8c8c8;}
+
+.editor .iframe {overflow: hidden;}
+.editor .iframe iframe {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 0px;
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.editor .footer {overflow: hidden; height: 18px;}
+
+.editor .menu .face {
+	border: 1px solid #DDDDDD;
+	background: #FFFFFF;
+	padding: 8px;
+	width: 300px;
+	height: 150px;
+}
+.editor .menu .face a {
+	width: 20px;
+	height: 20px;
+	padding: 3px;
+	margin: 2px;
+	border: 1px solid #FFFFFF;
+	float: left;
+}
+.editor .menu .face a:hover {
+	border: 1px solid #ddd;
+	background: #eee;
+}
+
+.editor .menu .fontsize {width: 260px; height: auto; overflow: visible; background: #FFFFFF; border: 1px solid #DDDDDD;}
+.editor .menu .fontsize a{display: block; width: 254px; line-height: 1.5; margin: auto; border: 1px solid #DDD; margin-top: 4px; text-indent: 4px; text-decoration: none;}
+.editor .menu .fontsize a:hover{background: #1E70CF; border: 1px solid #214773; color: #FFFFFF;}
+
+.editor .menu .fontcolor {width:184px; height: 182px; background: #FFFFFF; border: 1px solid #DDDDDD;}
+.editor .menu .fontcolor a{width: 22px; height: 14px; border: 1px solid #000000; margin-left: 2px; _margin-left: 1px; margin-top: 2px; float: left;}
+
+.editor .menu .link {border: 1px solid #BBB; background: #FFFFFF; padding: 14px;}
+.editor .menu .insertcode {border: 1px solid #BBB; background: #FFFFFF; padding: 14px;}
+.editor .menu .insertcode textarea {width: 400px; height: 200px;}
+.editor .menu .video {border: 1px solid #BBB; background: #FFFFFF; padding: 14px;}

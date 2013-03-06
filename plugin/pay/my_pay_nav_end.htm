@@ -1,0 +1,4 @@
+<!--{if $conf[pay_on]}--><a href="?my-pay.htm" $_checked[pay]>我的支付</a><!--{/if}-->
+<!--{if $conf[pay_on]}--><a href="?my-exchange.htm" $_checked[exchange]>兑换金币</a><!--{/if}-->
+
+金币: <span class="bold">$_user[golds] 枚</span><!--{if $conf[pay_on]}-->，金钱: <span class="bold">$_user[money] 元<!--{/if}--></span>。

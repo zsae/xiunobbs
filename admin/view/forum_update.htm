@@ -1,0 +1,348 @@
+<!--{include header.htm}-->
+<style type="text/css">
+dt{width: 15%;}
+dd{width: 84%;}
+.drag_item {border: 1px solid #FFFFFF; display: inline-block;}
+.red_border1 {border: 1px solid #FF3333;}
+.red_border2 {border: 1px solid #BB0000;}
+.green_border {border: 1px solid #00BB00;}
+.icon-drag {cursor: move;}
+.opacity {filter: alpha(opacity:50); opacity: 0.50;}
+</style>
+<div class="width">
+	<form action="?forum-update-fid-$forum[fid].htm" method="post" id="forum_update_form">
+		<input type="hidden" name="FORM_HASH" value="{FORM_HASH}" />
+		
+		<div class="div" style="width: 700px;">
+			<div class="header">编辑板块 - $forum[name]</div>
+			<div class="body">
+				<dl class="dl28">
+					
+					<dt><label for="name">名称：</label></dt>
+					<dd><input type="text" name="name" id="name" value="$forum[name]" style="width: 150px" /> <a href="../?forum-index-fid-$forum[fid].htm" target="_blank">点击访问</a></dd>
+					
+					<dt><label for="status">是否显示：</label></dt>
+					<dd>$input[status] <span class="grey">隐藏后，仅管理员能通过上面连接进行访问。</span></dd>
+					
+					<dt><label for="rank">排序：</label></dt>
+					<dd><input type="text" name="rank" id="rank" value="$forum[rank]" style="width: 30px" /> <span class="grey">0-255, 正序</span></dd>
+					
+					<div style="clear: both; overflow: hidden;">
+						<dt><label for="brief">版块简介：</label></dt>
+						<dd><textarea name="brief" id="brief" style="width: 400px; height: 40px; font-size: 12px;">$forum[brief]</textarea></dd>
+					</div>
+					<div style="clear: both; overflow: hidden;">
+						<dt>
+							<label for="icon">版块图标：</label>
+							<div><span class="forumicon_big" id="forumicon_big" style="float: right; {if $forum[forumicon_big]}background: url($forum[forumicon_big]);{/if}"></span></div>
+						</dt>
+						<dd>
+							<input type="button" class="button smallblue" id="forumicon_big_button" value="上传图片" />
+						</dd>
+					</div>
+					<!--{hook forum_update_forumicon_after.htm}-->
+					
+					<div style="clear: both; overflow: hidden;">
+						<dt><label for="orderby">主题排序方式：</label></dt>
+						<dd>
+							$input[orderby]
+							<span class="grey">根据发帖时间排序比较耗费资源。</span>
+						</dd>
+					</div>
+					
+					<dt><label for="recentthreads">版主：</label></dt>
+					<dd>
+						<input type="text" name="modnames" id="modnames" value="$forum[modnames]" style="width: 200px" />
+						<span class="grey">最多 6 个，用户名空格隔开；</span>
+					</dd>
+					
+					<dt><label for="seo_title">SEO 标题：</label></dt>
+					<dd><input type="text" name="seo_title" id="seo_title" value="$forum[seo_title]" style="width: 200px" /> <span class="grey">搜索引擎优化</span></dd>
+					
+					<dt><label for="seo_keywords">SEO 关键词：</label></dt>
+					<dd><input type="text" name="seo_keywords" id="seo_title" value="$forum[seo_keywords]" style="width: 200px" /> <span class="grey">搜索引擎优化，可以填写多个关键词</span></dd>
+					
+					<!--{hook forum_update_threadtype_before.htm}-->
+					
+					<dt><label for="accesson">开启主题分类：</label></dt>
+					<dd class="grey">
+						<!--{if $forum[typelist]}-->
+							<input type="checkbox" name="typeon" id="typeon" value="1" checked="checked"/>
+						<!--{else}-->
+							<input type="checkbox" name="typeon" id="typeon" value="1" />
+						<!--{/if}-->
+					</dd>
+					<div id="typeon_div" {if empty($forum[typelist])} style="display: none;" {/if}>
+						<!--{loop $forum[typelist] $typecateid $typelist}-->
+						<div class="typecate" typecateid="$typecateid">
+							<table>
+								<tr>
+									<td width="30" align="center">启用</td>
+									<td width="30" align="center">顺序</td>
+									<td width="60">大分类名称</td>
+									<td>小分类名称</td>
+								</tr>
+								<tr>
+									<td valign="top" align="center"><input type="checkbox" name="typecateenable[$typecateid]" value="1" {if $forum[typecatelist][$typecateid][enable]}checked="checked"{/if} /></td>
+									<td valign="top" align="center"><input type="text" name="typecaterank[$typecateid]" value="$forum[typecatelist][$typecateid][rank]" size="4" /></td>
+									<td valign="top"><input type="text" name="typecatename[$typecateid]" value="$forum[typecatelist][$typecateid][catename]" size="4" /></td>
+									<td unselectable="on" class="drag_parent" typecateid="$typecateid">
+										<!--{loop $typelist $type}--><span class="border drag_item" typeid="$type[typeid]"><input type="text" name="typename[{$type[typeid]}]" value="$type[typename]" size="4" /></span><!--{/loop}-->
+									</td>
+								</tr>
+							</table>
+						</div>
+						<!--{/loop}-->
+					</div>
+					
+					<dt><label for="accesson">开启权限限制：</label></dt>
+					<dd>
+						<input type="checkbox" name="accesson" id="accesson" value="1" {if $forum[accesson]}checked="checked"{/if} />
+						<span class="grey">不利于缓存，不建议设置。</span>
+						<div class="list" id="accesstable" style="width: 580px; {if !$forum[accesson]}display: none;{/if}">
+							<table class="table">
+								<tr class="header">
+									<td width="90">用户组</td>
+									<td width="90"><input type="checkbox" id="checkread" />访问</td>
+									<td width="90"><input type="checkbox" id="checkpost" />回帖</td>
+									<td width="90"><input type="checkbox" id="checkreply" />盖楼</td>
+									<td width="90"><input type="checkbox" id="checkthread" />发主题</td>
+									<td width="90"><input type="checkbox" id="checkattach" />上传</td>
+									<td width="90"><input type="checkbox" id="checkdown" />下载</td>
+								</tr>
+								<!--{loop $grouplist $group}-->
+								
+								<!--{if $group[groupid] == 11}-->
+								<tr>
+									<td colspan="7">&nbsp;</td>
+								</tr>
+								<!--{/if}-->
+								
+								<tr align="center">
+									<td align="right">$group[name] <input type="hidden" name="groupids[]" value="$group[groupid]"></td>
+									<td><input type="checkbox" name="allowread[{$group[groupid]}]" value="1" {if isset($accesslist[$group['groupid']]) && $accesslist[$group['groupid']]['allowread']}checked="checked"{/if} /></td>
+									<td><input type="checkbox" name="allowpost[{$group[groupid]}]" value="1" {if isset($accesslist[$group['groupid']]) && $accesslist[$group['groupid']]['allowpost']}checked="checked"{/if} /></td>
+									<td><input type="checkbox" name="allowreply[{$group[groupid]}]" value="1" {if isset($accesslist[$group['groupid']]) && $accesslist[$group['groupid']]['allowreply']}checked="checked"{/if} /></td>
+									<td><input type="checkbox" name="allowthread[{$group[groupid]}]" value="1" {if isset($accesslist[$group['groupid']]) && $accesslist[$group['groupid']]['allowthread']}checked="checked"{/if} /></td>
+									<td><input type="checkbox" name="allowattach[{$group[groupid]}]" value="1" {if isset($accesslist[$group['groupid']]) && $accesslist[$group['groupid']]['allowattach']}checked="checked"{/if} /></td>
+									<td><input type="checkbox" name="allowdown[{$group[groupid]}]" value="1" {if isset($accesslist[$group['groupid']]) && $accesslist[$group['groupid']]['allowdown']}checked="checked"{/if} /></td>
+								</tr>
+								
+								<!--{if $group[groupid] == 0}-->
+								<tr>
+									<td colspan="7">&nbsp;</td>
+								</tr>
+								<!--{/if}-->
+								<!--{/loop}-->
+							</table>
+						</div>
+					</dd>
+					
+					<!--{hook forum_update_submit_before.htm}-->
+					
+					<dt></dt>
+					<dd>
+						<input type="submit" class="button bigblue" id="forum_update_submit" value="编辑板块" />
+						<input type="button" class="button biggrey" value="返回" onclick="history.back()" />
+						<div class="notice" id="notice" style="display: none;"></div>
+					</dd>
+				</dl>
+			</div>
+		</div>
+	</form>
+</div>
+
+
+<!--{include footer.htm}-->
+
+<script type="text/javascript" src="../view/js/clipimg/swfupload.js"></script>
+<script type="text/javascript" src="../view/js/clipimg/clipimg.js"></script>
+<script type="text/javascript" src="../view/js/drag.js"></script>
+<script type="text/javascript">
+$('#forumicon_big').clipimg({
+	postparams: null, 
+	buttonid: 'forumicon_big_button', 
+	uploadurl: '?forum-uploadicon-fid-$fid-$conf[cookie_pre]sid-$_sid-$conf[cookie_pre]auth-$_auth-$conf[cookie_pre]admin_auth-$admin_auth-ajax-1.htm',
+	clipurl: '?forum-clipicon-fid-$fid-ajax-1.htm',
+	baseurl: 'view/js/clipimg/',
+	success_recall: function(imgurl, pos) {
+		$('#notice').html('修改成功！').show().delay(3000).fadeOut('fast');
+		//$('#avatar_menu').css('background-image', $('#avatar').css('background-image').replace(/_big/ig, ''));
+	}
+});
+</script>
+
+<script type="text/javascript">
+$('#forum_update_submit').click(function() {
+	$('#forum_update_form').submit();
+	return false;
+});
+
+$('#accesson').click(function() {
+	if($(this).attr('checked')) {
+		$('#accesstable').show();
+	} else {
+		$('#accesstable').hide();
+	}
+});
+
+$('#checkread').click(function() {
+	$('#accesstable input[name^=allowread]').attr('checked', $(this).attr('checked'));
+});
+$('#checkpost').click(function() {
+	$('#accesstable input[name^=allowpost]').attr('checked', $(this).attr('checked'));
+});
+$('#checkreply').click(function() {
+	$('#accesstable input[name^=allowreply]').attr('checked', $(this).attr('checked'));
+});
+$('#checkthread').click(function() {
+	$('#accesstable input[name^=allowthread]').attr('checked', $(this).attr('checked'));
+});
+$('#checkattach').click(function() {
+	$('#accesstable input[name^=allowattach]').attr('checked', $(this).attr('checked'));
+});
+$('#checkdown').click(function() {
+	$('#accesstable input[name^=allowdown]').attr('checked', $(this).attr('checked'));
+});
+
+<!--{loop $error $k $v}-->
+<!--{if $v}-->
+	$('#$k').alert('$v');
+<!--{/if}-->
+<!--{/loop}-->
+
+<!--{if !empty($_POST)}-->
+<!--{if empty($error)}-->
+	$('#notice').html('编辑成功！').show();
+<!--{else}-->
+	$('#notice').html('编辑失败！').show();
+<!--{/if}-->
+<!--{/if}-->
+
+// 主题分类
+$('p.typeid').each(function() {
+	var _this = this;
+	var typeid = $(this).attr('typeid');
+	$('a.delete', this).click(function() {
+		if(window.confirm('您确定删除该主题分类吗？')) {
+			$.get('?forum-deletetype-typeid-'+typeid+'-ajax-1.htm', function(s) {
+				var json = json_decode(s);
+				if(error = json_error(json)) {alert(error); return false;}
+				if(json.status <= 0) {alert(json.message); return false;}
+				$(_this).remove();
+			});
+		}
+	});
+});
+$('#addtype').click(function() {
+	var newnode = $('p.typeid:last').clone().show();
+	$('input[name^=typename]', newnode).val('');
+	$('input[name^=rank]', newnode).val('0');
+	$('p.typeid:last').before(newnode);
+	return false;
+});
+
+$.fn.mouseout_recall = function(timeout, obj, recall) {
+	if(!timeout) { return this;}
+	var _this = this; // 当前对象, 标签
+	// 如果有 obj, 一般为A标签，则鼠标放在A标签上时不启动定时器。
+	if(obj) {
+		$(obj).hover (
+			function() { if(_this.htime) { clearTimeout(_this.htime); _this.htime = false; } return false; },
+			function() { 
+				if(_this.htime) { clearTimeout(_this.htime); _this.htime = false; }
+				if(!_this.htime) { _this.htime = setTimeout(function() { recall(); _this.htime = false;}, timeout); window.last_timeout = _this.htime; return false;}
+			}
+		);
+	// 否则直接启动定时器
+	} else {
+		_this.htime = setTimeout(function() { recall(); _this.htime = false;}, timeout);
+		window.last_timeout = _this.htime;
+	}
+	$(this).hover (
+		function() { if(_this.htime) { clearTimeout(_this.htime); _this.htime = false; } return false; },
+		function() { 
+			if(_this.htime) { clearTimeout(_this.htime); _this.htime = false; }
+			if(!_this.htime) { _this.htime = setTimeout(function() { recall(); _this.htime = false; }, timeout); window.last_timeout = _this.htime; return false;}
+		}
+	);
+	return this;
+};
+
+// 用法:
+$(function() {
+	$('td.drag_parent').drag(function(curr) {
+		var jprev = $(curr).prev();
+		var jnext = $(curr).next();
+		
+		//alert($(curr).parent().attr('typecateid'));
+		
+		var nextid = jnext.attr('typeid');
+		var typeid = $(curr).attr('typeid');
+		var typecateid = $(curr).parent().attr('typecateid');
+		
+		// 根据
+		$.get('?forum-updatetyperank-fid-$fid-typeid-'+typeid+'-nextid-'+nextid+'-typecateid-'+typecateid+'-ajax-1.htm', function(s) {
+			var json = json_decode(s);
+			if(error = json_error(json)) {alert(error); return false;}
+			if(json.status <= 0) {alert(json.message); return false;}
+		});
+	});
+
+	/*
+	$.drag(, function(curr){
+		
+	});
+	$.drag('#typecate_2 span.drag_item', function(curr){
+		var jprev = $(curr).prev();
+		var jnext = $(curr).next();
+		
+		var nextid = jnext.attr('nextid');
+		var typeid = $(curr).attr('typeid');
+		
+		alert(typeid);
+		
+		// 根据
+		$.get('?forum-updatetyperank-fid-$fid-typeid-'+typeid+'-nextid-'+nextid+'-ajax-1.htm', function(s) {
+			alert(s);
+		});
+	});*/
+});
+
+/*
+$('typeon').click(function() {
+	$('#typeon_div').toggle();
+});
+*/
+
+// 用法:
+/*$.drag('div.bigcate', function(curr){
+	var jprev = $(curr).prev();
+	var jnext = $(curr).next();
+});*/
+
+
+
+{if $forum[typelist]}
+$('#typeon').click(function() {
+	if(!$(this).attr('checked')) {
+		if(window.confirm('关闭主题分类，系统将自动删除已经设置的主题分类名称。')) {
+			$('#typeon_div').hide();
+		} else {
+			return false;
+		}
+	} else {
+		$('#typeon_div').show();
+	}
+	return true;
+});
+{else}
+$('#typeon').click(function() {
+	$('#forum_update_form').submit();
+});
+{/if}
+
+</script>
+
+</body>
+</html>

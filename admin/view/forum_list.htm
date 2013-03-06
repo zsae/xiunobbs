@@ -1,0 +1,100 @@
+<!--{include header.htm}-->
+
+<style type="text/css">
+h3 {height: 30px;}
+.forumlist {padding-left: 0px; margin-left: 32px;}
+.forumlist li{
+	height: 30px; list-style: none; padding-left: 0px; margin-left: 0px;
+}
+</style>
+<div class="width">
+	<form action="?forum-list.htm" method="post" id="forumform">
+		<input type="hidden" name="FORM_HASH" value="{FORM_HASH}" />
+		<div class="div" style="width: 780px;">
+			<div class="header">管理板块 ( 请控制板块数在300以内，否则可能会有性能问题）</div>
+			<div class="body">
+				
+			<table width="100%" cellspacing="0" cellpadding="0">
+				<tr>
+					<td width="25%" class="bg2" valign="top">
+						<ul>
+							<li>支持一级分类</li>
+							<li>需要更多分类，请添加版块后，编辑主题分类</li>
+						</ul>
+					</td>
+					<td width="75%" valign="top" class="bg1">
+						<ul class="forumlist">
+						<!--{loop $forumlist $forum}-->
+							<li>
+								<input type="text" name="name[{$forum[fid]}]" value="$forum[name]" size="16" />
+								<span class="small grey">顺序:</span><input type="text" name="rank[{$forum[fid]}]" value="$forum[rank]" style="width: 30px" title="数字顺序，1-255，越大越靠前" />
+								<input type="button" class="button smallblue" value="编辑" onclick="window.location='?forum-update-fid-$forum[fid].htm'" /> 
+								<input type="button" class="button smallgrey" value="删除" onclick="if(window.confirm('您确定删除 $forum[name] 吗？')) window.location='?forum-delete-fid-$forum[fid].htm'" />
+								<!--{hook admin_forum_list_forum_end.htm}-->
+								<!--{if $forum['status'] == 0}-->(<a href="../?forum-index-fid-$forum[fid].htm" target="_blank" class="grey">已隐藏</a>)<!--{/if}-->
+							</li>
+						<!--{/loop}-->
+							<li id="forumaddlink_$forum[fid]" style="clear: both;">
+								<a href="javascript: void(0)" onclick="addforum($forum[fid])" class="red" style="_margin-left: 32px;">[+]添加板块：</a>
+							</li>
+						</ul>
+						<div class="box" style="text-align: center; margin-top: 4px;">
+							<input type="submit" value=" 保存修改 " class="button bigblue" id="mdeleteforum" />
+							<div id="notice" class="notice" style="display: none;"></div>
+						</div>
+					</td>
+				</tr>
+			</table>
+			</div>
+		</div>
+	</form>
+	
+	<!-- 需要克隆的节点放在表单外面，防止被提交。 -->
+	<li id="forumadddiv" style="display: none;">
+		<input type="text" name="newname[]" size="16" value="板块名称" />
+		<span class="small grey">顺序:</span><input type="text" name="newrank[]" value="0" style="width: 30px" title="数字顺序，0-255，越大越靠前" />
+		<!--{hook admin_forum_list_cate_clone_end.htm}-->
+	</li>
+	
+	<h3 id="cateadddiv" style="display: none;">
+		<input type="text" name="newname[]" value="分类名称" size="16" style="font-size: 14px; font-weight: 800" />
+		<span class="small grey">顺序:</span><input type="text" name="newrank[{$cate[fid]}]" value="0" style="width: 30px" title="数字顺序，0-255，越大越靠前" /> 
+		<!--{hook admin_forum_list_forum_clone_end.htm}-->
+	</h3>
+	
+</div>
+<!--{include footer.htm}-->
+
+<script type="text/javascript">
+
+function addforum(fid) {
+	var jdiv = $('#forumadddiv').clone();
+	jdiv.insertBefore('#forumaddlink_' + fid).show();
+	return false;
+}
+
+$('#mdeleteforum').click(function() {
+	$('#forumform').submit();
+	return false;
+});
+
+<!--{loop $error $k $v}-->
+<!--{if $v}-->
+	$('#$k').alert('$v');
+<!--{/if}-->
+<!--{/loop}-->
+
+<!--{if !empty($_POST)}-->
+<!--{if empty($error)}-->
+	$('#notice').html('保存成功！').show();
+<!--{else}-->
+	$('#notice').html('保存失败！').show();
+<!--{/if}-->
+<!--{/if}-->
+
+</script>
+
+<!--{hook admin_forum_list_end.htm}-->
+
+</body>
+</html>

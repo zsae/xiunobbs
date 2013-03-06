@@ -1,0 +1,110 @@
+<!--{include header.htm}-->
+
+<!--{hook index_index_start.htm}-->
+
+<div class="width">
+
+	<!--{hook index_index_nav_before.htm}-->
+	
+	<table id="nav" cellpadding="0" cellspacing="0" style="margin-bottom: 4px;">
+		<tr>
+			<td class="left"></td>
+			<td class="center">
+				<a class="icon icon-home" href="./"></a>
+				<span class="sep"></span>
+				<span>首页</span>
+				<!--{hook index_index_nav_center_after.htm}-->
+			</td>
+			<td class="right"></td>
+		</tr>
+	</table>
+	
+	<!--{hook index_index_nav_after.htm}-->
+	
+	<div style="margin-top: 8px; line-height: 12px; margin-bottom: 2px;" class="small">
+		<span class="icon icon-stat"></span> 
+		<span class="grey">帖子:</span> $conf[posts] (<span class="blue bold" title="今日帖子">$conf[todayposts]</span>) &nbsp;
+		<span class="grey">回复:</span> $conf[replies] (<span class="blue bold" title="今日回复">$conf[todayreplies]</span>) &nbsp;
+		<span class="grey">会员:</span> $conf[users] (<span class="blue bold">$conf[todayusers]</span>)
+		<!--{if $conf[newusername]}-->
+		<span class="grey">新会员:</span> <a href="?you-profile-uid-$conf[newuid]-ajax-1.htm" target="_blank" class="ajaxdialog" ajaxdialog="{position: 6, modal: false}" rel="nofollow">$conf[newusername]</a>
+		<!--{/if}-->
+		<!--{hook index_index_stat_after.htm}-->
+	</div>
+	
+	
+	<div class="div">
+		<div class="header" style="font-weight: normal;">
+			<table width="100%" cellspacing="0" cellpadding="0" style="word-break: break-all" >
+				<tr align="left">
+					<td valign="middle" class="subject">标题</td>
+					<td width="80" class="username">发帖</td>
+					<td width="80" class="views">回复/查看</td>
+					<td width="80" class="last">最后回复</td>
+				</tr>
+			</table>
+		</div>
+		<div class="body threadlist" id="threadlist">
+		
+			<!--{hook forum_index_threadlist_before.htm}-->
+		
+			<!--{loop $toplist $thread}-->
+				<!--{require forum_index.inc.htm}-->
+			<!--{/loop}-->
+		
+			<div class="bg2" style="line-height: 24px; height: 24px;">
+				<div style="width: 56px; float: left;" class="grey">普通主题</div>
+				<!--{hook forum_index_orderby_before.htm}-->
+				<div id="nav_orderby" style="width: 40px; height: 24px; line-height: 24px; float: left;">
+					<a href="?forum-index-fid-$fid-page-$page.htm" class="icon icon-orderby-0  $_checked[orderby][0]" title="顶贴时间排序" rel="nofollow" style="vertical-align: top; margin-top: 4px;"></a><a href="?forum-index-fid-$fid-page-$page.htm" class="icon icon-orderby-1  $_checked[orderby][1]" title="发帖时间排序" rel="nofollow" style="vertical-align: top; margin-top: 4px; margin-left: 4px;"></a>
+				</div>
+				<!--{hook forum_index_orderby_after.htm}-->
+			</div>
+			<hr />
+			<!--{loop $threadlist $thread}-->
+				<!--{require forum_index.inc.htm}-->
+			<!--{/loop}-->
+			
+			<!--{hook forum_index_threadlist_after.htm}-->
+	
+		</div>
+		<div class="footer"></div>
+	</div>
+	
+	<div class="div shadow">
+		<div class="header">在线用户 <span class="clear"> (<b>$conf[onlines]</b> 人)</span></div>
+		<div class="body grey" id="onlinelist">
+			<!--{if !$onlinelist}-->无<!--{/if}-->
+			<!--{loop $onlinelist $online}-->
+			<a href="?you-profile-uid-$online[uid]-ajax-1.htm" target="_blank" class="ajaxdialog" ajaxdialog="{position: 6, modal: false}" onclick="return false;" rel="nofollow"><span class="icon-group icon-group-$online[groupid]" style="width: 12px;"></span>$online[username]</a>
+			<!--{/loop}-->
+			<!--{if count($onlinelist) > 500}--><a href="?online-list-ajax-1.htm" class="ajaxdialog" target="_blank" rel="nofollow">查看全部</a><!--{/if}-->
+			&nbsp;
+		</div>
+		<div class="footer"></div>
+	</div>
+	
+	<!--{hook index_index_online_before.htm}-->
+	
+</div>
+
+<!--{hook index_index_footer_before.htm}-->
+
+<!--{include footer.htm}-->
+
+<script type="text/javascript">
+$('#friendlink_img img').hover(function() {$(this).removeClass('xgrey')}, function() {$(this).addClass('xgrey')});
+$('div.div div.body').find('div.hr:last').hide();// 隐藏最后一个 hr
+
+// 鼠标背景变色
+$('table.forum').bind('mouseover', function() {$('td:gt(0)', this).removeClass('bg1').addClass('bg2');});
+$('table.forum').bind('mouseout', function() {$('td:gt(0)', this).removeClass('bg2').addClass('bg1');});
+
+</script>
+
+<!--{hook index_index_end.htm}-->
+
+$conf[footer_js]
+
+</body>
+</html>

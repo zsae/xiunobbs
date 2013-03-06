@@ -1,0 +1,38 @@
+div.tree ul, div.tree li{margin: 0px; padding: 0px; list-style: none; line-height: 16px; overflow: hidden; }
+
+div.tree li, div.tree a {white-space: nowrap;}
+div.tree span.ticon {width: 16px; height: 16px; display: inline-block; overflow: hidden; vertical-align: bottom;  pointer: normal; background: none;} /* 可以用于<a> <span> */
+div.tree span.book {background: url(book.gif); cursor: pointer; }
+div.tree li.isopen >span.book {background-position: 0px -16px;}
+div.tree span.plus {background: url(plus.gif); cursor: pointer; }
+div.tree li.islast >span.plus {background: url(plus_last.gif);}
+div.tree li.isopen >span.plus {background-position: 0px -16px;}
+
+div.tree span.doc {background: url(doc.gif);}
+div.tree span.line {background: url(line.gif);}
+div.tree span.line_middle {background: url(line_middle.gif);}
+div.tree span.line_top {background: url(line_top.gif);}
+div.tree span.line_bottom {background: url(line_bottom.gif);}
+
+div.tree span.text {margin-left: 4px; cursor: pointer;}
+div.tree span.space {}
+div.tree span.checked {background: #800080; color: #fff;}
+
+div.tree span.loading {background: url(loading.gif);}
+div.tree span.checkbox {background: url(checkbox.gif); width: 13px; height: 13px; margin-left: 4px;}
+div.tree li.isopen >span.checkbox {background-position: 0px -13px;}
+
+div.tree span.add {background: url(add.png); margin-left: 4px; cursor: pointer; }
+div.tree span.delete {background: url(delete.png); margin-left: 2px; cursor: pointer; }
+div.tree span.top {background: url(top.gif); margin-left: 2px; cursor: pointer; }
+
+div.tree input {height: 12px; font-size: 12px;}
+
+/*
+div.tree span.add {background: url(add.png); margin-left: 4px; cursor: pointer; }
+div.tree span.delete {background: url(delete.png); margin-left: 2px; cursor: pointer; }
+div.tree span.edit {background: url(edit.png); cursor: pointer; }
+div.tree input {width: 94px; height: 14px; border: 1px solid #888; overflow: hidden; margin: 0px; padding: 0px; font-size: 12px;}
+div.tree span.loading {background: url(loading.gif);}
+div.tree span.checked a{color: #fff;}
+*/

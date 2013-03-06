@@ -1,0 +1,7 @@
+
+// Ucenter 同步登录代码
+if(json.sync_url && json.sync_url.length > 0) {
+	for(var i=0; i<json.sync_url.length; i++) {
+		$.xload(json.sync_url[i]);
+	}
+}
