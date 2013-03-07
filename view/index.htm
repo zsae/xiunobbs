@@ -24,11 +24,20 @@
 	
 	<!--{hook index_index_nav_after.htm}-->
 	
-	<div style="margin-top: 8px; line-height: 12px; margin-bottom: 2px;" class="small">
+	<div style="margin-top: 8px; line-height: 12px; margin-bottom: 4px;">
 		<span class="icon icon-stat"></span> 
-		<span class="grey">帖子:</span> $conf[posts] (<span class="blue bold" title="今日帖子">$conf[todayposts]</span>) &nbsp;
-		<span class="grey">会员:</span> $conf[users] (<span class="blue bold">$conf[todayusers]</span>)
+		<span class="grey">帖子：</span><span class="grey">$conf[posts]</span> <span class="small grey2">|</span>
+		<span class="grey">会员：</span><span class="grey">$conf[users]</span>
+		<!--{if $conf[todayusers]}-->
+		<span class="small grey2">|</span>
+		<span class="grey">今日发帖：</span><span class="blue bold">$conf[todayposts]</span>
+		<!--{/if}-->
+		<!--{if $conf[todayusers]}-->
+		<span class="small grey2">|</span>
+		<span class="grey">今日注册：</span><span class="blue bold">$conf[todayusers]</span>
+		<!--{/if}-->
 		<!--{if $conf[newusername]}-->
+		<span class="small grey2">|</span>
 		<span class="grey">新会员:</span> <a href="?you-profile-uid-$conf[newuid]-ajax-1.htm" target="_blank" class="ajaxdialog" ajaxdialog="{position: 6, modal: false}" rel="nofollow">$conf[newusername]</a>
 		<!--{/if}-->
 		<!--{hook index_index_stat_after.htm}-->

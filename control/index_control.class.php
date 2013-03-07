@@ -40,6 +40,8 @@ class index_control extends common_control {
 	
 	// 首页
 	public function on_bbs() {
+		$this->_checked['index'] = ' class="checked"';
+		
 		// hook index_bbs_before.php
 		$this->_title[] = $this->conf['seo_title'] ? $this->conf['seo_title'] : $this->conf['app_name'];
 		$this->_seo_keywords = $this->conf['seo_keywords'];
