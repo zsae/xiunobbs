@@ -19,7 +19,6 @@ class user extends base_model{
 		$arr['regip'] = ip2long($_SERVER['REMOTE_ADDR']);
 		$arr['threads'] = 0;
 		$arr['posts'] = 0;
-		$arr['replies'] = 0;
 		$arr['myposts'] = 0;
 		$arr['avatar'] = 0;
 		$arr['credits'] = 0;
@@ -280,8 +279,8 @@ class user extends base_model{
 			$pid = $post['pid'];
 			$thread = $this->thread->read($fid, $tid);
 			
-			isset($return['forum'][$fid]) &&  $return['forum'][$fid] = array('threads'=>0, 'posts'=>0, 'replies'=>0);
-			isset($return['user'][$uid]) &&  $return['user'][$uid] = array('threads'=>0, 'posts'=>0, 'replies'=>0, 'credits'=>0);
+			isset($return['forum'][$fid]) &&  $return['forum'][$fid] = array('threads'=>0, 'posts'=>0);
+			isset($return['user'][$uid]) &&  $return['user'][$uid] = array('threads'=>0, 'posts'=>0, 'credits'=>0);
 			//$rforum = &$return['forum'][$fid];
 			//$ruser = &$return['user'][$uid];
 		
@@ -301,8 +300,6 @@ class user extends base_model{
 						if($post['uid'] != $uid) continue;
 						$return = $this->post->xdelete($fid, $post['pid'], FALSE);
 						$this->post->xdelete_merge_return($post_return, $return);
-						// 删除盖楼
-						list($r, $replies) = $this->reply->delete_by_fid_pid($post['fid'], $post['pid']);
 					}
 				}
 			}

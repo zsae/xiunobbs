@@ -50,12 +50,6 @@ if($step == 'upgrade_conf') {
 function upgrade_conf() {
 	global $conf;
 	
-	// 写入配置文件，仅支持mysql
-	$kv = new kv();
-	if(!isset($conf['credits_policy_reply'])) {
-		$kv->xset('credits_policy_reply', 1, 'conf_ext');
-	}
-	$kv->xsave();
 	
 	message('修改配置成功，接下来升级 alter_table...', '?step=alter_table');
 }

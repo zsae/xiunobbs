@@ -29,8 +29,6 @@ class conf_control extends admin_control {
 		if($this->form_submit()) {
 			$post['app_name'] = core::gpc('app_name', 'P');
 			$post['credits_policy_post'] = intval(core::gpc('credits_policy_post', 'P'));
-			$post['credits_policy_reply'] = intval(core::gpc('credits_policy_reply', 'P'));
-			$post['golds_policy_reply'] = intval(core::gpc('golds_policy_reply', 'P'));
 			$post['credits_policy_thread'] = intval(core::gpc('credits_policy_thread', 'P'));
 			$post['golds_policy_post'] = intval(core::gpc('golds_policy_post', 'P'));
 			$post['golds_policy_thread'] = intval(core::gpc('golds_policy_thread', 'P'));
@@ -71,7 +69,7 @@ class conf_control extends admin_control {
 				}
 				
 				// 局部的，按需加载 conf_ext
-				foreach(array('credits_policy_post', 'credits_policy_reply', 'golds_policy_reply', 'credits_policy_thread', 
+				foreach(array('credits_policy_post', 'credits_policy_thread', 
 					'golds_policy_post', 'golds_policy_thread',
 					'reg_email_on', 'reg_init_golds', 'resetpw_on',
 					'sphinx_host', 'sphinx_port', 'sphinx_datasrc', 'sphinx_deltasrc',
@@ -90,8 +88,6 @@ class conf_control extends admin_control {
 		$input['app_name'] = form::get_text('app_name', $kvconf['app_name'], 300);
 		$input['app_copyright'] = form::get_text('app_copyright', $kvconf['app_copyright'], 300);
 		$input['credits_policy_post'] = form::get_text('credits_policy_post', $kvconf['credits_policy_post'], 50);
-		$input['credits_policy_reply'] = form::get_text('credits_policy_reply', $kvconf['credits_policy_reply'], 50);
-		$input['golds_policy_reply'] = form::get_text('golds_policy_reply', $kvconf['golds_policy_reply'], 50);
 		$input['credits_policy_thread'] = form::get_text('credits_policy_thread', $kvconf['credits_policy_thread'], 50);
 		$input['golds_policy_post'] = form::get_text('golds_policy_post', $kvconf['golds_policy_post'], 50);
 		$input['golds_policy_thread'] = form::get_text('golds_policy_thread', $kvconf['golds_policy_thread'], 50);

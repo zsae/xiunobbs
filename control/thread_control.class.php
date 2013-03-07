@@ -56,7 +56,6 @@ class thread_control extends common_control {
 		// 附件，用户
 		$uids = $uid ? array($uid) : array();
 		$i = ($page - 1) * $this->conf['pagesize'] + 1;
-		$reply_pids = $reply_replies = '';
 		foreach($postlist as &$post) {
 			$this->post->format($post);
 			if($post['attachnum'] > 0) {
@@ -65,25 +64,10 @@ class thread_control extends common_control {
 			$post['floor'] = $i++;
 			$uids[] = $post['uid'];
 			
-			// 回复的总页数
-			$post['totalpage'] = $post['replies'] > 0 ? ceil($post['replies'] / $this->conf['pagesize']) : 0;
-			
-			if($post['replies'] > 0) {
-				$reply_pids .= $post['pid'].'_';
-				$reply_replies .= $post['replies'].'_';
-				$replypages = ceil($post['replies'] / $this->conf['pagesize']);
-				$post['replypages'] = $post['replies'] > $this->conf['pagesize'] ? misc::pages("?reply-list-fid-$post[fid]-pid-$post[pid]-ajax-1.htm", $post['replies'], $replypages, $this->conf['pagesize']) : '';
-			}
-			
 			if($post['rates'] > 0) {
 				$post['ratelist'] = $this->rate->get_list_by_fid_pid($fid, $post['pid']);
 			}
-			
 		}
-		$reply_pids = substr($reply_pids, 0, -1);
-		$reply_replies = substr($reply_replies, 0, -1);
-		$this->view->assign('reply_pids', $reply_pids);
-		$this->view->assign('reply_replies', $reply_replies);
 		
 		$uids = array_unique($uids);
 		$userlist = $this->user->mget($uids);

@@ -48,14 +48,12 @@ class forum_access extends base_model {
 			if($group['groupid'] == 0) {
 				$access['allowread'] = 1;
 				$access['allowpost'] = 0;
-				$access['allowreply'] = 0;
 				$access['allowthread'] = 0;
 				$access['allowattach'] = 0;	// 游客不允许上传附件！写死了！
 				$access['allowdown'] = 1;
 			} else {
 				$access['allowread'] = 1;
 				$access['allowpost'] = 1;
-				$access['allowreply'] = 1;
 				$access['allowthread'] = 1;
 				$access['allowattach'] = 1;
 				$access['allowdown'] = 1;

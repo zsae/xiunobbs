@@ -53,7 +53,6 @@ class cron extends base_model {
 			$forumlist = $this->forum->get_list();
 			foreach($forumlist as $forum) {
 				$forum['todayposts'] = 0;
-				$forum['todayreplies'] = 0;
 				$this->forum->update($forum);
 				$this->mcache->clear('forum', $forum['fid']);
 			}
@@ -67,7 +66,6 @@ class cron extends base_model {
 			if(empty($stat)) {
 				$threads = $this->thread->count();
 				$posts = $this->post->count();
-				$replies = $this->reply->count();
 				$users = $this->user->count();
 				$stat = array (
 					'year'=>$y,
@@ -75,10 +73,8 @@ class cron extends base_model {
 					'day'=>$d,
 					'threads'=>$threads,
 					'posts'=>$posts,
-					'replies'=>$replies,
 					'users'=>$users,
 					'newposts'=>$this->conf['todayposts'],
-					'newreplies'=>$this->conf['todayreplies'],
 					'newusers'=>$this->conf['todayusers'],
 				);
 				$this->stat->create($stat);
@@ -89,7 +85,6 @@ class cron extends base_model {
 			
 			// 清空
 			$this->runtime->xset('todayposts', 0);
-			$this->runtime->xset('todayreplies', 0);
 			$this->runtime->xset('todaythreads', 0);
 			$this->runtime->xset('todayusers', 0);
 			$this->runtime->xset('onlines', $this->online->count());	// 校对

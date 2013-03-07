@@ -275,7 +275,7 @@ class mod_control extends common_control {
 			}
 			
 			// 查找主题。更新 fid
-			$tidnum = $pidnum = $replynum = 0;
+			$tidnum = $pidnum = 0;
 			foreach($tidarr as $v) {
 				list($fid, $tid) = explode('-', $v);
 				$tid = intval($tid);
@@ -296,7 +296,6 @@ class mod_control extends common_control {
 				
 				$this->thread->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2));
 				$this->post->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2));
-				$replynum += $this->reply->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2));
 				$this->attach->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2));
 				$this->mypost->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2));
 				$this->modlog->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2));
@@ -336,8 +335,6 @@ class mod_control extends common_control {
 			$forum2['threads'] += $tidnum;
 			$forum['posts'] -= $pidnum;
 			$forum2['posts'] += $pidnum;
-			$forum['replies'] -= $replynum;
-			$forum2['replies'] += $replynum;
 			
 			$this->forum->update($forum);
 			$this->forum->update($forum2);

@@ -97,25 +97,6 @@
 					</div>
 					<!--{/if}-->
 					
-					<!--{if $post[replies] > 0}-->
-					<div class="replylist" fid="$post[fid]" pid="$post[pid]" replies="$post[replies]" totalpage="$post[totalpage]" id="replylist_{$post[fid]}_{$post[pid]}">
-						<table width="100%" cellpadding="2" class="noborder" style="table-layout: fixed;">
-						<tr>
-							<td class="bold"><span class="red replies" style="font-size: 18px">$post[replies]</span> 条回复</td>
-							<td width="90">&nbsp;</td>
-							<td width="70" class="grey">时间</td>
-						</tr>
-						<tr><td colspan="3"><hr /></td></tr>
-						<tr>
-							<td colspan="3" class="loading" style="padding: 0px;"><p>正在加载...</p></td>
-						</tr>
-						</table>
-						<!--{if !empty($post[totalpage])}-->
-						<div class="minipage"></div>
-						<!--{/if}-->
-					</div>
-					<!--{/if}-->
-					
 					<!--{if $thread[firstpid] == $post[pid] && $thread[modnum] > 0}-->
 					<br />
 					<div class="modlist">
@@ -187,10 +168,6 @@
 					<div class="grey mod" pid="$post[pid]">
 						<!--{if $thread[firstpid] == $post[pid]}-->
 						<span class="grey middle" style="font-weight: normal;">(回帖:<span class="blue">$thread[posts_fmt]</span> 查看:<span id="thread_views">$thread[views]</span>)</span>
-						<!--{/if}-->
-						
-						<!--{if $_user[uid] && $thread[firstpid] != $post[pid]}-->
-						<a href="?reply-create-fid-$fid-pid-$post[pid]-toreplyid-0-ajax-1.htm" class="ajaxdialog" ajaxdialog="{position: 1, modal: false, cache: false}">回复</a>
 						<!--{/if}-->
 						
 						<!--{if $ismod}-->	
@@ -473,45 +450,6 @@ if($('pre').length > 0) {
 	xiuno_load_css('view/js/syntaxlighter/syntax.css');
 	$.xload('view/js/syntaxlighter/syntax.js', function() {
 		SyntaxHighlighter.all();
-	});
-}
-
-// 加载盖楼，合并请求
-var fid = $fid;
-var reply_pids = '$reply_pids';
-var reply_replies = '$reply_replies';
-if(reply_replies != '') {
-	$.get('?reply-list-fid-$fid-pidarr-$reply_pids-replyarr-$reply_replies-ajax-1.htm', function(s) {
-		var json = json_decode(s);
-		if(error = json_error(json)) {alert(error); return false;}
-		if(json.status < 1) {alert(s); return false; }
-		
-		//alert(s);
-		
-		var replylists = json.message.body.split('<!--sep-->');
-		var pidarr = reply_pids.split('_');
-		for(var i=0; i<pidarr.length; i++) {
-			pid = pidarr[i];
-			replylist = replylists[i];
-			var div = $('#replylist_'+fid+'_'+pid);
-			var replies = $(div).attr('replies');
-			var totalpage = $(div).attr('totalpage');
-			$('td.loading', div).html(replylist);
-			function reply_hover(div) {
-				// 盖楼的编辑，删除链接
-				$('tr.reply', div).hover(function() {
-					$('span.mod', this).show();
-					$(this).addClass('bg2');
-				}, function() {
-					$('span.mod', this).hide();
-					$(this).removeClass('bg2');
-				});
-			}
-			pages_add_event('?reply-list-fid-'+fid+'-pidarr-'+pid+'-replyarr-'+replies+'-ajax-1.htm', totalpage, totalpage, $('td.loading', div), $('div.minipage', div), function(div) {
-				reply_hover();
-			});
-			reply_hover();
-		}
 	});
 }
 

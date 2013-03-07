@@ -62,7 +62,6 @@ class stat_control extends admin_control {
 		
 		// 总发帖数
 		$postslist = $this->statlist_fmt($statlist, 'posts');
-		$replieslist = $this->statlist_fmt($statlist, 'replies');
 		$threadslist = $this->statlist_fmt($statlist, 'threads');
 		$userslist = $this->statlist_fmt($statlist, 'users');
 		$newpostslist = $this->statlist_fmt($statlist, 'newposts');
@@ -75,7 +74,6 @@ class stat_control extends admin_control {
 		$this->view->assign('enddate', $enddate);
 		$this->view->assign('statlist', $statlist);
 		$this->view->assign('postslist', $postslist);
-		$this->view->assign('replieslist', $replieslist);
 		$this->view->assign('threadslist', $threadslist);
 		$this->view->assign('userslist', $userslist);
 		$this->view->assign('newpostslist', $newpostslist);

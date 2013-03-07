@@ -116,7 +116,6 @@ class user_control extends admin_control {
 			$post['groupid'] = intval(core::gpc('groupid', 'P'));
 			$post['threads'] = intval(core::gpc('threads', 'P'));
 			$post['posts'] = intval(core::gpc('posts', 'P'));
-			$post['replies'] = intval(core::gpc('replies', 'P'));
 			$post['credits'] = intval(core::gpc('credits', 'P'));
 			$post['golds'] = intval(core::gpc('golds', 'P'));
 			$post['money'] = intval(core::gpc('money', 'P'));
@@ -144,7 +143,6 @@ class user_control extends admin_control {
 		$input['groupid'] = form::get_select('groupid', $grouparr, $user['groupid']);
 		$input['threads'] = form::get_text('threads', $user['threads'], 100);
 		$input['posts'] = form::get_text('posts', $user['posts'], 100);
-		$input['replies'] = form::get_text('replies', $user['replies'], 100);
 		$input['credits'] = form::get_text('credits', $user['credits'], 100);
 		$input['golds'] = form::get_text('golds', $user['golds'], 100);
 		$input['money'] = form::get_text('money', $user['money'], 100);

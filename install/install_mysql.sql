@@ -56,7 +56,6 @@ CREATE TABLE bbs_user (					# 字段中文名			# 控件属性					# 字段描�
   groupid tinyint(3) unsigned NOT NULL default '0',	# 用户组				# type="select"					#
   threads mediumint(8) unsigned NOT NULL default '0',	# 主题数				#						#
   posts int(8) unsigned NOT NULL default '0',		# 回帖数				#						#
-  replies int(8) unsigned NOT NULL default '0',		# 回复数				#						#
   myposts mediumint(8) unsigned NOT NULL default '0',	# 参与过的主题数			#						#
   avatar int(11) unsigned NOT NULL default '0',		# 头像最后更新的时间，0为默认头像	#						#
   credits int(11) unsigned NOT NULL default '0',	# 用户积分，不可以消费		#						#
@@ -99,9 +98,7 @@ CREATE TABLE bbs_forum (				# 字段中文名			# 控件属性					# 字段描�
   rank tinyint(3) unsigned NOT NULL default '0',	# 显示，倒序			# type="text"
   threads mediumint(8) unsigned NOT NULL default '0',	# 主题数	
   posts int(11) unsigned NOT NULL default '0',		# 回帖数				
-  replies int(11) unsigned NOT NULL default '0',	# 盖楼数				
   todayposts mediumint(8) unsigned NOT NULL default '0',# 今日发帖，计划任务每日凌晨０点清空为０
-  todayreplies mediumint(8) unsigned NOT NULL default '0',# 今日回复，计划任务每日凌晨０点清空为０
   lasttid int(11) NOT NULL default '0',			# 最后发表的tid
   brief text NOT NULL default '',			# 版块简介 允许HTML		# type="text"
   icon tinyint NOT NULL default '0',			# 版块 icon, url upload/forum/123.gif，默认 view/image/forum.gif forum_new.gif 37 * 37	# type="text"
@@ -116,9 +113,9 @@ CREATE TABLE bbs_forum (				# 字段中文名			# 控件属性					# 字段描�
   seo_keywords char(64) NOT NULL default '',		# SEO keyword
   PRIMARY KEY (fid)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-INSERT INTO bbs_forum SET fid='1', name='默认版块1', rank='0', threads='0', posts='0', replies='0', todayposts='0', lasttid='0', brief='默认版块1', icon='', accesson='0', modids='', modnames='', typecates='', toptids='', status='1', listtype='0', orderby='0', seo_title='', seo_keywords='';
-INSERT INTO bbs_forum SET fid='2', name='默认版块2', rank='0', threads='0', posts='0', replies='0', todayposts='0', lasttid='0', brief='默认版块2', icon='', accesson='0', modids='', modnames='', typecates='', toptids='', status='1', listtype='0', orderby='0', seo_title='', seo_keywords='';
-INSERT INTO bbs_forum SET fid='3', name='默认版块3', rank='0', threads='0', posts='0', replies='0', todayposts='0', lasttid='0', brief='默认版块3', icon='', accesson='0', modids='', modnames='', typecates='', toptids='', status='1', listtype='0', orderby='0', seo_title='', seo_keywords='';
+INSERT INTO bbs_forum SET fid='1', name='默认版块1', rank='0', threads='0', posts='0', todayposts='0', lasttid='0', brief='默认版块1', icon='', accesson='0', modids='', modnames='', typecates='', toptids='', status='1', listtype='0', orderby='0', seo_title='', seo_keywords='';
+INSERT INTO bbs_forum SET fid='2', name='默认版块2', rank='0', threads='0', posts='0', todayposts='0', lasttid='0', brief='默认版块2', icon='', accesson='0', modids='', modnames='', typecates='', toptids='', status='1', listtype='0', orderby='0', seo_title='', seo_keywords='';
+INSERT INTO bbs_forum SET fid='3', name='默认版块3', rank='0', threads='0', posts='0', todayposts='0', lasttid='0', brief='默认版块3', icon='', accesson='0', modids='', modnames='', typecates='', toptids='', status='1', listtype='0', orderby='0', seo_title='', seo_keywords='';
 
 # 版块访问规则 fid * groupid
 DROP TABLE IF EXISTS bbs_forum_access;
@@ -189,7 +186,6 @@ CREATE TABLE bbs_thread (
   floortime int(10) unsigned NOT NULL default '0',	# 被顶起来的时间戳，默认等于 lastpost  
   views int(10) unsigned NOT NULL default '0',		# 查看次数, 剥离出去，单独的服务，避免 cache 失效
   posts int(11) unsigned NOT NULL default '0',		# 回帖数
-  replies int(11) unsigned NOT NULL default '0',	# 盖楼数
   top tinyint(1) NOT NULL default '0',			# 置顶级别: 0: 普通主题, 1-3 置顶的顺序
   typeid1 int(10) unsigned NOT NULL default '0',	# 主题分类id1
   typeid2 int(10) unsigned NOT NULL default '0',	# 主题分类id2
@@ -236,7 +232,6 @@ CREATE TABLE bbs_post (
   userip int(11) NOT NULL default '0',			# 发帖时用户ip ip2long()
   attachnum tinyint(3) unsigned NOT NULL default '0',	# 上传的附件数
   imagenum tinyint(3) unsigned NOT NULL default '0',	# 上传的图片数
-  replies int(11) unsigned NOT NULL default '0',	# 回复数
   rates int(11) unsigned NOT NULL default '0',		# 评分次数
   page smallint(6) unsigned NOT NULL default '0',	# 第几页
   username char(16) NOT NULL default '',		# 用户名
@@ -431,11 +426,9 @@ CREATE TABLE bbs_stat (
   day int(11) unsigned NOT NULL default '0',
   threads int(11) unsigned NOT NULL default '0',
   posts int(11) unsigned NOT NULL default '0',
-  replies int(11) unsigned NOT NULL default '0',
   users int(11) unsigned NOT NULL default '0',
   newthreads int(11) unsigned NOT NULL default '0',
   newposts int(11) unsigned NOT NULL default '0',
-  newreplies int(11) unsigned NOT NULL default '0',
   newusers int(11) unsigned NOT NULL default '0',
   PRIMARY KEY(year, month, day)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;

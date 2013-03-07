@@ -381,10 +381,8 @@ if(empty($step) || $step == 'checklicense') {
 			$kvconf = array(
 				'credits_policy_thread' => 2,		// 发主题增加的积分
 				'credits_policy_post' => 0,		
-				'credits_policy_reply' => 0,		
 				'golds_policy_thread' => 1,		// 发主题增加的金币 golds（积分不能消费，金币可以消费，充值）
 				'golds_policy_post' => 1,		
-				'golds_policy_reply' => 1,		
 				'post_update_expiry' => 86400,		// 帖子多长时间后不能修改，默认为86400，一天，0不限制
 				'sphinx_host' => '',			// 主机
 				'sphinx_port' => '',			// 端口

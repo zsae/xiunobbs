@@ -61,9 +61,7 @@ class forum_control extends admin_control {
 						'rank'=>intval($newrankarr[$fid]),
 						'threads'=>0,
 						'posts'=>0,
-						'replies'=>0,
 						'todayposts'=>0,
-						'todayreplies'=>0,
 						'lasttid'=>0,
 						'brief'=>'',
 						'icon'=>0,
@@ -128,7 +126,6 @@ class forum_control extends admin_control {
 			// 修改fid 所有涉及到 fid 的表！
 			$this->thread->index_update(array('fid'=>$fid2), array('fid'=>$fid1, 'top'=>0, 'typeid1'=>0, 'typeid2'=>0, 'typeid3'=>0));
 			$posts = $this->post->index_update(array('fid'=>$fid2), array('fid'=>$fid1));
-			$replies = $this->reply->index_update(array('fid'=>$fid2), array('fid'=>$fid1));
 			$this->attach->index_update(array('fid'=>$fid2), array('fid'=>$fid1));
 			$this->mypost->index_update(array('fid'=>$fid2), array('fid'=>$fid1));
 			
@@ -144,7 +141,6 @@ class forum_control extends admin_control {
 			// 更新统计数
 			$forum1['posts'] += $posts;
 			$forum1['threads'] += $forum2['threads'];
-			$forum1['replies'] += $replies;
 			$this->forum->update($forum1);
 			
 			// 更新缓存
@@ -200,7 +196,6 @@ class forum_control extends admin_control {
 			$groupids = core::gpc('groupids', 'P');
 			$allowreads = (array)core::gpc('allowread', 'P');// 是数组
 			$allowposts = (array)core::gpc('allowpost', 'P');
-			$allowreplys = (array)core::gpc('allowreply', 'P');
 			$allowthreads = (array)core::gpc('allowthread', 'P');
 			$allowattachs = (array)core::gpc('allowattach', 'P');
 			$allowdowns = (array)core::gpc('allowdown', 'P');
@@ -231,14 +226,12 @@ class forum_control extends admin_control {
 					$groupid = intval($groupid);
 					!isset($allowreads[$groupid]) && $allowreads[$groupid] = 0;
 					!isset($allowposts[$groupid]) && $allowposts[$groupid] = 0;
-					!isset($allowreplys[$groupid]) && $allowreplys[$groupid] = 0;
 					!isset($allowthreads[$groupid]) && $allowthreads[$groupid] = 0;
 					!isset($allowattachs[$groupid]) && $allowattachs[$groupid] = 0;
 					!isset($allowdowns[$groupid]) && $allowdowns[$groupid] = 0;
 					$access = $this->forum_access->read($groupid, $fid);
 					$access['allowread'] = intval($allowreads[$groupid]);
 					$access['allowpost'] = intval($allowposts[$groupid]);
-					$access['allowreply'] = intval($allowreplys[$groupid]);
 					$access['allowthread'] = intval($allowthreads[$groupid]);
 					$access['allowdown'] = intval($allowdowns[$groupid]);
 					$access['allowattach'] = intval($allowattachs[$groupid]);

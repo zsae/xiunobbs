@@ -361,7 +361,7 @@ class common_control extends base_control {
 	// 检测用户权限，主要为全局禁止，优先级:1, $expiry 为解除禁止权限的时间。
 	protected function check_user_access($user, $action = 'post', &$message) {
 		$uid = $user['uid'];
-		$actiontext = array('read'=>'阅读帖子', 'thread'=>'发表帖子', 'post'=>'回贴', 'reply'=>'回复', 'attach'=>'上传附件', 'down'=>'下载附件');
+		$actiontext = array('read'=>'阅读帖子', 'thread'=>'发表帖子', 'post'=>'回贴', 'attach'=>'上传附件', 'down'=>'下载附件');
 		
 		// 跳过检测
 		if(!isset($actiontext[$action])) return TRUE;
@@ -392,7 +392,7 @@ class common_control extends base_control {
 	
 	// 检测用户组权限，优先级:2
 	protected function check_group_access($group, $action, &$message) {
-		$actiontext = array('read'=>'阅读帖子', 'thread'=>'发表帖子', 'post'=>'回帖', 'reply'=>'回复', 'attach'=>'上传附件', 'down'=>'下载附件', 'top'=>'设置置顶', 'move'=>'移动主题', 'update'=>'编辑主题', 'delete'=>'删除帖子', 'banuser'=>'禁止用户', 'deleteuser'=>'删除用户');
+		$actiontext = array('read'=>'阅读帖子', 'thread'=>'发表帖子', 'post'=>'回帖', 'attach'=>'上传附件', 'down'=>'下载附件', 'top'=>'设置置顶', 'move'=>'移动主题', 'update'=>'编辑主题', 'delete'=>'删除帖子', 'banuser'=>'禁止用户', 'deleteuser'=>'删除用户');
 		if(empty($group['allow'.$action])) {
 			$message = '您所在的用户组('.$this->_group['name'].')没有('.$actiontext[$action].')的权限。如果您有疑问，请联系管理员！';
 			return FALSE;
@@ -403,7 +403,7 @@ class common_control extends base_control {
 	
 	// 检测版块权限，优先级:3
 	protected function check_forum_access($forum, $action = 'post', &$message) {
-		$actiontext = array('read'=>'阅读帖子', 'thread'=>'发表帖子', 'post'=>'回贴', 'reply'=>'回复', 'attach'=>'上传附件', 'down'=>'下载附件');
+		$actiontext = array('read'=>'阅读帖子', 'thread'=>'发表帖子', 'post'=>'回贴', 'attach'=>'上传附件', 'down'=>'下载附件');
 		
 		// 跳过检测
 		if(!isset($actiontext[$action])) return TRUE;
@@ -487,12 +487,6 @@ class common_control extends base_control {
 	protected function check_post_exists($post) {
 		if(empty($post)) {
 			$this->message('帖子不存在！可能已经被删除。', 0);
-		}
-	}
-	
-	protected function check_reply_exists($reply) {
-		if(empty($reply)) {
-			$this->message('回复不存在！可能已经被删除。', 0);
 		}
 	}
 	

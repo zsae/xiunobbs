@@ -61,14 +61,12 @@ document.write(unescape("%3Cscript src=\'" + _bdhmProtocol + "hm.baidu.com/h.js%
 	// 积分策略 conf_credits_policy
 	'credits_policy_thread' => 2,		// 发主题增加的积分
 	'credits_policy_post' => 0,		
-	'credits_policy_reply' => 0,		
 	'credits_policy_digest_0' => 0,
 	'credits_policy_digest_1' => 10,
 	'credits_policy_digest_2' => 15,
 	'credits_policy_digest_3' => 20,
 	'golds_policy_thread' => 1,		// 发主题增加的金币 golds（积分不能消费，金币可以消费，充值）
 	'golds_policy_post' => 1,		
-	'golds_policy_reply' => 1,		
 	'golds_policy_digest_0' => 0,
 	'golds_policy_digest_1' => 1,
 	'golds_policy_digest_2' => 1,

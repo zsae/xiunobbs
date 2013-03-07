@@ -83,7 +83,6 @@ class post_control extends common_control {
 				'floortime'=>$_SERVER['time'],
 				'views'=>0,
 				'posts'=>1,
-				'replies'=>0,
 				'top'=>0,
 				'imagenum'=>0,	// 需要最后更新
 				'attachnum'=>0,	// 需要最后更新
@@ -127,7 +126,6 @@ class post_control extends common_control {
 					'userip'=>ip2long($_SERVER['ip']),
 					'attachnum'=>0,
 					'imagenum'=>0,
-					'replies'=>0,
 					'rates'=>0,
 					'page'=>$page,
 					'username'=>$username,
@@ -283,7 +281,6 @@ class post_control extends common_control {
 				'userip'=>ip2long($_SERVER['ip']),
 				'attachnum'=>0,
 				'imagenum'=>0,
-				'replies'=>0,
 				'rates'=>0,
 				'page'=>$page,
 				'username'=>$username,

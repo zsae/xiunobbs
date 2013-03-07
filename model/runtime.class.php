@@ -63,11 +63,9 @@ class runtime extends base_model {
 			$this->data[$key] += array (
 				'onlines'=>$this->online->count(),
 				'posts'=>$this->post->count(),
-				'replies'=>$this->reply->count(),
 				'threads'=>$this->thread->count(),
 				'users'=>$this->user->count(),
 				'todayposts'=>0,
-				'todayreplies'=>0,
 				'todayusers'=>0,
 				'cron_1_next_time'=>0,
 				'cron_2_next_time'=>0,

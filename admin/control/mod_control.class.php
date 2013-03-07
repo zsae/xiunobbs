@@ -136,51 +136,6 @@ class mod_control extends admin_control {
 		$this->view->display('mod_ratelog.htm');
 	}
 	
-	// 管理回复
-	public function on_reply() {
-		$this->_title[] = '回复管理';
-		$this->_nav[] = '回复管理';
-		$this->_checked['mod_reply'] = 'class="checked"';
-		
-		// 检查权限
-		$fid = intval(core::gpc('fid'));
-		$forumoptions = $this->forum->get_options($this->_user['uid'], $this->_user['groupid'], $fid);
-		$this->view->assign('forumoptions', $forumoptions);
-		$this->view->assign('fid', $fid);
-		
-		$forum = $this->forum->read($fid);
-		
-		$page = misc::page();
-		// 删除
-		if($this->form_submit()) {	
-			$this->check_access($forum, 'delete');
-			$replyidarr = (array)core::gpc('replyid', 'P');
-			foreach($replyidarr as $replyid) {
-				$replyid = intval($replyid);
-				$reply = $this->reply->read($fid, $replyid);
-				
-				// 删除
-				// hook admin_mod_reply_before_reply.php
-				$this->reply->xdelete($fid, $replyid);
-			}
-		}
-		
-		$pagesize = 20;
-		$replylist = $this->reply->get_list_by_fid($fid, $page, $pagesize);
-		foreach($replylist as &$reply) {
-			$this->reply->format($reply);
-			$reply['thread'] = $this->thread->read($reply['fid'], $reply['tid']);
-			$reply['post'] = $this->post->read($reply['fid'], $reply['pid']);
-		}
-		$this->view->assign('replylist', $replylist);
-		
-		// pages
-		$pages = misc::pages("?mod-reply-fid-$fid.htm", $forum['replies'], $page, $pagesize);
-		$this->view->assign('pages', $pages);
-		
-		$this->view->display('mod_reply.htm');
-	}
-	
 	// 禁止用户 / 删除用户
 	public function on_manageuser() {
 		// 搜索
@@ -230,7 +185,6 @@ class mod_control extends admin_control {
 					'allowread'=>1,
 					'allowthread'=>1,
 					'allowpost'=>1,
-					'allowreply'=>1,
 					'allowattach'=>1,
 					'allowdown'=>1,
 					'expiry'=>$_SERVER['time'] + 86400 * 365
@@ -241,7 +195,6 @@ class mod_control extends admin_control {
 			if($this->form_submit()) {
 				$post = array('uid'=>$uid);
 				$post['allowpost'] = intval(!core::gpc('allowpost', 'P'));
-				$post['allowreply'] = intval(!core::gpc('allowreply', 'P'));
 				$post['allowthread'] = intval(!core::gpc('allowthread', 'P'));
 				$post['allowattach'] = intval(!core::gpc('allowattach', 'P'));
 				$post['allowdown'] = intval(!core::gpc('allowdown', 'P'));
@@ -256,7 +209,6 @@ class mod_control extends admin_control {
 			}
 			
 			$input['allowpost'] = form::get_checkbox_yes_no('allowpost', empty($access['allowpost']));
-			$input['allowreply'] = form::get_checkbox_yes_no('allowreply', empty($access['allowreply']));
 			$input['allowthread'] = form::get_checkbox_yes_no('allowthread', empty($access['allowthread']));
 			$input['allowattach'] = form::get_checkbox_yes_no('allowattach', empty($access['allowattach']));
 			$input['allowdown'] = form::get_checkbox_yes_no('allowdown', empty($access['allowdown']));

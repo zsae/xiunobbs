@@ -73,8 +73,8 @@ class thread extends base_model {
 		$uid = $thread['uid'];
 		
 		// 受影响的值。
-		$default_user = array('threads'=>0, 'posts'=>0, 'replies'=>0, 'credits'=>0, 'golds'=>0, 'myposts'=>0);
-		$default_forum = array('threads'=>0, 'posts'=>0, 'replies'=>0, 'todayposts'=>0, 'todayreplies'=>0);
+		$default_user = array('threads'=>0, 'posts'=>0, 'credits'=>0, 'golds'=>0, 'myposts'=>0);
+		$default_forum = array('threads'=>0, 'posts'=>0, 'todayposts'=>0);
 		$return = array(
 			'forum'=> array($fid=>$default_forum),
 			'user' => array($uid=>$default_user)
@@ -85,7 +85,7 @@ class thread extends base_model {
 		// todo:算出分页，一页一页的删除，可能会超时。
 		$pagesize = $this->conf['pagesize'];
 		$pagenum = ceil($thread['posts'] / $pagesize);
-		$todayposts = $todayreplies = 0;
+		$todayposts = 0;
 		for($i = 1; $i <= $pagenum; $i++) {
 			$postlist = $this->post->index_fetch(array('fid'=>$fid, 'tid'=>$tid, 'page'=>$i), array(), 0, $pagesize);
 			foreach($postlist as $post) {
@@ -104,18 +104,6 @@ class thread extends base_model {
 				// 删除 $post
 				$this->post->delete($post['fid'], $post['pid']);
 				
-				// 删除 reply
-				list($r, $replies, $todayreplies2) = $this->reply->delete_by_fid_pid($post['fid'], $post['pid']);
-				foreach($r as $_uid=>$arr) {
-					!isset($ruser[$_uid]) && $ruser[$_uid] = $default_user;
-					$ruser[$_uid]['replies'] += $arr['replies'];
-					$ruser[$_uid]['credits'] += $arr['credits'];
-					$ruser[$_uid]['golds'] += $arr['golds'];
-					$rforum['replies'] += $replies;
-					$rforum['todayreplies'] += $todayreplies2;
-					$todayreplies += $todayreplies2;
-				}
-				
 				$ruser[$post['uid']]['posts']++;
 				$ruser[$post['uid']]['credits'] += $this->conf['credits_policy_post'];
 				$ruser[$post['uid']]['golds'] += $this->conf['golds_policy_post'];
@@ -129,7 +117,6 @@ class thread extends base_model {
 		$rforum['threads']++;
 		$rforum['posts'] += $thread['posts'];
 		$rforum['todayposts'] += $todayposts;
-		$rforum['todayreplies'] += $todayreplies;
 		
 		// 删除置顶
 		if($thread['top']) {
@@ -150,7 +137,6 @@ class thread extends base_model {
 		$this->runtime->xset('threads', '-1');
 		$this->runtime->xset('posts', '-'.$thread['posts']);
 		$this->runtime->xset('todayposts', '-'.$todayposts);
-		$this->runtime->xset('todayreplies', '-'.$todayreplies);
 		
 		if($updatestat) {
 			$this->xdelete_update($return);
@@ -181,7 +167,6 @@ class thread extends base_model {
 			if(!isset($return['user'][$uid])) { $return['user'][$uid] = $arr; continue; }
 			$return['user'][$uid]['threads'] += $arr['threads'];
 			$return['user'][$uid]['posts'] += $arr['posts'];
-			$return['user'][$uid]['replies'] += $arr['replies'];
 			$return['user'][$uid]['myposts'] += $arr['myposts'];
 			$return['user'][$uid]['credits'] += $arr['credits'];
 			$return['user'][$uid]['golds'] += $arr['golds'];
@@ -192,8 +177,6 @@ class thread extends base_model {
 			$return['forum'][$fid]['threads'] += $arr['threads'];
 			$return['forum'][$fid]['posts'] += $arr['posts'];
 			$return['forum'][$fid]['todayposts'] += $arr['todayposts'];
-			$return['forum'][$fid]['replies'] += $arr['replies'];
-			$return['forum'][$fid]['todayreplies'] += $arr['todayreplies'];
 		}
 		
 		// hook thread_model_xdelete_merge_return_end.php
@@ -208,7 +191,6 @@ class thread extends base_model {
 				$user = $this->user->read($uid);
 				$user['threads'] -= $arr['threads'];
 				$user['posts'] -= $arr['posts'];
-				$user['replies'] -= $arr['replies'];
 				$user['myposts'] -= $arr['myposts'];
 				$user['credits'] -= $arr['credits'];
 				$user['golds'] -= $arr['golds'];
@@ -223,8 +205,6 @@ class thread extends base_model {
 				$forum['threads'] -= $arr['threads'];
 				$forum['posts'] -= $arr['posts'];
 				$forum['todayposts'] -= $arr['todayposts'];
-				$forum['replies'] -= $arr['replies'];
-				$forum['todayreplies'] -= $arr['todayreplies'];
 				$this->forum->update($forum);
 				$this->forum->update_last($fid);
 				$this->mcache->clear('forum', $fid);

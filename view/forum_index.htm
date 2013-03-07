@@ -31,7 +31,6 @@
 			<span>
 				<span class="grey">主题：</span><b>$forum[threads]</b> &nbsp; 
 				<span class="grey">帖子：</span><b>$forum[posts]</b>(<span class="bold blue" title="今日帖子">$forum[todayposts]</span>) &nbsp; 
-				<span class="grey">回复：</span><b>$forum[replies]</b>(<span class="bold blue" title="今日回复">$forum[todayreplies]</span>) &nbsp; 
 				<!--{if $forum[modlist]}-->
 				<span class="grey">版主：</span><!--{loop $forum[modlist] $modid $modname}--><a href="?you-profile-uid-$modid-ajax-1.htm" target="_blank" class="ajaxdialog" ajaxdialog="{position: 6, modal: false}" rel="nofollow"><span class="icon-group icon-group-3" style="width: 12px;"></span>$modname</a> <!--{/loop}-->
 				<!--{/if}-->

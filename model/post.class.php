@@ -58,11 +58,11 @@ class post extends base_model {
 		$tid = $post['tid'];
 		$uid = $post['uid'];
 		
-		$default = array('threads'=>0, 'posts'=>0, 'replies'=>0, 'credits'=>0, 'golds'=>0, 'myposts'=>0);
+		$default = array('threads'=>0, 'posts'=>0, 'credits'=>0, 'golds'=>0, 'myposts'=>0);
 		$return = array (
-			'forum'=>array($fid => array('todayposts'=>0, 'posts'=>0, 'todayreplies'=>0, 'replies'=>0)),
+			'forum'=>array($fid => array('todayposts'=>0, 'posts'=>0)),
 			'user' => array($uid=>$default),
-			'thread' => array("$fid-$tid" => array('posts'=>0, 'replies'=>0)),
+			'thread' => array("$fid-$tid" => array('posts'=>0)),
 			'fidtidpid' => array("$fid-$tid-$pid" => $post['page'])	// 最小 page
 		);
 		$rforum = &$return['forum'][$fid];
@@ -78,17 +78,6 @@ class post extends base_model {
 		
 		// 删除 $post
 		$this->delete($fid, $pid);
-		
-		// 删除 reply
-		list($r, $replies, $todayreplies) = $this->reply->delete_by_fid_pid($post['fid'], $post['pid']);
-		foreach($r as $uid=>$arr) {
-			!isset($ruser[$uid]) && $ruser[$uid] = $default;
-			$ruser[$uid]['replies'] += $arr['replies'];
-			$ruser[$uid]['credits'] += $arr['credits'];
-			$ruser[$uid]['golds'] += $arr['golds'];
-			$rforum['replies'] += $replies;
-			$rforum['todayreplies'] += $todayreplies;
-		}
 		
 		// 更新 $forum 板块的总贴数
 		$rforum['posts']++;
@@ -120,7 +109,6 @@ class post extends base_model {
 			if(!$uid) continue;
 			if(!isset($return['user'][$uid])) { $return['user'][$uid] = $arr; continue; }
 			$return['user'][$uid]['posts'] += $arr['posts'];
-			$return['user'][$uid]['replies'] += $arr['replies'];
 			$return['user'][$uid]['credits'] += $arr['credits'];
 			$return['user'][$uid]['golds'] += $arr['golds'];
 			$return['user'][$uid]['myposts'] += $arr['myposts'];
@@ -130,14 +118,11 @@ class post extends base_model {
 			if(!isset($return['forum'][$fid])) { $return['forum'][$fid] = $arr; continue; }
 			$return['forum'][$fid]['posts'] += $arr['posts'];
 			$return['forum'][$fid]['todayposts'] += $arr['todayposts'];
-			$return['forum'][$fid]['replies'] += $arr['replies'];
-			$return['forum'][$fid]['todayreplies'] += $arr['todayreplies'];
 		}
 		foreach($return2['thread'] as $tid=>$arr) {
 			if(!$tid) continue;
 			if(!isset($return['thread'][$tid])) { $return['thread'][$tid] = $arr; continue; }
 			$return['thread'][$tid]['posts'] += $arr['posts'];
-			$return['thread'][$tid]['replies'] += $arr['replies'];
 		}
 		// 这里~~~ 万恶的数组合并，复杂的重现，浪费老夫几个小时的生命，应该做个记号吧。
 		foreach($return2['fidtidpid'] as $fidtidpid=>$page) {
@@ -159,7 +144,6 @@ class post extends base_model {
 				if(!$uid) continue;
 				$user = $this->user->read($uid);
 				$user['posts'] -= $arr['posts'];
-				$user['replies'] -= $arr['replies'];
 				$user['credits'] -= $arr['credits'];
 				$user['golds'] -= $arr['golds'];
 				$user['myposts'] -= $arr['myposts'];
@@ -167,22 +151,18 @@ class post extends base_model {
 			}
 		}
 		if(isset($return['forum'])) {
-			$todayposts = $todayreplies = 0;
+			$todayposts = 0;
 			foreach($return['forum'] as $fid=>$arr) {
 				if(!$fid) continue;
 				$forum = $this->forum->read($fid);
 				$forum['posts'] -= $arr['posts'];
 				$forum['todayposts'] -= $arr['todayposts'];
-				$forum['replies'] -= $arr['replies'];
-				$forum['todayreplies'] -= $arr['todayreplies'];
-				$todayreplies += $arr['todayreplies'];
 				$todayposts += $arr['todayposts'];
 				$this->forum->update($forum);
 				$this->mcache->clear('forum', $fid);
 			}
 			
 			$this->runtime->xset('todayposts', '-'.$todayposts);
-			$this->runtime->xset('todayreplies', '-'.$todayreplies);
 		}
 		
 		// todo: lastuid, lastusername 貌似没有更新
@@ -194,7 +174,6 @@ class post extends base_model {
 				$tid = intval($tid);
 				$thread = $this->thread->read($fid, $tid);
 				$thread['posts'] -= $arr['posts'];
-				$thread['replies'] -= $arr['replies'];
 				$this->thread->update($thread);
 			}
 		}
