@@ -39,6 +39,7 @@ include FRAMEWORK_PATH.'core.php';
 core::init();
 core::ob_start();
 core::run($conf);
+
 //sae_xhprof_end();
 // 完毕
 
