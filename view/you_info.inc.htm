@@ -10,16 +10,15 @@
 		<td width="20%">
 			<p style="line-height: 20px;"><span class="grey">主题：</span><b style="font-size: 14px;">$you[threads]</b></p>
 			<p style="line-height: 20px;"><span class="grey">帖子：</span><a href="?you-post-uid-$you[uid].htm" target="_blank"><b style="font-size: 14px;">$you[posts]</b></a></p>
-			
+			<p style="line-height: 20px;"><span class="grey">积分：</span><b style="font-size: 14px;">$you[credits]</b></p>
+		<!--{if $_user[groupid] == 1 || $_user[uid] && $_user[uid] == $you[uid]}-->
+			<p style="line-height: 20px;"><span class="grey">金币：</span><b style="font-size: 14px;">$you[golds]</b>枚</p>
+		<!--{/if}-->
 			<!--{hook you_info_td_2.htm}-->
 		</td>
 		<td width="40%">
 			<p style="line-height: 20px;"><span class="grey">关注：</span><a href="?you-follow-uid-$you[uid].htm" target="_blank"><b style="font-size: 14px; text-decoration: underline;">$you[follows]</b></a></p>
 			<p style="line-height: 20px;"><span class="grey">粉丝：</span><a href="?you-followed-uid-$you[uid].htm" target="_blank"><b style="font-size: 14px; text-decoration: underline;">$you[followeds]</b></a></p>
-			<p style="line-height: 20px;"><span class="grey">积分：</span><b style="font-size: 14px;">$you[credits]</b></p>
-		<!--{if $_user[groupid] == 1 || $_user[uid] && $_user[uid] == $you[uid]}-->
-			<p style="line-height: 20px;"><span class="grey">金币：</span><b style="font-size: 14px;">$you[golds]</b>枚</p>
-		<!--{/if}-->
 			<!--{hook you_info_td_3.htm}-->
 		</td>
 	</tr>

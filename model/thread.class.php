@@ -23,7 +23,7 @@ class thread extends base_model {
 	public function get_list($page = 1) {
 		$pagesize = 30;
 		$start = ($page - 1) * $pagesize;
-		$threadlist = $this->index_fetch(array(), array('tid'=>1), $start, $pagesize);
+		$threadlist = $this->index_fetch(array(), array('tid'=>-1), $start, $pagesize);
 		return $threadlist;
 	}
 	

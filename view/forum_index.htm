@@ -48,10 +48,19 @@
 		<div class="header" style="font-weight: normal;">
 			<table width="100%" cellspacing="0" cellpadding="0" style="word-break: break-all" >
 				<tr align="left">
-					<td valign="middle" class="subject">标题</td>
+					<td valign="middle" class="subject">
+						标题 &nbsp-&nbsp
+						<!--{hook forum_index_orderby_before.htm}-->
+						<span id="nav_orderby" style="width: 40px; height: 24px; line-height: 24px;">
+							<a href="?forum-index-fid-$fid-page-$page.htm" class="icon icon-orderby-0  $_checked[orderby][0]" title="顶贴时间排序" rel="nofollow" style="vertical-align: top; margin-top: 4px;"></a><a href="?forum-index-fid-$fid-page-$page.htm" class="icon icon-orderby-1  $_checked[orderby][1]" title="发帖时间排序" rel="nofollow" style="vertical-align: top; margin-top: 4px; margin-left: 4px;"></a>
+						</span>
+						<!--{hook forum_index_orderby_after.htm}-->
+					</td>
+					<!--{hook forum_index_subject_after.htm}-->
 					<td width="80" class="username">发帖</td>
+					<td width="80" class="lastpost">回帖</td>
 					<td width="80" class="views">回复/查看</td>
-					<td width="80" class="last">最后回复</td>
+					<!--{hook forum_index_views_after.htm}-->
 				</tr>
 			</table>
 		</div>
@@ -59,19 +68,19 @@
 		
 			<!--{hook forum_index_threadlist_before.htm}-->
 		
+			<!--{if !$typeid1 && !$typeid2 && !$typeid3}-->
 			<!--{loop $toplist $thread}-->
 				<!--{require forum_index.inc.htm}-->
 			<!--{/loop}-->
-		
-			<div class="bg2" style="line-height: 24px; height: 24px;">
-				<div style="width: 56px; float: left;" class="grey">普通主题</div>
-				<!--{hook forum_index_orderby_before.htm}-->
-				<div id="nav_orderby" style="width: 40px; height: 24px; line-height: 24px; float: left;">
-					<a href="?forum-index-fid-$fid-page-$page.htm" class="icon icon-orderby-0  $_checked[orderby][0]" title="顶贴时间排序" rel="nofollow" style="vertical-align: top; margin-top: 4px;"></a><a href="?forum-index-fid-$fid-page-$page.htm" class="icon icon-orderby-1  $_checked[orderby][1]" title="发帖时间排序" rel="nofollow" style="vertical-align: top; margin-top: 4px; margin-left: 4px;"></a>
-				</div>
-				<!--{hook forum_index_orderby_after.htm}-->
+			<!--{/if}-->
+			
+			<!--{if !$typeid1 && !$typeid2 && !$typeid3 && $toplist}-->
+			<div class="bg2" style="line-height: 12px; height: 12px;">
+				<div style="width: 56px; float: left;" class="grey"></div>
 			</div>
 			<hr />
+			<!--{/if}-->
+			
 			<!--{loop $threadlist $thread}-->
 				<!--{require forum_index.inc.htm}-->
 			<!--{/loop}-->
@@ -106,8 +115,10 @@
 			<!--{if $page == 1}-->
 			<p>
 				<span>
+					<span class="grey">版块名：</span><b>$forum[name]</b> &nbsp; 
 					<span class="grey">主题：</span><b>$forum[threads]</b> &nbsp; 
-					<span class="grey">帖子：</span><b>$forum[posts]</b>(<span class="bold blue" title="今日帖子">$forum[todayposts]</span>) &nbsp; 
+					<span class="grey">帖子：</span><b>$forum[posts]</b> &nbsp; 
+					<span class="grey">今日帖子：</span><span class="blue bold">$forum[todayposts]</span> &nbsp; 
 					<!--{if $forum[modlist]}-->
 					<span class="grey">版主：</span><!--{loop $forum[modlist] $modid $modname}--><a href="?you-profile-uid-$modid-ajax-1.htm" target="_blank" class="ajaxdialog" ajaxdialog="{position: 6, modal: false}" rel="nofollow"><span class="icon-group icon-group-3" style="width: 12px;"></span>$modname</a> <!--{/loop}-->
 					<!--{/if}-->
