@@ -29,7 +29,7 @@
 	<!--{loop $postlist $post}-->
 	<!--{php $u = isset($userlist[$post['uid']]) ? $userlist[$post['uid']] : array('uid'=>0, 'username'=>'', 'groupname'=>'', 'avatar_middle'=>'');}-->
 	<!--{hook thread_index_post_loop_start.htm}-->
-	<table border="0" cellpadding="0" cellspacing="0" width="100%" align="center" style="margin-top: 4px; margin-bottom: 8px; table-layout: fixed;">
+	<table border="0" cellpadding="0" cellspacing="0" width="100%" align="center" style="margin-top: 8px; margin-bottom: 8px; table-layout: fixed;">
 		<!--{hook thread_index_post_tr_loop_start.htm}-->
 		<tr>
 			<!--{hook thread_index_post_td_1_before.htm}-->
@@ -39,8 +39,7 @@
 						<span class="avatar_middle border bg1" {if $u[avatar_middle]}style="background-image: url($u[avatar_middle])"{/if}></span>
 					</a>
 				</div>
-				<p><b>$u[username]</b></p>
-				<p style="margin-top: 0px;" class="grey">$u[groupname]</p>
+				<p>$u[username]</p>
 				<!--{hook thread_index_userinfo.htm}-->
 			</td>
 			<!--{hook thread_index_post_td_1_after.htm}-->

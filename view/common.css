@@ -11,13 +11,13 @@
 
 /* 全局 */
 html {zoom: expression(function(element){element.style.zoom = "1"; document.execCommand("BackgroundImageCache", false, true);}(this));}
-body {width: 100%; height: 100%; margin: 0; padding: 0; background: #000000; line-height: 1.3; overflow-x: hidden;}
+body {width: 100%; height: 100%; margin: 0; padding: 0; background: #3D4351; line-height: 1.3; overflow-x: hidden;}
 body, textarea, td{font-size: 12px; font-family: "微软雅黑"; _font-family: "宋体"; *font-family: "宋体"}
 img, object{margin: 0px; border: 0px; vertical-align: bottom;}
 object {cursor: pointer;}
 input {margin: 0px;}
-a {text-decoration: none; color: #000000; filter:none; outline-style:none;}
-a:hover {text-decoration: underline; color: #1A6BCC;}
+a {text-decoration: none; color: #3D4351; filter:none; outline-style:none;}
+a:hover {text-decoration: underline; color: #00BA53;}
 h1,h2,h3,h4,h5,p,body,textarea {margin: 0px; padding: 0px; text-indent: 0px; }
 hr {height:1px; border:none; border-top:1px solid #D9D9D9; margin:0 auto; *margin:0 auto -14px auto; float:none; *float:left; display:block; clear: both;}
 .hr {height: 1px; overflow: hidden; background: #E9E9E9; clear: both;}
@@ -256,15 +256,15 @@ span.forumicon_big {width: 65px; height: 65px; background: url(image/forum_big.g
 span.nopic {width: 54px; height: 54px; background: url(image/nopic.gif) no-repeat; cursor: pointer; display: inline-block;}
 
 /* 页面架构, 从上到下，几大块： #header, #menu, #body, #footer */
-#menu {width: 100%; height: 31px; background: url(image/menu_bg.gif); overflow: hidden;}
-	#menu #logo {display: block; width: 88x; height: 31px; background: url(image/logo.gif) no-repeat; margin-right: 8px;}
+#menu {width: 100%; height: 35px; background: url(image/menu_bg.gif); overflow: hidden;}
+	#menu #logo {display: block; width: 88x; height: 35px; background: url(image/logo.gif) no-repeat; margin-right: 8px;}
 	#menu td.left {width: 88px}
-	#menu td.center a{height: 31px; line-height: 31px; padding-left: 12px; padding-right: 12px; overflow: hidden; background: url(image/menu_bg.gif) repeat-x; float: left;  font-size: 14px; font-weight: 800; color: #FFFFFF; text-shadow: 1px 1px 0 #000000; }
+	#menu td.center a{height: 35px; line-height: 31px; padding-left: 12px; padding-right: 12px; overflow: hidden; background: url(image/menu_bg.gif) repeat-x; float: left;  font-size: 14px; font-weight: 800; color: #AEB2BE; text-shadow: 1px 1px 0 #000000; }
 	#menu td.center a:hover{background-position: 0px -50px; text-decoration: none;}
-	#menu td.center a.checked{background-position: 0px -100px; cursor: default;}
+	#menu td.center a.checked{background-position: 0px -100px; cursor: default; color: #FFFFFF}
 	#menu td.center span.sep {height: 31px; float: left; width: 2px; background: url(image/menu_bg.gif) 0px -150px;}
 	#menu td.right {text-align: right; vertical-align: middle;}
-	#user {color: #CCCCCC; vertical-align: bottom;}
+	#user {color: #AEB2BE; vertical-align: bottom; font-size: 12px;}
 	#user a {color: #AAAAAA;}
 	#pm {}
 	#user #pm_userlist {}
@@ -275,15 +275,15 @@ span.nopic {width: 54px; height: 54px; background: url(image/nopic.gif) no-repea
 	#search {width: 124px; height: 19px; margin-top: 4px; overflow: hidden; float: right; background: url(image/nav_search.gif) no-repeat; text-decoration: none; cursor: default;}
 	#search.hover{background-position: 0px -20px; cursor: default;}
 	#search input{width: 100px; height: 19px; border: 0px; background: transparent; padding: 2px 0px 0px 24px;}
-#body {width: 100%; margin: auto; background: #FAFAFC url(image/body_bg.jpg) repeat-x; overflow: hidden; padding-top: 8px; padding-bottom: 8px;}
+#body {width: 100%; margin: auto; background: #EFEFEF; overflow: hidden; padding-top: 8px; padding-bottom: 8px;}
 	#nav {width: 100%; margin: auto; height: 31px; text-shadow: 1px 1px 0 #FFFFFF; }
 	#nav td{background: url(image/nav.gif) 0px 31px;}
 	#nav td.left {width: 10px; background-position: 0px 0px;}
 	#nav span.sep {width: 10px; height: 31px; line-height: 31px; background: url(image/nav.gif) -10px 0px; display: inline-block; overflow: hidden; vertical-align:middle; margin-top:-1px\9; margin-top:-0px\0; *margin-top: -2px; _margin-top: -2px; margin-right: 4px;}
 	#nav td.right {width: 10px; background-position: -20px 0px;}
 	#nav td.center .icon {vertical-align: middle;}
-#footer {width: 100%; margin: auto; border-top: 4px solid #454545; color: #888888; background: #000000; word-wrap:break-word; word-break:break-all;}
-#footer pre {background: none repeat scroll 0 0 #111111; border: 1px solid #333333; color: #888888; margin: 8px;}
+#footer {width: 100%; margin: auto; border-top: 4px solid #454545; color: #888888; background: #3D4351; word-wrap:break-word; word-break:break-all;}
+#footer pre {background: none repeat scroll 0 0 #4C525F; border: 1px solid #363C4A; color: #7D828E; margin: 8px;}
 
 /* 内容显示区域的宽度 */
 .width {width: 980px; margin: auto; overflow: hidden;}

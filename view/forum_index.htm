@@ -24,24 +24,6 @@
 	
 	<!--{hook forum_index_nav_after.htm}-->
 	
-	<!--{if $page == 1 && empty($typeid)}-->
-	<div class="bg2 border shadow" style="padding: 6px; padding-top: 0px; margin-bottom: 4px;">
-		<p>
-			<a href="javascript:void(0)" class="icon icon-min" style="float: right;"></a>
-			<span>
-				<span class="grey">主题：</span><b>$forum[threads]</b> &nbsp; 
-				<span class="grey">帖子：</span><b>$forum[posts]</b>(<span class="bold blue" title="今日帖子">$forum[todayposts]</span>) &nbsp; 
-				<!--{if $forum[modlist]}-->
-				<span class="grey">版主：</span><!--{loop $forum[modlist] $modid $modname}--><a href="?you-profile-uid-$modid-ajax-1.htm" target="_blank" class="ajaxdialog" ajaxdialog="{position: 6, modal: false}" rel="nofollow"><span class="icon-group icon-group-3" style="width: 12px;"></span>$modname</a> <!--{/loop}-->
-				<!--{/if}-->
-			</span>
-		</p>
-		
-	</div>
-	<!--{/if}-->
-	
-	<!--{hook forum_index_before.htm}-->
-		
 	<!--{if !empty($forum[types])}-->
 	<div class="page tab" style="" id="threadtype">
 		<!--{loop $forum[types] $cateid $types}-->
@@ -100,7 +82,6 @@
 		<div class="footer"></div>
 	</div>
 	<div class="page" style="margin: auto; margin-top: 0px; text-align: center; clear: both;">$pages</div>
-	
 	<!--{hook forum_index_after.htm}-->
 	
 	<!--{if $ismod}-->
@@ -118,6 +99,24 @@
 	<!--{/if}-->
 	
 	<!--{hook forum_index_mod_after.htm}-->
+	
+	<div class="div shadow" style="margin-top: 8px;">
+		<div class="header">板块信息</div>
+		<div class="body">
+			<!--{if $page == 1}-->
+			<p>
+				<span>
+					<span class="grey">主题：</span><b>$forum[threads]</b> &nbsp; 
+					<span class="grey">帖子：</span><b>$forum[posts]</b>(<span class="bold blue" title="今日帖子">$forum[todayposts]</span>) &nbsp; 
+					<!--{if $forum[modlist]}-->
+					<span class="grey">版主：</span><!--{loop $forum[modlist] $modid $modname}--><a href="?you-profile-uid-$modid-ajax-1.htm" target="_blank" class="ajaxdialog" ajaxdialog="{position: 6, modal: false}" rel="nofollow"><span class="icon-group icon-group-3" style="width: 12px;"></span>$modname</a> <!--{/loop}-->
+					<!--{/if}-->
+				</span>
+			</p>
+			<!--{/if}-->
+		</div>
+		<div class="footer"></div>
+	</div>
 	
 </div>	
 
