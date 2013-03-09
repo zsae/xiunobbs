@@ -164,7 +164,7 @@ a.button {cursor: default; background: url("image/button-right.png") 100% 0 no-r
 a.button span{background: url("image/button.png") no-repeat; display: block; padding: 8px 18px 10px 26px;}
 
 a.button.bigblue {background-position: 100% 0px; height: 40px;}
-a.button.bigblue span {background-position: 0px 0px; color: #FFFFFF; font-size: 16px; text-shadow: 0 -1px #367BBB;}
+a.button.bigblue span {background-position: 0px 0px; color: #FFFFFF; font-size: 16px; text-shadow: 0 -1px #007132;}
 a.button.bigblue:hover {background-position: 100% -50px; text-decoration: none;}
 a.button.bigblue:hover span{background-position: 0 -50px;}
 a.button.bigblue:hover {background-position: 100% -50px; text-decoration: none;}
@@ -172,21 +172,21 @@ a.button.bigblue:active {background-position: 100% -100px; text-decoration: none
 a.button.bigblue:active span{background-position: 0 -100px;}
 
 a.button.biggrey {background-position: 100% -150px; height: 40px;}
-a.button.biggrey span {background-position: 0px -150px; color: #888888; font-size: 16px; text-shadow: 0 -1px #CCCCCC;}
+a.button.biggrey span {background-position: 0px -150px; color: #888888; font-size: 16px; text-shadow: 0 1px #FFFFFF;}
 a.button.biggrey:hover {background-position: 100% -200px; text-decoration: none;}
 a.button.biggrey:hover span{background-position: 0 -200px; }
 a.button.biggrey:active {background-position: 100% -250px; text-decoration: none;}
 a.button.biggrey:active span{background-position: 0 -250px;}
 
 a.button.smallblue {background-position: 100% -300px;  height: 21px;}
-a.button.smallblue span {background-position: 0px -300px; padding: 2px 10px 6px 20px;color: #FFFFFF; font-size: 12px; text-shadow: 0 -1px #888888;}
+a.button.smallblue span {background-position: 0px -300px; padding: 2px 10px 6px 20px;color: #FFFFFF; font-size: 12px; text-shadow: 0 1px #888888;}
 a.button.smallblue:hover {background-position: 100% -350px; text-decoration: none;}
 a.button.smallblue:hover span{background-position: 0 -350px; }
 a.button.smallblue:active {background-position: 100% -400px; text-decoration: none;}
 a.button.smallblue:active span{background-position: 0 -400px;}
 
 a.button.smallgrey {background-position: 100% -450px; height: 21px;}
-a.button.smallgrey span {background-position: 0px -450px; padding: 2px 10px 6px 20px; color: #888888; font-size: 12px; text-shadow: 0 -1px #CCCCCC;}
+a.button.smallgrey span {background-position: 0px -450px; padding: 2px 10px 6px 20px; color: #888888; font-size: 12px; text-shadow: 0 1px #CCCCCC;}
 a.button.smallgrey:hover {background-position: 100% -500px; text-decoration: none;}
 a.button.smallgrey:hover span{background-position: 0 -500px; }
 a.button.smallgrey:active {background-position: 100% -550px; text-decoration: none;}
@@ -271,16 +271,15 @@ span.nopic {width: 54px; height: 54px; background: url(image/nopic.gif) no-repea
 	#user #pm_userlist a {color: #454545; display: block; float: left; width: 100%; padding: 4px 0px; text-indent: 4px; text-decoration: none;}
 	#user #pm_userlist a:hover {background: #BB0000; color: #FFFFFF;}
 	#user #pm_userlist a:hover b{background: #BB0000; color: #FFFFFF;}
-#nav {}
 	#search {width: 124px; height: 19px; margin-top: 4px; overflow: hidden; float: right; background: url(image/nav_search.gif) no-repeat; text-decoration: none; cursor: default;}
 	#search.hover{background-position: 0px -20px; cursor: default;}
 	#search input{width: 100px; height: 19px; border: 0px; background: transparent; padding: 2px 0px 0px 24px;}
 #body {width: 100%; margin: auto; background: #EFEFEF; overflow: hidden; padding-top: 8px; padding-bottom: 8px;}
-	#nav {width: 100%; margin: auto; height: 31px; text-shadow: 1px 1px 0 #FFFFFF; }
-	#nav td{background: url(image/nav.gif) 0px 31px;}
-	#nav td.left {width: 10px; background-position: 0px 0px;}
-	#nav span.sep {width: 10px; height: 31px; line-height: 31px; background: url(image/nav.gif) -10px 0px; display: inline-block; overflow: hidden; vertical-align:middle; margin-top:-1px\9; margin-top:-0px\0; *margin-top: -2px; _margin-top: -2px; margin-right: 4px;}
-	#nav td.right {width: 10px; background-position: -20px 0px;}
+	#nav {width: 100%; margin: auto; height: 18px; text-shadow: 1px 1px 0 #FFFFFF; }
+	#nav td{}
+	#nav td.left {width: 0px; background-position: 0px 0px;}
+	#nav span.sep {width: 10px; height: 18px; line-height: 18px; background: url(image/nav.gif) -10px -8px; display: inline-block; overflow: hidden; vertical-align:middle; margin-top:-1px\9; margin-top:-0px\0; *margin-top: -2px; _margin-top: -2px; margin-right: 4px;}
+	#nav td.right {width: 0px; background-position: -20px 0px;}
 	#nav td.center .icon {vertical-align: middle;}
 #footer {width: 100%; margin: auto; border-top: 4px solid #454545; color: #888888; background: #3D4351; word-wrap:break-word; word-break:break-all;}
 #footer pre {background: none repeat scroll 0 0 #4C525F; border: 1px solid #363C4A; color: #7D828E; margin: 8px;}
