@@ -1,0 +1,54 @@
+<!--{include header.htm}-->
+<style>
+ul.threadlist {font-size: 14px; line-height: 1.6; margin: 0px;}
+</style>
+<!--{hook forum_list_start.htm}-->
+<div class="width">
+
+	<!--{hook forum_list_nav_before.htm}-->
+	<table id="nav" cellpadding="0" cellspacing="0" style="margin-bottom: 4px;">
+		<tr>
+			<td class="left"></td>
+			<td class="center">
+				<a class="icon icon-home" href="./"></a>
+				<span class="sep"></span>
+				<span>所有版块</span>
+				<!--{hook forum_list_nav_center.htm}-->
+			</td>
+			<td align="right" width="120"></td>
+			<td width="80">
+				<input type="button" value=" 发新帖 " class="button smallblue ajaxdialog" href="?post-thread-fid-$fid-ajax-1.htm" ajaxdialog="{fullicon: true}" onclick="return false;" id="create_thread" />
+			</td>
+			<td class="right"></td>
+		</tr>
+	</table>
+	
+	<!--{hook forum_list_nav_after.htm}-->
+	
+	<!--{loop $threadlists $fid $threadlist}-->
+		<div class="div shadow" style="margin-top: 4px; margin-right: 8px; width: 48%; float: left;">
+			<div class="header"><a href="?forum-index-fid-$fid.htm">$forumarr[$fid]</a></div>
+			<div class="body">
+				<ul class="threadlist">
+					<!--{loop $threadlist $thread}-->
+					<li><a href="?thread-index-fid-$fid-tid-$thread[tid]">$thread[subject]</a> <span class="small grey">  $thread[dateline_fmt]</span></li>
+					<!--{/loop}-->
+				</ul>
+			</div>
+			<div class="footer"></div>
+		</div>
+	<!--{/loop}-->
+	
+</div>	
+
+<!--{include footer.htm}-->
+
+<script type="text/javascript">
+
+</script>
+<!--{hook forum_list_end.htm}-->
+
+$conf[footer_js]
+
+</body>
+</html>
