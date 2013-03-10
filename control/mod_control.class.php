@@ -287,7 +287,7 @@ class mod_control extends common_control {
 				
 				// 主题分类，从原来的主题分类中清除
 				if($thread['typeid1'] > 0 ||$thread['typeid2'] > 0 ||$thread['typeid3'] > 0) {
-					$this->thread_type->xdelete($fid, $tid);
+					$this->thread_type_data->xdelete($fid, $tid);
 				}
 				$thread['typeid1'] = 0;
 				$thread['typeid2'] = 0;

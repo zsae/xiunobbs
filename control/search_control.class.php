@@ -68,11 +68,21 @@ class search_control extends common_control {
 			$threadlist = array();
 		}
 		
+		
+		$ismod = ($this->_user['groupid'] > 0 && $this->_user['groupid'] <= 4);
+		$fid = 0;
+		$toplist = array();
 		$pages = misc::simple_pages("?search-index-keyword-$keyword_url-page-$page.htm", count($threadlist), $page, $pagesize);
 		$this->view->assign('pages', $pages);
 		$this->view->assign('keyword', $keyword);
 		$this->view->assign('keyword_url', $keyword_url);
+		
+		$this->view->assign('ismod', $ismod);
+		$this->view->assign('fid', $fid);
 		$this->view->assign('threadlist', $threadlist);
+		$this->view->assign('toplist', $toplist);
+		$this->view->assign('click_server', $click_server);
+		
 		// hook search_index_after.php
 		$this->view->display('search_list.htm');
 	}

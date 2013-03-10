@@ -44,70 +44,7 @@
 	</div>
 	<!--{/if}-->
 	
-	<div class="div">
-		<div class="header" style="font-weight: normal;">
-			<table width="100%" cellspacing="0" cellpadding="0" style="word-break: break-all" >
-				<tr align="left">
-					<td valign="middle" class="subject">
-						标题 &nbsp-&nbsp
-						<!--{hook forum_index_orderby_before.htm}-->
-						<span id="nav_orderby" style="width: 40px; height: 24px; line-height: 24px;">
-							<a href="?forum-index-fid-$fid-page-$page.htm" class="icon icon-orderby-0  $_checked[orderby][0]" title="顶贴时间排序" rel="nofollow" style="vertical-align: top; margin-top: 4px;"></a><a href="?forum-index-fid-$fid-page-$page.htm" class="icon icon-orderby-1  $_checked[orderby][1]" title="发帖时间排序" rel="nofollow" style="vertical-align: top; margin-top: 4px; margin-left: 4px;"></a>
-						</span>
-						<!--{hook forum_index_orderby_after.htm}-->
-					</td>
-					<!--{hook forum_index_subject_after.htm}-->
-					<td width="80" class="username">发帖</td>
-					<td width="80" class="lastpost">回帖</td>
-					<td width="80" class="views">回复/查看</td>
-					<!--{hook forum_index_views_after.htm}-->
-				</tr>
-			</table>
-		</div>
-		<div class="body threadlist" id="threadlist">
-		
-			<!--{hook forum_index_threadlist_before.htm}-->
-		
-			<!--{if !$typeid1 && !$typeid2 && !$typeid3}-->
-			<!--{loop $toplist $thread}-->
-				<!--{require forum_index.inc.htm}-->
-			<!--{/loop}-->
-			<!--{/if}-->
-			
-			<!--{if !$typeid1 && !$typeid2 && !$typeid3 && $toplist}-->
-			<div class="bg2" style="line-height: 12px; height: 12px;">
-				<div style="width: 56px; float: left;" class="grey"></div>
-			</div>
-			<hr />
-			<!--{/if}-->
-			
-			<!--{loop $threadlist $thread}-->
-				<!--{require forum_index.inc.htm}-->
-			<!--{/loop}-->
-			
-			<!--{hook forum_index_threadlist_after.htm}-->
-	
-		</div>
-		<div class="footer"></div>
-	</div>
-	<div class="page" style="margin: auto; margin-top: 0px; text-align: center; clear: both;">$pages</div>
-	<!--{hook forum_index_after.htm}-->
-	
-	<!--{if $ismod}-->
-	<div style="text-align: center; margin-top: 8px;">
-		<input type="checkbox" name="checkall" id="mod_checkall" /><label for="mod_checkall">全选</label>
-		<input type="button" class="button smallblue" id="mod_top"  value="置顶" />
-		<!--{if $forum[typecates]}-->
-		<input type="button" class="button smallblue" id="mod_type"  value="主题分类" />
-		<!--{/if}-->
-		<input type="button" class="button smallblue" id="mod_move"  value="移动" />
-		<!--{hook forum_index_mod_before_delete.htm}-->
-		<input type="button" class="button smallblue" id="mod_delete"  value="删除" />
-		<!--{hook forum_index_mod_end.htm}-->
-	</div>
-	<!--{/if}-->
-	
-	<!--{hook forum_index_mod_after.htm}-->
+	<!--{require thread_list.inc.htm}-->
 	
 	<div class="div shadow" style="margin-top: 8px;">
 		<div class="header">板块信息</div>
@@ -133,113 +70,9 @@
 
 <!--{include footer.htm}-->
 
-<!--{if $ismod}-->
-<script type="text/javascript">
-
-// 二级置顶，三级置顶，检查 fid，如果fid不等于当前fid，则只能选择一篇
-$('#mod_checkall').click(function() {
-	$('#body input[name="tidarr[]"]').attr('checked', this.checked);
-});
-
-var sep = $conf[urlrewrite] ? '?' : '&';
-
-// 置顶 弹出 dialog 设置为置顶
-$('#mod_top').click(function() {
-	var postdata = sep;
-	$.each($('#body input[name="tidarr[]"]:checked'), function(k, v) {
-		postdata += '&tidarr[]='+v.value;
-	});
-	if(postdata == sep) {
-		alert('请选择主题！');
-		return false;
-	}
-	ajaxdialog_request('?mod-top-fid-$fid.htm'+postdata, function() {
-		window.location.reload();
-	});
-	return false;
-});
-
-// 主题分类 
-$('#mod_type').click(function() {
-	var other_forum_flag = 0;
-	$.each($('#body input[name="tidarr[]"]:checked'), function(k, v) {
-		var currfid = $(this).val().split('-')[0];
-		if(currfid != $fid) {
-			$(this).attr('checked', '');
-			other_forum_flag = 1;
-		}
-	});
-	if(other_forum_flag) {
-		alert('批量设置主题分类只能选择当前版块的主题，已经取消了非当前版块的主题（全局置顶主题）');
-	}
-	
-	var postdata = sep;
-	$.each($('#body input[name="tidarr[]"]:checked'), function(k, v) {
-		postdata += '&tidarr[]='+v.value;
-	});
-	if(postdata == sep) {
-		alert('请选择主题！');
-		return false;
-	}
-	ajaxdialog_request('?mod-type-fid-$fid.htm'+sep+postdata, function() {
-		window.location.reload();
-	});
-	return false;
-});
-
-// 删除
-$('#mod_delete').click(function() {
-	var postdata = sep;
-	$.each($('#body input[name="tidarr[]"]:checked'), function(k, v) {
-		postdata += '&tidarr[]='+v.value;
-	});
-	if(postdata == sep) {
-		alert('请选择主题！');
-		return false;
-	}
-	ajaxdialog_request('?mod-delete-fid-$fid.htm'+sep+postdata, function() {
-		window.location.reload();
-	});
-	return false;
-});
-
-// 移动
-$('#mod_move').click(function() {
-	var postdata = sep;
-	$.each($('#body input[name="tidarr[]"]:checked'), function(k, v) {
-		postdata += '&tidarr[]='+v.value;
-	});
-	if(postdata == sep) {
-		alert('请选择主题！');
-		return false;
-	}
-	ajaxdialog_request('?mod-move-fid-$fid.htm'+sep+postdata, function() {
-		window.location.reload();
-	});
-	return false;
-});
-
-</script>
-<!--{/if}-->
-
+<!--{require thread_list_js.inc.htm}-->
 
 <script type="text/javascript">
-// 鼠标背景变色
-$('#threadlist tr').bind('mouseover', function() {$(this).removeClass('bg1').addClass('bg2');});
-$('#threadlist tr').bind('mouseout', function() {$(this).removeClass('bg2').addClass('bg1');});
-
-// 最新贴，已读贴，比较最后阅读时间和帖子的最后回复时间
-$('#body span.icon-post-blue').each(function() {
-	var tid = intval($(this).attr('tid'));
-	var lastpost = intval($(this).attr('lastpost'));
-	var k = tid_is_read(tid, lastpost);
-	trace(k);
-	if(tid_is_read(tid, lastpost)) {
-		$(this).addClass('xgrey');
-		$(this).parent().parent().addClass('grey');
-	}
-});
-
 // 登陆后才能发帖
 {if $_user[uid] == 0}
 $('#create_thread').click(function() {
@@ -253,44 +86,7 @@ $('#create_thread').click(function() {
 	return false;
 });
 {/if}
-
-var thread_left = null;
 </script>
-<script type="text/javascript">
-
-// 点击服务器，火贴
-$.getScript('$click_server&'+Math.random(), function() {
-	if(!xn_json) return;
-	var json = xn_json;
-	for(tid in json) {
-		var jtable = $('#body table[tid='+tid+']');
-		$('tr td.views span:eq(1)', jtable).html(json[tid]);
-		if(json[tid] > $conf[threadlist_hotviews]) {
-			$('tr td.subject', jtable).append('<span class="icon icon-post-fire"></span>');
-		}
-	}
-});
-
-// 记录当前页码
-var fid_page = $.parseJSON($.pdata(cookie_pre + 'fid_page'));
-if(!fid_page) fid_page = {};
-fid_page[''+$fid] = $page;
-$.pdata(cookie_pre + 'fid_page', $.toJSON(fid_page));
-
-// orderby 切换
-$('#nav_orderby a').click(function() {
-	// 设置 cookie, 重新刷新页面
-	$.cookie('orderby', intval($.cookie('orderby')) == 1 ? 0 : 1);
-	window.location.reload();
-});
-
-$('div.div div.body').find('hr:last').hide();// 隐藏最后一个 hr
-
-// 键盘翻页
-bind_document_keyup_page();
-
-</script>
-
 <!--{hook forum_index_end.htm}-->
 
 $conf[footer_js]

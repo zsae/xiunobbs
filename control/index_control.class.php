@@ -47,18 +47,22 @@ class index_control extends common_control {
 		$this->_seo_keywords = $this->conf['seo_keywords'];
 		$this->_seo_description = $this->conf['seo_description'];
 		
-		// 置顶
+		// 三级置顶
 		$toplist = array();
-		
-		
 		
 		$readtids = '';
 		$page = misc::page();
 		$threadlist = $this->thread->get_list($page);
-		foreach($threadlist as &$thread) {
+		foreach($threadlist as $k=>&$thread) {
 			$readtids .= ','.$thread['tid'];
 			$this->thread->format($thread);
+			if($thread['top'] == 3) {
+				unset($threadlist[$k]);
+				$toplist[] = $thread;
+			}
 		}
+		$readtids = substr($readtids, 1); 
+		$click_server = $this->conf['click_server']."?db=tid&r=$readtids";
 		
 		// 在线会员
 		$onlinelist = $this->online->get_onlinelist();
@@ -67,9 +71,12 @@ class index_control extends common_control {
 		// hook index_bbs_after.php
 		
 		$ismod = ($this->_user['groupid'] > 0 && $this->_user['groupid'] <= 4);
+		$fid = 0;
 		$this->view->assign('ismod', $ismod);
+		$this->view->assign('fid', $fid);
 		$this->view->assign('threadlist', $threadlist);
 		$this->view->assign('toplist', $toplist);
+		$this->view->assign('click_server', $click_server);
 		$this->view->display('index.htm');
 	}
 	

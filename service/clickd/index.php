@@ -19,7 +19,7 @@
 define('DEBUG', 2);
 
 // 应用根目录
-define('BBS_PATH', str_replace('\\', '/', substr(__FILE__, 0, -16)));
+define('BBS_PATH', str_replace('\\', '/', substr(__FILE__, 0, -24)));
 
 // check robot
 $conf = include BBS_PATH.'conf/conf.php';

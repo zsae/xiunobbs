@@ -124,7 +124,7 @@ return array(
 	// ------------------> 以下为 BBS 相关:
 	
 	// 点击服务器
-	'click_server' => 'http://xiuno.net/clickd/',	// 记录主题点击数，论坛点击数
+	'click_server' => 'http://xiuno.net/service/clickd/',	// 记录主题点击数，论坛点击数
 	
 	// 加密KEY，
 	'auth_key' => '86505647d4a0f62b541a10f09eb827ea',

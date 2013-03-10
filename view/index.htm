@@ -24,43 +24,7 @@
 	
 	<!--{hook index_index_nav_after.htm}-->
 	
-	<div class="div">
-		<div class="header" style="font-weight: normal;">
-			<table width="100%" cellspacing="0" cellpadding="0" style="word-break: break-all" >
-				<tr align="left">
-					<td valign="middle" class="subject">标题</td>
-					<!--{hook forum_index_subject_after.htm}-->
-					<!--{if empty($fid)}-->
-					<td width="120" class="forumname">板块</td>
-					<!--{/if}-->
-					<td width="80" class="username">发帖</td>
-					<td width="80" class="lastpost">回帖</td>
-					<td width="80" class="views">回复/查看</td>
-					<!--{hook forum_index_views_after.htm}-->
-				</tr>
-			</table>
-		</div>
-		<div class="body threadlist" id="threadlist">
-		
-			<!--{hook forum_index_threadlist_before.htm}-->
-		
-			<!--{loop $toplist $thread}-->
-				<!--{require forum_index.inc.htm}-->
-			<!--{/loop}-->
-		
-			<!--{if !empty($toplist)}-->
-			<div class="bg2" style="line-height: 12px; height: 12px;"></div>
-			<hr />
-			<!--{/if}-->
-			<!--{loop $threadlist $thread}-->
-				<!--{require forum_index.inc.htm}-->
-			<!--{/loop}-->
-			
-			<!--{hook forum_index_threadlist_after.htm}-->
-	
-		</div>
-		<div class="footer"></div>
-	</div>
+	<!--{require thread_list.inc.htm}-->
 	
 	<div class="div shadow">
 		<div class="header"><span class="icon icon-stat"></span> 站点统计</div>
@@ -107,6 +71,8 @@
 
 <!--{include footer.htm}-->
 
+<!--{require thread_list_js.inc.htm}-->
+
 <script type="text/javascript">
 $('#friendlink_img img').hover(function() {$(this).removeClass('xgrey')}, function() {$(this).addClass('xgrey')});
 $('div.div div.body').find('div.hr:last').hide();// 隐藏最后一个 hr
@@ -115,6 +81,19 @@ $('div.div div.body').find('div.hr:last').hide();// 隐藏最后一个 hr
 $('table.forum').bind('mouseover', function() {$('td:gt(0)', this).removeClass('bg1').addClass('bg2');});
 $('table.forum').bind('mouseout', function() {$('td:gt(0)', this).removeClass('bg2').addClass('bg1');});
 
+// 登陆后才能发帖
+{if $_user[uid] == 0}
+$('#create_thread').click(function() {
+	ajaxdialog_request('?user-login-ajax-1.htm', function() {
+		$('#create_thread').unbind('click');
+		ajaxdialog_request($('#create_thread').attr('href'));
+		$('#create_thread').click(function() {
+			ajaxdialog_request($('#create_thread').attr('href'));
+		});
+	});
+	return false;
+});
+{/if}
 </script>
 
 <!--{hook index_index_end.htm}-->

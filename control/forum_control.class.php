@@ -64,7 +64,7 @@ class forum_control extends common_control {
 			$threadlist = $this->thread->get_threadlist_by_fid($fid, $orderby, $start, $limit);
 		}
 		
-		$toplist = $page == 1 && empty($typeid) ? $this->get_toplist($forum) : array();
+		$toplist = $page == 1 && empty($typeidsum) ? $this->get_toplist($forum) : array();
 		$toplist = array_filter($toplist);
 		$threadlist = array_diff_key($threadlist, $toplist);
 		$threadlist = array_filter($threadlist);
@@ -77,7 +77,11 @@ class forum_control extends common_control {
 			$topforum = $this->mcache->read('forum', $thread['fid']);
 			$this->thread->format($thread, $topforum);
 		}
-		foreach($threadlist as &$thread) {
+		foreach($threadlist as $k=>&$thread) {
+			if($thread['top'] > 0) {
+				unset($threadlist[$k]);
+				continue;
+			}
 			$readtids .= ','.$thread['tid'];
 			$this->thread->format($thread, $forum);
 		}
