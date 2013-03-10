@@ -135,6 +135,15 @@ newpm_instance.stop();
 // ----------------> 短消息 end
 
 // 鼠标放在上面，显示最后联系的5个人。
+
+// 判断头部是否换行，修正版块过多，将 forum-list.htm 挤下去的问题。
+{if count($conf['forumarr'] > 6)}
+var forumlistpos = $('#menu_forum_list').offset();
+var rightpos = $('#menu td.right').offset();
+if(forumlistpos.top - rightpos.top > 8) {
+	$('#menu_forum_list').css({position: 'absolute', left: rightpos.left - 50, top: rightpos.top});
+}
+{/if}
 </script>
 
 <!--{hook footer_end.htm}-->

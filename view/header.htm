@@ -25,7 +25,7 @@
 	<div class="width">
 		<table cellpadding="0" cellspacing="0" width="100%">
 			<tr>
-				<td class="left"><a href="./" title="点击进入首页"><span id="logo"></span></a></td>
+				<td class="left" valign="top"><a href="./" title="点击进入首页"><span id="logo"></span></a></td>
 				<td class="center">
 					<!--{hook header_menu_start.htm}-->
 					<span class="sep"></span>
@@ -35,11 +35,11 @@
 					<a href="?forum-index-fid-$_fid.htm" $_checked[forum_$_fid]>$_name</a>	
 					<!--{/loop}-->
 					<span class="sep"></span>
-					<a href="?forum-list.htm" $_checked[forum_list]>&gt;&gt;</a>	
+					<a href="?forum-list.htm" $_checked[forum_list] id="menu_forum_list">&gt;&gt;</a>	
 					
 					<!--{hook header_menu_end.htm}-->
 				</td>
-				<td class="right">
+				<td class="right" valign="top">
 					<span id="user">
 					<!--{hook header_user_start.htm}-->
 					<!--{if $_user['groupid'] == 0}-->
