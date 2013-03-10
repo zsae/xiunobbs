@@ -18,17 +18,18 @@
 		<input type="button" class="button smallblue" value="搜索" id="srchsubmit">
 	</div>
 	
-	<h3>搜索结果</h3>
-	<!--{if empty($threadlist)}-->
-		<div class="div">
-			<div class="header">搜索结果</div>
-			<div class="body">
-				<p>无匹配结果</p>
-			</div>
+<!--{if $keyword}-->
+<!--{if empty($threadlist)}-->
+	<div class="div">
+		<div class="header">搜索结果</div>
+		<div class="body">
+			<p>无匹配结果</p>
 		</div>
-	<!--{else}-->
-		<!--{require thread_list.inc.htm}-->
-	<!--{/if}-->
+	</div>
+<!--{else}-->
+	<!--{require thread_list.inc.htm}-->
+<!--{/if}-->
+<!--{/if}-->
 </div>	
 
 <!--{include footer.htm}-->
