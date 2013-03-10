@@ -81,19 +81,6 @@ $('div.div div.body').find('div.hr:last').hide();// 隐藏最后一个 hr
 $('table.forum').bind('mouseover', function() {$('td:gt(0)', this).removeClass('bg1').addClass('bg2');});
 $('table.forum').bind('mouseout', function() {$('td:gt(0)', this).removeClass('bg2').addClass('bg1');});
 
-// 登陆后才能发帖
-{if $_user[uid] == 0}
-$('#create_thread').click(function() {
-	ajaxdialog_request('?user-login-ajax-1.htm', function() {
-		$('#create_thread').unbind('click');
-		ajaxdialog_request($('#create_thread').attr('href'));
-		$('#create_thread').click(function() {
-			ajaxdialog_request($('#create_thread').attr('href'));
-		});
-	});
-	return false;
-});
-{/if}
 </script>
 
 <!--{hook index_index_end.htm}-->

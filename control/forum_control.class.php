@@ -107,6 +107,32 @@ class forum_control extends common_control {
 		// hook forum_index_after.php
 		$this->view->display('forum_index.htm');
 	}
+		
+	// 所有版块，考虑权限！
+	public function on_list() {
+		$this->_checked['forum_list'] = ' class="checked"';
+		
+		$threadlists = array();
+		$forumarr = $this->conf['forumarr'];
+		foreach($forumarr as $fid=>$name) {
+			$forum = $this->mcache->read('forum', $fid);
+			if($forum['accesson']) {
+				$access = $this->forum_access->read($forum['fid'], $this->_user['groupid']);
+				if(!empty($access) && !$access['allowread']) {
+					unset($forumarr[$fid]);
+					continue;
+				}
+			}
+			$threadlist = $this->thread->get_threadlist_by_fid($fid, 0, 0, 10);
+			foreach($threadlist as &$thread) {
+				$thread['dateline_fmt'] = misc::minidate($thread['dateline']);
+			}
+			$threadlists[$fid] = $threadlist;
+		}
+		$this->view->assign('forumarr', $forumarr);
+		$this->view->assign('threadlists', $threadlists);
+		$this->view->display('forum_list.htm');
+	}
 	
 	private function get_toplist($forum) {
 		$fidtids = array();

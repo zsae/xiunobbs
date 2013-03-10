@@ -32,6 +32,20 @@
 
 <script type="text/javascript">
 
+// 登陆后才能发帖
+{if $_user[uid] == 0}
+$('#create_thread').click(function() {
+	ajaxdialog_request('?user-login-ajax-1.htm', function() {
+		$('#create_thread').unbind('click');
+		ajaxdialog_request($('#create_thread').attr('href'));
+		$('#create_thread').click(function() {
+			ajaxdialog_request($('#create_thread').attr('href'));
+		});
+	});
+	return false;
+});
+{/if}
+
 $('a.ajaxdialog, input.ajaxdialog').die('click').live('click', ajaxdialog_click);
 $('a.ajaxtoggle').die('click').live('click', ajaxtoggle_event);
 

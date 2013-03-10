@@ -25,10 +25,10 @@
 	<!--{hook forum_index_nav_after.htm}-->
 	
 	<!--{if !empty($forum[types])}-->
-	<div class="page tab" style="" id="threadtype">
+	<div class="page tab" id="threadtype">
 		<!--{loop $forum[types] $cateid $types}-->
 		<!--{if $types}-->
-		<p>
+		<div>
 			<!--{if $forum[typecates][$cateid]}--><span class="bold">$forum[typecates][$cateid]:</span><!--{/if}-->
 			<!--{if $cateid == 1}--><a href="?forum-index-fid-$fid-typeid1-0-typeid2-$typeid2-typeid3-$typeid3.htm" $_checked[typecates][$cateid] rel="nofollow">全部</a><!--{/if}-->
 			<!--{if $cateid == 2}--><a href="?forum-index-fid-$fid-typeid1-$typeid1-typeid2-0-typeid3-$typeid3.htm" $_checked[typecates][$cateid] rel="nofollow">全部</a><!--{/if}-->
@@ -38,7 +38,7 @@
 			<!--{if $cateid == 2}--><a href="?forum-index-fid-$fid-typeid1-$typeid1-typeid2-$typeid-typeid3-$typeid3.htm" rel="nofollow" $_checked[types][$typeid]>$typename</a><!--{/if}-->
 			<!--{if $cateid == 3}--><a href="?forum-index-fid-$fid-typeid1-$typeid1-typeid2-$typeid2-typeid3-$typeid.htm" rel="nofollow" $_checked[types][$typeid]>$typename</a><!--{/if}-->
 			<!--{/loop}-->
-		</p>
+		</div>
 		<!--{/if}-->
 		<!--{/loop}-->
 	</div>
@@ -73,19 +73,7 @@
 <!--{require thread_list_js.inc.htm}-->
 
 <script type="text/javascript">
-// 登陆后才能发帖
-{if $_user[uid] == 0}
-$('#create_thread').click(function() {
-	ajaxdialog_request('?user-login-ajax-1.htm', function() {
-		$('#create_thread').unbind('click');
-		ajaxdialog_request($('#create_thread').attr('href'));
-		$('#create_thread').click(function() {
-			ajaxdialog_request($('#create_thread').attr('href'));
-		});
-	});
-	return false;
-});
-{/if}
+
 </script>
 <!--{hook forum_index_end.htm}-->
 
