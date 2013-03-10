@@ -47,6 +47,11 @@ class index_control extends common_control {
 		$this->_seo_keywords = $this->conf['seo_keywords'];
 		$this->_seo_description = $this->conf['seo_description'];
 		
+		// 置顶
+		$toplist = array();
+		
+		
+		
 		$readtids = '';
 		$page = misc::page();
 		$threadlist = $this->thread->get_list($page);
@@ -64,6 +69,7 @@ class index_control extends common_control {
 		$ismod = ($this->_user['groupid'] > 0 && $this->_user['groupid'] <= 4);
 		$this->view->assign('ismod', $ismod);
 		$this->view->assign('threadlist', $threadlist);
+		$this->view->assign('toplist', $toplist);
 		$this->view->display('index.htm');
 	}
 	

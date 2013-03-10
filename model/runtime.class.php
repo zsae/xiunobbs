@@ -60,6 +60,8 @@ class runtime extends base_model {
 			$forumarr = misc::arrlist_key_values($forumlist, 'fid', 'name');
 			$grouplist = $this->group->get_list();
 			$grouparr = misc::arrlist_key_values($grouplist, 'groupid', 'name');
+			$typelist = $this->thread_type->get_list();
+			$typearr = misc::arrlist_key_values($typelist, 'typeid', 'typename');
 			$this->data[$key] += array (
 				'onlines'=>$this->online->count(),
 				'posts'=>$this->post->count(),
@@ -74,6 +76,7 @@ class runtime extends base_model {
 				'toptids'=>$toptids,
 				'forumarr'=>$forumarr,
 				'grouparr'=>$grouparr,
+				'typearr'=>$typearr,
 			);
 		}
 		return $this->data[$key];

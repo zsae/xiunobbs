@@ -102,6 +102,17 @@ class thread_type extends base_model {
 		return empty($arr) ? '' : $arr['typename'];
 	}
 	
+	// 要么为空，要么为补全数组
+	public function get_list() {
+		$typelist = $this->index_fetch(array(), array(), 0, 0);
+		foreach($typelist as $k=>$v) {
+			if(empty($v['typename'])) {
+				unset($typelist[$k]);
+			}
+		}
+		return $typelist;
+	}
+	
 	// 返回非空的主题分类, cateid = 1, 2, 3，排序？
 	/*
 		返回格式，按照 rank 正序，typeid 为 key：
