@@ -23,7 +23,6 @@ class user extends base_model{
 		$arr['avatar'] = 0;
 		$arr['credits'] = 0;
 		$arr['golds'] = $this->conf['reg_init_golds'];
-		$arr['money'] = 0;
 		$arr['follows'] = 0;
 		$arr['followeds'] = 0;
 		$arr['newpms'] = 0;

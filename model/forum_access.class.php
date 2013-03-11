@@ -30,6 +30,16 @@ class forum_access extends base_model {
 		return $arr;
 	}
 	
+	// 获取开启了accesson 的版块
+	public function get_accesson($forumarr) {
+		$forumaccesson = array();
+		foreach($forumarr as $fid=>$name) {
+			$accesslist = $this->index_fetch(array('fid' => $fid), array(), 0, 1);
+			empty($accesslist) && $forumaccesson[$fid] = 1;
+		}
+		return $forumaccesson;
+	}
+	
 	// 将游客调到最后一组
 	/*
 	public function judge_accesslist(&$accesslist) {

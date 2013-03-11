@@ -47,22 +47,29 @@ class index_control extends common_control {
 		$this->_seo_keywords = $this->conf['seo_keywords'];
 		$this->_seo_description = $this->conf['seo_description'];
 		
-		// 三级置顶
-		$toplist = array();
-		
+		$pagesize = 30;
+		$toplist = array(); // only top 3
 		$readtids = '';
 		$page = misc::page();
-		$threadlist = $this->thread->get_list($page);
+		$threadlist = $this->thread->get_list($page, $pagesize);
 		foreach($threadlist as $k=>&$thread) {
-			$readtids .= ','.$thread['tid'];
 			$this->thread->format($thread);
+			// remove accesson forum
+			if(!empty($this->conf['forumaccesson'][$thread['fid']])) {
+				unset($threadlist[$k]);
+				continue;
+			}
+			$readtids .= ','.$thread['tid'];
 			if($thread['top'] == 3) {
 				unset($threadlist[$k]);
 				$toplist[] = $thread;
+				continue;
 			}
 		}
 		$readtids = substr($readtids, 1); 
 		$click_server = $this->conf['click_server']."?db=tid&r=$readtids";
+		
+		$pages = misc::pages('?index-index.htm', $this->conf['threads'], $page, $pagesize);
 		
 		// 在线会员
 		$onlinelist = $this->online->get_onlinelist();
@@ -77,6 +84,7 @@ class index_control extends common_control {
 		$this->view->assign('threadlist', $threadlist);
 		$this->view->assign('toplist', $toplist);
 		$this->view->assign('click_server', $click_server);
+		$this->view->assign('pages', $pages);
 		$this->view->display('index.htm');
 	}
 	

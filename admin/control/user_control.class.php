@@ -118,7 +118,6 @@ class user_control extends admin_control {
 			$post['posts'] = intval(core::gpc('posts', 'P'));
 			$post['credits'] = intval(core::gpc('credits', 'P'));
 			$post['golds'] = intval(core::gpc('golds', 'P'));
-			$post['money'] = intval(core::gpc('money', 'P'));
 			$post['password'] = core::gpc('password', 'P');
 			
 			// check 数据格式
@@ -145,7 +144,6 @@ class user_control extends admin_control {
 		$input['posts'] = form::get_text('posts', $user['posts'], 100);
 		$input['credits'] = form::get_text('credits', $user['credits'], 100);
 		$input['golds'] = form::get_text('golds', $user['golds'], 100);
-		$input['money'] = form::get_text('money', $user['money'], 100);
 		
 		$this->view->assign('input', $input);
 		$this->view->assign('user', $user);

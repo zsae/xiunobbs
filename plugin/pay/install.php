@@ -29,7 +29,7 @@ if($this->conf['db']['type'] != 'mongodb') {
 		  PRIMARY KEY(payid),
 		  KEY(uid)
 		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-	
+	$db->query("ALTER TABLE {$tablepre}user ADD COLUMN money int(11) unsigned NOT NULL default '0';");
 	$this->kv->xset('pay_on', 0);
 	$this->runtime->xset('pay_on', 0);
 }

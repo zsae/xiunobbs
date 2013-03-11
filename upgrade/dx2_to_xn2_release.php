@@ -654,7 +654,6 @@ function upgrade_user() {
 				'avatar'=> intval($old2['avatarstatus']),
 				'credits'=> intval($credits),
 				'golds'=> $old3['extcredits1'],
-				'money'=> 0,
 				'follows'=> 0,
 				'followeds'=> 0,
 				'newpms'=> 0,
@@ -689,7 +688,7 @@ function upgrade_user() {
 		message("正在升级 user, 一共: $count, 当前: $start... （本次耗时：$processtime 秒，大约还需要 $remain_hour 小时, $remain_min 分钟， $remain_sec 秒 ）", "?step=upgrade_user&start=$start&count=$count", 0);
 	} else {
 		// 生成系统用户，系统用户名：系统，如果发现重名，则改名。
-		//INSERT INTO bbs_user SET uid='2', regip='12345554', regdate=UNIX_TIMESTAMP(), username='系统', password='d14be7f4d15d16de92b7e34e18d0d0f7', salt='99adde', email='system@admin.com', groupid='11', golds='0', money='0';
+		//INSERT INTO bbs_user SET uid='2', regip='12345554', regdate=UNIX_TIMESTAMP(), username='系统', password='d14be7f4d15d16de92b7e34e18d0d0f7', salt='99adde', email='system@admin.com', groupid='11', golds='0';
 		$maxuid = $db->index_maxid('user-uid') + 1;
 		$db->maxid('user-uid', $maxuid);
 		$admin = $db->get("user-uid-1");
@@ -708,7 +707,6 @@ function upgrade_user() {
 			'avatar'=> 0,
 			'credits'=> 0,
 			'golds'=> 0,
-			'money'=> 0,
 			'follows'=> 0,
 			'followeds'=> 0,
 			'newpms'=> 0,

@@ -60,7 +60,6 @@ CREATE TABLE bbs_user (					# 字段中文名			# 控件属性					# 字段描�
   avatar int(11) unsigned NOT NULL default '0',		# 头像最后更新的时间，0为默认头像	#						#
   credits int(11) unsigned NOT NULL default '0',	# 用户积分，不可以消费		#						#
   golds int(11) unsigned NOT NULL default '0',		# 虚拟金币，可以消费，充值可以增加	#						#
-  money int(11) unsigned NOT NULL default '0',		# 站点支持的货币（人民币），可以消费可以由RMB兑换	#						#
   follows smallint(3) unsigned NOT NULL default '0',	# 关注数				#						#
   followeds int(11) unsigned NOT NULL default '0',	# 被关注数			#						#
   newpms int(11) unsigned NOT NULL default '0',		# 新短消息（x人）			#						#
@@ -73,8 +72,8 @@ CREATE TABLE bbs_user (					# 字段中文名			# 控件属性					# 字段描�
   KEY email(email),
   PRIMARY KEY (uid)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-INSERT INTO bbs_user SET uid='1', regip='12345554', regdate=UNIX_TIMESTAMP(), username='admin', password='d14be7f4d15d16de92b7e34e18d0d0f7', salt='99adde', email='admin@admin.com', groupid='1', golds='0', money='0';
-INSERT INTO bbs_user SET uid='2', regip='12345554', regdate=UNIX_TIMESTAMP(), username='系统', password='d14be7f4d15d16de92b7e34e18d0d0f7', salt='99adde', email='system@admin.com', groupid='11', golds='0', money='0';
+INSERT INTO bbs_user SET uid='1', regip='12345554', regdate=UNIX_TIMESTAMP(), username='admin', password='d14be7f4d15d16de92b7e34e18d0d0f7', salt='99adde', email='admin@admin.com', groupid='1', golds='0';
+INSERT INTO bbs_user SET uid='2', regip='12345554', regdate=UNIX_TIMESTAMP(), username='系统', password='d14be7f4d15d16de92b7e34e18d0d0f7', salt='99adde', email='system@admin.com', groupid='11', golds='0';
 
 # 用户访问权限，全局的。一般用来设置禁止用户。黑名单机制。
 DROP TABLE IF EXISTS bbs_user_access;
@@ -198,16 +197,6 @@ CREATE TABLE bbs_thread (
   status tinyint(1) NOT NULL default '0',		# 状态 [未使用]
   lastuid int(11) unsigned NOT NULL default '0',	# 最近参与的 uid
   lastusername int(11) unsigned NOT NULL default '0',	# 最近参与的 uid
-  lastuid1 int(11) unsigned NOT NULL default '0',	# 最近参与的 uid
-  lastuid2 int(11) unsigned NOT NULL default '0',	# 最近参与的 uid
-  lastuid3 int(11) unsigned NOT NULL default '0',	# 最近参与的 uid
-  lastuid4 int(11) unsigned NOT NULL default '0',	# 最近参与的 uid
-  lastuid5 int(11) unsigned NOT NULL default '0',	# 最近参与的 uid
-  lastusername1 char(16) NOT NULL default '',		# 最后回复用户名
-  lastusername2 char(16) NOT NULL default '',		# 最后回复用户名
-  lastusername3 char(16) NOT NULL default '',		# 最后回复用户名
-  lastusername4 char(16) NOT NULL default '',		# 最后回复用户名
-  lastusername5 char(16) NOT NULL default '',		# 最后回复用户名
   PRIMARY KEY (fid, tid),				# 按照发帖时间排序
   KEY (tid),						# 按照 tid 排序，首页需要。
   KEY (fid, floortime)					# 按照顶贴时间排序
