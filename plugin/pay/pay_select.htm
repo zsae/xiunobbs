@@ -1,0 +1,115 @@
+<!--{include header.htm}-->
+
+<!--{hook pay_select_start.htm}-->
+
+<div class="width">
+	<form action="?pay-callapi.htm" method="post" id="pay_form" target="_blank">
+		<input type="hidden" name="FORM_HASH" value="{FORM_HASH}" />
+		<div class="div" style="width: 600px;">
+			<div class="header"> 充值 </div>
+			<div class="body">
+				<!--{hook pay_select_body_start.htm}-->
+				<dt>充值金钱：</dt><dd><input type="text" id="money" name="money" value="$money" style="width: 50px;" /> 元</dd>
+				<dt>可兑换金币：</dt><dd><input type="text" id="golds" name="golds" value="$golds" style="width: 50px;" disabled="disabled" readonly="readonly" /></dd>
+				<!--{hook pay_select_gold_after.htm}-->
+				<dt>支付方式：</dt>
+				<dd>
+					<table>
+						<tr align="center">
+							<td width="33%">
+								<img src="view/image/pay_alipay.gif" width="135" height="46" /><br />
+								<!--{if $conf[alipay_on]}-->
+								<input type="radio" name="paytype" value="1" />
+								<!--{else}-->
+								<input type="radio" name="paytype" value="1" disabled="disabled" />
+								<!--{/if}-->
+							</td>
+							<td width="33%">
+								<img src="view/image/pay_ebank.gif" width="96" height="36" /><br />
+								<!--{if $conf[ebank_on]}-->
+								<input type="radio" name="paytype" value="2" checked="checked" />
+								<!--{else}-->
+								<input type="radio" name="paytype" value="2" disabled="disabled" />
+								<!--{/if}-->
+							</td>
+							<!--{if $conf[banklist_on]}-->
+							<td width="33%">
+								<img src="view/image/pay_bank.gif" width="96" height="36" /><br />
+								<input type="radio" name="paytype" value="3" />
+							</td>
+							<!--{/if}-->
+							
+							<!--{hook pay_select_paytype_after.htm}-->
+						</tr>
+					</table>
+				</dd>
+				<!--{hook pay_select_body_end.htm}-->
+		
+				<div style="text-align: center; margin-top: 4px;">
+					<input convert="true" type="submit" class="button bigblue" id="pay_submit" value="开始支付" />
+				</div>
+				<div id="notice" class="notice" style="display: none;"></div>
+			</div>
+		</div>
+	</form>
+</div>
+
+<!--{include footer.htm}-->
+
+<script type="text/javascript">
+
+var pay_rate = $conf[pay_rate];
+$('#pay_submit').click(function() {
+	
+	var val = $('input:radio[name="paytype"]:checked').val();
+	if(val == '3') {
+		// 获取银行账号
+		ajaxdialog_request('?pay-banklist-ajax-1.htm');
+	} else {
+		
+		// 判断支付类型
+		setTimeout(function() {
+			$('#pay_form').submit();
+		}, 1000);
+		
+		// 弹出遮罩层，提示正在支付！
+		var s = '<div class="dialog bg2 border shadow" title="正在支付..." style="overflow: visible;"><h1>进入支付流程... 请不要关闭本页!</h1><p>支付通知有延迟，大约在半分钟，本页会自动检查支付状态，请耐心等待！</p><'+'/div>';
+		var jdialog = $(s).appendTo('body');
+		jdialog.dialog({width: 600, modal: true, open: true});
+		
+		// 每隔2秒检测一次订单状态
+		var handle = setInterval(function() {
+			$.get('?pay-status-maxpayid-$maxpayid-ajax-1.htm', function(s) {
+				var json = json_decode(s);
+				if(error = json_error(json)) {alert(error); return false;}
+				// 如果已经支付
+				if(json.status > 0) {
+					jdialog.dialog('close');
+					clearInterval(handle);
+					handle = null;
+					
+					// hook pay_select_5.htm
+					json = json.message;
+					jdialog[0].dialog.set_body('支付成功！当前的账户余额：'+json.money+'元');
+					alert('支付成功！当前的账户余额：'+json.money+'元');
+					
+					setTimeout(function() {window.location = '?my-profile.htm';}, 2000);
+					
+				} else {
+					//alert('服务端返回的信息：'+json.message);
+				}
+			});
+		}, 3000);
+	}
+	return false;
+});
+
+$('#money').keyup(function() {
+	$('#golds').val($('#money').val() * pay_rate);
+});
+</script>
+
+<!--{hook pay_select_end.htm}-->
+
+</body>
+</html>
