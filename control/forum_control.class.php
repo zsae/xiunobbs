@@ -116,7 +116,7 @@ class forum_control extends common_control {
 		$forumarr = $this->conf['forumarr'];
 		foreach($forumarr as $fid=>$name) {
 			if(!empty($forumarr[$fid])) {
-				$access = $this->forum_access->read($forum['fid'], $this->_user['groupid']);
+				$access = $this->forum_access->read($fid, $this->_user['groupid']);
 				if(!empty($access) && !$access['allowread']) {
 					unset($forumarr[$fid]);
 					continue;

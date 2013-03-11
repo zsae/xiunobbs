@@ -152,7 +152,7 @@ a.icon-newpm, a.icon-newpm:hover {width: 13px; height: 9px; background-image: ur
 .icon-volume {width: 10px; height: 9px; background-image: url(image/icon-volume.gif);}
 
 /* 翻页 */
-.page {padding-top: 8px; margin-bottom: 8px; overflow: visible; clear: both;}
+.page {padding-bottom: 8px; overflow: visible; clear: both;}
 .page a, .page a.checked{display: inline-block; padding: 3px 12px; margin-right: 2px; border: 1px solid #49535E;  background: url(image/page.gif) 0px 0px repeat-x; color: #E9E9E9; -moz-border-radius: 4px; -khtml-border-radius: 2px; -webkit-border-radius: 4px; border-radius: 4px;}
 .page a:hover, .page a.checked{color: #E9E9E9; background-position: 0px -30px; font-weight: 800;}
 
