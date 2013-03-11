@@ -115,8 +115,7 @@ class forum_control extends common_control {
 		$threadlists = array();
 		$forumarr = $this->conf['forumarr'];
 		foreach($forumarr as $fid=>$name) {
-			$forum = $this->mcache->read('forum', $fid);
-			if($forum['accesson']) {
+			if(!empty($forumarr[$fid])) {
 				$access = $this->forum_access->read($forum['fid'], $this->_user['groupid']);
 				if(!empty($access) && !$access['allowread']) {
 					unset($forumarr[$fid]);
