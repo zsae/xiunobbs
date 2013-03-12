@@ -11,48 +11,61 @@ class thread_top extends base_model {
 	}
 	
 	// 保存一级/二级置顶，合并到 $forum
-	public function add_top_1($forum, $tidarr) {
-		$tidkeys = $this->tidarr_to_fidtid($tidarr);
+	public function add_top_1($forum, $fidtidarr) {
+		$tidkeys = $this->tidarr_to_fidtid($fidtidarr);
 		$forum['toptids'] = misc::key_str_merge($forum['toptids'], $tidkeys);
 		$this->forum->update($forum);
 		$this->mcache->clear('forum', $forum['fid']);
 		
 		// 更新到 $thread
-		$this->update_thread_top($forum, $tidarr, 1);
+		$this->update_thread_top($forum, $fidtidarr, 1);
 	}
 	
 	/*
-		$tidarr 格式: array('123-12345', '123-23456')
+		$fidtidarr 格式: array('123-12345', '123-23456')
 	*/
-	public function delete_top_1($forum, $tidarr) {
-		$tidkeys = $this->tidarr_to_fidtid($tidarr);
+	public function delete_top_1($forum, $fidtidarr) {
+		$tidkeys = $this->tidarr_to_fidtid($fidtidarr);
 		$forum['toptids'] = misc::key_str_strip($forum['toptids'], $tidkeys);
 		$this->forum->update($forum);
 		$this->mcache->clear('forum', $forum['fid']);
 		
 		// 更新到 $thread
-		$this->update_thread_top($forum, $tidarr, 0);
+		$this->update_thread_top($forum, $fidtidarr, 0);
 	}
 
 	// $tidkeys 
-	public function add_top_3($forum, $tidarr) {
-		$tidkeys = $this->tidarr_to_fidtid($tidarr);
+	public function add_top_3($forum, $fidtidarr) {
+		$tidkeys = $this->tidarr_to_fidtid($fidtidarr);
 		$toptids = misc::key_str_merge($this->conf['toptids'], $tidkeys);
 		$this->kv->set('toptids', $toptids);
 		$this->runtime->xset('toptids', $toptids);
 		
 		// 更新到 $thread
-		$this->update_thread_top($forum, $tidarr, 3);
+		$this->update_thread_top($forum, $fidtidarr, 3);
 	}
 	
-	public function delete_top_3($forum, $tidarr) {
-		$tidkeys = $this->tidarr_to_fidtid($tidarr);
+	public function delete_top_3($forum, $fidtidarr) {
+		$tidkeys = $this->tidarr_to_fidtid($fidtidarr);
 		$toptids = misc::key_str_strip($this->conf['toptids'], $tidkeys);
 		$this->kv->set('toptids', $toptids);
 		$this->runtime->xset('toptids', $toptids);
 		
 		// 更新到 $thread
-		$this->update_thread_top($forum, $tidarr, 0);
+		$this->update_thread_top($forum, $fidtidarr, 0);
+	}
+	
+	// 删除某个版块下的所有三级置顶数据
+	public function delete_top_3_by_fid($fid) {
+		$toptids = (array)$this->conf['toptids'];
+		foreach($toptids as $v) {
+			list($_fid, $_tid) = explode('-', $v);
+			if($fid == $_fid) {
+				$toptids = misc::key_str_strip($toptids, $v);
+			}
+		}
+		$this->kv->set('toptids', $toptids);
+		$this->runtime->xset('toptids', $toptids);
 	}
 	
 	// 获取 三级置顶的 fid, tid，全表扫描！还好是定长表，仅仅在mysql重启以后需要，节约一个索引。
@@ -71,9 +84,9 @@ class thread_top extends base_model {
 	
 	}
 	
-	private function update_thread_top($forum, $tidarr, $top) {
+	private function update_thread_top($forum, $fidtidarr, $top) {
 		// 更新到 $thread
-		foreach($tidarr as $fid_tid) {
+		foreach($fidtidarr as $fid_tid) {
 			list($fid, $tid) = explode('-', $fid_tid);
 			$thread = $this->thread->read($fid, $tid);
 			if(!empty($thread)) {
@@ -84,9 +97,9 @@ class thread_top extends base_model {
 	}
 	
 	// 返回格式 "123-12345 123-12346 123-12347"
-	private function tidarr_to_fidtid($tidarr) {
+	private function tidarr_to_fidtid($fidtidarr) {
 		$fidtids = '';
-		foreach($tidarr as $fid_tid) {
+		foreach($fidtidarr as $fid_tid) {
 			list($fid, $tid) = explode('-', $fid_tid);
 			$fidtids .= " $fid-$tid";
 		}

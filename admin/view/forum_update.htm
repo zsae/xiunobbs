@@ -102,21 +102,19 @@ dd{width: 84%;}
 						<div class="list" id="accesstable" style="width: 580px; {if !$forum[accesson]}display: none;{/if}">
 							<table class="table">
 								<tr class="header">
-									<td width="90">用户组</td>
-									<td width="90"><input type="checkbox" id="checkread" />访问</td>
-									<td width="90"><input type="checkbox" id="checkpost" />回帖</td>
-									<td width="90"><input type="checkbox" id="checkthread" />发主题</td>
-									<td width="90"><input type="checkbox" id="checkattach" />上传</td>
-									<td width="90"><input type="checkbox" id="checkdown" />下载</td>
+									<td>用户组</td>
+									<td width="80"><input type="checkbox" id="checkread" />访问</td>
+									<td width="80"><input type="checkbox" id="checkpost" />回帖</td>
+									<td width="80"><input type="checkbox" id="checkthread" />发主题</td>
+									<td width="80"><input type="checkbox" id="checkattach" />上传</td>
+									<td width="80"><input type="checkbox" id="checkdown" />下载</td>
 								</tr>
 								<!--{loop $grouplist $group}-->
-								
 								<!--{if $group[groupid] == 11}-->
 								<tr>
-									<td colspan="7">&nbsp;</td>
+									<td colspan="6">&nbsp;</td>
 								</tr>
 								<!--{/if}-->
-								
 								<tr align="center">
 									<td align="right">$group[name] <input type="hidden" name="groupids[]" value="$group[groupid]"></td>
 									<td><input type="checkbox" name="allowread[{$group[groupid]}]" value="1" {if isset($accesslist[$group['groupid']]) && $accesslist[$group['groupid']]['allowread']}checked="checked"{/if} /></td>
@@ -128,7 +126,7 @@ dd{width: 84%;}
 								
 								<!--{if $group[groupid] == 0}-->
 								<tr>
-									<td colspan="7">&nbsp;</td>
+									<td colspan="6">&nbsp;</td>
 								</tr>
 								<!--{/if}-->
 								<!--{/loop}-->
@@ -172,6 +170,9 @@ $('#forumicon_big').clipimg({
 
 <script type="text/javascript">
 $('#forum_update_submit').click(function() {
+	/*$('#accesstable input[type=checkbox]').each(function() {
+		this.value = this.checked ? 1 : 0;
+	});*/
 	$('#forum_update_form').submit();
 	return false;
 });

@@ -124,7 +124,7 @@ class forum_control extends admin_control {
 			$this->check_forum_exists($forum2);
 				
 			// 修改fid 所有涉及到 fid 的表！
-			$this->thread->index_update(array('fid'=>$fid2), array('fid'=>$fid1, 'top'=>0, 'typeid1'=>0, 'typeid2'=>0, 'typeid3'=>0));
+			$threads = $this->thread->index_update(array('fid'=>$fid2), array('fid'=>$fid1, 'top'=>0, 'typeid1'=>0, 'typeid2'=>0, 'typeid3'=>0));
 			$posts = $this->post->index_update(array('fid'=>$fid2), array('fid'=>$fid1));
 			$this->attach->index_update(array('fid'=>$fid2), array('fid'=>$fid1));
 			$this->mypost->index_update(array('fid'=>$fid2), array('fid'=>$fid1));
@@ -135,12 +135,11 @@ class forum_control extends admin_control {
 			$this->thread_type_cate->delete_by_fid($fid2);
 			$this->thread_type_data->delete_by_fid($fid2);
 			$this->modlog->delete_by_fid($fid2);
-			
-			// todo: 清理二级，三级置顶
+			$this->thread_top->delete_top_3_by_fid($fid2);
 			
 			// 更新统计数
 			$forum1['posts'] += $posts;
-			$forum1['threads'] += $forum2['threads'];
+			$forum1['threads'] += $threads;
 			$this->forum->update($forum1);
 			
 			// 更新缓存
@@ -229,7 +228,7 @@ class forum_control extends admin_control {
 					!isset($allowthreads[$groupid]) && $allowthreads[$groupid] = 0;
 					!isset($allowattachs[$groupid]) && $allowattachs[$groupid] = 0;
 					!isset($allowdowns[$groupid]) && $allowdowns[$groupid] = 0;
-					$access = $this->forum_access->read($groupid, $fid);
+					$access = $this->forum_access->read($fid, $groupid);
 					$access['allowread'] = intval($allowreads[$groupid]);
 					$access['allowpost'] = intval($allowposts[$groupid]);
 					$access['allowthread'] = intval($allowthreads[$groupid]);
@@ -238,7 +237,7 @@ class forum_control extends admin_control {
 					$access['allowdown'] = intval($allowdowns[$groupid]);
 					$access['fid'] = $fid;
 					$access['groupid'] = intval($groupid);
-					$this->forum_access->update($access);
+					$this->forum_access->set(array($fid, $groupid), $access);
 				}
 			} else {
 				// 清除权限
