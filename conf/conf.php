@@ -127,10 +127,10 @@ return array(
 	'click_server' => 'http://xiuno.net/clickd/',	// 记录主题点击数，论坛点击数
 	
 	// 加密KEY，
-	'auth_key' => 'ccf1855efaf4f146c5f810ec1846fcf6',
+	'auth_key' => '8f250e8b3af5ac951158da1a0eab53e0',
 	
 	// 站点的ID，用来和官方通信，下载，安装插件。
-	'siteid' => 'ed03a40884e6783d97f1d9c1d0b70eac',
+	'siteid' => '8d37b454e0aea5650572607ce98ea548',
 	
 	'cookie_pre' => 'bbs_',
 	'cookie_domain' => '',

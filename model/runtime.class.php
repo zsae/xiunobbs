@@ -28,23 +28,34 @@ class runtime extends base_model {
 		}
 	}
 	
-	// threads, posts, users, todayposts, todayusers, newuid, newusername, cron_1_next_time, cron_2_next_time, toptids, cronlock
-	public function get($k) {
+	/*public function get($k) {
 		$arr = parent::get($k);
 		return !empty($arr) ? core::json_decode($arr['v']) : FALSE;
 	}
 	
 	public function set($k, $s) {
 		$s = core::json_encode($s);
-		$arr = parent::get($k);
+		$arr = array();
+		$arr['k'] = $k;
 		$arr['v'] = $s;
+		$arr['expiry'] = 0;
 		return parent::set($k, $arr);
+	}*/
+	
+	// 带有过期时间的 get
+	public function get($k) {
+		$arr = parent::get($k);
+		return !empty($arr) && (empty($arr['expiry']) || $arr['expiry'] > $_SERVER['time']) ? core::json_decode($arr['v']) : FALSE;
 	}
 	
-	// 删除一个 key, 
-	// $arg2 = FALSE, $arg3 = FALSE, $arg4 = FALSE 仅仅为了兼容 base_model, 没有意义
-	public function delete($k, $arg2 = FALSE, $arg3 = FALSE, $arg4 = FALSE) {
-		return parent::delete($k);
+	// 带有过期时间的 set
+	public function set($k, $s, $life = 0) {
+		$s = core::json_encode($s);
+		$arr = array();
+		$arr['k'] = $k;
+		$arr['v'] = $s;
+		$arr['expiry'] = $life ? $_SERVER['time'] + $life : 0;
+		return parent::set($k, $arr);
 	}
 	
 	// 合并读取，一次读取多个，增加效率
@@ -110,6 +121,12 @@ class runtime extends base_model {
 			$grouparr = misc::arrlist_key_values($grouplist, 'fid', 'name');
 			$this-->xset('grouparr', $grouparr);
 		}
+	}
+	
+	// 删除一个 key, 
+	// $arg2 = FALSE, $arg3 = FALSE, $arg4 = FALSE 仅仅为了兼容 base_model, 没有意义
+	public function delete($k, $arg2 = FALSE, $arg3 = FALSE, $arg4 = FALSE) {
+		return parent::delete($k);
 	}
 }
 ?>

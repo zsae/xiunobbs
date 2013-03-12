@@ -72,7 +72,11 @@ class index_control extends common_control {
 		$pages = misc::pages('?index-index.htm', $this->conf['threads'], $page, $pagesize);
 		
 		// 在线会员
-		$onlinelist = $this->online->get_onlinelist();
+		$onlinelist = $this->runtime->get('onlinelist');
+		if(empty($onlinelist)) {
+			$onlinelist = $this->online->get_onlinelist();
+			$this->runtime->set('onlinelist', $onlinelist, 60); // 一分钟延迟
+		}
 		$this->view->assign('onlinelist', $onlinelist);
 		
 		// hook index_bbs_after.php

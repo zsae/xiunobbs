@@ -427,6 +427,7 @@ DROP TABLE IF EXISTS bbs_kv;
 CREATE TABLE bbs_kv (
   k char(32) NOT NULL default '',
   v text NOT NULL default '',
+  expiry int(11) unsigned NOT NULL default '0',		# 过期时间
   PRIMARY KEY(k)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -437,5 +438,6 @@ DROP TABLE IF EXISTS bbs_runtime;
 CREATE TABLE bbs_runtime (
   k char(32) NOT NULL default '',
   v text NOT NULL default '',
+  expiry int(11) unsigned NOT NULL default '0',		# 过期时间
   PRIMARY KEY(k)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
