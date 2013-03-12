@@ -105,10 +105,13 @@ $('#submit').click(function() {
 <!--{/if}-->
 <!--{/loop}-->
 
-<!--{if !empty($_POST) && empty($error)}-->
+<!--{if !empty($_POST)}-->
+<!--{if empty($error)}-->
 	$('#notice').html('设置成功！').show();
+<!--{else}-->
+	
 <!--{/if}-->
-
+<!--{/if}-->
 </script>
 
 <!--{hook admin_group_detail_end.htm}-->

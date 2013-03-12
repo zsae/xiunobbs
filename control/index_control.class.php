@@ -75,7 +75,7 @@ class index_control extends common_control {
 		$onlinelist = $this->runtime->get('onlinelist');
 		if(empty($onlinelist)) {
 			$onlinelist = $this->online->get_onlinelist();
-			$this->runtime->set('onlinelist', $onlinelist, 60); // 一分钟延迟
+			$this->runtime->set('onlinelist', $onlinelist, 60); // todo:一分钟延迟，根据负载调节缓存时间
 		}
 		$this->view->assign('onlinelist', $onlinelist);
 		

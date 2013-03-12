@@ -129,7 +129,7 @@ class forum_control extends common_control {
 				}
 				$threadlists[$fid] = $threadlist;
 			}
-			$this->runtime->set('threadlists', $threadlists, 60); // 一分钟的缓存时间！这里可以根据负载进行调节。
+			$this->runtime->set('threadlists', $threadlists, 60); // todo:一分钟的缓存时间！这里可以根据负载进行调节。
 		}
 		$this->view->assign('threadlists', $threadlists);
 		$this->view->display('forum_list.htm');

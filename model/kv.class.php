@@ -21,21 +21,7 @@ class kv extends base_model {
 		
 		//IN_SAE && $this->conf['db']['type'] = 'saekv';
 	}
-	/*
-	public function get($k) {
-		$arr = parent::get($k);
-		return !empty($arr) ? core::json_decode($arr['v']) : FALSE;
-	}
 	
-	public function set($k, $s) {
-		$s = core::json_encode($s);
-		$arr = array();
-		$arr['k'] = $k;
-		$arr['v'] = $s;
-		$arr['expiry'] = 0;
-		return parent::set($k, $arr);
-	}
-	*/
 	// 带有过期时间的 get
 	public function get($k) {
 		$arr = parent::get($k);

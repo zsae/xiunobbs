@@ -48,8 +48,12 @@ $('#conf_submit').click(function() {
 	return false;
 });
 
-<!--{if !empty($_POST['FORM_HASH'])}-->
+<!--{if !empty($_POST)}-->
+<!--{if empty($error)}-->
 	$('#notice').html('清除完毕！').show();
+<!--{else}-->
+	
+<!--{/if}-->
 <!--{/if}-->
  
 </script>
