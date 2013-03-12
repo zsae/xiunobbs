@@ -9,14 +9,14 @@
 				<dl>
 					
 					<!--{if !IN_SAE}-->
-					<dt><label for="tpl"> tmp：</label></dt>
+					<dt><label for="tpl">清空 tmp 目录：</label></dt>
 					<dd><input type="checkbox" id="tmp" name="tmp" value="1" /></dd>
 					<!--{/if}-->
 					
-					<dt><label for="forum"> cache：</label></dt>
-					<dd><input type="checkbox" id="forum" name="forum" value="1" /></dd>
+					<dt><label for="forum">清空 runtime 数据：</label></dt>
+					<dd><input type="checkbox" id="runtime" name="runtime" value="1" /></dd>
 					
-					<dt><label for="count_maxid"> 校对的COUNT, MAXID：</label></dt>
+					<dt><label for="count_maxid">校对的 count(), maxid()：</label></dt>
 					<dd><input type="checkbox" id="count_maxid" name="count_maxid" value="1" /></dd>
 					
 					<!--{hook admin_conf_cache_submit_before.htm}-->

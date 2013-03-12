@@ -207,7 +207,7 @@ class conf_control extends admin_control {
 	public function on_cache() {
 		
 		$tmp = core::gpc('tmp', 'P');
-		$forum = core::gpc('forum', 'P');
+		$runtime = core::gpc('runtime', 'P');
 		$count_maxid = core::gpc('count_maxid', 'P');
 		
 		// tmp
@@ -216,9 +216,8 @@ class conf_control extends admin_control {
 		}
 		
 		// 清空 runtime
-		if($forum) {
-			$this->runtime->xupdate('forumarr');
-			$this->runtime->xupdate('grouparr');
+		if($runtime) {
+			$this->runtime->truncate();
 		}
 		
 		// 校对 framework 的 count, maxid
@@ -237,13 +236,14 @@ class conf_control extends admin_control {
 				'attach'=>'aid',
 				'attach_download'=>'aid',
 				'friendlink'=>'linkid',
-				'pm'=>'pmid',
-				'pay'=>'payid'
+				'pm'=>'pmid'
 			);
 			
 			foreach($maxs as $table=>$maxcol) {
-				$m = $this->$table->index_maxid();
-				$this->$table->maxid($m);
+				if(isset($this->$table->maxid)) {
+					$m = $this->$table->index_maxid();
+					$this->$table->maxid($m);
+				}
 				
 				$n = $this->$table->index_count();
 				$this->$table->count($n);

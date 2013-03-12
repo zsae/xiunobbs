@@ -35,7 +35,7 @@ class forum_access extends base_model {
 		$forumaccesson = array();
 		foreach($forumarr as $fid=>$name) {
 			$accesslist = $this->index_fetch(array('fid' => $fid), array(), 0, 1);
-			empty($accesslist) && $forumaccesson[$fid] = 1;
+			!empty($accesslist) && $forumaccesson[$fid] = 1;
 		}
 		return $forumaccesson;
 	}

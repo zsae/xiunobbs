@@ -127,10 +127,10 @@ return array(
 	'click_server' => 'http://xiuno.net/clickd/',	// 记录主题点击数，论坛点击数
 	
 	// 加密KEY，
-	'auth_key' => '8f250e8b3af5ac951158da1a0eab53e0',
+	'auth_key' => '90802502b9af7fd885f59021a97873a6',
 	
 	// 站点的ID，用来和官方通信，下载，安装插件。
-	'siteid' => '8d37b454e0aea5650572607ce98ea548',
+	'siteid' => '257b094045ee85f7330f25f96647eb34',
 	
 	'cookie_pre' => 'bbs_',
 	'cookie_domain' => '',
@@ -155,3 +155,6 @@ return array(
 	'installed' => 1,			// 是否安装的标志位
 );
 ?>
+
+
+
