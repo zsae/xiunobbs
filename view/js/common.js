@@ -535,7 +535,8 @@ function ajaxdialog_request(url, recall, options) {
 		$.get(url, {ajax: 1}, function(s) {
 			var json = json_decode(s);
 			if((error = json_error(json)) || json.status <= 0) {
-				var errstr = error ? '<span class="clear">' + error + '</span>' : (json.status <= 0 ? '<div class="error">' + json.message + '</div>' : '');
+				error = error.replace(/\n/ig, '<br />');
+				var errstr = error ? '<span class="clear">' + error.replace(/\n/, '<br />') + '</span>' : (json.status <= 0 ? '<div class="error">' + json.message + '</div>' : '');
 				var body = errstr + (json && json.status <= 0 ? '' : '<br /><br /><b>URL:<'+'/b> <a href="' + url + '" target="_blank">' + url + '<'+'/a>');
 				jdialog.dialog({width: 700, title: "错误信息：", body: body, open: true});
 				return false;
