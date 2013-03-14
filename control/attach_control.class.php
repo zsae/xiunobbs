@@ -42,9 +42,6 @@ class attach_control extends common_control {
 			$this->_user['golds'] = 0;
 		}
 		
-		$pay_on = $this->pay->get_conf('pay_on');
-		$this->view->assign('pay_on', $pay_on);
-		
 		$this->view->assign('attach', $attach);
 		// hook attach_dialog_view_before.php
 		$this->view->display('attach_dialog_ajax.htm');

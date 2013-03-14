@@ -70,7 +70,7 @@ class index_control extends common_control {
 		$click_server = $this->conf['click_server']."?db=tid&r=$readtids";
 		
 		$pages = misc::pages('?index-index.htm', $this->conf['threads'], $page, $pagesize);
-		$a += $b;
+
 		// 在线会员
 		$onlinelist = $this->runtime->get('onlinelist');
 		if(empty($onlinelist)) {
