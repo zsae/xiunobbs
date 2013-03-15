@@ -76,6 +76,7 @@ function delay_execute(dialog, recall) {
 			onhook: function(_this) {
 				
 				// --------------------------------------> 设置上传图片的回调函数
+				var file_size_limit = intval('$upload_max_filesize') + ' MB';
 				// append 一个 div 放在 a.image 图标上， swfupload 会替换此 div
 				var upload_button_id   = _this._textarea.id + '_upload_button';
 				$('a.image', _this.toolbar).append('<div id="' + upload_button_id + '" style=" width: 49px; height: 22px;"></div>');
@@ -85,7 +86,7 @@ function delay_execute(dialog, recall) {
 					prevent_swf_caching : false,
 					preserve_relative_urls : false,
 					//post_params: {"sid":"","auth":""},	// 我只能说 swfupload 很狗屎，传个参数还不稳定
-					file_size_limit : '$upload_max_filesize',
+					file_size_limit : file_size_limit,
 					file_types : "*.jpg;*.gif;*.png",
 					file_types_description : "图片文件",
 					file_upload_limit : 100,
@@ -177,13 +178,14 @@ function delay_execute(dialog, recall) {
 					$('a.file', _this.toolbar).alert('$attachnum', {alerticon: 0, width: 16});
 				}
 				
+				var file_size_limit = intval('$upload_max_filesize') + ' MB';
 				var swf_settings = {
 					flash_url : 'view/js/editor/swfupload.swf',
 					upload_url: '?attach-uploadfile-fid-$fid-pid-$pid-$conf[cookie_pre]sid-$_sid-$conf[cookie_pre]auth-$_auth-ajax-1.htm',
 					prevent_swf_caching : false,
 					preserve_relative_urls : false,
 					//post_params: {"sid":"","auth":""},
-					file_size_limit : '$upload_max_filesize',
+					file_size_limit : file_size_limit,
 					file_types : "*.*", //"*.*"
 					file_types_description : "所有文件",
 					file_upload_limit : 100,
@@ -311,6 +313,7 @@ function delay_execute(dialog, recall) {
 				
 				
 				// -----------------------------> 更新附件的 swfupload
+				var file_size_limit = intval('$upload_max_filesize') + ' MB';
 				// 这里要创建一堆 swfupload 对象，会占用比较多的内存，比较恶心。 
 				var jupdate = $('#file_upload_form_$pid tr[aid]').each(function() {
 					var jtr = $(this);
@@ -324,7 +327,7 @@ function delay_execute(dialog, recall) {
 						prevent_swf_caching : false,
 						preserve_relative_urls : false,
 						//post_params: {"sid":"","auth":""},
-						file_size_limit : '$upload_max_filesize',
+						file_size_limit : file_size_limit,
 						file_types : "*.*",
 						file_types_description : "所有文件",
 						file_upload_limit : 100,

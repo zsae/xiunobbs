@@ -243,10 +243,7 @@ class post extends base_model {
 	*/
 	
 	public function html_safe($doc) {
-		include_once FRAMEWORK_PATH.'lib/html_safe.class.php';
-		$safehtml = new HTML_Safe();
-		$result = $safehtml->parse($doc);
-		return $result;
+		return xn_html_safe::filter($doc);
 	}
 	
 	// hook post_model_end.php

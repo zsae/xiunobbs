@@ -11,10 +11,6 @@ class mmisc extends base_model {
 	}
 		
 	public function sendmail($username, $email, $subject, $message) {
-		//error_reporting(E_ALL);
-		//error_reporting(E_STRICT);
-		
-		//date_default_timezone_set('America/Toronto');
 		
 		$mailconf = $this->kv->get('mail_conf');
 		
@@ -28,47 +24,9 @@ class mmisc extends base_model {
 			
 			$smtp = $mailconf['smtplist'][$key];
 			
-			include FRAMEWORK_PATH.'lib/phpmailer.class.php';
-			//include FRAMEWORK_PATH.'lib/phpmailer_smtp.class.php';
-			
-			$mail             = new PHPMailer();
-			
-			//$mail->PluginDir = FRAMEWORK_PATH.'lib/';
-			$mail->IsSMTP(); // telling the class to use SMTP
-			$mail->IsHTML(TRUE);
-			$mail->SMTPDebug  = 0;                     // enables SMTP debug information (for testing)
-			                                   // 1 = errors and messages
-			                                   // 2 = messages only
-			$mail->SMTPAuth   = true;                  // enable SMTP authentication
-			$mail->Host       = $smtp['host']; // sets the SMTP server
-			$mail->Port       = $smtp['port'];                    // set the SMTP port for the GMAIL server
-			$mail->Username   = $smtp['user']; // SMTP account username
-			$mail->Password   = $smtp['pass'];        // SMTP account password
-			$mail->Timeout    = 5;	// 
-			$mail->CharSet    = 'UTF-8';
-			
-			//$fromemail = $this->conf['reg_email_user'].'@'.$this->conf['reg_email_host'];
-			
-			$mail->SetFrom($smtp['email'], $this->conf['app_name']);
-			$mail->AddReplyTo($smtp['email'], $this->conf['app_name']);
-			$mail->Subject    = $subject;
-			$mail->AltBody    = $message; // optional, comment out and test
-			$message          = str_replace("\\",'',$message);
-			$mail->MsgHTML($message);
-			
-			$mail->AddAddress($email, $username);
-			
-			//$mail->AddAttachment("images/phpmailer.gif");      // attachment
-			//$mail->AddAttachment("images/phpmailer_mini.gif"); // attachment
-			
-			if(!$mail->Send()) {
-				return "Mailer Error: " . $mail->ErrorInfo;
-			} else {
-				return '';
-			}
+			return xn_mail::send($smtp, $username, $email, $subject, $message);
 			
 		}
-	
 	}
 	
 	public function get_email_site($str) {	
