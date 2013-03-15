@@ -7,7 +7,7 @@
 //sae_xhprof_start();
 
 // 调试模式: 0:关闭; 1: 线上调试模式; 2: 本地开发详细调试模式;
-define('DEBUG', 2);
+define('DEBUG', 0);
 
 // 有些环境关闭了错误显示
 DEBUG && function_exists('ini_set') && @ini_set('display_errors', 'On');
