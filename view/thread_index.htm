@@ -30,9 +30,7 @@
 	<!--{php $u = isset($userlist[$post['uid']]) ? $userlist[$post['uid']] : array('uid'=>0, 'username'=>'', 'groupname'=>'', 'avatar_middle'=>'');}-->
 	<!--{hook thread_index_post_loop_start.htm}-->
 	<table border="0" cellpadding="0" cellspacing="0" width="100%" align="center" style="margin-top: 8px; margin-bottom: 8px; table-layout: fixed;">
-		<!--{hook thread_index_post_tr_loop_start.htm}-->
 		<tr>
-			<!--{hook thread_index_post_td_1_before.htm}-->
 			<td width="70" valign="top">
 				<div>
 					<a href_real="?you-index-uid-$u[uid].htm" target="_blank" href="?you-profile-uid-$u[uid]-ajax-1.htm" class="ajaxdialog_hover" ajaxdialog="{position: 5, modal: false, timeout: 1000, showtitle: false}" onclick="return false;" style="display: block" rel="nofollow">
@@ -42,12 +40,10 @@
 				<p>$u[username]</p>
 				<!--{hook thread_index_userinfo.htm}-->
 			</td>
-			<!--{hook thread_index_post_td_1_after.htm}-->
 			<td width="15"></td>
-			<!--{hook thread_index_post_td_2_after.htm}-->
 			<td class="post_td" valign="top">
 				<span class="icon icon-left-arrow" style="position: absolute; z-index: 9; float: left; margin-left: -9px; margin-top: 10px;"></span>
-				<div class="bg1 border shadow post" style="padding: 8px;">
+				<div class="bg1 border post" style="padding: 8px;">
 				
 					<!--{if $thread[firstpid] == $post[pid]}-->
 					<h2 id="subject_$tid">
@@ -64,7 +60,7 @@
 					</h2>
 					<!--{/if}-->
 					
-					<div id="message_$post[pid]" class="message">$post[message] <!--{hook thread_index_message_end.htm}--><span class="small grey"> ($post[dateline])</span> </div>
+					<div id="message_$post[pid]" class="message">$post[message] <!--{hook thread_index_message_end.htm}--></div>
 					
 					<!--{hook thread_index_message_after.htm}-->
 					
@@ -165,10 +161,9 @@
 					<!--{hook thread_index_attachlist_after.htm}-->
 					
 					<div class="grey mod" pid="$post[pid]">
-						<!--{if $thread[firstpid] == $post[pid]}-->
-						<span class="grey middle" style="font-weight: normal;">(回帖:<span class="blue">$thread[posts_fmt]</span> 查看:<span id="thread_views">$thread[views]</span>)</span>
+					<!--{if $thread[firstpid] != $post[pid]}-->
+						<span style="width: 150px; float: left; text-align: left;" class="small">$post[dateline]</span>
 						<!--{/if}-->
-						
 						<!--{if $ismod}-->	
 						<a href="?mod-rate-fid-$fid-pid-$post[pid].htm" class="ajaxdialog" ajaxdialog="{position: 1, modal: false, cache: false}">评分</a>
 						<!--{/if}-->
@@ -177,12 +172,26 @@
 						<a href="?post-delete-fid-$fid-pid-$post[pid].htm" onclick="return window.confirm('您确定删除吗？');">删除</a>
 						<!--{/if}-->
 						#$post[floor]楼
+						
+						
 					</div>
 				</div>
 			</td>
-			<!--{hook thread_index_post_td_3_after.htm}-->
 		</tr>
-		<!--{hook thread_index_post_tr_loop_end.htm}-->
+		<!--{if $thread[firstpid] == $post[pid]}-->
+		<tr>
+			<td></td>
+			<td></td>
+			<td>
+				<div class="bg2 border" style="margin-top: 1px; padding: 8px;">
+					<span class="grey">发帖时间：</span><b>$post[dateline]</b> &nbsp; <span class="grey2">|</span> &nbsp; 
+					<span class="grey">查看数：</span><span id="thread_views" class="bold">$thread[views]</span> &nbsp; <span class="grey2">|</span> &nbsp; 
+					<span class="grey">回复数：</span><b>$thread[posts]</b>
+				</div>
+			</td>
+		</tr>
+		<!--{/if}-->
+		
 	</table>
 	<!--{hook thread_index_post_loop_end.htm}-->
 	<!--{/loop}-->
@@ -190,7 +199,6 @@
 	<!--{hook thread_index_quick_post_start.htm}-->
 	<table border="0" cellpadding="0" cellspacing="0" width="100%" align="center" style="margin-top: 4px;">
 		<tr>
-			<!--{hook thread_index_quick_post_td_1_before.htm}-->
 			<td width="70" valign="top">
 				<div>
 					<a href_real="?you-index-uid-$_user[uid].htm" target="_blank" href="?you-profile-uid-$_user[uid]-ajax-1.htm" class="ajaxdialog_hover" ajaxdialog="{position: 5, modal: false, timeout: 1000, showtitle: false}" onclick="return false;" style="display: block" rel="nofollow">
@@ -200,9 +208,7 @@
 				<p><b>$_user[username]</b></p>
 				<p class="grey">$_user[groupname]</p>
 			</td>
-			<!--{hook thread_index_quick_post_td_1_after.htm}-->
 			<td width="15"></td>
-			<!--{hook thread_index_quick_post_td_2_after.htm}-->
 			<td class="post_td" valign="top">
 				<span class="icon icon-left-arrow" style="position: absolute; z-index: 9; float: left; margin-left: -9px; margin-top: 10px;"></span>
 				<div class="bg1 border shadow" style="padding: 8px;">
@@ -222,7 +228,6 @@
 					</form>
 				</div>
 			</td>
-			<!--{hook thread_index_quick_post_td_3_after.htm}-->
 		</tr>
 	</table>
 	<!--{hook thread_index_quick_post_end.htm}-->
@@ -437,6 +442,13 @@ if($('pre').length > 0) {
 		SyntaxHighlighter.all();
 	});
 }
+
+// 每层附加栏
+$('.post').hover(function() {
+	$('div.mod', this).stop(true, false).fadeTo(600, 1.0);
+	}, function() {
+	$('div.mod', this).delay(500).fadeTo(600, 0.0);
+});
 
 </script>
 
