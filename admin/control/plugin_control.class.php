@@ -485,6 +485,7 @@ class plugin_control extends admin_control {
 	
 	private function set_setting($plugindir, $setting) {
 		$settingfile = $this->conf['upload_path'].'plugin.json';
+		!is_file($settingfile) && file_put_contents($settingfile, '');
 		$arr = core::json_decode(file_get_contents($settingfile));
 		$arr[$plugindir] = empty($arr[$plugindir]) ? $setting : array_merge($arr[$plugindir], $setting);
 		file_put_contents($settingfile, core::json_encode($arr));

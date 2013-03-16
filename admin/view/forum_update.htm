@@ -74,8 +74,8 @@ dd{width: 84%;}
 					</dd>
 					<div id="typeon_div" {if empty($forum[typelist])} style="display: none;" {/if}>
 						<!--{loop $forum[typelist] $typecateid $typelist}-->
-						<div class="typecate" typecateid="$typecateid">
-							<table>
+						<div class="typecate" typecateid="$typecateid" unselectable="on">
+							<table unselectable="on">
 								<tr>
 									<td width="30" align="center">启用</td>
 									<td width="30" align="center">顺序</td>
@@ -83,9 +83,9 @@ dd{width: 84%;}
 									<td>小分类名称</td>
 								</tr>
 								<tr>
-									<td valign="top" align="center"><input type="checkbox" name="typecateenable[$typecateid]" value="1" {if $forum[typecatelist][$typecateid][enable]}checked="checked"{/if} /></td>
-									<td valign="top" align="center"><input type="text" name="typecaterank[$typecateid]" value="$forum[typecatelist][$typecateid][rank]" size="4" /></td>
-									<td valign="top"><input type="text" name="typecatename[$typecateid]" value="$forum[typecatelist][$typecateid][catename]" size="4" /></td>
+									<td unselectable="on" valign="top" align="center"><input type="checkbox" name="typecateenable[$typecateid]" value="1" {if $forum[typecatelist][$typecateid][enable]}checked="checked"{/if} /></td>
+									<td unselectable="on" valign="top" align="center"><input type="text" name="typecaterank[$typecateid]" value="$forum[typecatelist][$typecateid][rank]" size="4" /></td>
+									<td unselectable="on" valign="top"><input type="text" name="typecatename[$typecateid]" value="$forum[typecatelist][$typecateid][catename]" size="4" /></td>
 									<td unselectable="on" class="drag_parent" typecateid="$typecateid">
 										<!--{loop $typelist $type}--><span class="border drag_item" typeid="$type[typeid]"><input type="text" name="typename[{$type[typeid]}]" value="$type[typename]" size="4" /></span><!--{/loop}-->
 									</td>
