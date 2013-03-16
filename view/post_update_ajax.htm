@@ -13,9 +13,6 @@ form.update_form dd {width: 91%;}
 			<label for="update_subject">标题：</label>
 		</dt>
 		<dd>
-			<!--{if $typeselect1}-->$typeselect1<!--{/if}-->
-			<!--{if $typeselect2}-->$typeselect2<!--{/if}-->
-			<!--{if $typeselect3}-->$typeselect3<!--{/if}-->
 			<input type="text" name="subject" id="update_subject_$pid" value="$thread[subject]" style="width: 600px;" /> <span class="small grey">(200字)</span>
 		</dd>
 		<!--{/if}-->
@@ -24,6 +21,15 @@ form.update_form dd {width: 91%;}
 		
 		<dt><label for="update_message">内容：</label></dt>
 		<dd style="position: relative;"><textarea name="message" id="update_message_$pid" style="width: 780px; height: 400px;">$post[message_html]</textarea></dd>
+		
+		<!--{if $typeselect1 || $typeselect2 || $typeselect3}-->
+		<dt><label for="typeselect">分类：</label></dt>
+		<dd>
+			<!--{if $typeselect1}-->$typeselect1<!--{/if}-->
+			<!--{if $typeselect2}-->$typeselect2<!--{/if}-->
+			<!--{if $typeselect3}-->$typeselect3<!--{/if}-->
+		</dd>
+		<!--{/if}-->
 		
 		<!--{hook post_update_message_after.htm}-->
 		

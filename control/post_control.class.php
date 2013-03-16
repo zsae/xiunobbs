@@ -585,6 +585,16 @@ class post_control extends common_control {
 			$this->location("?thread-index-fid-$fid-tid-$tid-page-$post[page].htm");
 		}
 	}
+	
+	
+	public function on_typeselect() {
+		$fid = intval(core::gpc('fid'));
+		$forum = $this->mcache->read('forum', $fid);
+		$this->check_forum_exists($forum);
+		$this->check_forum_access($forum, 'read', $message);
+		$typeselects = $this->init_type_select($forum);
+		$this->message($typeselects, 1);
+	}
 
 	private function get_attachlist_by_tmp($uid) {
 		$aids = $this->kv->get("upload_{$uid}_aids.tmp");
@@ -613,9 +623,9 @@ class post_control extends common_control {
 
 	// copy from post_control.class.php
 	private function init_type_select($forum, $typeid1 = 0, $typeid2 = 0, $typeid3 = 0) {
-		$arradd1 = !empty($forum['typecates'][1]) ? array('0'=>'▼'.$forum['typecates'][1]) : array();
-		$arradd2 = !empty($forum['typecates'][2]) ? array('0'=>'▼'.$forum['typecates'][2]) : array();
-		$arradd3 = !empty($forum['typecates'][3]) ? array('0'=>'▼'.$forum['typecates'][3]) : array();
+		$arradd1 = !empty($forum['typecates'][1]) ? array('0'=>$forum['typecates'][1].'▼') : array();
+		$arradd2 = !empty($forum['typecates'][2]) ? array('0'=>$forum['typecates'][2].'▼') : array();
+		$arradd3 = !empty($forum['typecates'][3]) ? array('0'=>$forum['typecates'][3].'▼') : array();
 		$typearr1 = empty($forum['types'][1]) ? array() : $arradd1 + (array)$forum['types'][1];
 		$typearr2 = empty($forum['types'][2]) ? array() : $arradd2 + (array)$forum['types'][2];
 		$typearr3 = empty($forum['types'][3]) ? array() : $arradd3 + (array)$forum['types'][3];
@@ -625,6 +635,7 @@ class post_control extends common_control {
 		$this->view->assign('typeselect1', $typeselect1);
 		$this->view->assign('typeselect2', $typeselect2);
 		$this->view->assign('typeselect3', $typeselect3);
+		return array('typeselect1'=>$typeselect1, 'typeselect2'=>$typeselect2, 'typeselect3'=>$typeselect3);
 	}
 	//hook post_control_after.php
 }

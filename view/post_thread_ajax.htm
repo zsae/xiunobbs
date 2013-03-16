@@ -10,10 +10,7 @@
 		<!--{hook post_thread_subject_before.htm}-->
 		<dt><label for="subject">标题：</label></dt>
 		<dd>
-			<!--{if $forumselect}-->$forumselect<!--{/if}-->
-			<!--{if $typeselect1}-->$typeselect1<!--{/if}-->
-			<!--{if $typeselect2}-->$typeselect2<!--{/if}-->
-			<!--{if $typeselect3}-->$typeselect3<!--{/if}-->
+			
 			<input type="text" name="subject" id="subject" value="$thread[subject]" style="width: 500px;" /> <span class="small grey">(200字)</span>
 		</dd>
 		
@@ -21,6 +18,18 @@
 		
 		<dt><label for="thread_message">内容：</label></dt>
 		<dd style="position: relative;"><textarea name="message" id="thread_message" style="width: 780px; height: 400px;"></textarea></dd>
+		
+		<!--{if $typeselect1 || $typeselect2 || $typeselect3}-->
+		<dt><label for="typeselect">分类：</label></dt>
+		<dd>
+			<!--{if $forumselect}-->$forumselect<!--{/if}-->
+			<span id="typeselect">
+			<!--{if $typeselect1}-->$typeselect1<!--{/if}-->
+			<!--{if $typeselect2}-->$typeselect2<!--{/if}-->
+			<!--{if $typeselect3}-->$typeselect3<!--{/if}-->
+			</span>
+		</dd>
+		<!--{/if}-->
 		
 		<!--{hook post_thread_message_after.htm}-->
 		
@@ -361,6 +370,24 @@ function delay_execute(dialog, recall) {
 		});
 		$('#post_thread_cancel').click(function() {
 			dialog.close();
+		});
+		
+		
+		// 选择版块，AJAX 加载主题分类
+		$('#fid').change(function() {
+			var fid = this.value;
+			$.get('?post-typeselect-fid-'+fid+'-ajax-1.htm', function(s) {
+				var json = json_decode(s);
+				if(error = json_error(json)) {alert(error); return false;}
+				if(json.status <=0) {
+					alert(json.message);
+					return false;
+				}
+				
+				json = json.message;
+				var typeslects = json.typeselect1 + json.typeselect2 + json.typeselect3;
+				$('#typeselect').html(typeslects);
+			});
 		});
 		
 		// hook post_thread_js_end.htm
