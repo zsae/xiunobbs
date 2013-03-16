@@ -22,7 +22,7 @@ form.update_form dd {width: 91%;}
 		<dt><label for="update_message">内容：</label></dt>
 		<dd style="position: relative;"><textarea name="message" id="update_message_$pid" style="width: 780px; height: 400px;">$post[message_html]</textarea></dd>
 		
-		<!--{if $typeselect1 || $typeselect2 || $typeselect3}-->
+		<!--{if !empty($typeselect1) || !empty($typeselect2) || !empty($typeselect3)}-->
 		<dt><label for="typeselect">分类：</label></dt>
 		<dd>
 			<!--{if $typeselect1}-->$typeselect1<!--{/if}-->
