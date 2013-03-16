@@ -54,7 +54,7 @@ class thread extends base_model {
 		} else {
 			$thread['typename1'] = $thread['typename2'] = $thread['typename3'] = '';
 		}
-		$thread['forumname'] = isset($this->conf['forumarr'][$thread['tid']]) ? $this->conf['forumarr'][$thread['tid']] : '';
+		$thread['forumname'] = isset($this->conf['forumarr'][$thread['fid']]) ? $this->conf['forumarr'][$thread['fid']] : '';
 		// hook thread_model_format_end.php
 	}
 	

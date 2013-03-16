@@ -243,6 +243,7 @@ class post extends base_model {
 	*/
 	
 	public function html_safe($doc) {
+		return $doc;// todo:
 		return xn_html_safe::filter($doc);
 	}
 	
