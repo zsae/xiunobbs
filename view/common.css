@@ -318,8 +318,8 @@ span.nopic {width: 54px; height: 54px; background: url(image/nopic.gif) no-repea
 .threadlist td{white-space: nowrap; overflow: hidden;}
 .threadlist table .subject{font-size: 14px; padding-left: 8px;}
 #threadtype {margin-bottom: 2px; margin-top: 0px;}
-#threadtype a{text-shadow: 0 1px #FFFFFF;}
-#threadtype div{ line-height: 20px; height: 20px;}
+#threadtype a{text-shadow: 0 1px #FFFFFF; padding-left: 0px; padding-right: 8px;}
+#threadtype div{ line-height: 20px; }
 #threadtype a.checked{font-weight: 100; color: #00BA53;}
 
 /* 帖子详情页 */
