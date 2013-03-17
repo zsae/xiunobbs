@@ -18,26 +18,7 @@ class index_control extends common_control {
 	// 给插件预留个位置
 	public function on_index() {
 		
-		
-		$this->kv->xset('a', 'b', 'conf2');
-		$this->kv->set('conf3', '3333');
-		
 		// hook index_index_before.php
-		
-		/*$plugins = core::get_plugins($this->conf);
-		foreach($plugins as &$v) {
-			$v['installs'] = 12;
-			$v['sells'] = 22;
-			$v['stars'] = 3;
-			$v['version'] = '1.0';
-			$v['lastupdate'] = $_SERVER['time'];
-			$v['price'] = 0;
-			$v['is_safe'] = 1;
-		}
-		echo json_encode($plugins);
-		exit;*/
-		
-		// 按照 tid 倒序获取数据
 		
 		$this->on_bbs();
 	}
@@ -82,9 +63,6 @@ class index_control extends common_control {
 			$this->runtime->set('onlinelist', $onlinelist, 60); // todo:一分钟延迟，根据负载调节缓存时间
 		}
 		$this->view->assign('onlinelist', $onlinelist);
-		
-		// hook index_bbs_after.php
-		
 		$ismod = ($this->_user['groupid'] > 0 && $this->_user['groupid'] <= 4);
 		$fid = 0;
 		$this->view->assign('ismod', $ismod);
@@ -93,6 +71,9 @@ class index_control extends common_control {
 		$this->view->assign('toplist', $toplist);
 		$this->view->assign('click_server', $click_server);
 		$this->view->assign('pages', $pages);
+		
+		// hook index_bbs_after.php
+		
 		$this->view->display('index.htm');
 	}
 	
