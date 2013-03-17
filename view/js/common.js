@@ -4,6 +4,7 @@
 
 var is_ie = $.browser.msie;
 var is_ie6 = $.browser.msie && $.browser.version == '6.0';
+var is_mobile = !!navigator.userAgent.match(/AppleWebKit.*Mobile.*/)||!!navigator.userAgent.match(/AppleWebKit/);
 
 /*
 window.onerror = function() {

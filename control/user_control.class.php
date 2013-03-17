@@ -94,6 +94,14 @@ class user_control extends common_control {
 				$this->view->display('user_logout.htm');
 			}
 		} else {
+			
+			// 清除 online username
+			$sid = $this->_sid;
+			$online = $this->online->read($sid);
+			$online['uid'] = 0;
+			$online['username'] = '';
+			$this->online->update($online);
+			
 			// hook user_logout_after.php
 			misc::setcookie($this->conf['cookie_pre'].'auth', '', 0, $this->conf['cookie_path'], $this->conf['cookie_domain']);
 			$this->message($error);
