@@ -5,7 +5,7 @@
 // 优化了加载顺序，表情最后加载。
 
 // 避免重复加载
-if(!$.editor && !is_mobile) {
+if(!$.editor) {
 
 // function extended jquery
 $.fn.editor = function(settings) {
