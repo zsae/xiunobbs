@@ -37,7 +37,7 @@
 						<span class="avatar_middle border bg1" {if $u[avatar_middle]}style="background-image: url($u[avatar_middle])"{/if}></span>
 					</a>
 				</div>
-				<p>$u[username]</p>
+				<div>$u[username]</div>
 				<!--{hook thread_index_userinfo.htm}-->
 			</td>
 			<td width="15"></td>
@@ -92,7 +92,7 @@
 					</div>
 					<!--{/if}-->
 					
-					<!--{if $thread[firstpid] == $post[pid] && $thread[modnum] > 0}-->
+					<!--{if $ismod && $thread[firstpid] == $post[pid] && $thread[modnum] > 0}-->
 					<br />
 					<div class="modlist">
 						<table width="100%" cellpadding="2" class="noborder">

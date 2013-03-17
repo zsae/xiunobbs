@@ -196,7 +196,7 @@ CREATE TABLE bbs_thread (
   firstpid int(11) unsigned NOT NULL default '0',	# 首贴pid
   status tinyint(1) NOT NULL default '0',		# 状态 [未使用]
   lastuid int(11) unsigned NOT NULL default '0',	# 最近参与的 uid
-  lastusername int(11) unsigned NOT NULL default '0',	# 最近参与的 username
+  lastusername char(16) unsigned NOT NULL default '0',	# 最近参与的 username
   PRIMARY KEY (fid, tid),				# 按照发帖时间排序
   KEY (tid),						# 按照 tid 排序，首页需要。
   KEY (fid, floortime)					# 按照顶贴时间排序
