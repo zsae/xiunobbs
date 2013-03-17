@@ -127,9 +127,6 @@ return array (
 	'system_uid' => 2,			// 系统uid，用来发送短消息
 	'system_username' => '系统',		// 系统用户名，用来发送短消息
 	
-	'forumicon_width_small' => 16,		// 论坛图标的宽度:小
-	'forumicon_width_middle' => 44,		// 论坛图标的宽度:中
-	'forumicon_width_big' => 65,		// 论坛图标的宽度:大
 	'avatar_width_small' => 16,		// 用户头像宽度:小
 	'avatar_width_middle' => 54,		// 用户头像宽度:中
 	'avatar_width_big' => 88,		// 用户头像宽度:大

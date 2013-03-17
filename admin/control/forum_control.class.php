@@ -371,59 +371,6 @@ class forum_control extends admin_control {
 		$this->message('删除完毕', 1, '?forum-list.htm');
 		
 	}
-
-	public function on_uploadicon() {
-		
-		$uid = $this->_user['uid'];
-		$this->check_forbidden_group();
-		$user = $this->user->read($uid);
-		
-		$fid = intval(core::gpc('fid'));
-		$destfile = $this->conf['upload_path']."forum/{$fid}_tmp.jpg";
-		$desturl = $this->conf['upload_url']."forum/{$fid}_tmp.jpg";
-		$arr = image::thumb($_FILES['Filedata']['tmp_name'], $destfile, 800, 600);
-		$arr['width'] < $this->conf['forumicon_width_big'] && $arr['width'] = $this->conf['forumicon_width_big'];
-		$json = array('width'=>$arr['width'], 'height'=>$arr['height'], 'body'=>$desturl);
-		
-		// hook admin_forum_updateicon_after.php
-		
-		$this->message($json);
-	}
-	
-	public function on_clipicon() {
-		$fid = intval(core::gpc('fid'));
-		$forum = $this->forum->read($fid);
-		$this->check_forum_exists($forum);
-		
-		$x = intval(core::gpc('x', 'P'));
-		$y = intval(core::gpc('y', 'P'));
-		$w = intval(core::gpc('w', 'P'));
-		$h = intval(core::gpc('h', 'P'));
-		$srcfile = $this->conf['upload_path']."forum/{$fid}_tmp.jpg";
-		$tmpfile = $this->conf['upload_path']."forum/{$fid}_tmp_clip.jpg";
-		$smallfile = $this->conf['upload_path']."forum/{$fid}_small.gif";
-		$middlefile = $this->conf['upload_path']."forum/{$fid}_middle.gif";
-		$bigfile = $this->conf['upload_path']."forum/{$fid}_big.gif";
-		$bigurl = $this->conf['upload_url']."forum/{$fid}_big.gif";
-		image::clip($srcfile, $tmpfile, $x, $y, $w, $h);
-		image::thumb($tmpfile, $smallfile, $this->conf['forumicon_width_small'], $this->conf['forumicon_width_small']);
-		image::thumb($tmpfile, $middlefile, $this->conf['forumicon_width_middle'], $this->conf['forumicon_width_middle']);
-		image::thumb($tmpfile, $bigfile, $this->conf['forumicon_width_big'], $this->conf['forumicon_width_big']);
-		unlink($srcfile);
-		unlink($tmpfile);
-		
-		if(is_file($bigfile)) {
-			$forum['icon'] = $_SERVER['time'];
-			$this->forum->update($forum);
-			$this->mcache->clear('forum', $fid);
-			
-			// hook admin_forum_clipicon_after.php
-			
-			$this->message($bigurl);
-		} else {
-			$this->message('保存失败', 0);
-		}
-	}
 	
 	private function process_threadtype($fid) {
 		

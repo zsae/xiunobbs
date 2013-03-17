@@ -31,16 +31,8 @@ dd{width: 84%;}
 						<dt><label for="brief">版块简介：</label></dt>
 						<dd><textarea name="brief" id="brief" style="width: 400px; height: 40px; font-size: 12px;">$forum[brief]</textarea></dd>
 					</div>
-					<div style="clear: both; overflow: hidden;">
-						<dt>
-							<label for="icon">版块图标：</label>
-							<div><span class="forumicon_big" id="forumicon_big" style="float: right; {if $forum[forumicon_big]}background: url($forum[forumicon_big]);{/if}"></span></div>
-						</dt>
-						<dd>
-							<input type="button" class="button smallblue" id="forumicon_big_button" value="上传图片" />
-						</dd>
-					</div>
-					<!--{hook forum_update_forumicon_after.htm}-->
+
+					<!--{hook forum_update_brief_after.htm}-->
 					
 					<div style="clear: both; overflow: hidden;">
 						<dt><label for="orderby">主题排序方式：</label></dt>
@@ -152,21 +144,7 @@ dd{width: 84%;}
 <!--{include footer.htm}-->
 
 <script type="text/javascript" src="../view/js/clipimg/swfupload.js"></script>
-<script type="text/javascript" src="../view/js/clipimg/clipimg.js"></script>
 <script type="text/javascript" src="../view/js/drag.js"></script>
-<script type="text/javascript">
-$('#forumicon_big').clipimg({
-	postparams: null, 
-	buttonid: 'forumicon_big_button', 
-	uploadurl: '?forum-uploadicon-fid-$fid-$conf[cookie_pre]sid-$_sid-$conf[cookie_pre]auth-$_auth-$conf[cookie_pre]admin_auth-$admin_auth-ajax-1.htm',
-	clipurl: '?forum-clipicon-fid-$fid-ajax-1.htm',
-	baseurl: 'view/js/clipimg/',
-	success_recall: function(imgurl, pos) {
-		$('#notice').html('修改成功！').show().delay(3000).fadeOut('fast');
-		//$('#avatar_menu').css('background-image', $('#avatar').css('background-image').replace(/_big/ig, ''));
-	}
-});
-</script>
 
 <script type="text/javascript">
 $('#forum_update_submit').click(function() {

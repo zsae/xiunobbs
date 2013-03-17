@@ -57,12 +57,6 @@ class index_control extends common_control {
 		$pages = misc::pages('?index-index.htm', $this->conf['threads'], $page, $pagesize);
 
 		// 在线会员
-		$onlinelist = $this->runtime->get('onlinelist');
-		if(empty($onlinelist)) {
-			$onlinelist = $this->online->get_onlinelist();
-			$this->runtime->set('onlinelist', $onlinelist, 60); // todo:一分钟延迟，根据负载调节缓存时间
-		}
-		$this->view->assign('onlinelist', $onlinelist);
 		$ismod = ($this->_user['groupid'] > 0 && $this->_user['groupid'] <= 4);
 		$fid = 0;
 		$this->view->assign('ismod', $ismod);

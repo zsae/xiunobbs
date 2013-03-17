@@ -215,20 +215,6 @@ function upgrade_forum() {
 					$old['fup'] = $pforum['fup'];
 				}
 				
-				if($old2['icon']) {
-					$srcfile = $dx2_attach_path.'common/'.$old2['icon'];
-					$bigfile = $conf['upload_path'].'forum/'.$fid.'_big.gif';
-					$middlefile = $conf['upload_path'].'forum/'.$fid.'_middle.gif';
-					$smallfile = $conf['upload_path'].'forum/'.$fid.'_small.gif';
-					if(is_file($srcfile)) {
-						!is_file($bigfile) && image::thumb($srcfile, $bigfile, $conf['forumicon_width_big'], $conf['forumicon_width_big']);
-						!is_file($middlefile) && image::thumb($srcfile, $middlefile, $conf['forumicon_width_middle'], $conf['forumicon_width_middle']);
-						!is_file($smallfile) && image::thumb($srcfile, $smallfile, $conf['forumicon_width_small'], $conf['forumicon_width_small']);
-					} else {
-						$old2['icon'] = '';
-					}
-				}
-				
 				// 初始化主题分类
 				$mthread_type->init($fid);
 				$mthread_type_cate->init($fid);
@@ -277,7 +263,6 @@ function upgrade_forum() {
 					'todayposts'=> $old['todayposts'],
 					'lasttid'=> $last[0],
 					'brief'=> strip_tags($old2['description']),
-					'icon'=> $old2['icon'] ? 1 : 0,
 					'accesson'=> 0,
 					'modids'=> '',
 					'modnames'=> '',

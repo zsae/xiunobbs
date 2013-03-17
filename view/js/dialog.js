@@ -81,7 +81,7 @@ if(!$.fn.dialog) {
 			if($('#overlay').length == 0) $('<div class="overlay" id="overlay" ref="0" ></div>').hide().appendTo('body').height($(document).height()).keydown(function(e) {e.stopPropagation();}).keyup(function(e) {e.stopPropagation();});
 			
 			var jdiv = $(div);
-			var divcontent = '<div class="header bg6"'+(settings.showtitle ? '' : ' style="display: none;"')+'><a href="javascript: void(0)" class="icon icon-close" style="float:right; margin-right: 4px; margin-top: 2px;" title="关闭"></a><a href="javascript: void(0)" class="icon icon-max" style="float:right; margin-right: 4px; margin-top: 2px; display: none;" title="最大/小化"></a><span>' + div.title + '</span></div>' + '<div class="body">' + jdiv.html() + '</div>';
+			var divcontent = '<div class="header bg5"'+(settings.showtitle ? '' : ' style="display: none;"')+'><a href="javascript: void(0)" class="icon icon-close" style="float:right; margin-right: 4px; margin-top: 2px;" title="关闭"></a><a href="javascript: void(0)" class="icon icon-max" style="float:right; margin-right: 4px; margin-top: 2px; display: none;" title="最大/小化"></a><span>' + div.title + '</span></div>' + '<div class="body">' + jdiv.html() + '</div>';
 			jdiv.html(divcontent);
 			
 			// 按照参数进行设置

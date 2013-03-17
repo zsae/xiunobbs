@@ -62,10 +62,6 @@ class forum extends base_model {
 	}
 	
 	public function format(&$forum, $threadtype = FALSE) {
-		$forum['forumicon_small'] = $forum['icon'] ? $this->conf['upload_url']."forum/$forum[fid]_small.gif" : '';
-		$forum['forumicon_middle'] = $forum['icon'] ? $this->conf['upload_url']."forum/$forum[fid]_middle.gif" : '';
-		$forum['forumicon_big'] = $forum['icon'] ? $this->conf['upload_url']."forum/$forum[fid]_big.gif" : '';
-		
 		// 版主
 		$forum['modlist'] = array();
 		if(!empty($forum['modids'])) {

@@ -100,7 +100,6 @@ CREATE TABLE bbs_forum (				# 字段中文名			# 控件属性					# 字段描�
   todayposts mediumint(8) unsigned NOT NULL default '0',# 今日发帖，计划任务每日凌晨０点清空为０
   lasttid int(11) NOT NULL default '0',			# 最后发表的tid
   brief text NOT NULL default '',			# 版块简介 允许HTML		# type="text"
-  icon tinyint NOT NULL default '0',			# 版块 icon, url upload/forum/123.gif，默认 view/image/forum.gif forum_new.gif 37 * 37	# type="text"
   accesson tinyint(1) NOT NULL default '0',		# 是否启用访问规则
   modids char(73) NOT NULL default '',			# 版主 uid，最多6个，逗号隔开
   modnames char(103) NOT NULL default '',		# 版主 username，最多6个，逗号隔开

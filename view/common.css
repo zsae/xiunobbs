@@ -42,8 +42,7 @@ p {margin-top: 4px;}
 .bg2 {background: #FAFAFA;}
 .bg3 {background: #E9E9E9} 
 .bg4 {background: #D9D9D9}
-.bg5 {background: url(image/bg5.gif) repeat-x;}
-.bg6 {background: url(image/bg6.gif) repeat-x;}
+.bg5 {background: url(image/bg5.) repeat-x;}
 
 /* 常用杂项 */
 .bold{font-weight: 800;}
@@ -127,29 +126,9 @@ a.icon:hover {background-image: url(image/icon-hover.gif)}
 .icon-myhome {background-position: -80px -96px;}
 .icon-stat {background-position: -96px -96px;}
 
-/* group */
-.icon-group {width: 40px; height: 16px; display: inline-block; overflow: hidden; vertical-align: bottom; background: url(image/groups.gif) no-repeat; pointer: normal;} /* 可以用于<a> <span> */
-.icon-group-0 {background-position: 0px 0px;}
-.icon-group-1 {background-position: 0px -16px;}
-.icon-group-2 {background-position: 0px -32px;}
-.icon-group-3 {background-position: 0px -48px;}
-.icon-group-4 {background-position: 0px -64px;}
-.icon-group-5 {background-position: 0px -80px;}
-.icon-group-6 {background-position: 0px -96px;}
-.icon-group-11 {background-position: 0px -160px;}
-.icon-group-12 {background-position: 0px -176px;}
-.icon-group-13 {background-position: 0px -192px;}
-.icon-group-14 {background-position: 0px -208px;}
-.icon-group-15 {background-position: 0px -224px;}
-.icon-group-16 {background-position: 0px -240px;}
-.icon-group-17 {background-position: 0px -256px;}
-.icon-group-18 {background-position: 0px -272px;}
-.icon-group-19 {background-position: 0px -288px;}
-
 /* 其他动画图标 */
 a.icon-pm, a.icon-pm:hover{width: 13px; height: 9px; background-image: url(image/icon-pm.gif); _vertical-align: bottom;}
 a.icon-newpm, a.icon-newpm:hover {width: 13px; height: 9px; background-image: url(image/icon-newpm.gif); _vertical-align: bottom;}
-.icon-volume {width: 10px; height: 9px; background-image: url(image/icon-volume.gif);}
 
 /* 翻页 */
 .page {padding-bottom: 8px; overflow: visible; clear: both;}
@@ -198,7 +177,7 @@ a.button.smallgrey:active span{background-position: 0 -550px;}
 /* 常见的组合 */
 
 /* 一块内容的样式 */
-div.div {margin: auto; margin-bottom: 12px; background: #FAFAFA url(image/bg5.gif) repeat-x; overflow: hidden; _zoom: 1; border: 1px solid #C8C8C8; -moz-border-radius: 4px; -khtml-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px;}
+div.div {margin: auto; margin-bottom: 12px; background: #FAFAFA url(image/title_bg.gif) repeat-x; overflow: hidden; _zoom: 1; border: 1px solid #C8C8C8; -moz-border-radius: 4px; -khtml-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px;}
 div.div div.header {padding: 6px; border-bottom: 1px solid #C8C8C8; font-weight: 800; height: 16px; line-height: 16px; overflow: hidden; text-shadow: 1px 1px 0 #FFFFFF; }
 div.div div.header span.left {}
 div.div div.header span.right {width: 300px; float: right; text-align: right;}
@@ -215,7 +194,7 @@ dd {display: block; float: left; width: 69%; _width: 68%; padding-left: 1%; marg
 .list .table {width: 100%; border-collapse: collapse; border-spacing:0px;}
 .list .table td {padding: 6px; border-bottom: 1px solid #E9E9E9; text-align: left;}
 .list .table .header td {}
-.list .table .header td{ padding: 6px; background: url(image/bg5.gif) repeat-x; border-bottom: 1px solid #D9D9D9; text-shadow: 1px 1px 0 #FFFFFF;}
+.list .table .header td{ padding: 6px; background: url(image/title_bg.gif) repeat-x; border-bottom: 1px solid #D9D9D9; text-shadow: 1px 1px 0 #FFFFFF;}
 .list .table tr.odd {background: #FAFAFA;}	/* 奇数行的背景色 */
 .list .table tr.last td{border-bottom: none;}	/* 最后一行去掉横线 */
 
@@ -252,9 +231,6 @@ span.avatar_small {width: 16px; height: 16px; background: url(image/avatar_small
 span.avatar_middle {width: 54px; height: 54px; background: url(image/avatar_middle.gif) no-repeat; cursor: pointer; display: inline-block;}
 span.avatar_big {width: 88px; height: 88px; background: url(image/avatar_big.gif) no-repeat; cursor: pointer; display: inline-block;}
 span.avatar_huge {width: 120px; height: 120px; background: url(image/avatar_huge.gif) no-repeat; cursor: pointer; display: inline-block;}
-span.forumicon_small {width: 16px; height: 16px; background: url(image/forum_small.gif) no-repeat; cursor: pointer; display: inline-block;}
-span.forumicon_middle {width: 44px; height: 44px; background: url(image/forum_middle.gif) no-repeat; cursor: pointer; display: inline-block;}
-span.forumicon_big {width: 65px; height: 65px; background: url(image/forum_big.gif) no-repeat; cursor: pointer; display: inline-block;}
 span.nopic {width: 54px; height: 54px; background: url(image/nopic.gif) no-repeat; cursor: pointer; display: inline-block;}
 
 /* 页面架构, 从上到下，几大块： #header, #menu, #body, #footer */
@@ -273,9 +249,6 @@ span.nopic {width: 54px; height: 54px; background: url(image/nopic.gif) no-repea
 	#user #pm_userlist a {color: #454545; display: block; float: left; width: 100%; padding: 4px 0px; text-indent: 4px; text-decoration: none;}
 	#user #pm_userlist a:hover {background: #BB0000; color: #FFFFFF;}
 	#user #pm_userlist a:hover b{background: #BB0000; color: #FFFFFF;}
-	#search {width: 124px; height: 19px; margin-top: 4px; overflow: hidden; float: right; background: url(image/nav_search.gif) no-repeat; text-decoration: none; cursor: default;}
-	#search.hover{background-position: 0px -20px; cursor: default;}
-	#search input{width: 100px; height: 19px; border: 0px; background: transparent; padding: 2px 0px 0px 24px;}
 #body {width: 100%; margin: auto; background: #EFEFEF; overflow: hidden; padding-top: 8px; padding-bottom: 8px;}
 	#nav {width: 100%; margin: auto; height: 18px; text-shadow: 1px 1px 0 #FFFFFF; }
 	#nav td{}

@@ -52,17 +52,6 @@ $('a.ajaxtoggle').die('click').live('click', ajaxtoggle_event);
 //$('div.list .table tr:odd').not('tr.header').addClass('odd');	/* 奇数行的背景色 */
 //$('div.list .table tr:last').addClass('last');	/* 奇数行的背景色 */
 
-$('#search input').focus(function() {$('#search').addClass('hover');});
-$('#search input').blur(function() {$('#search').removeClass('hover');});
-$('#search input').keyup(function(e) {
-	if(e.which == 13 || e.which == 10) {
-		//window.location = '?search-index-keyword-'+encodeURIComponent($(this).val())+'.htm';
-		//window.open('?search-index-keyword-'+encodeURIComponent($(this).val())+'.htm');
-		$('#search_form').attr('action', '?search-index-keyword-'+encodeURIComponent($(this).val())+'.htm');
-		$('#search_form').submit();
-	}
-});
-
 // ------------------------> 短消息 start
 function userlist_to_html(userlist) {
 	var s = '<div id="pm_userlist">';
