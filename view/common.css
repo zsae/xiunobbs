@@ -181,14 +181,14 @@ a.button.biggrey:active {background-position: 100% -250px; text-decoration: none
 a.button.biggrey:active span{background-position: 0 -250px;}
 
 a.button.smallblue {background-position: 100% -300px;  height: 28px;}
-a.button.smallblue span {background-position: 0px -300px; padding: 5px 10px 7px 20px;color: #FFFFFF; font-size: 12px; text-shadow: 0 -1px #007132;}
+a.button.smallblue span {background-position: 0px -300px; padding: 6px 10px 7px 20px;color: #FFFFFF; font-size: 12px; text-shadow: 0 -1px #007132;}
 a.button.smallblue:hover {background-position: 100% -350px; text-decoration: none;}
 a.button.smallblue:hover span{background-position: 0 -350px; }
 a.button.smallblue:active {background-position: 100% -400px; text-decoration: none;}
 a.button.smallblue:active span{background-position: 0 -400px;}
 
 a.button.smallgrey {background-position: 100% -450px; height: 28px;}
-a.button.smallgrey span {background-position: 0px -450px; padding: 5px 10px 7px 20px; color: #888888; font-size: 12px; text-shadow: 0 1px #FFFFFF;}
+a.button.smallgrey span {background-position: 0px -450px; padding: 6px 10px 7px 20px; color: #888888; font-size: 12px; text-shadow: 0 1px #FFFFFF;}
 a.button.smallgrey:hover {background-position: 100% -500px; text-decoration: none;}
 a.button.smallgrey:hover span{background-position: 0 -500px; }
 a.button.smallgrey:active {background-position: 100% -550px; text-decoration: none;}
