@@ -49,7 +49,8 @@ class index_control extends admin_control {
 	
 	function on_logout() {
 		misc::setcookie($this->conf['cookie_pre'].'admin_auth', '', $_SERVER['time'], $this->conf['cookie_path'], $this->conf['cookie_domain']);
-		echo '<html><body><script>top.location="?index-login.htm"</script></body></html>';
+		$url = "?index-login.htm";
+		echo '<html><body><script>top.location="'.$url.'"</script></body></html>';
 		exit;
 	}
 	
