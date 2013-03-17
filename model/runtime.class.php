@@ -10,7 +10,6 @@
 class runtime extends base_model {
 	
 	private $data = array();		// 合并存储
-	private $changed = array();		// 合并存储改变标志位
 	
 	function __construct(&$conf) {
 		parent::__construct($conf);
@@ -19,28 +18,6 @@ class runtime extends base_model {
 		
 		//IN_SAE && $this->conf['db']['type'] = 'saekv';
 	}
-	
-	function __destruct() {
-		//restore_exception_handler();
-		//restore_error_handler();
-		foreach($this->changed as $key=>$v) {
-			return $this->set($key, $this->data[$key]);
-		}
-	}
-	
-	/*public function get($k) {
-		$arr = parent::get($k);
-		return !empty($arr) ? core::json_decode($arr['v']) : FALSE;
-	}
-	
-	public function set($k, $s) {
-		$s = core::json_encode($s);
-		$arr = array();
-		$arr['k'] = $k;
-		$arr['v'] = $s;
-		$arr['expiry'] = 0;
-		return parent::set($k, $arr);
-	}*/
 	
 	// 带有过期时间的 get
 	public function get($k) {
@@ -60,57 +37,56 @@ class runtime extends base_model {
 	
 	// 合并读取，一次读取多个，增加效率
 	public function xget($key = 'runtime') {
-		$s = $this->get($key);
-		if(!empty($s)) {
-			$this->data[$key] = $s;
+		if(isset($this->data[$key])) {
+			return $this->data[$key];
 		} else {
-			// 冗余存储了 toptids, 在 runtime 数据丢失的时候，可以恢复。
-			$toptids = $this->kv->get('toptids');
-			$this->data[$key] = $this->kv->get('conf');
-			$forumlist = $this->forum->get_list();
-			$forumarr = misc::arrlist_key_values($forumlist, 'fid', 'name');
-			$grouplist = $this->group->get_list();
-			$grouparr = misc::arrlist_key_values($grouplist, 'groupid', 'name');
-			$typelist = $this->thread_type->get_list();
-			$typearr = misc::arrlist_key_values($typelist, 'typeid', 'typename');
-			$forumaccesson = $this->forum_access->get_accesson($forumarr);
-			$this->data[$key] += array (
-				'onlines'=>$this->online->count(),
-				'posts'=>$this->post->count(),
-				'threads'=>$this->thread->count(),
-				'users'=>$this->user->count(),
-				'todayposts'=>0,
-				'todayusers'=>0,
-				'cron_1_next_time'=>0,
-				'cron_2_next_time'=>0,
-				'newuid'=>0,
-				'newusername'=>'',
-				'toptids'=>$toptids,
-				'forumarr'=>$forumarr,
-				'forumaccesson'=>$forumaccesson,
-				'grouparr'=>$grouparr,
-				'typearr'=>$typearr,
-			);
+			$this->data[$key] = $this->get($key);
+			if($key == 'runtime' && empty($this->data[$key])) {
+				// 冗余存储了 toptids, 在 runtime 数据丢失的时候，可以恢复。
+				$toptids = $this->kv->get('toptids');
+				$this->data[$key] = $this->kv->get('conf');
+				$forumlist = $this->forum->get_list();
+				$forumarr = misc::arrlist_key_values($forumlist, 'fid', 'name');
+				$grouplist = $this->group->get_list();
+				$grouparr = misc::arrlist_key_values($grouplist, 'groupid', 'name');
+				$typelist = $this->thread_type->get_list();
+				$typearr = misc::arrlist_key_values($typelist, 'typeid', 'typename');
+				$forumaccesson = $this->forum_access->get_accesson($forumarr);
+				$this->data[$key] += array (
+					'onlines'=>$this->online->count(),
+					'posts'=>$this->post->count(),
+					'threads'=>$this->thread->count(),
+					'users'=>$this->user->count(),
+					'todayposts'=>0,
+					'todayusers'=>0,
+					'cron_1_next_time'=>0,
+					'cron_2_next_time'=>0,
+					'newuid'=>0,
+					'newusername'=>'',
+					'toptids'=>$toptids,
+					'forumarr'=>$forumarr,
+					'forumaccesson'=>$forumaccesson,
+					'grouparr'=>$grouparr,
+					'typearr'=>$typearr,
+				);
+			}
+			return $this->data[$key];
 		}
-		return $this->data[$key];
 	}
 	
 	public function xset($k, $v, $key = 'runtime') {
-		if(empty($this->data[$key])) {
+		if(!isset($this->data[$key])) {
 			$this->data[$key] = $this->xget($key);
 		}
 		if($v && is_string($v) && ($v[0] == '+' || $v[0] == '-')) {
 			$v = intval($v);
-			if($v != 0) {
-				$this->data[$key][$k] += $v;
-				$this->changed[$key] = TRUE;
-			}
+			$this->data[$key][$k] += $v;
 		} else {
 			$this->data[$key][$k] = $v;
-			$this->changed[$key] = TRUE;
 		}
 	}
 	
+	// 更新
 	public function xupdate($k) {
 		if($k == 'forumarr') {
 			$forumlist = $this->forum->get_list();
@@ -121,6 +97,11 @@ class runtime extends base_model {
 			$grouparr = misc::arrlist_key_values($grouplist, 'fid', 'name');
 			$this-->xset('grouparr', $grouparr);
 		}
+	}
+	
+	// 显示的保存
+	public function xsave($key = 'conf') {
+		$this->set($key, $this->data[$key]);
 	}
 	
 	// 删除一个 key, 

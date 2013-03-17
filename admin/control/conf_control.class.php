@@ -77,6 +77,8 @@ class conf_control extends admin_control {
 					$this->kv->xset($k, $post[$k], 'conf_ext');
 				}
 				
+				$this->kv->xsave();
+				
 				// hook admin_conf_base_set_after.php
 			}
 			

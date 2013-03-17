@@ -5,11 +5,9 @@
  */
 
 // 简单方便的 key - value 格式的存储，兼容SAE，便于分布式部署。
-// 不过期（如果需要过期机制，执行存入时间戳）
 class kv extends base_model {
 	
 	private $data = array();		// 合并存储
-	private $changed = array();		// 合并存储改变标志位
 	
 	function __construct(&$conf) {
 		parent::__construct($conf);
@@ -21,6 +19,10 @@ class kv extends base_model {
 		
 		//IN_SAE && $this->conf['db']['type'] = 'saekv';
 	}
+
+	/*function __destruct() {
+		// $this->xsave(); // 此处 mysql 可能已经被析构，会报错！
+	}*/
 	
 	// 带有过期时间的 get
 	public function get($k) {
@@ -46,14 +48,13 @@ class kv extends base_model {
 	
 	// 合并写入
 	public function xset($k, $v, $key = 'conf') {
-		if(empty($this->data[$key])) {
+		if(!isset($this->data[$key])) {
 			$this->data[$key] = $this->get($key);
 		}
 		$this->data[$key][$k] = $v;
-		$this->changed[$key] = TRUE;
 	}
 	
-	// 保存
+	// 显示的保存
 	public function xsave($key = 'conf') {
 		$this->set($key, $this->data[$key]);
 	}
