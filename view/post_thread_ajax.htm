@@ -22,7 +22,7 @@
 		<!--{if $typeselect1 || $typeselect2 || $typeselect3}-->
 		<dt><label for="typeselect">分类：</label></dt>
 		<dd>
-			<!--{if $forumselect}-->$forumselect<!--{/if}-->
+			<!--{if empty($fid) && $forumselect}-->$forumselect<!--{/if}-->
 			<span id="typeselect">
 			<!--{if $typeselect1}-->$typeselect1<!--{/if}-->
 			<!--{if $typeselect2}-->$typeselect2<!--{/if}-->
