@@ -163,9 +163,9 @@ a.icon-newpm, a.icon-newpm:hover {width: 13px; height: 9px; background-image: ur
 
 /* button ，四种按钮风格: bigblue biggrey smallblue smallgrey <a><span></span></a> 来实现 <input type=button> 效果*/
 a.button {cursor: default; background: url("image/button-right.png") 100% 0 no-repeat; display: inline-block; padding-right: 10px;}
-a.button span{background: url("image/button.png") no-repeat; display: block; padding: 8px 18px 10px 26px;}
+a.button span{background: url("image/button.png") no-repeat; display: block; padding: 6px 18px 11px 26px;}
 
-a.button.bigblue {background-position: 100% 0px; height: 40px;}
+a.button.bigblue {background-position: 100% 0px; height: 37px;}
 a.button.bigblue span {background-position: 0px 0px; color: #FFFFFF; font-size: 16px; text-shadow: 0 -1px #007132;}
 a.button.bigblue:hover {background-position: 100% -50px; text-decoration: none;}
 a.button.bigblue:hover span{background-position: 0 -50px;}
@@ -173,22 +173,22 @@ a.button.bigblue:hover {background-position: 100% -50px; text-decoration: none;}
 a.button.bigblue:active {background-position: 100% -100px; text-decoration: none;}
 a.button.bigblue:active span{background-position: 0 -100px;}
 
-a.button.biggrey {background-position: 100% -150px; height: 40px;}
+a.button.biggrey {background-position: 100% -150px; height: 37px;}
 a.button.biggrey span {background-position: 0px -150px; color: #888888; font-size: 16px; text-shadow: 0 1px #FFFFFF;}
 a.button.biggrey:hover {background-position: 100% -200px; text-decoration: none;}
 a.button.biggrey:hover span{background-position: 0 -200px; }
 a.button.biggrey:active {background-position: 100% -250px; text-decoration: none;}
 a.button.biggrey:active span{background-position: 0 -250px;}
 
-a.button.smallblue {background-position: 100% -300px;  height: 21px;}
-a.button.smallblue span {background-position: 0px -300px; padding: 2px 10px 6px 20px;color: #FFFFFF; font-size: 12px; text-shadow: 0 -1px #007132;}
+a.button.smallblue {background-position: 100% -300px;  height: 28px;}
+a.button.smallblue span {background-position: 0px -300px; padding: 5px 10px 7px 20px;color: #FFFFFF; font-size: 12px; text-shadow: 0 -1px #007132;}
 a.button.smallblue:hover {background-position: 100% -350px; text-decoration: none;}
 a.button.smallblue:hover span{background-position: 0 -350px; }
 a.button.smallblue:active {background-position: 100% -400px; text-decoration: none;}
 a.button.smallblue:active span{background-position: 0 -400px;}
 
-a.button.smallgrey {background-position: 100% -450px; height: 21px;}
-a.button.smallgrey span {background-position: 0px -450px; padding: 2px 10px 6px 20px; color: #888888; font-size: 12px; text-shadow: 0 1px #FFFFFF;}
+a.button.smallgrey {background-position: 100% -450px; height: 28px;}
+a.button.smallgrey span {background-position: 0px -450px; padding: 5px 10px 7px 20px; color: #888888; font-size: 12px; text-shadow: 0 1px #FFFFFF;}
 a.button.smallgrey:hover {background-position: 100% -500px; text-decoration: none;}
 a.button.smallgrey:hover span{background-position: 0 -500px; }
 a.button.smallgrey:active {background-position: 100% -550px; text-decoration: none;}
