@@ -143,7 +143,6 @@ class forum_control extends common_control {
 		
 		// 1 级置顶
 		$fidtids += $this->get_fidtids($forum['toptids']);
-		
 		$toplist = $this->thread->mget($fidtids);
 		
 		return $toplist;
@@ -156,7 +155,7 @@ class forum_control extends common_control {
 			$fidtidlist = explode(' ', trim($s));
 			foreach($fidtidlist as $fidtid) {
 				list($fid, $tid) = explode('-', $fidtid);
-				$fidtids[] = array($fid, $tid);
+				$fidtids["$fid-$tid"] = array($fid, $tid);
 			}
 		}
 		return $fidtids;
