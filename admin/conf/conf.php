@@ -6,6 +6,7 @@ return  array (
 	'app_id' => 'bbsadmin',
 	'app_url' => $bbsconf['app_url'].'admin/',
 	'control_path' => array(BBS_PATH.'admin/control/'),
+	'static_url' => $bbsconf['static_url'].'admin/',
 	'view_path' => array(BBS_PATH.'admin/view/'),
 );
 

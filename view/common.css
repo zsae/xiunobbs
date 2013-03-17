@@ -42,7 +42,7 @@ p {margin-top: 4px;}
 .bg2 {background: #FAFAFA;}
 .bg3 {background: #E9E9E9} 
 .bg4 {background: #D9D9D9}
-.bg5 {background: url(image/bg5.) repeat-x;}
+.bg5 {background: url(image/title_bg.gif) repeat-x;}
 
 /* 常用杂项 */
 .bold{font-weight: 800;}
@@ -160,7 +160,7 @@ a.button.biggrey:active {background-position: 100% -250px; text-decoration: none
 a.button.biggrey:active span{background-position: 0 -250px;}
 
 a.button.smallblue {background-position: 100% -300px;  height: 28px;}
-a.button.smallblue span {background-position: 0px -300px; padding: 6px 10px 7px 20px;color: #FFFFFF; font-size: 12px; text-shadow: 0 -1px #007132;}
+a.button.smallblue span {background-position: 0px -300px; padding: 5px 10px 8px 20px;color: #FFFFFF; font-size: 12px; text-shadow: 0 -1px #007132;}
 a.button.smallblue:hover {background-position: 100% -350px; text-decoration: none;}
 a.button.smallblue:hover span{background-position: 0 -350px; }
 a.button.smallblue:active {background-position: 100% -400px; text-decoration: none;}
