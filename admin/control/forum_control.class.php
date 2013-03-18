@@ -64,7 +64,6 @@ class forum_control extends admin_control {
 						'todayposts'=>0,
 						'lasttid'=>0,
 						'brief'=>'',
-						'icon'=>0,
 						'accesson'=>0,
 						'modids'=>'',
 						'modnames'=>'',

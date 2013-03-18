@@ -50,9 +50,12 @@ class admin_control extends common_control {
 						misc::setcookie('admin_auth', $s, $time + 3600, $this->conf['cookie_path'], $this->conf['cookie_domain']);
 						$time = $_SERVER['time'];
 					}
+					/*
 					if(core::gpc(0) == 'forum' && core::gpc(1) == 'uploadicon') {
 						$login = 0;
-					} elseif($_SERVER['time'] - $time > 1800 || $ip != $_SERVER['ip']) {
+					}
+					*/
+					if($_SERVER['time'] - $time > 1800 || $ip != $_SERVER['ip']) {
 						$login = 1;
 					}
 				}

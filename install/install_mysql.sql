@@ -111,9 +111,9 @@ CREATE TABLE bbs_forum (				# 字段中文名			# 控件属性					# 字段描�
   seo_keywords char(64) NOT NULL default '',		# SEO keyword
   PRIMARY KEY (fid)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-INSERT INTO bbs_forum SET fid='1', name='默认版块1', rank='0', threads='0', posts='0', todayposts='0', lasttid='0', brief='默认版块1', icon='', accesson='0', modids='', modnames='', typecates='', toptids='', status='1', orderby='0', seo_title='', seo_keywords='';
-INSERT INTO bbs_forum SET fid='2', name='默认版块2', rank='0', threads='0', posts='0', todayposts='0', lasttid='0', brief='默认版块2', icon='', accesson='0', modids='', modnames='', typecates='', toptids='', status='1', orderby='0', seo_title='', seo_keywords='';
-INSERT INTO bbs_forum SET fid='3', name='默认版块3', rank='0', threads='0', posts='0', todayposts='0', lasttid='0', brief='默认版块3', icon='', accesson='0', modids='', modnames='', typecates='', toptids='', status='1', orderby='0', seo_title='', seo_keywords='';
+INSERT INTO bbs_forum SET fid='1', name='默认版块1', rank='0', threads='0', posts='0', todayposts='0', lasttid='0', brief='默认版块1', accesson='0', modids='', modnames='', typecates='', toptids='', status='1', orderby='0', seo_title='', seo_keywords='';
+INSERT INTO bbs_forum SET fid='2', name='默认版块2', rank='0', threads='0', posts='0', todayposts='0', lasttid='0', brief='默认版块2', accesson='0', modids='', modnames='', typecates='', toptids='', status='1', orderby='0', seo_title='', seo_keywords='';
+INSERT INTO bbs_forum SET fid='3', name='默认版块3', rank='0', threads='0', posts='0', todayposts='0', lasttid='0', brief='默认版块3', accesson='0', modids='', modnames='', typecates='', toptids='', status='1', orderby='0', seo_title='', seo_keywords='';
 
 # 版块访问规则 fid * groupid
 DROP TABLE IF EXISTS bbs_forum_access;
