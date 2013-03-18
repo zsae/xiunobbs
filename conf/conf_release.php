@@ -19,6 +19,7 @@
 
 return array (
 
+	// ------------------> 以下为框架依赖:
 	// 数据库配置， type 为默认的数据库类型，可以支持多种数据库: mysql|pdo_mysql|pdo_oracle|mongodb
 	'db' => array (		
 		'type' => 'mysql',		
@@ -54,12 +55,14 @@ return array (
 				'name' => 'bbs',
 				'tablepre' => '',
 			),
-			'slaves' => array (
-			)
+			'slaves' => array()
 		),
 	),
 	
 	// 缓存服务器的配置，支持: memcache|ea|apc|redis
+	// 分布式部署我们建议采用以下两种方案，用来简化程序
+	// 1. 局域网内多台 cache server, 本机(127.0.0.1)，写操作通过UDP同步来保持一致性（Memcached UDP组播服务，可能存在安全性问题）。
+	// 2. 单台 proxy 管理多台 worker。
 	'cache' => array (
 		'enable'=>0,
 		'type'=>'memcache',
@@ -87,8 +90,7 @@ return array (
 	
 	// 自动加载 model 的配置， 在 model_path 中未找到 modelname 的时候尝试扫描此项, modelname=>array(tablename, primarykey, maxcol)
 	'model_map' => array(
-		//'user'=>array('user', 'uid', 'uid'),
-		//'attach'=>array('attach', 'aid', 'aid'),
+		'thread_views'=>array('thread_views', 'tid', 'tid')
 	),
 	
 	// 业务控制层的路径，按照数组顺序搜索目录，结果缓存在 tmp/bbs_xxx_control.class.php
@@ -112,15 +114,27 @@ return array (
 	// 插件目录对应的URL
 	'plugin_url' => 'http://1.axiuno.sinaapp.com/plugin/',
 	
+	// 服务器所在的时区
+	'timeoffset' => '+8',
+	
+	'disable_plugin'=>0,			// 禁止掉所有插件
+	
+	'urlrewrite' => 0,			// 手工开启 URL-Rewrite 后，需要清空下 tmp 目录！
+	
 	// ------------------> 以下为 BBS 相关:
 	
 	// 点击服务器
 	'click_server' => 'http://1.axiuno.sinaapp.com/clickd/',	// 记录主题点击数，论坛点击数
 	
 	// 加密KEY，
-	'auth_key' => '3ee04f6834eb6725f566bc7b9f9c3f29',
+	'auth_key' => '90802502b9af7fd885f59021a97873a6',
 	
-	'cookie_pre'=> 'xn_',
+	// 站点的ID，用来和官方通信，下载，安装插件。
+	'siteid' => '257b094045ee85f7330f25f96647eb34',
+	
+	'cookie_pre' => 'bbs_',
+	'cookie_domain' => '',
+	'cookie_path' => '/',
 	
 	'pagesize' => 20,			// 帖子详情页的每页回复数，一旦定下来，不能修改！
 	
@@ -133,8 +147,6 @@ return array (
 	'avatar_width_huge' => 120,		// 用户头像宽度:更大
 	'thread_icon_middle' => 54,		// 主题的缩略图:中
 	'upload_image_max_width' => 1210,	// 上传图片最大宽度
-	
-	'urlrewrite' => 0,			// 手工开启 URL-Rewrite 后，需要清空下 tmp 目录！
 	
 	'version' => '2.0.0 Release',		// 版本号
 	'installed' => 1,			// 是否安装的标志位
