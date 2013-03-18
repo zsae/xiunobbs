@@ -69,6 +69,7 @@ function upgrade_conf() {
 	$mconf->set('static_url', $old['static_url']);
 	$mconf->set('model_map', var_export(array('thread_views'=>array('thread_views', 'tid', 'tid')), 1));
 	$mconf->set('upload_url', $old['upload_url']);
+	$mconf->set('upload_path', 'BBS_PATH.\'upload/\'');
 	$mconf->set('plugin_url', $old['app_url'].'plugin/');
 	$mconf->set('click_server', $old['app_url'].'service/clickd/');
 	$mconf->set('auth_key', $old['public_key']);
@@ -205,7 +206,18 @@ function alter_table() {
 			drop key typeid, 
 			drop key typeid_2, COMMENT='';
 		
-		RENAME TABLE bb_thread_type TO bbs_thread_type_old;
+		DROP TABLE IF EXISTS bbs_thread_type_old;
+		CREATE TABLE bbs_thread_type_old (
+		  typeid int(11) unsigned NOT NULL auto_increment,	# 主题分类id
+		  fid smallint(6) NOT NULL default '0',			# 版块id
+		  newtypeid smallint(11) NOT NULL default '0',		# 
+		  threads int(11) NOT NULL default '0',			# 该主题分类下有多少主题数
+		  typename char(16) NOT NULL default '',		# 主题分类
+		  rank tinyint(3) unsigned NOT NULL default '0',	# 排序，越大越靠前，最大255
+		  PRIMARY KEY (typeid),
+		  KEY (fid)
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+		INSERT INTO  bbs_thread_type_old (typeid, fid, newtypeid, threads, typename, rank) SELECT typeid, fid, 0, threads, typename, rank FROM bbs_thread_type;
 		
 		DROP TABLE IF EXISTS bbs_thread_type;
 		CREATE TABLE bbs_thread_type (
@@ -346,11 +358,13 @@ function upgrade_forum() {
 	foreach($forumlist as $forum) {
 		$fid = $forum['fid'];
 		
-		$typelist = $db->index_fetch('thread_type_old', 'typeid', array('fid'=>$fid), array(), 1, 100);
+		$typelist = $db->index_fetch('thread_type_old', 'typeid', array('fid'=>$fid), array(), 0, 100);
 		
 		// 插入到第一维
 		if(!empty($typelist)) {
 			// 1 - 40
+			$db->set("thread_type_cate-fid-$fid-cateid-1", array('fid'=>$fid, 'cateid'=>1, 'rank'=>1, 'catename'=>'分类', 'enable'=>1));
+			
 			$newtypeid = 0;
 			foreach($typelist as $type) {
 				$newtypeid++;
@@ -461,7 +475,7 @@ function upgrade_thread_views() {
 		$start += $limit;
 		message("正在升级 upgrade_thread_views, 一共: $count, 当前: $start...", "?step=upgrade_thread_views&start=$start&count=$count", 0);
 	} else {
-		message('升级完成。', 'index.php');
+		message('升级完成，请拷贝 upload 目录覆盖到当前目录。', 'index.php');
 	}
 }
 
