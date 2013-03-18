@@ -332,44 +332,43 @@ class forum_control extends admin_control {
 		}
 		
 		if(empty($threads)) {
-			$forum = $this->forum->read($_fid);
 			$threads = $forum['threads'];
 		}
 		if($starttid >= $threads) {
 			// fid++ tid=0 跳转
 			// hook admin_forum_delete_complete.php
 			
-			// 删除原来板块的数据
-			$this->forum_access->delete_by_fid($_fid);
-			$this->thread_type->delete_by_fid($_fid);
-			$this->thread_type_cate->delete_by_fid($_fid);
+			// 统一删除数据量较小的表：
+			$this->forum_access->delete_by_fid($fid);
+			$this->thread_type->delete_by_fid($fid);
+			$this->thread_type_cate->delete_by_fid($fid);
 			//$this->thread_type_data->delete_by_fid($_fid); // thread->xdelete() 已经包含此删除
-			$this->modlog->delete_by_fid($_fid);
+			$this->modlog->delete_by_fid($fid);
 			
-			$this->forum->delete($_fid);
+			$this->forum->delete($fid);
 			
 			$this->runtime->xupdate('forumarr');
-			$this->message("删除 fid: $_fid 完毕 ...", 1, "?forum-delete-fid-$fid.htm");
+			$this->message("删除 fid: $fid 完毕 ...", 1, "?forum-delete-fid-$fid.htm");
 		} else {
-			$tidkeys = $this->thread->index_fetch_id(array('fid'=>$_fid), array(), 0, $limit);
+			// 分批删除主题。
+			$tidkeys = $this->thread->index_fetch_id(array('fid'=>$fid), array(), 0, $limit);
 			$return = array();
 			foreach($tidkeys as $key) {
-				list($table, $_, $_, $_, $_tid) = explode('-', $key);
-				$_tid = intval($_tid);
+				list($table, $_, $_, $_, $tid) = explode('-', $key);
+				$tid = intval($tid);
 				// hook admin_forum_delete_tid_before.php
-				$return2 = $this->thread->xdelete($_fid, $_tid, FALSE);
+				$return2 = $this->thread->xdelete($fid, $tid, FALSE);
 				$this->thread->xdelete_merge_return($return, $return2);
 			}
 			$this->thread->xdelete_update($return);
 			$starttid += $limit;
-			$this->message("删除 fid: $_fid, tid: $starttid ...", 1, "?forum-delete-fid-$fid-threads-$threads-starttid-$starttid.htm");
+			$this->message("删除 fid: $fid, tid: $starttid ...", 1, "?forum-delete-fid-$fid-threads-$threads-starttid-$starttid.htm");
 		}
 		
 		// hook admin_forum_delete_after.php
 		
 		// 删除首页的缓存
 		$this->message('删除完毕', 1, '?forum-list.htm');
-		
 	}
 	
 	private function process_threadtype($fid) {

@@ -69,7 +69,7 @@ function upgrade_conf() {
 	$mconf->set('static_url', $old['static_url']);
 	$mconf->set('model_map', var_export(array('thread_views'=>array('thread_views', 'tid', 'tid')), 1));
 	$mconf->set('upload_url', $old['upload_url']);
-	$mconf->set('upload_path', 'BBS_PATH.\'upload/\'');
+	$mconf->set('upload_path', BBS_PATH.'upload/');
 	$mconf->set('plugin_url', $old['app_url'].'plugin/');
 	$mconf->set('click_server', $old['app_url'].'service/clickd/');
 	$mconf->set('auth_key', $old['public_key']);
@@ -202,9 +202,9 @@ function alter_table() {
 			drop column seo_keywords, 
 			drop column pids, 
 			drop column coverimg, 
-			drop column brief, 
-			drop key typeid, 
-			drop key typeid_2, COMMENT='';
+			drop column brief;
+		alter table bbs_thread drop key typeid;
+		alter table bbs_thread drop key typeid_2;
 		
 		DROP TABLE IF EXISTS bbs_thread_type_old;
 		CREATE TABLE bbs_thread_type_old (

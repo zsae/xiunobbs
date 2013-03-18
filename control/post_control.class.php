@@ -30,8 +30,13 @@ class post_control extends common_control {
 		$fid = intval(core::gpc('fid'));
 		empty($fid) && list($fid, $forumname) = each($this->conf['forumarr']);
 		$forum = $this->mcache->read('forum', $fid);
-		$forumselect = form::get_select('fid', $this->conf['forumarr'], $fid);
-		$this->view->assign('forumselect', $forumselect);
+		if(empty($fid)) {
+			$forumselect = form::get_select('fid', $this->conf['forumarr'], $fid);
+			$this->view->assign('forumselect', $forumselect);
+		} else {
+			$forumselect = '';
+			$this->view->assign('forumselect', $forumselect);
+		}
 		
 		$typeid1 = intval(core::gpc('typeid1'));
 		$typeid2 = intval(core::gpc('typeid2'));

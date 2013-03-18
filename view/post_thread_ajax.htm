@@ -9,8 +9,15 @@
 	<dl>
 		<!--{hook post_thread_subject_before.htm}-->
 		<dt><label for="subject">标题：</label></dt>
-		<dd>
-			
+		<dd style="white-space: nowrap">
+			<!--{if $forumselect}-->$forumselect<!--{/if}-->
+			<!--{if $typeselect1 || $typeselect2 || $typeselect3}-->
+			<span id="typeselect">
+			<!--{if $typeselect1}-->$typeselect1<!--{/if}-->
+			<!--{if $typeselect2}-->$typeselect2<!--{/if}-->
+			<!--{if $typeselect3}-->$typeselect3<!--{/if}-->
+			</span>
+			<!--{/if}-->
 			<input type="text" name="subject" id="subject" value="$thread[subject]" style="width: 500px;" /> <span class="small grey">(200字)</span>
 		</dd>
 		
@@ -18,18 +25,6 @@
 		
 		<dt><label for="thread_message">内容：</label></dt>
 		<dd style="position: relative;"><textarea name="message" id="thread_message" style="width: 780px; height: 400px;"></textarea></dd>
-		
-		<!--{if $typeselect1 || $typeselect2 || $typeselect3}-->
-		<dt><label for="typeselect">分类：</label></dt>
-		<dd>
-			<!--{if empty($fid) && $forumselect}-->$forumselect<!--{/if}-->
-			<span id="typeselect">
-			<!--{if $typeselect1}-->$typeselect1<!--{/if}-->
-			<!--{if $typeselect2}-->$typeselect2<!--{/if}-->
-			<!--{if $typeselect3}-->$typeselect3<!--{/if}-->
-			</span>
-		</dd>
-		<!--{/if}-->
 		
 		<!--{hook post_thread_message_after.htm}-->
 		
