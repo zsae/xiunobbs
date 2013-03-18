@@ -78,6 +78,7 @@ function get_env(&$env, &$write) {
 function str_line_replace($s, $startline, $endline, $replacearr) {
 	// 从16行-33行，正则替换
 	$sep = "\n";
+	$s = str_replace("\r\n", $sep, $s);
 	$arr = explode($sep, $s);
 	$arr1 = array_slice($arr, 0, $startline - 1); // 此处: startline - 1 为长度
 	$arr2 = array_slice($arr, $startline - 1, $endline - $startline + 1); // 此处: startline - 1 为偏移量
