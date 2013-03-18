@@ -131,7 +131,7 @@ class thread_type extends base_model {
 		foreach($this->map[$cateid] as $typeid) {
 			$arr = $this->read($fid, $typeid);
 			if(empty($arr)) {
-				$fillblank && $arr = array('fid'=>$fid, 'typeid'=>$typeid, 'typename'=>'', 'rank'=>$typeid, 'enable'=>1);
+				$fillblank && $arr = array('fid'=>$fid, 'typeid'=>$typeid, 'typename'=>'', 'rank'=>$typeid, 'enable'=>0);
 			}
 			if($arr) {
 				$typelist[$typeid] = $arr;
@@ -159,6 +159,7 @@ class thread_type extends base_model {
 	
 	// 当启用主题分类的时候，如果发现为空则初始化数据
 	public function init($fid) {
+		return;
 		for($cateid = 1; $cateid <= 3; $cateid++) {
 			foreach($this->map[$cateid] as $typeid) {
 				$type = $this->read($fid, $typeid);

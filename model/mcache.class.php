@@ -60,11 +60,6 @@ class mcache extends base_model {
 		$forum = $this->forum->read($fid);
 		$forum && $this->forum->format($forum);
 		$forum && $this->forum->format_thread_type($forum);
-		foreach($forum['typecatelist'] as $cateid=>$cate) {
-			if(empty($cate['enable'])) unset($forum['types'][$cateid]);
-		}
-		unset($forum['typecatelist']);
-		unset($forum['typelist']);
 		
 		// hook mcache_model_forum_end.php
 		

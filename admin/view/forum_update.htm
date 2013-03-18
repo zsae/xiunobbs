@@ -79,7 +79,7 @@ dd{width: 84%;}
 									<td unselectable="on" valign="top" align="center"><input type="text" name="typecaterank[$typecateid]" value="$forum[typecatelist][$typecateid][rank]" size="4" /></td>
 									<td unselectable="on" valign="top"><input type="text" name="typecatename[$typecateid]" value="$forum[typecatelist][$typecateid][catename]" size="4" /></td>
 									<td unselectable="on" class="drag_parent" typecateid="$typecateid">
-										<!--{loop $typelist $type}--><span class="border drag_item" typeid="$type[typeid]"><input type="text" name="typename[{$type[typeid]}]" value="$type[typename]" size="4" /></span><!--{/loop}-->
+										<!--{loop $typelist $typeid $type}--><span class="border drag_item" typeid="$type[typeid]"><input type="text" name="typename[{$type[typeid]}]" value="$type[typename]" size="4" /></span><!--{/loop}-->
 									</td>
 								</tr>
 							</table>

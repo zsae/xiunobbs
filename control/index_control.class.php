@@ -20,6 +20,9 @@ class index_control extends common_control {
 		
 		// hook index_index_before.php
 		
+		$fid = 1;
+		$forum = $this->forum->read($fid);
+		$this->forum->format_thread_type($forum);
 		$this->on_bbs();
 	}
 	

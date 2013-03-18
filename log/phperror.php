@@ -43,3 +43,7 @@
 <?php exit;?>	2013-3-15 01:59	127.0.0.1	/?pm-new-ajax-1.htm	[Warning] : Invalid argument supplied for foreach() in File D:\www\xxx.net\tmp\_runtime.php, Line: 11	
 <?php exit;?>	2013-3-15 02:00	127.0.0.1	/?pm-new-ajax-1.htm	[Warning] : Invalid argument supplied for foreach() in File D:\www\xxx.net\tmp\_runtime.php, Line: 11	
 <?php exit;?>	2013-3-15 02:00	127.0.0.1	/?pm-new-ajax-1.htm	[Warning] : Invalid argument supplied for foreach() in File D:\www\xxx.net\tmp\_runtime.php, Line: 11	
+<?php exit;?>	2013-3-18 22:12	127.0.0.1	/admin/forum-update-fid-3.htm	[Unknonw] : Object of class forum could not be converted to string in File E:\www\xiuno.2.0.0\tmp\bbsadmin_model_forum.class.php, Line: 104 File: E:\www\xiuno.2.0.0\xiunophp\core\core.class.php [293]	
+<?php exit;?>	2013-3-18 22:36	127.0.0.1	/admin/forum-update-fid-3.htm	[Notice] : Undefined index:  cateid in File E:\www\xiuno.2.0.0\xiunophp\core\base_model.class.php, Line: 494 File: E:\www\xiuno.2.0.0\xiunophp\core\core.class.php [293]	
+<?php exit;?>	2013-3-18 22:47	127.0.0.1	/forum-index-fid-3.htm	[Notice] : Undefined index:  name in File E:\www\xiuno.2.0.0\tmp\bbs_model_forum.class.php, Line: 85 File: E:\www\xiuno.2.0.0\xiunophp\core\core.class.php [293]	
+<?php exit;?>	2013-3-18 22:47	127.0.0.1	/forum-index-fid-3.htm	[Unknonw] : Object of class forum could not be converted to string in File E:\www\xiuno.2.0.0\tmp\bbs_model_forum.class.php, Line: 86 File: E:\www\xiuno.2.0.0\xiunophp\core\core.class.php [293]	

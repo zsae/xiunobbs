@@ -215,10 +215,6 @@ function upgrade_forum() {
 					$old['fup'] = $pforum['fup'];
 				}
 				
-				// 初始化主题分类
-				$mthread_type->init($fid);
-				$mthread_type_cate->init($fid);
-				
 				// a:6:{s:8:"required";b:1;s:8:"listable";b:0;s:6:"prefix";s:1:"0";s:5:"types";a:3:{i:1;s:7:"fenlei1";i:2;s:7:"fenlei2";i:3;s:7:"fenlei3";}s:5:"icons";a:3:{i:1;s:0:"";i:2;s:0:"";i:3;s:0:"";}s:10:"moderators";a:3:{i:1;N;i:2;N;i:3;N;}}
 				// 主题分类一块升
 				if($old2['threadtypes']) {

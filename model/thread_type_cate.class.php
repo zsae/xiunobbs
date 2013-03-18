@@ -20,7 +20,7 @@ class thread_type_cate extends base_model {
 		$this->primarykey = array('fid', 'cateid');
 	}
 	
-	public function xread($fid, $cateid, $fillblank = TRUE) {
+	public function xread($fid, $cateid, $fillblank = FALSE) {
 		$arr = $this->read($fid, $cateid);
 		empty($arr) && $fillblank && $arr = array (
 			'fid'=>$fid,
@@ -30,6 +30,18 @@ class thread_type_cate extends base_model {
 			'enable'=>0,
 		);
 		return $arr;
+	}
+	
+	public function enable($fid, $cateid) {
+		$threadtype = $this->read($fid, $cateid);
+		$threadtype['enable'] = 1;
+		$this->update($threadtype);
+	}
+	
+	public function disable($fid, $cateid) {
+		$threadtype = $this->read($fid, $cateid);
+		$threadtype['enable'] = 0;
+		$this->update($threadtype);
 	}
 	
 	// 删除版块的时候清除
@@ -52,28 +64,6 @@ class thread_type_cate extends base_model {
 		$arr && misc::arrlist_multisort($arr, 'rank', TRUE);	// 关联数组 key 不变，数字 key 会重新索引
 		$arr && misc::arrlist_change_key($arr, 'cateid');
 		return $arr;
-	}
-	
-	// 初始化
-	public function init($fid) {
-		for($i = 1; $i <= 3; $i++) {
-			$cateid = $i;
-			$arr = array (
-				'fid'=>$fid,
-				'cateid'=>$cateid,
-				'catename'=>'',
-				'rank'=>$i,
-				'enable'=>1,
-			);
-			$this->create($arr);
-		}
-	}
-	
-	// 初始化
-	public function destory($fid) {
-		for($i = 1; $i <= 3; $i++) {
-			$this->delete($fid, $i);
-		}
 	}
 }
 ?>

@@ -77,10 +77,6 @@ class forum_control extends admin_control {
 					// hook admin_forum_create_before.htm
 					
 					$forum = $this->forum->create($forum);
-					
-					// 创建主题分类
-					$this->thread_type->init($fid);
-					$this->thread_type_cate->init($fid);
 				}
 			}
 			
@@ -258,13 +254,18 @@ class forum_control extends admin_control {
 			$forum = $this->forum->read($fid);
 			
 			// ------------> 初始化 thread_type start
-			$this->forum->format_thread_type($forum);
+			$this->forum->format_thread_type_full($forum);
+			
 			if(!$forum['typelist'] && core::gpc('typeon', 'P')) {
-				$this->thread_type->init($fid);
-				$this->thread_type_cate->init($fid);
+				$this->thread_type_cate->enable($fid, 1);
+				$this->thread_type_cate->enable($fid, 2);
+				$this->thread_type_cate->enable($fid, 3);
+				
 			} elseif($forum['typelist'] && !core::gpc('typeon', 'P')) {
-				$this->thread_type->destory($fid);
-				$this->thread_type_cate->destory($fid);
+				// 关闭即可
+				$this->thread_type_cate->disable($fid, 1);
+				$this->thread_type_cate->disable($fid, 2);
+				$this->thread_type_cate->disable($fid, 3);
 			}
 			// ------------> 初始化 thread_type end
 		
@@ -287,7 +288,7 @@ class forum_control extends admin_control {
 		$input['status'] = form::get_radio_yes_no('status', $forum['status']);
 		$input['orderby'] = form::get_radio('orderby', $orderbyarr, $forum['orderby']);
 		$this->forum->format($forum);
-		$this->forum->format_thread_type($forum);
+		$this->forum->format_thread_type_full($forum);
 		
 		$admin_auth = core::gpc($this->conf['cookie_pre'].'admin_auth', 'C');
 		$this->view->assign('input', $input);
@@ -372,7 +373,6 @@ class forum_control extends admin_control {
 	}
 	
 	private function process_threadtype($fid) {
-		
 		$typecateenables = (array)core::gpc('typecateenable', 'P');
 		$typecateranks = (array)core::gpc('typecaterank', 'P');
 		$typecatenames = (array)core::gpc('typecatename', 'P');
@@ -383,27 +383,45 @@ class forum_control extends admin_control {
 			$enable = isset($typecateenables[$typecateid]) ? intval($typecateenables[$typecateid]) : 0;
 			$rank = intval($typecateranks[$typecateid]);
 			$name = $typecatenames[$typecateid];
-			$cate = $this->thread_type_cate->xread($fid, $typecateid, TRUE);
-			$cate['enable'] = $enable;
-			$cate['rank'] = $rank;
-			$cate['catename'] = $name;
-			$this->thread_type_cate->update($cate);
+			$typecate = $this->thread_type_cate->xread($fid, $typecateid);
+			if($name) {
+				if(empty($typecate)) {
+					$typecate['fid'] = $fid;
+					$typecate['cateid'] = $typecateid;
+					$typecate['enable'] = $enable;
+					$typecate['rank'] = $rank;
+					$typecate['catename'] = $name;
+					$this->thread_type_cate->create($typecate);
+				} else {
+					$typecate['enable'] = $enable;
+					$typecate['rank'] = $rank;
+					$typecate['catename'] = $name;
+					$this->thread_type_cate->update($typecate);
+				}
+			} else {
+				$typecate && $this->thread_type_cate->delete($fid, $typecateid);
+			}
 		}
 		
 		foreach($typenames as $typeid=>$typename) {
-			// 修改
 			$type = $this->thread_type->read($fid, $typeid);
-			if(empty($type)) {
-				$type = array(
-					'fid'=>$fid,
-					'typeid'=>$typeid,
-					'typename'=>'',
-					'rank'=>$typeid,
-					'enable'=>1,
-				);
+			if($typename) {
+				if(empty($type)) {
+					$type = array(
+						'fid'=>$fid,
+						'typeid'=>$typeid,
+						'typename'=>$typename,
+						'rank'=>$typeid,
+						'enable'=>1,
+					);
+					$this->thread_type->create($type);
+				} else {
+					$type['typename'] = $typename;
+					$this->thread_type->update($type);
+				}
+			} else {
+				$type && $this->thread_type->delete($fid, $typeid);
 			}
-			$type['typename'] = $typename;
-			$this->thread_type->update($type);
 		}
 	}
 	

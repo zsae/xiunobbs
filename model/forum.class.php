@@ -73,21 +73,35 @@ class forum extends base_model {
 		// hook forum_model_format_end.php
 	}
 	
+	// 简洁格式，存入缓存，前台调用
 	public function format_thread_type(&$forum) {
-		
-		// 用来在后台管理，已经排序好了。
-		$forum['typecatelist'] = $this->thread_type_cate->get_list_by_fid($forum['fid'], FALSE);
-		// 排序，前台显示，缓存到 cache。 $cateid = 1, 2, 3
-		if($forum['typecatelist']) {
-			foreach($forum['typecatelist'] as $cateid=>$v) {
-				$forum['typelist'][$cateid] = $this->thread_type->get_list_by_fid_cateid($forum['fid'], $cateid, FALSE);
-				$forum['typecates'][$cateid] = $forum['typecatelist'][$cateid]['catename'];
-				$forum['types'][$cateid] = empty($forum['typelist'][$cateid]) ? array() : array_diff(misc::arrlist_key_values($forum['typelist'][$cateid], 'typeid', 'typename'), array(''));
+		$fid = $forum['fid'];
+		$forum['typecates'] = array();
+		$forum['types'] = array();
+		for($i=1; $i<=3; $i++) {
+			$typecateid = $i;
+			$cate = $this->thread_type_cate->xread($fid, $typecateid, FALSE);
+			if($cate && $cate['enable']) {
+				$forum['typecates'][$typecateid] = $cate['catename'];
+				$typelist = $this->thread_type->get_list_by_fid_cateid($fid, $typecateid, FALSE);
+				foreach($typelist as $k=>$type) {
+					if(empty($type['enable'])) unset($typelist[$k]);
+				}
+				$typeid_typenames = misc::arrlist_key_values($typelist, 'typeid', 'typename');
+				$forum['types'][$typecateid] = $typeid_typenames;
 			}
-		} else {
-			$forum['typecates'] = array();
-			$forum['typelist'] = array();
-			$forum['types'] = array();
+		}
+	}
+	
+	// 详细的格式化，填充, 后台调用
+	public function format_thread_type_full(&$forum) {
+		$fid = $forum['fid'];
+		$forum['typecatelist'] = array();
+		$forum['typelist'] = array();
+		for($i=1; $i<=3; $i++) {
+			$typecateid = $i;
+			$forum['typecatelist'][$i] = $this->thread_type_cate->xread($fid, $typecateid, TRUE); // 填充空白
+			$forum['typelist'][$i] = $this->thread_type->get_list_by_fid_cateid($fid, $typecateid, TRUE); // 填充空白
 		}
 	}
 	

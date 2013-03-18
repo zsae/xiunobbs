@@ -205,7 +205,7 @@ class post_control extends common_control {
 				$forum['todayposts']++;
 				$forum['lasttid'] = $tid;
 				$this->forum->update($forum);
-				$this->forum->clear_cache($fid, TRUE);
+				$this->forum->clear_cache($fid, TRUE); // 发帖强行更新！发帖量特别大，可能需要优化，todo:
 				$this->runtime->xset('posts', '+1');
 				$this->runtime->xset('threads', '+1');
 				$this->runtime->xset('todayposts', '+1');

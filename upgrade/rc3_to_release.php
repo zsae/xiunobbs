@@ -345,8 +345,6 @@ function upgrade_forum() {
 	$forumlist = $mforum->get_list();
 	foreach($forumlist as $forum) {
 		$fid = $forum['fid'];
-		$mthread_type->init($fid);
-		$mthread_type_cate->init($fid);
 		
 		$typelist = $db->index_fetch('thread_type_old', 'typeid', array('fid'=>$fid), array(), 1, 100);
 		
