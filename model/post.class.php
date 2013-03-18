@@ -47,7 +47,7 @@ class post extends base_model {
 	public function format(&$post) {
 		//$post['subject']  = htmlspecialchars($post['subject']);
 		//isset($post['message']) && $post['message']  = nl2br(htmlspecialchars($post['message']));
-		isset($post['dateline']) && $post['dateline'] = misc::minidate($post['dateline']);
+		isset($post['dateline']) && $post['dateline_fmt'] = misc::minidate($post['dateline']);
 		
 		// hook post_model_format_end.php
 	}

@@ -73,7 +73,9 @@ class common_control extends base_control {
 			$timeoffset = misc::mid(intval($_COOKIE['timeoffset']), -12, 12);
 			$timeoffset = sprintf('%+d', $timeoffset);
 		}
-		date_default_timezone_set('Etc/GMT'.$timeoffset);	// 覆盖掉框架设置的默认值
+		$timeoffset2 = $timeoffset;
+		$timeoffset2[0] = $timeoffset[0] == '+' ? '-' : '+';
+		date_default_timezone_set('Etc/GMT'.$timeoffset2);	// 覆盖掉框架设置的默认值
 		$_SERVER['timeoffset'] = $timeoffset;
 		
 		// 今日凌晨0点的开始时间！
