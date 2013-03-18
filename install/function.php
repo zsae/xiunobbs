@@ -77,7 +77,8 @@ function get_env(&$env, &$write) {
 
 function str_line_replace($s, $startline, $endline, $replacearr) {
 	// 从16行-33行，正则替换
-	$arr = explode("\r\n", $s);
+	$sep = "\n";
+	$arr = explode($sep, $s);
 	$arr1 = array_slice($arr, 0, $startline - 1); // 此处: startline - 1 为长度
 	$arr2 = array_slice($arr, $startline - 1, $endline - $startline + 1); // 此处: startline - 1 为偏移量
 	$arr3 = array_slice($arr, $endline);
@@ -87,7 +88,7 @@ function str_line_replace($s, $startline, $endline, $replacearr) {
 			$s = preg_replace('#\''.preg_quote($k).'\'\s*=\>\s*\'?.*?\'?,#ism', "'$k' => '$v',", $s);
 		}
 	}
-	$s = implode("\r\n", $arr1)."\r\n".implode("\r\n", $arr2)."\r\n".implode("\r\n", $arr3);
+	$s = implode($sep, $arr1).$sep.implode($sep, $arr2).$sep.implode($sep, $arr3);
 	return $s;
 }
 
