@@ -4,22 +4,21 @@
  * Copyright (C) xiuno.com
  */
 
-// 本程序用来升级测试版本的 RC3 到 Release
+// 本程序用来升级测试版本的 Xiuno BBS 2.0.0 RC3 到 Xiuno BBS 2.0.0 Release
 /*
 	流程：
-		1. 备份文件: conf/conf.php 为 conf.php.bak
-		2. 重命名 plugin 为 plugin2, tmp 为 tmp2
-		3. 上传 release 程序到网站根目录，覆盖老程序
-		4. 还原配置文件： conf/conf.php
-		4. 访问 http://www.domain.com/upgrade/rc2_to_rc3.php
-		5. 删除升级目录 upgrade!!!
+		1. 新建 rc3 目录，将所有文件目录移动到 rc3/ 下。
+		2. 上传 release 程序到网站根目录
+		3. 拷贝 upgrade/rc3_release.php 这个文件到网站根目录
+		3. 访问 http://www.domain.com/rc3_release.php
+		5. 删除升级程序 rc3_release.php
 */
 
 @set_time_limit(0);
 
-define('DEBUG', 0);
+define('DEBUG', 2);
 
-define('BBS_PATH', str_replace('\\', '/', substr(dirname(__FILE__), 0, -7)));
+define('BBS_PATH', str_replace('\\', '/', dirname(__FILE__)).'/');
 
 // 加载应用的配置文件，唯一的全局变量 $conf
 if(!($conf = include BBS_PATH.'conf/conf.php')) {
@@ -45,11 +44,81 @@ if($step == 'upgrade_conf') {
 	upgrade_avatar();
 } elseif($step == 'upgrade_forum') {
 	upgrade_forum();
+} elseif($step == 'upgrade_thread_type') {
+	upgrade_thread_type();
+} elseif($step == 'upgrade_attach') {
+	upgrade_attach();
+} elseif($step == 'upgrade_thread_views') {
+	upgrade_thread_views();
 }
 
 function upgrade_conf() {
 	global $conf;
+
+	$old = include BBS_PATH.'rc3/conf/conf.php';
+	$configfile = BBS_PATH.'conf/conf.php';
 	
+	$s = file_get_contents($configfile);
+	$master = $old['db']['mysql']['master'];
+	$s = preg_replace("#'mysql'\s*=>\s*array\s*\(\s*'master'\s*=>\s*array\s*\([^)]*?\)#is", "'mysql'=>array(\r\n'master'=>\r\n".var_export($master, 1), $s);
+	file_put_contents($configfile, $s);
+	
+	
+	$mconf = new xn_conf($configfile);
+	$mconf->set('app_url', $old['app_url']);
+	$mconf->set('static_url', $old['static_url']);
+	$mconf->set('model_map', var_export(array('thread_views'=>array('thread_views', 'tid', 'tid')), 1));
+	$mconf->set('upload_url', $old['upload_url']);
+	$mconf->set('plugin_url', $old['app_url'].'plugin/');
+	$mconf->set('click_server', $old['app_url'].'service/clickd/');
+	$mconf->set('auth_key', $old['public_key']);
+	$mconf->set('siteid', md5(rand(1, 9999999999)));
+	$mconf->set('cookie_pre', isset($old['cookie_pre']) ? $old['cookie_pre'] : 'xn_');
+	$mconf->set('cookie_domain', isset($old['cookie_domain']) ? $old['cookie_domain'] : '');
+	$mconf->set('cookie_path', isset($old['cookie_path']) ? $old['cookie_path'] : '');
+	$mconf->set('urlrewrite', $old['urlrewrite']);
+	$mconf->set('installed', 1);
+	$mconf->save();
+	
+	
+	$conf = include BBS_PATH.'conf/conf.php';
+	$mkv = new kv($conf);
+	$mkv->xset('app_name', $old['app_name']); 
+	$mkv->xset('app_copyright', $old['app_copyright']); 
+	$mkv->xset('timeoffset', $old['timeoffset']); 
+	$mkv->xset('forum_index_pagesize', $old['forum_index_pagesize']); 
+	$mkv->xset('site_pv', $old['site_pv']); 
+	$mkv->xset('site_runlevel', $old['site_runlevel']); 
+	$mkv->xset('threadlist_hotviews', $old['threadlist_hotviews']); 
+	$mkv->xset('seo_title', $old['seo_title']); 
+	$mkv->xset('seo_keywords', $old['seo_keywords']); 
+	$mkv->xset('seo_description', $old['seo_description']); 
+	$mkv->xset('search_type', $old['search_type']); 
+	$mkv->xset('china_icp', $old['china_icp']); 
+	$mkv->xset('footer_js', $old['footer_js']); 
+	$mkv->xset('iptable_on', $old['iptable_on']); 
+	$mkv->xset('badword_on', $old['badword_on']); 
+	$mkv->xset('online_hold_time', $old['online_hold_time']);
+	$mkv->xsave();
+	
+	
+	// 生成局部配置
+	$kvconf = array(
+		'credits_policy_thread' => 2,		// 发主题增加的积分
+		'credits_policy_post' => 0,		
+		'golds_policy_thread' => 1,		// 发主题增加的金币 golds（积分不能消费，金币可以消费，充值）
+		'golds_policy_post' => 1,		
+		'post_update_expiry' => 86400,		// 帖子多长时间后不能修改，默认为86400，一天，0不限制
+		'sphinx_host' => '',			// 主机
+		'sphinx_port' => '',			// 端口
+		'sphinx_datasrc' => '',			// 数据源
+		'sphinx_deltasrc' => '',		// 增量索引数据源，优先搜索这个
+		'reg_on' => 1,				// 是否开启注册
+		'reg_email_on' => 0,			// 是否开启Email激活
+		'reg_init_golds' => 10,			// 注册初始化金币
+		'resetpw_on' => 0,			// 是否开启密码找回
+	);
+	$mkv->set('conf_ext', $kvconf);
 	
 	message('修改配置成功，接下来升级 alter_table...', '?step=alter_table');
 }
@@ -59,23 +128,85 @@ function alter_table() {
 	global $conf;
 	// 2. 修改表结构
 	$sql = "
-		ALTER TABLE bbs_thread DROP INDEX typeidtid, typeidfloortime, fidtypeid, typeid, typeid_2, tid;
-
-		RENAME TABLE bbs_thread_type TO bbs_thread_type_old;
-		ALTER TABLE bbs_thread_type_old ADD column newtypeid int(11) NOT NULL default '0';
-				
-		# 存放大分类，小表，每个版块三个大分类，ID，1,2,3
-		DROP TABLE IF EXISTS bbs_thread_type_cate;
-		CREATE TABLE bbs_thread_type_cate (
-		  fid smallint(6) NOT NULL default '0',			# 版块id
-		  cateid int(11) NOT NULL default '0',			# 主题分类id，取值范围：1,2,3
-		  catename char(16) NOT NULL default '',		# 主题分类
-		  rank int(11) unsigned NOT NULL default '0',		# 排序，越小越靠前，最大255
-		  enable tinyint(3) unsigned NOT NULL default '0',	# 是否启用，主要针对大分类
-		  PRIMARY KEY (fid, cateid)
-		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+		alter table bbs_attach 
+			add column tid int(11) NOT NULL  DEFAULT '0' after aid, 
+			change pid pid int(11) NOT NULL  DEFAULT '0' after tid, 
+			add KEY fidtid (fid,tid), COMMENT='';
 		
-		# 主题分类
+		alter table bbs_forum 
+			change name name char(16) NOT NULL  after fid, 
+			change todayposts todayposts mediumint(8) unsigned NOT NULL  DEFAULT '0' after posts, 
+			change lasttid lasttid int(11) NOT NULL  DEFAULT '0' after todayposts, 
+			change brief brief text NOT NULL  after lasttid, 
+			change accesson accesson tinyint(1) NOT NULL  DEFAULT '0' after brief, 
+			add column typecates char(26) NOT NULL  after modnames, 
+			change toptids toptids char(240) NOT NULL  after typecates, 
+			change status status tinyint(11) NOT NULL  DEFAULT '0' after toptids, 
+			change orderby orderby tinyint(11) NOT NULL  DEFAULT '0' after status, 
+			change seo_title seo_title char(64) NOT NULL  after orderby, 
+			drop column fup, 
+			drop column replies, 
+			drop column digests, 
+			drop column todayreplies, 
+			drop column tops, 
+			drop column lastpost, 
+			drop column lastsubject, 
+			drop column lastuid, 
+			drop column lastusername, 
+			drop column rule, 
+			drop column icon, 
+			drop column lastcachetime, 
+			drop column listtype, 
+			drop column indexforums, 
+			drop key fup, COMMENT='';
+		
+		alter table bbs_group 
+			change color color char(7) NOT NULL  after creditsto, 
+			change allowupdate allowupdate int(10) NOT NULL  DEFAULT '0' after allowtop, 
+			drop column upfloors, 
+			drop column allowdigest, COMMENT='';
+		
+		alter table bbs_kv 
+			change k k char(32) NOT NULL  first, 
+			change expiry expiry int(11) unsigned NOT NULL  DEFAULT '0' after v, COMMENT='';
+		
+		alter table bbs_post 
+			change rates rates int(11) unsigned NOT NULL  DEFAULT '0' after imagenum, 
+			drop column replies, COMMENT='';
+		
+		alter table bbs_runtime 
+			change k k char(32) NOT NULL  first, 
+			change v v text NOT NULL  after k, 
+			add column expiry int(11) unsigned NOT NULL  DEFAULT '0' after v,  Engine=MyISAM, COMMENT='';
+		
+		alter table bbs_stat 
+			change users users int(11) unsigned NOT NULL  DEFAULT '0' after posts, 
+			change newusers newusers int(11) unsigned NOT NULL  DEFAULT '0' after newposts, 
+			drop column replies, 
+			drop column newreplies, COMMENT='';
+		
+		alter table bbs_thread 
+			change floortime floortime int(10) unsigned NOT NULL  DEFAULT '0' after lastpost, 
+			change top top tinyint(1) NOT NULL  DEFAULT '0' after posts, 
+			add column typeid1 int(10) unsigned NOT NULL  DEFAULT '0' after top, 
+			add column typeid2 int(10) unsigned NOT NULL  DEFAULT '0' after typeid1, 
+			add column typeid3 int(10) unsigned NOT NULL  DEFAULT '0' after typeid2, 
+			change attachnum attachnum tinyint(3) NOT NULL  DEFAULT '0' after typeid3, 
+			change lastuid lastuid int(11) unsigned NOT NULL  DEFAULT '0' after status, 
+			drop column replies, 
+			drop column digest, 
+			drop column typename, 
+			drop column cateids, 
+			drop column catenames, 
+			drop column seo_keywords, 
+			drop column pids, 
+			drop column coverimg, 
+			drop column brief, 
+			drop key typeid, 
+			drop key typeid_2, COMMENT='';
+		
+		RENAME TABLE bb_thread_type TO bbs_thread_type_old;
+		
 		DROP TABLE IF EXISTS bbs_thread_type;
 		CREATE TABLE bbs_thread_type (
 		  fid smallint(6) NOT NULL default '0',			# 版块id
@@ -86,44 +217,52 @@ function alter_table() {
 		  PRIMARY KEY (fid, typeid)
 		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 		
-		# 主题分类求和，用来分页
-		DROP TABLE IF EXISTS bbs_thread_type_count;
-		CREATE TABLE bbs_thread_type_count (
-		  fid smallint(6) NOT NULL default '0',			# 版块id
-		  typeidsum int(11) unsigned NOT NULL default '0',	# typeid 求和
-		  threads int(11) NOT NULL default '0',			# 该 typeidsum 下有多少主题数
-		  PRIMARY KEY (fid, typeidsum)
+		DROP TABLE IF bbs_thread_type_cate;
+		create table bbs_thread_type_cate ( 
+			fid smallint(6) NOT NULL  DEFAULT '0'  , 
+			cateid int(11) NOT NULL  DEFAULT '0'  , 
+			catename char(16) NOT NULL   , 
+			rank int(11) unsigned NOT NULL  DEFAULT '0'  , 
+			enable tinyint(3) unsigned NOT NULL  DEFAULT '0'  , 
+			PRIMARY KEY (fid,cateid) 
 		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 		
-		# 主题分类的数据，一个主题属于多少个主题分类，排列组合，typeid求和以后存放。
-		DROP TABLE IF EXISTS bbs_thread_type_data;
-		CREATE TABLE bbs_thread_type_data (
-		  fid smallint(6) NOT NULL default '0',			# 版块id
-		  tid int(11) NOT NULL default '0',			# tid
-		  typeidsum int(11) unsigned NOT NULL default '0',	# 这个值是一个“和”
-		  PRIMARY KEY (fid, tid, typeidsum),			# 一个主题属于多个主题分类（最多三个）
-		  KEY (fid, typeidsum, tid)				# 一个版块下的 typeid，主题列表按照符合条件查询列表
+		DROP TABLE IF bbs_thread_type_count;
+		create table bbs_thread_type_count ( 
+			fid smallint(6) NOT NULL  DEFAULT '0'  , 
+			typeidsum int(11) unsigned NOT NULL  DEFAULT '0'  , 
+			threads int(11) NOT NULL  DEFAULT '0'  , 
+			PRIMARY KEY (fid,typeidsum) 
 		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
-		ALTER TABLE bbs_thread DROP column typeid, typename, cateids, catenames;
 		
-		ALTER TABLE bbs_thread 
-			ADD column typeid1 int(10) unsigned NOT NULL default '0',
-			ADD column typeid2 int(10) unsigned NOT NULL default '0',
-			ADD column typeid3 int(10) unsigned NOT NULL default '0',
-			
-		ALTER TABLE bbs_attach ADD column tid int(11) NOT NULL default '0';
-		ALTER TABLE bbs_attach ADD KEY fidtid(fid, tid);
+		DROP TABLE IF bbs_thread_type_data;
+		create table bbs_thread_type_data ( 
+			fid smallint(6) NOT NULL  DEFAULT '0'  , 
+			tid int(11) NOT NULL  DEFAULT '0'  , 
+			typeidsum int(11) unsigned NOT NULL  DEFAULT '0'  , 
+			PRIMARY KEY (fid,tid,typeidsum) , 
+			KEY fid (fid,typeidsum,tid) 
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 		
-		DROP TABLE IF EXISTS bbs_thread_views;
-		CREATE TABLE bbs_thread_views (
-		  tid int(11) unsigned NOT NULL auto_increment,		# 主题id
-		  views int(11) unsigned NOT NULL default '0',		# 点击数
-		  PRIMARY KEY (tid)
-		);
+		DROP TABLE IF bbs_thread_views;
+		create table bbs_thread_views ( 
+			tid int(11) unsigned NOT NULL  auto_increment  , 
+			views int(11) unsigned NOT NULL  DEFAULT '0'  , 
+			PRIMARY KEY (tid) 
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 		
-		ALTER TABLE bbs_user ADD column onlinetime int(11) NOT NULL default '0';
-		
+		alter table bbs_user 
+			change myposts myposts mediumint(8) unsigned NOT NULL  DEFAULT '0' after posts, 
+			change avatar avatar int(11) unsigned NOT NULL  DEFAULT '0' after myposts, 
+			change follows follows smallint(3) unsigned NOT NULL  DEFAULT '0' after golds, 
+			change accesson accesson tinyint(1) NOT NULL  DEFAULT '0' after homepage, 
+			add column onlinetime int(1) NOT NULL  DEFAULT '0' after accesson, 
+			change lastactive lastactive int(1) NOT NULL  DEFAULT '0' after onlinetime, 
+			drop column replies, 
+			drop column digests, 
+			drop column money, 
+			drop column signature, 
+			drop key email, add KEY email (email), COMMENT='';
 	";
 	
 	$db = new db_mysql($conf['db']['mysql']);
@@ -154,19 +293,13 @@ function alter_table() {
 	$db->truncate('runtime');
 	
 	// 修改实习版主
-	$mgroup = new group();
+	$mgroup = new group($conf);
 	$group = $mgroup->read(5);
 	$group['name'] = '实习版主';
 	$mgroup->update($group);
-	
-	// 删除用户组缓存
-	for($i=0; $i<30; $i++) {
-		$file = $conf['tmp_path']."forum_$i_cache.php";
-		is_file($file) && unlink($file);
-	}
+	$mgroup->delete(3);
 	
 	// 升级用户组
-	
 	message('升级表结构完成，接下来升级用户头像...', '?step=upgrade_avatar');
 }
 
@@ -195,9 +328,6 @@ function upgrade_avatar() {
 		$start += $limit;
 		message("正在升级 user.avatar, 一共: $count, 当前: $start...", "?step=upgrade_avatar&start=$start", 0);
 	} else {
-		
-		// 删除 group_* 的缓存
-		clear_tmp('group_');
 		message('升级头像完成，接下来升级论坛数据...', '?step=upgrade_forum');
 	}
 }
@@ -207,9 +337,11 @@ function upgrade_forum() {
 	global $conf;
 	
 	// 重命名 thread_type 为 thread_type_old
-	$mforum = new forum();
-	$mthread_type = new thread_type();
-	$mthread_type_cate = new thread_type_cate();
+	$db = new db_mysql($conf['db']['mysql']);
+	
+	$mforum = new forum($conf);
+	$mthread_type = new thread_type($conf);
+	$mthread_type_cate = new thread_type_cate($conf);
 	$forumlist = $mforum->get_list();
 	foreach($forumlist as $forum) {
 		$fid = $forum['fid'];
@@ -243,7 +375,7 @@ function upgrade_forum() {
 		}
 	}
 	
-	message('升级头像完成，接下来升级论坛数据...', '?step=upgrade_thread_type');
+	message('升级头像完成，接下来升级主题分类数据...', '?step=upgrade_thread_type');
 }
 
 // 典型的跳转框架
@@ -253,10 +385,9 @@ function upgrade_thread_type() {
 	$db = new db_mysql($conf['db']['mysql']);
 	$count = core::gpc('count');
 	if(empty($count)) {
-		$db->index_create('thread', array('tid'));
 		$count = $db->index_count('thread');
 	}
-	$thread_type_data = new thread_type_data();
+	$thread_type_data = new thread_type_data($conf);
 	if($start < $count) {
 		$limit = DEBUG ? 20 : 2000;
 		$threadlist = $db->index_fetch('thread', 'tid', array(), array(), $start, $limit);
@@ -272,7 +403,6 @@ function upgrade_thread_type() {
 		$start += $limit;
 		message("正在升级 upgrade_thread_type, 一共: $count, 当前: $start...", "?step=upgrade_thread_type&start=$start&count=$count", 0);
 	} else {
-		$db->index_drop('thread', array('tid'));
 		if($conf['db']['type'] != 'mongodb') {
 			$tablepre = $db->tablepre;
 			$db->query("ALTER TABLE {$tablepre}thread DROP COLUMN typeid");
@@ -290,7 +420,7 @@ function upgrade_attach() {
 	if(empty($count)) {
 		$count = $db->index_count('attach');
 	}
-	$mpost = new post();
+	$mpost = new post($conf);
 	if($start < $count) {
 		$limit = DEBUG ? 20 : 2000;
 		$arrlist = $db->index_fetch('attach', 'aid', array(), array(), $start, $limit);
@@ -302,18 +432,39 @@ function upgrade_attach() {
 		$start += $limit;
 		message("正在升级 upgrade_attach, 一共: $count, 当前: $start...", "?step=upgrade_attach&start=$start&count=$count", 0);
 	} else {
-		message('<a href="../">升级完毕!</a>');
+		message('升级 thread_type 完成，接下来升级 upgrade_thread_views...', '?step=upgrade_thread_views');
 	}
 }
 
-function alter_table() {
+// 典型的跳转框架
+function upgrade_thread_views() {
+	global $start;
 	global $conf;
 	$db = new db_mysql($conf['db']['mysql']);
-	
-	// 升级主题分类
-	
-	
-	message('升级表结构完成，接下来升级用户头像...', '?step=upgrade_avatar');
+	$count = core::gpc('count');
+	if(empty($count)) {
+		$count = $db->index_count('thread');
+	}
+	if($start < $count) {
+		$limit = DEBUG ? 20 : 2000;
+		$mthread_view = core::model($conf, 'thread_views', 'tid', 'tid');
+		$threadlist = $db->index_fetch('thread', 'tid', array(), array(), $start, $limit);
+		$tmpfile = BBS_PATH.'rc3/upload/click_server.data';
+		$fp = fopen($tmpfile, 'rb');
+		foreach($threadlist as $thread) {
+			$tid = $thread['tid'];
+			fseek($fp, $tid * 4);
+			$data = fread($fp, 4);
+			$arr = unpack("L*", $data);	// unpack 出来的数组，下标从1开始。
+			$views = isset($arr[1]) ? $arr[1] : 0;
+			$mthread_view->create(array('tid'=>$thread['tid'], 'views'=>$views));
+		}
+		fclose($fp);
+		$start += $limit;
+		message("正在升级 upgrade_thread_views, 一共: $count, 当前: $start...", "?step=upgrade_thread_views&start=$start&count=$count", 0);
+	} else {
+		message('升级完成。', 'index.php');
+	}
 }
 
 function message($s, $url = '', $timeout = 2) {
@@ -335,7 +486,7 @@ function message($s, $url = '', $timeout = 2) {
 	<head>
 		<title>Xiuno BBS 2.0.0 RC3 - Xiuno BBS 2.0.0 Release 升级程序 </title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<link rel="stylesheet" type="text/css" href="../view/common.css" />
+		<link rel="stylesheet" type="text/css" href="view/common.css" />
 	</head>
 	<body>
 	<div id="header" style="overflow: hidden;">
@@ -355,27 +506,6 @@ function message($s, $url = '', $timeout = 2) {
 function get_avatar($uid, $size = 'middle', $type = '') {
 	$dir = image::get_dir($uid);
 	return $dir.'/'.$uid.'_'.$size.'.gif';
-}
-
-function clear_tmp($pre = '') {
-	global $conf;
-	if(IN_SAE) {
-		$kv = new SaeKV();
-		$ret = $kv->pkrget($pre, 100);
-		foreach($ret as $key=>$val) {
-			$kv->delete($key);
-		}
-	} else {
-		$dh = opendir($conf['tmp_path']);
-		while(($file = readdir($dh)) !== false ) {
-			if($file != "." && $file != ".." ) {
-				if(substr($file, 0, strlen($pre)) == $pre) {
-					unlink($conf['tmp_path']."$file");
-				}
-			}
-		}
-		closedir($dh);
-	}
 }
 
 ?>

@@ -33,6 +33,14 @@ class post_control extends common_control {
 		$forumselect = form::get_select('fid', $this->conf['forumarr'], $fid);
 		$this->view->assign('forumselect', $forumselect);
 		
+		$typeid1 = intval(core::gpc('typeid1'));
+		$typeid2 = intval(core::gpc('typeid2'));
+		$typeid3 = intval(core::gpc('typeid3'));
+		
+		$this->thread_type->check_typeid($typeid1, 1);
+		$this->thread_type->check_typeid($typeid2, 2);
+		$this->thread_type->check_typeid($typeid3, 3);
+		
 		$uid = $this->_user['uid'];
 		$username = $this->_user['username'];
 		$user = $this->user->read($uid);
@@ -51,17 +59,12 @@ class post_control extends common_control {
 			$this->view->assign('fid', $fid);
 			
 			// 初始化 select 控件
-			$this->init_type_select($forum);
+			$this->init_type_select($forum, $typeid1, $typeid2, $typeid3);
 			
 			// hook post_thread_before.php
 			$this->view->display('post_thread_ajax.htm');
 		} else {
-			$typeid1 = intval(core::gpc('typeid1', 'P'));	// 检查合法范围
-			$typeid2 = intval(core::gpc('typeid2', 'P'));	// 检查合法范围
-			$typeid3 = intval(core::gpc('typeid3', 'P'));	// 检查合法范围
-			$this->thread_type->check_typeid($typeid1, 1);
-			$this->thread_type->check_typeid($typeid2, 2);
-			$this->thread_type->check_typeid($typeid3, 3);
+			
 			$typeidsum = $typeid1 + $typeid2 + $typeid3;	// 检查合法范围
 			$subject = htmlspecialchars(core::gpc('subject', 'P'));
 			
