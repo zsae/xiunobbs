@@ -47,3 +47,5 @@
 <?php exit;?>	2013-3-18 22:36	127.0.0.1	/admin/forum-update-fid-3.htm	[Notice] : Undefined index:  cateid in File E:\www\xiuno.2.0.0\xiunophp\core\base_model.class.php, Line: 494 File: E:\www\xiuno.2.0.0\xiunophp\core\core.class.php [293]	
 <?php exit;?>	2013-3-18 22:47	127.0.0.1	/forum-index-fid-3.htm	[Notice] : Undefined index:  name in File E:\www\xiuno.2.0.0\tmp\bbs_model_forum.class.php, Line: 85 File: E:\www\xiuno.2.0.0\xiunophp\core\core.class.php [293]	
 <?php exit;?>	2013-3-18 22:47	127.0.0.1	/forum-index-fid-3.htm	[Unknonw] : Object of class forum could not be converted to string in File E:\www\xiuno.2.0.0\tmp\bbs_model_forum.class.php, Line: 86 File: E:\www\xiuno.2.0.0\xiunophp\core\core.class.php [293]	
+<?php exit;?>	2013-3-19 00:41	127.0.0.1	/	base_control.class.php: Not implement method：get_fidtids: (array (   0 => false, )) File: E:\www\xiuno.2.0.0\xiunophp\core\base_control.class.php [53]	
+<?php exit;?>	2013-3-19 00:42	127.0.0.1	/	[Notice] : Undefined index:  toptids in File E:\www\xiuno.2.0.0\tmp\bbs_control_index_control.class.php, Line: 93 File: E:\www\xiuno.2.0.0\xiunophp\core\core.class.php [293]	

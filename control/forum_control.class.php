@@ -136,7 +136,7 @@ class forum_control extends common_control {
 		$this->view->display('forum_list.htm');
 	}
 	
-	private function get_toplist($forum) {
+	private function get_toplist($forum = array()) {
 		$fidtids = array();
 		// 3 级置顶
 		$fidtids = $this->get_fidtids($this->conf['toptids']);

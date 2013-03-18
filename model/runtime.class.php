@@ -66,6 +66,7 @@ class runtime extends base_model {
 					'forumaccesson'=>$forumaccesson,
 					'grouparr'=>$grouparr,
 				);
+				$this->set('runtime', $this->data[$key]);
 			}
 			return $this->data[$key];
 		}
@@ -89,15 +90,17 @@ class runtime extends base_model {
 			$forumlist = $this->forum->get_list();
 			$forumarr = misc::arrlist_key_values($forumlist, 'fid', 'name');
 			$this->xset('forumarr', $forumarr);
+			$this->xsave('forumarr');
 		} elseif($k == 'groupname') {
 			$grouplist = $this->group->get_list();
 			$grouparr = misc::arrlist_key_values($grouplist, 'fid', 'name');
 			$this-->xset('grouparr', $grouparr);
+			$this->xsave('grouparr');
 		}
 	}
 	
 	// 显示的保存
-	public function xsave($key = 'conf') {
+	public function xsave($key = 'runtime') {
 		$this->set($key, $this->data[$key]);
 	}
 	

@@ -54,6 +54,14 @@ class index_control extends common_control {
 				continue;
 			}
 		}
+		
+		$toplist = $page == 1 ? $this->get_toplist() : array();
+		$toplist = array_filter($toplist);
+		foreach($toplist as $k=>&$thread) {
+			$this->thread->format($thread);
+                        $readtids .= ','.$thread['tid'];
+                }
+                
 		$readtids = substr($readtids, 1); 
 		$click_server = $this->conf['click_server']."?db=tid&r=$readtids";
 		
@@ -76,6 +84,32 @@ class index_control extends common_control {
 	
 	public function on_example() {
 		$this->view->display('example2.htm');
+	}
+	
+	private function get_toplist($forum = array()) {
+		$fidtids = array();
+		// 3 级置顶
+		$fidtids = $this->get_fidtids($this->conf['toptids']);
+		
+		// 1 级置顶
+		if($forum) {
+			$fidtids += $this->get_fidtids($forum['toptids']);
+		}
+		
+		$toplist = $this->thread->mget($fidtids);
+		return $toplist;
+	}
+	
+	private function get_fidtids($s) {
+		$fidtids = array();
+		if($s) {
+			$fidtidlist = explode(' ', trim($s));
+			foreach($fidtidlist as $fidtid) {
+				list($fid, $tid) = explode('-', $fidtid);
+				$fidtids["$fid-$tid"] = array($fid, $tid);
+			}
+		}
+		return $fidtids;
 	}
 	//hook index_control_after.php
 }

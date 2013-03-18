@@ -28,15 +28,16 @@ class post_control extends common_control {
 		$this->check_forbidden_group();
 		
 		$fid = intval(core::gpc('fid'));
-		empty($fid) && list($fid, $forumname) = each($this->conf['forumarr']);
-		$forum = $this->mcache->read('forum', $fid);
 		if(empty($fid)) {
+			list($fid, $forumname) = each($this->conf['forumarr']);
 			$forumselect = form::get_select('fid', $this->conf['forumarr'], $fid);
 			$this->view->assign('forumselect', $forumselect);
 		} else {
 			$forumselect = '';
 			$this->view->assign('forumselect', $forumselect);
 		}
+		
+		$forum = $this->mcache->read('forum', $fid);
 		
 		$typeid1 = intval(core::gpc('typeid1'));
 		$typeid2 = intval(core::gpc('typeid2'));
