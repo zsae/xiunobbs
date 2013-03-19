@@ -39,7 +39,7 @@ class cron extends base_model {
 			
 			// gc online table
 			$this->online->gc();
-			
+			$this->runtime->xsave('runtime');
 		}
 		
 		// execute on 0:00 perday.
