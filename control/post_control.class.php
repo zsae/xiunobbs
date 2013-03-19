@@ -215,6 +215,7 @@ class post_control extends common_control {
 				$this->runtime->xset('posts', '+1');
 				$this->runtime->xset('threads', '+1');
 				$this->runtime->xset('todayposts', '+1');
+				// $this->runtime->xsave();
 				
 				// $error
 				$error['thread'] = $thread;

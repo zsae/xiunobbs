@@ -39,7 +39,7 @@ class cron extends base_model {
 			
 			// gc online table
 			$this->online->gc();
-			$this->runtime->xsave('runtime');
+			// $this->runtime->xsave();
 		}
 		
 		// execute on 0:00 perday.
@@ -88,7 +88,7 @@ class cron extends base_model {
 			$this->runtime->xset('todaythreads', 0);
 			$this->runtime->xset('todayusers', 0);
 			$this->runtime->xset('onlines', $this->online->count());	// 校对
-			$this->runtime->xsave('runtime');
+			// $this->runtime->xsave();
 		}
 		
 		// 释放锁

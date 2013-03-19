@@ -51,7 +51,7 @@ class forum_control extends common_control {
 		$pagesize = $this->conf['forum_index_pagesize'];
 		$page = misc::page();
 		misc::setcookie($this->conf['cookie_pre'].'page', $page, $_SERVER['time'] + 86400 * 7, $this->conf['cookie_path'], $this->conf['cookie_domain']);
-		
+
 		// hook forum_index_get_list_before.php
 		
 		$start = ($page - 1) * $pagesize;

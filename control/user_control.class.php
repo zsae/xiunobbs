@@ -193,6 +193,7 @@ class user_control extends common_control {
 					$this->runtime->xset('todayusers', '+1');
 					$this->runtime->xset('newuid', $uid);
 					$this->runtime->xset('newusername', $userdb['username']);
+					// $this->runtime->xsave();
 					
 					// hook user_create_succeed.php
 					

@@ -50,6 +50,7 @@ class thread_type_cate extends base_model {
 		foreach($arrlist as $arr) {
 			$this->delete($arr['fid'], $arr['cateid']);
 		}
+		return count($arrlist);
 	}
 	
 	public function get_list_by_fid($fid, $fillblank = TRUE) {

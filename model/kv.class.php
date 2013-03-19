@@ -8,6 +8,7 @@
 class kv extends base_model {
 	
 	private $data = array();		// 合并存储
+	private $changed = array();		// 标示改变的 key
 	
 	function __construct(&$conf) {
 		parent::__construct($conf);
@@ -52,11 +53,20 @@ class kv extends base_model {
 			$this->data[$key] = $this->get($key);
 		}
 		$this->data[$key][$k] = $v;
+		$this->changed[$key] = 1;
 	}
 	
 	// 显示的保存
 	public function xsave($key = 'conf') {
 		$this->set($key, $this->data[$key]);
+		$this->changed[$key] = 0;
+	}
+	
+	// 保存改变的 key
+	public function save_changed() {
+		foreach($this->changed as $key=>$v) {
+			$v && $this->xsave($key);
+		}
 	}
 	
 	// 删除一个 key, 

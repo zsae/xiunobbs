@@ -10,6 +10,7 @@
 class runtime extends base_model {
 	
 	private $data = array();		// 合并存储
+	private $changed = array();		// 标示改变的 key
 	
 	function __construct(&$conf) {
 		parent::__construct($conf);
@@ -82,6 +83,7 @@ class runtime extends base_model {
 		} else {
 			$this->data[$key][$k] = $v;
 		}
+		$this->changed[$key] = 1;
 	}
 	
 	// 更新
@@ -101,7 +103,15 @@ class runtime extends base_model {
 	
 	// 显示的保存
 	public function xsave($key = 'runtime') {
-		$this->set($key, $this->data[$key]);
+		$this->set($key, isset($this->data[$key]) ? $this->data[$key] : '');
+		$this->changed[$key] = 0;
+	}
+	
+	// 保存改变的 key
+	public function save_changed() {
+		foreach($this->changed as $key=>$v) {
+			$v && $this->xsave($key);
+		}
 	}
 	
 	// 删除一个 key, 

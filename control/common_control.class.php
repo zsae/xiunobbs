@@ -46,12 +46,19 @@ class common_control extends base_control {
 		// hook common_control_init_after.php
 	}
 	
-	// PHP 规定析构函数中不能抛出异常！保证此函数高度可用！
+	// PHP 规定析构函数中不能抛出异常！保证此函数高度可用！这个析构函数最先执行，这里 db 未释放。
 	function __destruct() {
-		if(DEBUG > 1) {
+		// $db 有可能比这两个 model 实例更早析构！
+		if(isset($this->runtime)) {
+			$this->runtime->save_changed();
+		}
+		if(isset($this->kv)) {
+			$this->kv->save_changed();
+		}
+		
+		if(DEBUG > 1 && !empty($_SERVER['trace'])) {
 			//restore_exception_handler();
 			//restore_error_handler();
-			if(empty($_SERVER['trace'])) return;
 			$s = "\r\n\r\n\r\n---------------------------------------------------------------------------------\r\n<?php exit;?>\r\n---------------------------------------------------------------------------------\r\n$_SERVER[REQUEST_URI]:\r\nPOST: ".print_r($_POST, 1)."\r\nSQL:".print_r($_SERVER['sqls'], 1)."\r\n";
 			$s .= $_SERVER['trace'];
 			!is_file($this->conf['log_path'].'trace.php') && file_put_contents($this->conf['log_path'].'trace.php', '');

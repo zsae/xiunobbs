@@ -22,6 +22,7 @@ class online extends base_model {
 		$online = $this->read($sid);
 		if(empty($online)) {
 			$this->runtime->xset('onlines', '+1');
+			// $this->runtime->xsave();
 		}
 		return $this->create($arr);
 	}

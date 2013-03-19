@@ -88,6 +88,7 @@ class user_control extends admin_control {
 				$user['password'] = $this->user->md5_md5($user['password'], $salt);
 				$this->user->xcreate($user);
 				$this->runtime->xset('todayusers', '+1');
+				// $this->runtime->xsave();
 			}
 		}
 		

@@ -20,7 +20,7 @@ if($this->conf['db']['type'] != 'mongodb') {
 	// 写入配置文件
 	$this->kv->xset('system_uid', 2);
 	$this->kv->xset('system_username', '系统');
-	$this->kv->xsave();
+	// $this->kv->xsave();
 	
 }
 
