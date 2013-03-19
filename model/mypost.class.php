@@ -35,8 +35,11 @@ class mypost extends base_model {
 	}
 	*/
 	public function format(&$mypost) {
+		$mypost['thread'] = $mypost['post'] = array();
 		$thread = $this->thread->read($mypost['fid'], $mypost['tid']);
+		if(empty($thread)) return;
 		$post = $this->post->read($mypost['fid'], $mypost['pid']);
+		if(empty($post)) return;
 		$forum = $this->forum->read($thread['fid']);
 		$this->thread->format($thread, $forum);
 		$this->post->format($post);

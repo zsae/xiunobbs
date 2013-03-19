@@ -245,7 +245,7 @@ span.nopic {width: 54px; height: 54px; background: url(image/nopic.gif) no-repea
 	#user {color: #AEB2BE; font-size: 12px;}
 	#user a {color: #AAAAAA;}
 	#pm {}
-	#user #pm_userlist {}
+	#user #pm_userlist {text-align: left;}
 	#user #pm_userlist a {color: #454545; display: block; float: left; width: 100%; padding: 4px 0px; text-indent: 4px; text-decoration: none;}
 	#user #pm_userlist a:hover {background: #BB0000; color: #FFFFFF;}
 	#user #pm_userlist a:hover b{background: #BB0000; color: #FFFFFF;}

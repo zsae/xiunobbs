@@ -33,7 +33,7 @@ class pm_control extends common_control {
 		if($_SERVER['time'] - $user['lastactive'] > 300) {
 			$user['lastactive'] = $_SERVER['time'];
 			$user['onlinetime'] += 300;
-			$this->user->update($uid, $user);
+			$this->user->update($user);
 			
 			// 更新在线，如果不存在，则不更新(common_control.class.php 每隔5分钟会自动创建一次 online)
 			$this->update_online();

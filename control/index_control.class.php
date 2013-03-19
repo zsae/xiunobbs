@@ -19,10 +19,15 @@ class index_control extends common_control {
 	public function on_index() {
 		
 		// hook index_index_before.php
+		$post = array(
+			'uid'=>1,
+			'fid'=>13,
+			'tid'=>807,
+			'pid'=>3205,
+			'forumname'=>'发展建议',
+		);
+		$this->mypost->format($post);
 		
-		$fid = 1;
-		$forum = $this->forum->read($fid);
-		$this->forum->format_thread_type($forum);
 		$this->on_bbs();
 	}
 	
