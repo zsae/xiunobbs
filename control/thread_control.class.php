@@ -31,7 +31,6 @@ class thread_control extends common_control {
 		// 板块权限检查
 		$forum = $this->mcache->read('forum', $fid);
 		$this->check_forum_exists($forum);
-		$this->check_forum_status($forum);
 		$this->check_access($forum, 'read');
 		
 		$this->thread->format($thread, $forum);

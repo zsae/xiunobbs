@@ -21,9 +21,6 @@ dd{width: 84%;}
 					<dt><label for="name">名称：</label></dt>
 					<dd><input type="text" name="name" id="name" value="$forum[name]" style="width: 150px" /> <a href="../?forum-index-fid-$forum[fid].htm" target="_blank">点击访问</a></dd>
 					
-					<dt><label for="status">是否显示：</label></dt>
-					<dd>$input[status] <span class="grey">隐藏后，仅管理员能通过上面连接进行访问。</span></dd>
-					
 					<dt><label for="rank">排序：</label></dt>
 					<dd><input type="text" name="rank" id="rank" value="$forum[rank]" style="width: 30px" /> <span class="grey">0-255, 正序</span></dd>
 					
@@ -90,7 +87,7 @@ dd{width: 84%;}
 					<dt><label for="accesson">开启权限限制：</label></dt>
 					<dd>
 						<input type="checkbox" name="accesson" id="accesson" value="1" {if $forum[accesson]}checked="checked"{/if} />
-						<span class="grey">不利于缓存，不建议设置。</span>
+						<span class="grey">不利于缓存，影响性能。</span>
 						<div class="list" id="accesstable" style="width: 580px; {if !$forum[accesson]}display: none;{/if}">
 							<table class="table">
 								<tr class="header">

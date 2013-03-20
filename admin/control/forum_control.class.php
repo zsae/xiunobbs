@@ -70,7 +70,6 @@ class forum_control extends admin_control {
 						'modnames'=>'',
 						'toptids'=>'',
 						'orderby'=>0,
-						'status'=>1,
 						'seo_title'=>'',
 						'seo_keywords'=>'',
 					);
@@ -176,7 +175,6 @@ class forum_control extends admin_control {
 			
 			$post['name'] = core::gpc('name', 'P');
 			$post['rank'] = intval(core::gpc('rank', 'P'));
-			$post['status'] = intval(core::gpc('status', 'P'));
 			$post['orderby'] = intval(core::gpc('orderby', 'P'));
 			//$post['threads'] = intval(core::gpc('threads', 'P'));
 			//$post['posts'] = intval(core::gpc('posts', 'P'));
@@ -288,7 +286,6 @@ class forum_control extends admin_control {
 		$orderbyarr = array(0=>'顶贴时间排序', 1=>'发帖时间排序');
 		
 		$input = array();
-		$input['status'] = form::get_radio_yes_no('status', $forum['status']);
 		$input['orderby'] = form::get_radio('orderby', $orderbyarr, $forum['orderby']);
 		$this->forum->format($forum);
 		$this->forum->format_thread_type_full($forum);

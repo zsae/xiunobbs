@@ -54,7 +54,6 @@ class post_control extends common_control {
 		$user = $this->user->read($uid);
 		
 		$this->check_forum_exists($forum);
-		$this->check_forum_status($forum);
 		$this->check_access($forum, 'thread');
 		
 		$this->check_user_delete($user);
@@ -255,7 +254,6 @@ class post_control extends common_control {
 		// 板块权限检查
 		$forum = $this->mcache->read('forum', $fid);
 		$this->check_forum_exists($forum);
-		$this->check_forum_status($forum);
 		$this->check_access($forum, 'post');
 		
 		if(!$this->form_submit()) {
@@ -400,7 +398,6 @@ class post_control extends common_control {
 		// 板块权限检查
 		$forum = $this->mcache->read('forum', $fid);
 		$this->check_forum_exists($forum);
-		$this->check_forum_status($forum);
 		$this->check_access($forum, 'post');
 		
 		$post = $this->post->read($fid, $pid);
@@ -560,7 +557,6 @@ class post_control extends common_control {
 		// 板块权限检查
 		$forum = $this->mcache->read('forum', $fid);
 		$this->check_forum_exists($forum);
-		$this->check_forum_status($forum);
 		$this->check_access($forum, 'thread');
 		
 		$post = $this->post->read($fid, $pid);

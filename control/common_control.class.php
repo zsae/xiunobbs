@@ -38,6 +38,7 @@ class common_control extends base_control {
 		$this->init_sid();
 		$this->init_pm();
 		$this->init_user();
+		$this->init_group();
 		$this->check_ip();
 		$this->check_domain();
 		$this->init_cron();
@@ -177,6 +178,25 @@ class common_control extends base_control {
 		}
 		
 		// hook common_control_init_user_after.php
+	}
+
+	// 初始化用户组相关数据
+	private function init_group() {
+	
+		$groupid = $this->_user['groupid'];
+		
+		// 过滤没有 read 权限的版块
+		foreach($this->conf['forumarr'] as $fid=>$name) {
+			if(!empty($this->conf['forumaccesson'][$fid])) {
+				$access = $this->forum_access->read($fid, $groupid);
+				if(!$access['allowread']) {
+					unset($this->conf['forumarr'][$fid]);
+					continue;
+				}
+			}
+		}
+		
+		// hook common_control_init_group_after.php
 	}
 	
 	// 检查IP
@@ -401,7 +421,7 @@ class common_control extends base_control {
 	
 	// 检测用户组权限，优先级:2
 	protected function check_group_access($group, $action, &$message) {
-		$actiontext = array('read'=>'阅读帖子', 'thread'=>'发表帖子', 'post'=>'回帖', 'attach'=>'上传附件', 'down'=>'下载附件', 'top'=>'设置置顶', 'move'=>'移动主题', 'update'=>'编辑主题', 'delete'=>'删除帖子', 'banuser'=>'禁止用户', 'deleteuser'=>'删除用户');
+		$actiontext = array('read'=>'阅读帖子', 'thread'=>'发表帖子', 'post'=>'回帖', 'attach'=>'上传附件', 'down'=>'下载附件', 'top'=>'设置置顶', 'digest'=>'设置精华', 'move'=>'移动主题', 'update'=>'编辑主题', 'delete'=>'删除帖子', 'banuser'=>'禁止用户', 'deleteuser'=>'删除用户');
 		if(empty($group['allow'.$action])) {
 			$message = '您所在的用户组('.$this->_group['name'].')没有('.$actiontext[$action].')的权限。如果您有疑问，请联系管理员！';
 			return FALSE;
@@ -460,10 +480,10 @@ class common_control extends base_control {
 			}
 		} else {
 			if(!$this->check_group_access($group, $action, $message)) {
-				$this->message("对不起，您所在的用户组($group[name])没有($forum[name])权限。");
+				$this->message("对不起，您所在的用户组($group[name])没有在版块($forum[name])的($action)权限。", 0);
 			}
 			if(!$this->is_mod($forum, $user)) {
-				$this->message("对不起，您所在的用户组($group[name])没有权限管理此版块($forum[name])。");
+				$this->message("对不起，您所在的用户组($group[name])没有权限管理此版块($forum[name])。", 0);
 			}
 		}
 	}
@@ -510,15 +530,6 @@ class common_control extends base_control {
 		if(empty($user)) {
 			misc::setcookie($this->conf['cookie_pre'].'auth', '', 0, $this->conf['cookie_path'], $this->conf['cookie_domain']);
 			$this->message('您的账户已经被删除。', 0);
-		}
-	}
-	
-	protected function check_forum_status($forum) {
-		if($this->_user['groupid'] == 1) {
-			return TRUE;
-		}
-		if(empty($forum['status'])) {
-			$this->message('该板块不存在，或者已经被删除。', 0);
 		}
 	}
 	

@@ -37,7 +37,6 @@ class forum_control extends common_control {
 		$fid = intval(core::gpc('fid'));
 		$forum = $this->mcache->read('forum', $fid);
 		$this->check_forum_exists($forum);
-		$this->check_forum_status($forum);
 		$this->check_access($forum, 'read');
 		
 		// orderby

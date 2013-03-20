@@ -47,11 +47,14 @@ class index_control extends common_control {
 		$threadlist = $this->thread->get_list($page, $pagesize);
 		foreach($threadlist as $k=>&$thread) {
 			$this->thread->format($thread);
-			// remove accesson forum
-			if(!empty($this->conf['forumaccesson'][$thread['fid']])) {
+			
+			// 去掉没有权限访问的版块数据
+			$fid = $thread['fid'];
+			if(!isset($this->conf['forumarr'][$fid])) {
 				unset($threadlist[$k]);
 				continue;
 			}
+			
 			$readtids .= ','.$thread['tid'];
 			if($thread['top'] == 3) {
 				unset($threadlist[$k]);

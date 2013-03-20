@@ -31,7 +31,6 @@ h3 {height: 30px;}
 								<input type="button" class="button smallblue" value="编辑" onclick="window.location='?forum-update-fid-$forum[fid].htm'" /> 
 								<input type="button" class="button smallgrey" value="删除" onclick="if(window.confirm('您确定删除 $forum[name] 吗？')) window.location='?forum-delete-fid-$forum[fid].htm'" />
 								<!--{hook admin_forum_list_forum_end.htm}-->
-								<!--{if $forum['status'] == 0}-->(<a href="../?forum-index-fid-$forum[fid].htm" target="_blank" class="grey">已隐藏</a>)<!--{/if}-->
 							</li>
 						<!--{/loop}-->
 							<li id="forumaddlink_$forum[fid]" style="clear: both;">

@@ -119,6 +119,20 @@ class group_control extends admin_control {
 					$group['color'] = $color;
 					$group['maxcredits'] = 0;
 					$group['maxgolds'] = 0;
+					$group['allowread'] = 1;
+					$group['allowthread'] = 0;
+					$group['allowpost'] = 0;
+					$group['allowreply'] = 0;
+					$group['allowattach'] = 0;
+					$group['allowdown'] = 0;
+					$group['allowtop'] = 0;
+					$group['allowdigest'] = 0;
+					$group['allowupdate'] = 0;
+					$group['allowdelete'] = 0;
+					$group['allowmove'] = 0;
+					$group['allowbanuser'] = 0;
+					$group['allowdeleteuser'] = 0;
+					$group['allowviewip'] = 0;
 					$this->group->create($group);
 				}
 			}

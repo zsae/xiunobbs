@@ -105,13 +105,19 @@ class forum extends base_model {
 		}
 	}
 	
-	// 获取有权限的版块列表，默认第一个
+	// 获取有权限的版块列表，默认第一个，如果有权限限制，则查询用户组权限
 	public function get_options($uid, $groupid, $checkedfid) {
 		$forumlist = $this->forum->get_list();
 		$s = '';
 		foreach($forumlist as $forum) {
 			if($groupid == 1 || $groupid == 2 || ($groupid == 4 && strpos(' '.$forum['modids'].' ', ' '.$uid.' ') !== FALSE)) {
-				if(!$forum['status'] && $groupid != 1) continue; // 隐藏版块只有管理员能看到。
+				
+				// 隐藏权限不足的版块。
+				$fid = $forum['fid'];
+				if(!isset($this->conf['forumarr'][$fid])) {
+					continue;
+				}
+				
 				$checked = $checkedfid == $forum['fid'] ? ' selected="selected"' : '';
 				$s .= '<option value="'.$forum['fid'].'"'.$checked.' style="font-weight: 800;">'.$forum['name'].'</option>';
 			}

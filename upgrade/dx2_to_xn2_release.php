@@ -198,7 +198,10 @@ function upgrade_forum() {
 			$forum = $db->get("forum-fid-$fid");
 			if(!empty($forum)) {
 				$forum['name'] = strip_tags($old['name']);
-				$forum['status'] = intval($old['status']);
+				// todo: 如果为隐藏版块，则对 forum_access 增加记录
+				if(($old['status']) != 1) {
+				
+				}
 				$forum['threads'] = intval($old['threads']);
 				$forum['posts'] = intval($old['posts']);
 				$db->set("forum-fid-$fid", $forum);
