@@ -91,7 +91,6 @@ class post_control extends common_control {
 				'lastpost'=>0,
 				'lastuid'=>'',
 				'lastusername'=>'',
-				'floortime'=>$_SERVER['time'],
 				'views'=>0,
 				'posts'=>1,
 				'top'=>0,
@@ -374,7 +373,6 @@ class post_control extends common_control {
 				$thread['lastuid'] = $uid;
 				$thread['lastpost'] = $_SERVER['time'];
 				$thread['lastusername'] = $username;
-				$thread['floortime'] = $_SERVER['time'];
 				$this->thread->update($thread);
 				
 				// hook post_post_succeed.php

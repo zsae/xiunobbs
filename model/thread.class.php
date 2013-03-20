@@ -14,7 +14,7 @@ class thread extends base_model {
 	}
 	
 	public function get_threadlist_by_fid($fid, $orderby, $start, $limit) {
-		$orderby = $orderby == 0 ? array('floortime'=>-1) : array('tid'=>-1);
+		$orderby = $orderby == 0 ? array('lastpost'=>-1) : array('tid'=>-1);
 		$threadlist = $this->index_fetch(array('fid'=>$fid), $orderby, $start, $limit);
 		return $threadlist;
 	}

@@ -142,7 +142,7 @@ class mod_control extends common_control {
 		$tidarr = $this->get_tidarr();
 		
 		$forum = $this->forum->read($fid);
-		$pforum = $this->forum->read($forum['fup']);
+		$this->check_forum_exists($forum);
 		
 		$this->check_access($forum, 'digest');
 		

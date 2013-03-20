@@ -187,7 +187,6 @@ function alter_table() {
 			drop column newreplies, COMMENT='';
 		
 		alter table bbs_thread 
-			change floortime floortime int(10) unsigned NOT NULL  DEFAULT '0' after lastpost, 
 			change top top tinyint(1) NOT NULL  DEFAULT '0' after posts, 
 			add column typeid1 int(10) unsigned NOT NULL  DEFAULT '0' after top, 
 			add column typeid2 int(10) unsigned NOT NULL  DEFAULT '0' after typeid1, 

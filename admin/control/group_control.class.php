@@ -169,6 +169,7 @@ class group_control extends admin_control {
 				$group['allowdown'] = intval(core::gpc('allowdown', 'P'));
 				$group['allowtop'] = intval(core::gpc('allowtop', 'P'));
 				$group['allowmove'] = intval(core::gpc('allowmove', 'P'));
+				$group['allowdigest'] = intval(core::gpc('allowdigest', 'P'));
 				$group['allowupdate'] = intval(core::gpc('allowupdate', 'P'));
 				$group['allowdelete'] = intval(core::gpc('allowdelete', 'P'));
 				$group['allowbanuser'] = intval(core::gpc('allowbanuser', 'P'));
@@ -189,6 +190,7 @@ class group_control extends admin_control {
 		$input['allowattach'] = form::get_radio_yes_no('allowattach', $group['allowattach']);
 		$input['allowdown'] = form::get_radio_yes_no('allowdown', $group['allowdown']);
 		$input['allowtop'] = form::get_radio_yes_no('allowtop', $group['allowtop']);
+		$input['allowdigest'] = form::get_radio_yes_no('allowdigest', $group['allowdigest']);
 		$input['allowupdate'] = form::get_radio_yes_no('allowupdate', $group['allowupdate']);
 		$input['allowmove'] = form::get_radio_yes_no('allowmove', $group['allowmove']);
 		$input['allowdelete'] = form::get_radio_yes_no('allowdelete', $group['allowdelete']);

@@ -314,7 +314,6 @@ function upgrade_thread() {
 				'lastpost'=> $old['lastpost'],
 				'lastuid'=> $lastuid,
 				'lastusername'=> rename_system_user($old['lastposter']),
-				'floortime'=> $old['lastpost'],
 				'views'=> $old['views'],
 				'posts'=> ($old['replies'] + 1),
 				'top'=> $old['displayorder'],

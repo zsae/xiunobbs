@@ -437,7 +437,7 @@ class common_control extends base_control {
 		$user = $this->_user;
 		$group = $this->_group;
 	
-		$adminaction = array('top'=>'设置置顶', 'move'=>'移动主题', 'update'=>'编辑主题', 'delete'=>'删除帖子', 'banuser'=>'禁止用户', 'deleteuser'=>'删除用户');
+		$adminaction = array('top'=>'设置置顶', 'digest'=>'设置精华', 'move'=>'移动主题', 'update'=>'编辑主题', 'delete'=>'删除帖子', 'banuser'=>'禁止用户', 'deleteuser'=>'删除用户');
 		
 		if(!isset($adminaction[$action])) {
 			// 判断该用户是否已经被禁止该权限。
