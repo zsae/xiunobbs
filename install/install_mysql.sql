@@ -188,6 +188,7 @@ CREATE TABLE bbs_thread (
   typeid1 int(10) unsigned NOT NULL default '0',	# 主题分类id1
   typeid2 int(10) unsigned NOT NULL default '0',	# 主题分类id2
   typeid3 int(10) unsigned NOT NULL default '0',	# 主题分类id3
+  typeid4 int(10) unsigned NOT NULL default '0',	# 主题分类id3
   attachnum tinyint(3) NOT NULL default '0',		# 附件总数
   imagenum tinyint(3) NOT NULL default '0',		# 附件总数
   modnum tinyint(3) NOT NULL default '0',		# 版主操作次数

@@ -53,7 +53,7 @@ class thread extends base_model {
 			$thread['typename3'] = $thread['typeid3'] && isset($forum['types'][3][$thread['typeid3']]) ? $forum['types'][3][$thread['typeid3']] : '';
 			$thread['typename4'] = $thread['typeid4'] && isset($forum['types'][4][$thread['typeid4']]) ? $forum['types'][4][$thread['typeid4']] : '';
 		} else {
-			$thread['typename1'] = $thread['typename2'] = $thread['typename3'] = '' = $thread['typename4'] = '';
+			$thread['typename1'] = $thread['typename2'] = $thread['typename3'] = $thread['typename4'] = '';
 		}
 		$thread['forumname'] = isset($this->conf['forumarr'][$thread['fid']]) ? $this->conf['forumarr'][$thread['fid']] : '';
 		// hook thread_model_format_end.php

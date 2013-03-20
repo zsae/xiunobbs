@@ -11,11 +11,12 @@
 		<dt><label for="subject">标题：</label></dt>
 		<dd style="white-space: nowrap">
 			<!--{if $forumselect}-->$forumselect<!--{/if}-->
-			<!--{if $typeselect1 || $typeselect2 || $typeselect3}-->
+			<!--{if $typeselect1 || $typeselect2 || $typeselect3 || $typeselect4}-->
 			<span id="typeselect">
 			<!--{if $typeselect1}-->$typeselect1<!--{/if}-->
 			<!--{if $typeselect2}-->$typeselect2<!--{/if}-->
 			<!--{if $typeselect3}-->$typeselect3<!--{/if}-->
+			<!--{if $typeselect4}-->$typeselect4<!--{/if}-->
 			</span>
 			<!--{/if}-->
 			<input type="text" name="subject" id="subject" value="$thread[subject]" style="width: 500px;" /> <span class="small grey">(200字)</span>
@@ -380,7 +381,7 @@ function delay_execute(dialog, recall) {
 				}
 				
 				json = json.message;
-				var typeslects = json.typeselect1 + json.typeselect2 + json.typeselect3;
+				var typeslects = json.typeselect1 + json.typeselect2 + json.typeselect3 + json.typeselect4;
 				$('#typeselect').html(typeslects);
 			});
 		});

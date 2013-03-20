@@ -78,7 +78,7 @@ class forum extends base_model {
 		$fid = $forum['fid'];
 		$forum['typecates'] = array();
 		$forum['types'] = array();
-		for($i=1; $i<=3; $i++) {
+		for($i=1; $i<=4; $i++) {
 			$typecateid = $i;
 			$cate = $this->thread_type_cate->xread($fid, $typecateid, FALSE);
 			if($cate && $cate['enable']) {
@@ -98,7 +98,7 @@ class forum extends base_model {
 		$fid = $forum['fid'];
 		$forum['typecatelist'] = array();
 		$forum['typelist'] = array();
-		for($i=1; $i<=3; $i++) {
+		for($i=1; $i<=4; $i++) {
 			$typecateid = $i;
 			$forum['typecatelist'][$i] = $this->thread_type_cate->xread($fid, $typecateid, TRUE); // 填充空白
 			$forum['typelist'][$i] = $this->thread_type->get_list_by_fid_cateid($fid, $typecateid, TRUE); // 填充空白
