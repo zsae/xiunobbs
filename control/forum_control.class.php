@@ -24,12 +24,14 @@ class forum_control extends common_control {
 		$typeid1 = intval(core::gpc('typeid1'));
 		$typeid2 = intval(core::gpc('typeid2'));
 		$typeid3 = intval(core::gpc('typeid3'));
-		$typeidsum = $typeid1 + $typeid2 + $typeid3;
+		$typeid4 = intval(core::gpc('typeid4'));
+		$typeidsum = $typeid1 + $typeid2 + $typeid3 + $typeid4;
 		
 		$this->_checked['typecate'] = $this->_checked['threadtype'] = array();
 		empty($typeid1) ? $this->_checked['typecates'][1] = ' class="checked"' :  $this->_checked['types'][$typeid1] = ' class="checked"';
 		empty($typeid2) ? $this->_checked['typecates'][2] = ' class="checked"' :  $this->_checked['types'][$typeid2] = ' class="checked"';
 		empty($typeid3) ? $this->_checked['typecates'][3] = ' class="checked"' :  $this->_checked['types'][$typeid3] = ' class="checked"';
+		empty($typeid4) ? $this->_checked['typecates'][4] = ' class="checked"' :  $this->_checked['types'][$typeid4] = ' class="checked"';
 		
 		// fid
 		$fid = intval(core::gpc('fid'));
@@ -88,13 +90,14 @@ class forum_control extends common_control {
 		$readtids = substr($readtids, 1); 
 		$click_server = $this->conf['click_server']."?db=tid&r=$readtids";
 		// hook forum_index_get_list_after.php
-		$typeidadd = $typeidsum > 0 ? "-typeid1-$typeid1-typeid2-$typeid2-typeid3-$typeid3" : '';
+		$typeidadd = $typeidsum > 0 ? "-typeid1-$typeid1-typeid2-$typeid2-typeid3-$typeid3-typeid4-$typeid4" : '';
 		$pages = misc::pages("?forum-index-fid-$fid$typeidadd.htm", $threads, $page, $pagesize);
 		$ismod = $this->is_mod($forum, $this->_user);
 		$this->view->assign('fid', $fid);
 		$this->view->assign('typeid1', $typeid1);
 		$this->view->assign('typeid2', $typeid2);
 		$this->view->assign('typeid3', $typeid3);
+		$this->view->assign('typeid4', $typeid4);
 		$this->view->assign('forum', $forum);
 		$this->view->assign('page', $page);
 		$this->view->assign('pages', $pages);

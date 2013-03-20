@@ -42,10 +42,12 @@ class post_control extends common_control {
 		$typeid1 = intval(core::gpc('typeid1'));
 		$typeid2 = intval(core::gpc('typeid2'));
 		$typeid3 = intval(core::gpc('typeid3'));
+		$typeid4 = intval(core::gpc('typeid4'));
 		
 		$this->thread_type->check_typeid($typeid1, 1);
 		$this->thread_type->check_typeid($typeid2, 2);
 		$this->thread_type->check_typeid($typeid3, 3);
+		$this->thread_type->check_typeid($typeid4, 4);
 		
 		$uid = $this->_user['uid'];
 		$username = $this->_user['username'];
@@ -101,6 +103,7 @@ class post_control extends common_control {
 				'typeid1'=>$typeid1,	//
 				'typeid2'=>$typeid2,	//
 				'typeid3'=>$typeid3,	//
+				'typeid4'=>$typeid4,	//
 				'status'=>0,
 			);
 			
@@ -462,14 +465,17 @@ class post_control extends common_control {
 				$typeid1 = intval(core::gpc('typeid1', 'P'));	// 检查合法范围
 				$typeid2 = intval(core::gpc('typeid2', 'P'));	// 检查合法范围
 				$typeid3 = intval(core::gpc('typeid3', 'P'));	// 检查合法范围
+				$typeid4 = intval(core::gpc('typeid4', 'P'));	// 检查合法范围
 				$this->thread_type->check_typeid($typeid1, 1);
 				$this->thread_type->check_typeid($typeid2, 2);
 				$this->thread_type->check_typeid($typeid3, 3);
+				$this->thread_type->check_typeid($typeid4, 4);
 				$this->thread_type_data->xupdate($fid, $tid, $typeid1, $typeid2, $typeid3);
 				
 				$thread['typeid1'] = $typeid1;
 				$thread['typeid2'] = $typeid2;
 				$thread['typeid3'] = $typeid3;
+				$thread['typeid4'] = $typeid4;
 				$thread['subject'] = $subject;
 				$error['subject'] = $this->thread->check_subject($thread['subject']);
 				empty($error['subject']) && $error['subject'] = $this->mmisc->check_badword($thread['subject']);
@@ -636,16 +642,20 @@ class post_control extends common_control {
 		$arradd1 = !empty($forum['typecates'][1]) ? array('0'=>$forum['typecates'][1].'▼') : array();
 		$arradd2 = !empty($forum['typecates'][2]) ? array('0'=>$forum['typecates'][2].'▼') : array();
 		$arradd3 = !empty($forum['typecates'][3]) ? array('0'=>$forum['typecates'][3].'▼') : array();
+		$arradd4 = !empty($forum['typecates'][4]) ? array('0'=>$forum['typecates'][4].'▼') : array();
 		$typearr1 = empty($forum['types'][1]) ? array() : $arradd1 + (array)$forum['types'][1];
 		$typearr2 = empty($forum['types'][2]) ? array() : $arradd2 + (array)$forum['types'][2];
 		$typearr3 = empty($forum['types'][3]) ? array() : $arradd3 + (array)$forum['types'][3];
+		$typearr4 = empty($forum['types'][4]) ? array() : $arradd4 + (array)$forum['types'][4];
 		$typeselect1 = $typearr1 && !empty($forum['types'][1]) ? form::get_select('typeid1', $typearr1, $typeid1, '') : '';
 		$typeselect2 = $typearr2 && !empty($forum['types'][2]) ? form::get_select('typeid2', $typearr2, $typeid2, '') : '';
 		$typeselect3 = $typearr3 && !empty($forum['types'][3]) ? form::get_select('typeid3', $typearr3, $typeid3, '') : '';
+		$typeselect4 = $typearr4 && !empty($forum['types'][4]) ? form::get_select('typeid4', $typearr4, $typeid4, '') : '';
 		$this->view->assign('typeselect1', $typeselect1);
 		$this->view->assign('typeselect2', $typeselect2);
 		$this->view->assign('typeselect3', $typeselect3);
-		return array('typeselect1'=>$typeselect1, 'typeselect2'=>$typeselect2, 'typeselect3'=>$typeselect3);
+		$this->view->assign('typeselect4', $typeselect4);
+		return array('typeselect1'=>$typeselect1, 'typeselect2'=>$typeselect2, 'typeselect3'=>$typeselect3, 'typeselect4'=>$typeselect4);
 	}
 	//hook post_control_after.php
 }

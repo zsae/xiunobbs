@@ -158,9 +158,10 @@ class mod_control extends common_control {
 			$typeid1 = $thread['typeid1'];
 			$typeid2 = $thread['typeid2'];
 			$typeid3 = $thread['typeid3'];
+			$typeid4 = $thread['typeid4'];
 			
 			$this->init_view_thread($tidarr, 'type');
-			$this->init_type_select($forum, $typeid1, $typeid2, $typeid3);
+			$this->init_type_select($forum, $typeid1, $typeid2, $typeid3, $typeid4);
 			
 			$this->view->assign('fid', $fid);
 			
@@ -171,6 +172,7 @@ class mod_control extends common_control {
 			$typeid1 = intval(core::gpc('typeid1', 'P'));
 			$typeid2 = intval(core::gpc('typeid2', 'P'));
 			$typeid3 = intval(core::gpc('typeid3', 'P'));
+			$typeid4 = intval(core::gpc('typeid4', 'P'));
 			$systempm = intval(core::gpc('systempm', 'P'));
 			$comment = core::gpc('comment', 'P');
 			$this->check_comment($comment);
@@ -188,11 +190,12 @@ class mod_control extends common_control {
 				$thread = $this->thread->read($fid, $tid);
 				if(empty($thread)) continue;
 				
-				$this->thread_type_data->xupdate($fid, $tid, $typeid1, $typeid2, $typeid3);
+				$this->thread_type_data->xupdate($fid, $tid, $typeid1, $typeid2, $typeid3, $typeid4);
 				
 				$thread['typeid1'] = $typeid1;
 				$thread['typeid2'] = $typeid2;
 				$thread['typeid3'] = $typeid3;
+				$thread['typeid4'] = $typeid4;
 				$this->thread->update($thread);
 				
 				// 记录到版主操作日志
@@ -286,12 +289,13 @@ class mod_control extends common_control {
 				// ----------->更新相关数据的 fid start
 				
 				// 主题分类，从原来的主题分类中清除
-				if($thread['typeid1'] > 0 ||$thread['typeid2'] > 0 ||$thread['typeid3'] > 0) {
+				if($thread['typeid1'] > 0 ||$thread['typeid2'] > 0 ||$thread['typeid3'] > 0 ||$thread['typeid4'] > 0) {
 					$this->thread_type_data->xdelete($fid, $tid);
 				}
 				$thread['typeid1'] = 0;
 				$thread['typeid2'] = 0;
 				$thread['typeid3'] = 0;
+				$thread['typeid4'] = 0;
 				$this->thread->update($thread);
 				
 				$this->thread->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2));
@@ -625,12 +629,15 @@ class mod_control extends common_control {
 		$typearr1 = empty($forum['types'][1]) ? array() : array('0'=>'&gt;'.$forum['typecates'][1]) + (array)$forum['types'][1];
 		$typearr2 = empty($forum['types'][2]) ? array() : array('0'=>'&gt;'.$forum['typecates'][2]) + (array)$forum['types'][2];
 		$typearr3 = empty($forum['types'][3]) ? array() : array('0'=>'&gt;'.$forum['typecates'][3]) + (array)$forum['types'][3];
+		$typearr4 = empty($forum['types'][4]) ? array() : array('0'=>'&gt;'.$forum['typecates'][4]) + (array)$forum['types'][4];
 		$typeselect1 = $typearr1 && !empty($forum['typecates'][1]) ? form::get_select('typeid1', $typearr1, $typeid1, '') : '';
 		$typeselect2 = $typearr2 && !empty($forum['typecates'][2]) ? form::get_select('typeid2', $typearr2, $typeid2, '') : '';
 		$typeselect3 = $typearr3 && !empty($forum['typecates'][3]) ? form::get_select('typeid3', $typearr3, $typeid3, '') : '';
+		$typeselect4 = $typearr4 && !empty($forum['typecates'][4]) ? form::get_select('typeid4', $typearr4, $typeid4, '') : '';
 		$this->view->assign('typeselect1', $typeselect1);
 		$this->view->assign('typeselect2', $typeselect2);
 		$this->view->assign('typeselect3', $typeselect3);
+		$this->view->assign('typeselect4', $typeselect4);
 	}
 	
 	//hook mod_control_after.php

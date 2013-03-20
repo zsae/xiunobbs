@@ -119,7 +119,7 @@ class forum_control extends admin_control {
 			$this->check_forum_exists($forum2);
 				
 			// 修改fid 所有涉及到 fid 的表！
-			$threads = $this->thread->index_update(array('fid'=>$fid2), array('fid'=>$fid1, 'top'=>0, 'typeid1'=>0, 'typeid2'=>0, 'typeid3'=>0));
+			$threads = $this->thread->index_update(array('fid'=>$fid2), array('fid'=>$fid1, 'top'=>0, 'typeid1'=>0, 'typeid2'=>0, 'typeid3'=>0, 'typeid4'=>0));
 			$posts = $this->post->index_update(array('fid'=>$fid2), array('fid'=>$fid1));
 			$this->attach->index_update(array('fid'=>$fid2), array('fid'=>$fid1));
 			$this->mypost->index_update(array('fid'=>$fid2), array('fid'=>$fid1));
@@ -260,12 +260,14 @@ class forum_control extends admin_control {
 				$this->thread_type_cate->enable($fid, 1);
 				$this->thread_type_cate->enable($fid, 2);
 				$this->thread_type_cate->enable($fid, 3);
+				$this->thread_type_cate->enable($fid, 4);
 				
 			} elseif($forum['typelist'] && !core::gpc('typeon', 'P')) {
 				// 关闭即可
 				$this->thread_type_cate->disable($fid, 1);
 				$this->thread_type_cate->disable($fid, 2);
 				$this->thread_type_cate->disable($fid, 3);
+				$this->thread_type_cate->disable($fid, 4);
 			}
 			// ------------> 初始化 thread_type end
 		

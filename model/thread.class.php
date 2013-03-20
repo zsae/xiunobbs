@@ -51,8 +51,9 @@ class thread extends base_model {
 			$thread['typename1'] = $thread['typeid1'] && isset($forum['types'][1][$thread['typeid1']]) ? $forum['types'][1][$thread['typeid1']] : '';
 			$thread['typename2'] = $thread['typeid2'] && isset($forum['types'][2][$thread['typeid2']]) ? $forum['types'][2][$thread['typeid2']] : '';
 			$thread['typename3'] = $thread['typeid3'] && isset($forum['types'][3][$thread['typeid3']]) ? $forum['types'][3][$thread['typeid3']] : '';
+			$thread['typename4'] = $thread['typename4'] && isset($forum['types'][4][$thread['typename4']]) ? $forum['types'][4][$thread['typename4']] : '';
 		} else {
-			$thread['typename1'] = $thread['typename2'] = $thread['typename3'] = '';
+			$thread['typename1'] = $thread['typename2'] = $thread['typename3'] = '' = $thread['typename4'] = '';
 		}
 		$thread['forumname'] = isset($this->conf['forumarr'][$thread['fid']]) ? $this->conf['forumarr'][$thread['fid']] : '';
 		// hook thread_model_format_end.php
@@ -150,7 +151,7 @@ class thread extends base_model {
 		}
 		
 		// 更新主题分类数
-		if($thread['typeid1'] > 0 || $thread['typeid2'] > 0 || $thread['typeid3'] > 0) {
+		if($thread['typeid1'] > 0 || $thread['typeid2'] > 0 || $thread['typeid3'] > 0 || $thread['typeid4'] > 0) {
 			$this->thread_type_data->xdelete($fid, $tid);
 		}
 		

@@ -59,9 +59,11 @@ class thread_type_cate extends base_model {
 		$cate1 = $this->xread($fid, 1, $fillblank);
 		$cate2 = $this->xread($fid, 2, $fillblank);
 		$cate3 = $this->xread($fid, 3, $fillblank);
+		$cate4 = $this->xread($fid, 4, $fillblank);
 		!empty($cate1) && $arr[1] = $cate1;
 		!empty($cate2) && $arr[2] = $cate2;
 		!empty($cate3) && $arr[3] = $cate3;
+		!empty($cate3) && $arr[4] = $cate4;
 		$arr && misc::arrlist_multisort($arr, 'rank', TRUE);	// 关联数组 key 不变，数字 key 会重新索引
 		$arr && misc::arrlist_change_key($arr, 'cateid');
 		return $arr;
