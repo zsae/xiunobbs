@@ -16,6 +16,18 @@ function htmlspecialchars(s) {
 	return s;
 }
 
+function urlencode(s) {
+	s = encodeURIComponent(s);
+	s = s.replace(/\-/, '%2D');
+	return s;
+}
+
+function urldecode(s) {
+	s = decodeURIComponent(s);
+	s = s.replace(/\%2D/, '-');
+	return s;
+}
+
 function nl2br(s) {
 	s = s.replace(/\r\n/ig, "\n");
 	s = s.replace(/\n/ig, "<br />");
