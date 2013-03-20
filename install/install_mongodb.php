@@ -32,9 +32,9 @@ $db_data = array(
 			
 	),
 	'forum'=> array(
-		array('fid'=>1, 'name'=>'默认分类一', 'rank'=>0, 'threads'=>0, 'posts'=>0, 'todayposts'=>0, 'lasttid'=>0, 'brief'=>'默认大区介绍', 'icon'=>'', 'accesson'=>0, 'modids'=>'', 'modnames'=>'', 'toptids'=>'', 'lastcachetime'=>0, 'status'=>1, 'orderby'=>0, 'seo_title'=>'', 'seo_keywords'=>''),
-		array('fid'=>2, 'name'=>'默认版块二', 'rank'=>0, 'threads'=>0, 'posts'=>0, 'todayposts'=>0, 'tops'=>0, 'lasttid'=>0, 'brief'=>'默认版块介绍', 'icon'=>'', 'accesson'=>0, 'modids'=>'', 'modnames'=>'', 'toptids'=>'', 'lastcachetime'=>0, 'status'=>1, 'orderby'=>0, 'seo_title'=>'', 'seo_keywords'=>''),
-		array('fid'=>3, 'name'=>'默认版块三', 'rank'=>0, 'threads'=>0, 'posts'=>0, 'todayposts'=>0, 'tops'=>0, 'lasttid'=>0, 'brief'=>'默认版块介绍', 'icon'=>'', 'accesson'=>0, 'modids'=>'', 'modnames'=>'', 'toptids'=>'', 'lastcachetime'=>0, 'status'=>1, 'orderby'=>0, 'seo_title'=>'', 'seo_keywords'=>''),
+		array('fid'=>1, 'name'=>'默认分类一', 'rank'=>0, 'threads'=>0, 'posts'=>0, 'digests'=>0, 'todayposts'=>0, 'lasttid'=>0, 'brief'=>'默认大区介绍', 'icon'=>'', 'accesson'=>0, 'modids'=>'', 'modnames'=>'', 'toptids'=>'', 'lastcachetime'=>0, 'status'=>1, 'orderby'=>0, 'seo_title'=>'', 'seo_keywords'=>''),
+		array('fid'=>2, 'name'=>'默认版块二', 'rank'=>0, 'threads'=>0, 'posts'=>0, 'digests'=>0, 'todayposts'=>0, 'tops'=>0, 'lasttid'=>0, 'brief'=>'默认版块介绍', 'icon'=>'', 'accesson'=>0, 'modids'=>'', 'modnames'=>'', 'toptids'=>'', 'lastcachetime'=>0, 'status'=>1, 'orderby'=>0, 'seo_title'=>'', 'seo_keywords'=>''),
+		array('fid'=>3, 'name'=>'默认版块三', 'rank'=>0, 'threads'=>0, 'posts'=>0, 'digests'=>0, 'todayposts'=>0, 'tops'=>0, 'lasttid'=>0, 'brief'=>'默认版块介绍', 'icon'=>'', 'accesson'=>0, 'modids'=>'', 'modnames'=>'', 'toptids'=>'', 'lastcachetime'=>0, 'status'=>1, 'orderby'=>0, 'seo_title'=>'', 'seo_keywords'=>''),
 	)
 );
 
@@ -42,7 +42,7 @@ $db_index = array(
 	'group'=>array(array('groupid'=>1)),
 	'user'=>array(array('uid'=>1), array('username'=>1), array('email'=>1)),
 	'user_access'=>array(array('uid'=>1)),
-	'forum'=>array(array('fid'=>1)),
+	'forum'=>array(array('fid'=>1), array('fid'=>1, 'lastpost'=>1), array('fid'=>1, 'digests'=>1, 'tid'=>-1)),
 	'forum_access'=>array(array('fid'=>1, 'groupid'=>1), array('fid'=>1)),
 	'thread_type'=>array(array('fid'=>1), array('typeid'=>1)),
 	'thread'=>array(array('fid'=>1, 'tid'=>0), array('fid'=>1, 'floortime'=>0), array('fid', 'typeid')),

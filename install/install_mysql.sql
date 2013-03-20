@@ -97,6 +97,7 @@ CREATE TABLE bbs_forum (				# 字段中文名			# 控件属性					# 字段描�
   rank tinyint(3) unsigned NOT NULL default '0',	# 显示，倒序			# type="text"
   threads mediumint(8) unsigned NOT NULL default '0',	# 主题数	
   posts int(11) unsigned NOT NULL default '0',		# 回帖数				
+  digests int(11) unsigned NOT NULL default '0',	# 版块精华数				
   todayposts mediumint(8) unsigned NOT NULL default '0',# 今日发帖，计划任务每日凌晨０点清空为０
   lasttid int(11) NOT NULL default '0',			# 最后发表的tid
   brief text NOT NULL default '',			# 版块简介 允许HTML		# type="text"
@@ -111,9 +112,9 @@ CREATE TABLE bbs_forum (				# 字段中文名			# 控件属性					# 字段描�
   seo_keywords char(64) NOT NULL default '',		# SEO keyword
   PRIMARY KEY (fid)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-INSERT INTO bbs_forum SET fid='1', name='默认版块1', rank='0', threads='0', posts='0', todayposts='0', lasttid='0', brief='默认版块1', accesson='0', modids='', modnames='', typecates='', toptids='', status='1', orderby='0', seo_title='', seo_keywords='';
-INSERT INTO bbs_forum SET fid='2', name='默认版块2', rank='0', threads='0', posts='0', todayposts='0', lasttid='0', brief='默认版块2', accesson='0', modids='', modnames='', typecates='', toptids='', status='1', orderby='0', seo_title='', seo_keywords='';
-INSERT INTO bbs_forum SET fid='3', name='默认版块3', rank='0', threads='0', posts='0', todayposts='0', lasttid='0', brief='默认版块3', accesson='0', modids='', modnames='', typecates='', toptids='', status='1', orderby='0', seo_title='', seo_keywords='';
+INSERT INTO bbs_forum SET fid='1', name='默认版块1', rank='0', threads='0', posts='0', digests='0', todayposts='0', lasttid='0', brief='默认版块1', accesson='0', modids='', modnames='', typecates='', toptids='', status='1', orderby='0', seo_title='', seo_keywords='';
+INSERT INTO bbs_forum SET fid='2', name='默认版块2', rank='0', threads='0', posts='0', digests='0', todayposts='0', lasttid='0', brief='默认版块2', accesson='0', modids='', modnames='', typecates='', toptids='', status='1', orderby='0', seo_title='', seo_keywords='';
+INSERT INTO bbs_forum SET fid='3', name='默认版块3', rank='0', threads='0', posts='0', digests='0', todayposts='0', lasttid='0', brief='默认版块3', accesson='0', modids='', modnames='', typecates='', toptids='', status='1', orderby='0', seo_title='', seo_keywords='';
 
 # 版块访问规则 fid * groupid
 DROP TABLE IF EXISTS bbs_forum_access;
@@ -189,6 +190,7 @@ CREATE TABLE bbs_thread (
   typeid2 int(10) unsigned NOT NULL default '0',	# 主题分类id2
   typeid3 int(10) unsigned NOT NULL default '0',	# 主题分类id3
   typeid4 int(10) unsigned NOT NULL default '0',	# 主题分类id3
+  digest tinyint(3) unsigned NOT NULL default '0',	# 精华等级: 0: 普通主题，1-3 精华等级
   attachnum tinyint(3) NOT NULL default '0',		# 附件总数
   imagenum tinyint(3) NOT NULL default '0',		# 附件总数
   modnum tinyint(3) NOT NULL default '0',		# 版主操作次数
@@ -199,7 +201,8 @@ CREATE TABLE bbs_thread (
   lastusername char(16) NOT NULL default '',		# 最近参与的 username
   PRIMARY KEY (fid, tid),				# 按照发帖时间排序
   KEY (tid),						# 按照 tid 排序，首页需要。
-  KEY (fid, floortime)					# 按照顶贴时间排序
+  KEY (fid, lastpost),					# 按照顶贴时间排序
+  KEY (fid, digest, tid)				# 精华排序
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 # 主题数，单独一个表。用来分离 thread 表的写压力

@@ -33,11 +33,11 @@ var sep = $conf[urlrewrite] ? '?' : '&';
 var tidsurl = '$tidsurl';
 // 延迟执行的脚本，约定名字为：delay_execute()
 function delay_execute(dialog, recall) {
-	$('#mod_top_submit').click(function() {
-		$('#mod_top_submit').disable();
-		var postdata = $("#mod_top_form").serialize();
-		$.post($('#mod_top_form').attr('action') + sep + tidsurl, postdata,  function(s){
-			$('#mod_top_submit').enable();
+	$('#digest_top_submit').click(function() {
+		$('#digest_top_submit').disable();
+		var postdata = $("#digest_top_form").serialize();
+		$.post($('#digest_top_form').attr('action') + sep + tidsurl, postdata,  function(s){
+			$('#digest_top_submit').enable();
 			var json = json_decode(s);
 			if(error = json_error(json)) {alert(error); return false;}
 			if(!json.status > 0) {
@@ -53,7 +53,7 @@ function delay_execute(dialog, recall) {
 		return false;
 	});
 	
-	$('#mod_top_cancel').click(function() {
+	$('#digest_top_cancel').click(function() {
 		dialog.close();
 	});
 	

@@ -132,6 +132,127 @@ class mod_control extends common_control {
 		
 	}
 	
+	public function on_digest() {
+		$this->_title[] = '设置精华';
+		$this->_nav[] = '设置精华';
+		
+		$this->check_login();
+		
+		$fid = intval(core::gpc('fid'));
+		$tidarr = $this->get_tidarr();
+		
+		$forum = $this->forum->read($fid);
+		$pforum = $this->forum->read($forum['fup']);
+		
+		$this->check_access($forum, 'digest');
+		
+		if(!$this->form_submit()) {
+			
+			// 第一个元素作为选中状态
+			$fid_tid = array_shift($tidarr);
+			list($fid, $tid) = explode('-', $fid_tid);
+			$thread = $this->thread->read($fid, $tid);
+			$this->check_thread_exists($thread);
+			
+			$this->view->assign('thread', $thread);
+			$this->view->assign('fid', $fid);
+			$this->view->assign('tid', $tid);
+			
+			// hook mod_digest_before.php
+			$this->view->display('mod_digest_ajax.htm');
+		} else {
+			// 修改精华等级，分类。
+			$rank = intval(core::gpc('rank', 'P'));
+			$systempm = intval(core::gpc('systempm', 'P'));
+			$comment = core::gpc('comment', 'P');
+			$this->check_comment($comment);
+			
+			$cateids = core::gpc('cateids', 'P');
+			$cateidarr = explode(' ', $cateids);
+			foreach($cateidarr as &$v) $v = intval($v);	// 此处用&以后，后面的也得用&，否则被引用改变，达不到期望值
+			$fidarr = $uidarr = array();
+			$catestat = array();	// 分类下的 digest 计数
+			
+			// hook mod_digest_after.php
+			$tidnum = 0;
+			foreach($tidarr as &$v) {			// 此处也得用 &
+				// 初始化数据
+				list($fid, $tid) = explode('-', $v);
+				//$fid = intval($fid);
+				$tid = intval($tid);
+				$thread = $this->thread->read($fid, $tid);
+				if(empty($thread)) continue;
+				
+				$tidnum++;	// 帖子数，用来统计精华数
+				
+				// 更新论坛精华数 todo: 准确？ 没啥用
+				$forum = $this->forum->read($fid);
+				$rank == 0 ? ($thread['digest'] && $forum['digests']--) : (!$thread['digest'] && $forum['digests']++);
+				$this->forum->update($forum);
+				$fidarr[$fid] = $fid;
+				
+				// 更新用户精华数，积分
+				!isset($uidarr[$thread['uid']]) && $uidarr[$thread['uid']] = 0;
+				// 先减去积分，否则会造成重复加分
+				if($thread['digest'] > 0) {
+					$uidarr[$thread['uid']] -= $this->conf['credits_policy_digest_'.$thread['digest']];
+					$uidarr[$thread['uid']] -= $this->conf['golds_policy_digest_'.$thread['digest']];
+				}
+				if($rank > 0) {
+					$uidarr[$thread['uid']] += $this->conf['credits_policy_digest_'.$rank];
+					$uidarr[$thread['uid']] += $this->conf['golds_policy_digest_'.$rank];
+				}
+				
+				// 记录到版主操作日志
+				$credits2 = $rank == 0 ? 0 - $this->conf['credits_policy_digest_'.$thread['digest']] : $this->conf['credits_policy_digest_'.$rank];
+				$golds2 = $rank == 0 ? 0 - $this->conf['golds_policy_digest_'.$thread['digest']] : $this->conf['golds_policy_digest_'.$rank];
+				$this->modlog->create(array(
+					'uid'=>$this->_user['uid'],
+					'username'=>$this->_user['username'],
+					'fid'=>$fid,
+					'tid'=>$tid,
+					'pid'=>0,
+					'subject'=>$thread['subject'],
+					'credits'=> $credits2,
+					'golds'=> $golds2,
+					'dateline'=>$_SERVER['time'],
+					'action'=>$rank == 0 ? 'undigest' : 'digest',
+					'comment'=>$comment,
+				));
+				
+				$thread['digest'] = $rank;
+				
+				$this->thread->update($thread);
+				
+				$this->inc_modnum($fid, $tid);
+				
+				// 发送系统消息：
+				if($systempm) {
+					$pmsubject = utf8::substr($thread['subject'], 0, 32);
+					$pmmessage = "您的主题<a href=\"?thread-index-fid-$fid-tid-$tid.htm\" target=\"_blank\">【{$pmsubject}】</a>被版主【{$this->_user['username']}】".($rank > 0 ? '设置精华' : '取消精华')."。";
+					$this->pm->system_send($thread['uid'], $thread['username'], $pmmessage);
+				}
+				
+				// hook mod_digest_loop_after.php
+			}
+			
+			foreach($fidarr as $fid) {
+				$this->forum->clear_cache($fid);
+			}
+			
+			foreach($uidarr as $uid=>$credits) {
+				$uid = intval($uid);
+				$user = $this->user->read($uid);
+				$user['credits'] += $credits;
+				$credits > 0 ? $user['digests']++ : $user['digests']--;
+				$this->user->update($user);
+			}
+			
+			// hook mod_digest_succeed.php
+			$this->message('操作成功！');
+		}
+	}
+	
 	// 批量设置主题分类
 	public function on_type() {
 		$this->_title[] = '设置主题分类';

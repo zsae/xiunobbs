@@ -24,6 +24,22 @@ $('#mod_top').click(function() {
 	return false;
 });
 
+// 精华
+$('#mod_digest').click(function() {
+	var postdata = sep;
+	$.each($('#body input[name="tidarr[]"]:checked'), function(k, v) {
+		postdata += '&tidarr[]='+v.value;
+	});
+	if(postdata == sep) {
+		alert('请选择主题！');
+		return false;
+	}
+	ajaxdialog_request('?mod-digest-fid-$fid.htm'+sep+postdata, function() {
+		window.location.reload();
+	});
+	return false;
+});
+
 // 主题分类 
 $('#mod_type').click(function() {
 	var other_forum_flag = 0;

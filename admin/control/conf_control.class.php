@@ -30,8 +30,14 @@ class conf_control extends admin_control {
 			$post['app_name'] = core::gpc('app_name', 'P');
 			$post['credits_policy_post'] = intval(core::gpc('credits_policy_post', 'P'));
 			$post['credits_policy_thread'] = intval(core::gpc('credits_policy_thread', 'P'));
+			$post['credits_policy_digest_1'] = intval(core::gpc('credits_policy_digest_1', 'P'));
+			$post['credits_policy_digest_2'] = intval(core::gpc('credits_policy_digest_2', 'P'));
+			$post['credits_policy_digest_3'] = intval(core::gpc('credits_policy_digest_3', 'P'));
 			$post['golds_policy_post'] = intval(core::gpc('golds_policy_post', 'P'));
 			$post['golds_policy_thread'] = intval(core::gpc('golds_policy_thread', 'P'));
+			$post['golds_policy_digest_1'] = intval(core::gpc('golds_policy_digest_1', 'P'));
+			$post['golds_policy_digest_2'] = intval(core::gpc('golds_policy_digest_2', 'P'));
+			$post['golds_policy_digest_3'] = intval(core::gpc('golds_policy_digest_3', 'P'));
 			$post['reg_on'] = intval(core::gpc('reg_on', 'P'));
 			$post['reg_email_on'] = intval(core::gpc('reg_email_on', 'P'));
 			$post['reg_init_golds'] = intval(core::gpc('reg_init_golds', 'P'));
@@ -70,7 +76,9 @@ class conf_control extends admin_control {
 				
 				// 局部的，按需加载 conf_ext
 				foreach(array('credits_policy_post', 'credits_policy_thread', 
+					'credits_policy_digest_1', 'credits_policy_digest_2', 'credits_policy_digest_3',
 					'golds_policy_post', 'golds_policy_thread',
+					'golds_policy_digest_1', 'golds_policy_digest_2', 'golds_policy_digest_3',
 					'reg_email_on', 'reg_init_golds', 'resetpw_on',
 					'sphinx_host', 'sphinx_port', 'sphinx_datasrc', 'sphinx_deltasrc',
 					) as $k) {
@@ -91,8 +99,14 @@ class conf_control extends admin_control {
 		$input['app_copyright'] = form::get_text('app_copyright', $kvconf['app_copyright'], 300);
 		$input['credits_policy_post'] = form::get_text('credits_policy_post', $kvconf['credits_policy_post'], 50);
 		$input['credits_policy_thread'] = form::get_text('credits_policy_thread', $kvconf['credits_policy_thread'], 50);
+		$input['credits_policy_digest_1'] = form::get_text('credits_policy_digest_1', $kvconf['credits_policy_digest_1'], 50);
+		$input['credits_policy_digest_2'] = form::get_text('credits_policy_digest_2', $kvconf['credits_policy_digest_2'], 50);
+		$input['credits_policy_digest_3'] = form::get_text('credits_policy_digest_3', $kvconf['credits_policy_digest_3'], 50);
 		$input['golds_policy_post'] = form::get_text('golds_policy_post', $kvconf['golds_policy_post'], 50);
 		$input['golds_policy_thread'] = form::get_text('golds_policy_thread', $kvconf['golds_policy_thread'], 50);
+		$input['golds_policy_digest_1'] = form::get_text('golds_policy_digest_1', $kvconf['golds_policy_digest_1'], 50);
+		$input['golds_policy_digest_2'] = form::get_text('golds_policy_digest_2', $kvconf['golds_policy_digest_2'], 50);
+		$input['golds_policy_digest_3'] = form::get_text('golds_policy_digest_3', $kvconf['golds_policy_digest_3'], 50);
 		$input['reg_on'] = form::get_radio_yes_no('reg_on', $kvconf['reg_on']);
 		$input['reg_email_on'] = form::get_radio_yes_no('reg_email_on', $kvconf['reg_email_on']);
 		$input['reg_init_golds'] = form::get_text('reg_init_golds', $kvconf['reg_init_golds'], 50);

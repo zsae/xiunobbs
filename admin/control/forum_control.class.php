@@ -61,6 +61,7 @@ class forum_control extends admin_control {
 						'rank'=>intval($newrankarr[$fid]),
 						'threads'=>0,
 						'posts'=>0,
+						'digests'=>0,
 						'todayposts'=>0,
 						'lasttid'=>0,
 						'brief'=>'',
