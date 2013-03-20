@@ -27,7 +27,7 @@ class post_control extends common_control {
 		$this->check_login();
 		$this->check_forbidden_group();
 		
-		$fid = intval(core::gpc('fid'));
+		$fid =  core::gpc('fid', 'P') ?  intval(core::gpc('fid', 'P')) : intval(core::gpc('fid'));
 		if(empty($fid)) {
 			list($fid, $forumname) = each($this->conf['forumarr']);
 			$forumselect = form::get_select('fid', $this->conf['forumarr'], $fid);
@@ -39,10 +39,10 @@ class post_control extends common_control {
 		
 		$forum = $this->mcache->read('forum', $fid);
 		
-		$typeid1 = intval(core::gpc('typeid1'));
-		$typeid2 = intval(core::gpc('typeid2'));
-		$typeid3 = intval(core::gpc('typeid3'));
-		$typeid4 = intval(core::gpc('typeid4'));
+		$typeid1 = intval(core::gpc('typeid1', 'P'));
+		$typeid2 = intval(core::gpc('typeid2', 'P'));
+		$typeid3 = intval(core::gpc('typeid3', 'P'));
+		$typeid4 = intval(core::gpc('typeid4', 'P'));
 		
 		$this->thread_type->check_typeid($typeid1, 1);
 		$this->thread_type->check_typeid($typeid2, 2);
