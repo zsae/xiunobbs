@@ -392,6 +392,12 @@ if(empty($step) || $step == 'checklicense') {
 				'reg_email_on' => 0,			// 是否开启Email激活
 				'reg_init_golds' => 10,			// 注册初始化金币
 				'resetpw_on' => 0,			// 是否开启密码找回
+				'credits_policy_digest_1' => 10,		
+				'credits_policy_digest_2' => 20,		
+				'credits_policy_digest_3' => 30,		
+				'golds_policy_digest_1' => 1,		
+				'golds_policy_digest_2' => 2,		
+				'golds_policy_digest_3' => 3,		
 			);
 			$kv->set('conf_ext', $kvconf);
 			

@@ -61,6 +61,7 @@ CREATE TABLE bbs_user (					# 字段中文名			# 控件属性					# 字段描�
   avatar int(11) unsigned NOT NULL default '0',		# 头像最后更新的时间，0为默认头像	#						#
   credits int(11) unsigned NOT NULL default '0',	# 用户积分，不可以消费		#						#
   golds int(11) unsigned NOT NULL default '0',		# 虚拟金币，可以消费，充值可以增加	#						#
+  digests int(11) unsigned NOT NULL default '0',	# 精华数				#						#
   follows smallint(3) unsigned NOT NULL default '0',	# 关注数				#						#
   followeds int(11) unsigned NOT NULL default '0',	# 被关注数			#						#
   newpms int(11) unsigned NOT NULL default '0',		# 新短消息（x人）			#						#
@@ -73,8 +74,8 @@ CREATE TABLE bbs_user (					# 字段中文名			# 控件属性					# 字段描�
   KEY email(email),
   PRIMARY KEY (uid)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-INSERT INTO bbs_user SET uid='1', regip='12345554', regdate=UNIX_TIMESTAMP(), username='admin', password='d14be7f4d15d16de92b7e34e18d0d0f7', salt='99adde', email='admin@admin.com', groupid='1', golds='0';
-INSERT INTO bbs_user SET uid='2', regip='12345554', regdate=UNIX_TIMESTAMP(), username='系统', password='d14be7f4d15d16de92b7e34e18d0d0f7', salt='99adde', email='system@admin.com', groupid='11', golds='0';
+INSERT INTO bbs_user SET uid='1', regip='12345554', regdate=UNIX_TIMESTAMP(), username='admin', password='d14be7f4d15d16de92b7e34e18d0d0f7', salt='99adde', email='admin@admin.com', groupid='1', golds='0', digests='0';
+INSERT INTO bbs_user SET uid='2', regip='12345554', regdate=UNIX_TIMESTAMP(), username='系统', password='d14be7f4d15d16de92b7e34e18d0d0f7', salt='99adde', email='system@admin.com', groupid='11', golds='0', digests='0';
 
 # 用户访问权限，全局的。一般用来设置禁止用户。黑名单机制。
 DROP TABLE IF EXISTS bbs_user_access;
