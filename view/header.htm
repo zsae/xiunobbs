@@ -39,7 +39,11 @@
 					
 					<!--{hook header_menu_end.htm}-->
 				</td>
-				<td class="right" valign="top">
+				<!--{if $_user['groupid'] == 0}-->
+				<td class="right" valign="top" width=80">
+				<!--{else}-->
+				<td class="right" valign="top" width="150">
+				<!--{/if}-->
 					<span id="user">
 					<!--{hook header_user_start.htm}-->
 					<!--{if $_user['groupid'] == 0}-->
@@ -57,7 +61,7 @@
 						</span>
 
 						<!--{if $_user['groupid'] > 0 && $_user['groupid'] < 6}-->
-						<a href="admin/" target="_blank">后台管理</a>
+						<a href="admin/" target="_blank">管理</a>
 						<!--{/if}-->
 			
 						<a href="?user-logout.htm" class="ajaxdialog" onclick="return false">退出</a>
