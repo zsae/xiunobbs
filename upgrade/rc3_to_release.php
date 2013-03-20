@@ -410,6 +410,7 @@ function upgrade_thread_type() {
 				$thread['typeid1'] = $type['newtypeid'];
 				$thread['typeid2'] = 0;
 				$thread['typeid3'] = 0;
+				$thread['typeid4'] = 0;
 				$thread_type_data->xcreate($thread['fid'], $thread['tid'], $type['newtypeid'], 0, 0);
 			}
 		}

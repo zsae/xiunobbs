@@ -67,13 +67,13 @@ class post_control extends common_control {
 			$this->view->assign('fid', $fid);
 			
 			// 初始化 select 控件
-			$this->init_type_select($forum, $typeid1, $typeid2, $typeid3);
+			$this->init_type_select($forum, $typeid1, $typeid2, $typeid3, $typeid4);
 			
 			// hook post_thread_before.php
 			$this->view->display('post_thread_ajax.htm');
 		} else {
 			
-			$typeidsum = $typeid1 + $typeid2 + $typeid3;	// 检查合法范围
+			$typeidsum = $typeid1 + $typeid2 + $typeid3 + $typeid4;	// 检查合法范围
 			$subject = htmlspecialchars(core::gpc('subject', 'P'));
 			
 			$message = core::gpc('message', 'P');
@@ -168,7 +168,7 @@ class post_control extends common_control {
 				$this->attach->clear_aid_from_tmp($uid);
 				
 				// 加入到 thread_type
-				$this->thread_type_data->xcreate($fid, $tid, $typeid1, $typeid2, $typeid3);
+				$this->thread_type_data->xcreate($fid, $tid, $typeid1, $typeid2, $typeid3, $typeid4);
 				
 				// 更新 $thread firstpid
 				$thread['firstpid'] = $post['pid'];
@@ -438,7 +438,7 @@ class post_control extends common_control {
 			$this->init_editor_attach($attachlist, $pid);
 			
 			if($isfirst) {
-				$this->init_type_select($forum, $thread['typeid1'], $thread['typeid2'], $thread['typeid3']);
+				$this->init_type_select($forum, $thread['typeid1'], $thread['typeid2'], $thread['typeid3'], $thread['typeid4']);
 			}
 			
 			$this->view->assign('isfirst', $isfirst);
@@ -470,7 +470,7 @@ class post_control extends common_control {
 				$this->thread_type->check_typeid($typeid2, 2);
 				$this->thread_type->check_typeid($typeid3, 3);
 				$this->thread_type->check_typeid($typeid4, 4);
-				$this->thread_type_data->xupdate($fid, $tid, $typeid1, $typeid2, $typeid3);
+				$this->thread_type_data->xupdate($fid, $tid, $typeid1, $typeid2, $typeid3, $typeid4);
 				
 				$thread['typeid1'] = $typeid1;
 				$thread['typeid2'] = $typeid2;
@@ -638,7 +638,7 @@ class post_control extends common_control {
 	}
 
 	// copy from post_control.class.php
-	private function init_type_select($forum, $typeid1 = 0, $typeid2 = 0, $typeid3 = 0) {
+	private function init_type_select($forum, $typeid1 = 0, $typeid2 = 0, $typeid3 = 0, $typeid4 = 0) {
 		$arradd1 = !empty($forum['typecates'][1]) ? array('0'=>$forum['typecates'][1].'▼') : array();
 		$arradd2 = !empty($forum['typecates'][2]) ? array('0'=>$forum['typecates'][2].'▼') : array();
 		$arradd3 = !empty($forum['typecates'][3]) ? array('0'=>$forum['typecates'][3].'▼') : array();
