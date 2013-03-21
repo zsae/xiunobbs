@@ -678,7 +678,6 @@ function tid_add_read(tid, time) {
 		if(time - arr[tid] > 259200) delete arr[k];
 	}
 	arr[tid] = time;
-	trace(arr);
 	// 保存最后阅读的时间
 	$.pdata(cookie_pre + 'readtids', $.toJSON(arr));
 	

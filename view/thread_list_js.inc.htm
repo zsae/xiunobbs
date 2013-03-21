@@ -114,7 +114,6 @@ $('#body table.thread').each(function() {
 	var tid = intval($(this).attr('tid'));
 	var lastpost = intval($(this).attr('lastpost'));
 	var k = tid_is_read(tid, lastpost);
-	trace(tid + ' ' + lastpost);
 	if(tid_is_read(tid, lastpost)) {
 		$('a.subject_link', this).addClass('xgrey');
 	}

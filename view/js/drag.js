@@ -67,7 +67,7 @@ $.drag = function(content, recall) {
 					if(center_x > _x && center_x < _x + w && center_y > _y  && center_y < _y + h) {
 						
 						// 隐藏上一个 shadow
-						trace('curr: '+$('input', this).val()+', x:'+x+', y:'+y+', _x:'+_x+', _y:'+_y+', w:'+w+', h:'+h+'');
+						//trace('curr: '+$('input', this).val()+', x:'+x+', y:'+y+', _x:'+_x+', _y:'+_y+', w:'+w+', h:'+h+'');
 						// 此处速度需要优化
 						//if(!window.jshadow) {
 							if(window.jshadow) window.jshadow.remove();
