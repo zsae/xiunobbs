@@ -53,7 +53,6 @@ p {margin-top: 4px;}
 .grey2, .grey2 a{color: #BBBBBB;}
 .xgrey {opacity: 0.5; filter:Alpha(Opacity=50); }/* filter:progid:DXImageTransform.Microsoft.BasicImage(grayscale=1); FILTER: gray;  */
 .code, .quote, pre {border: 1px solid #AAAAAA; background: #E9E9E9; padding: 4px; font-size: 12px; margin-top: 4px; margin-bottom: 4px;}
-i{color: #888888; font: none; font-family: Arial; font-size: 9px;} /* 专门用来显示小字号的数字 */
 .submit {margin-top: 4px;}
 .checked {font-weight: 800;}
 
