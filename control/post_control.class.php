@@ -87,7 +87,7 @@ class post_control extends common_control {
 				'username'=>$username,
 				'subject'=>$subject,
 				'dateline'=>$_SERVER['time'],
-				'lastpost'=>0,
+				'lastpost'=>$_SERVER['time'],
 				'lastuid'=>'',
 				'lastusername'=>'',
 				'views'=>0,
