@@ -167,11 +167,7 @@ class mod_control extends common_control {
 			$comment = core::gpc('comment', 'P');
 			$this->check_comment($comment);
 			
-			$cateids = core::gpc('cateids', 'P');
-			$cateidarr = explode(' ', $cateids);
-			foreach($cateidarr as &$v) $v = intval($v);	// 此处用&以后，后面的也得用&，否则被引用改变，达不到期望值
-			$fidarr = $uidarr = array();
-			$catestat = array();	// 分类下的 digest 计数
+			$fidarr = $creditarr = $goldarr = $digestarr = array();
 			
 			// hook mod_digest_after.php
 			$tidnum = 0;
@@ -192,15 +188,22 @@ class mod_control extends common_control {
 				$fidarr[$fid] = $fid;
 				
 				// 更新用户精华数，积分
-				!isset($uidarr[$thread['uid']]) && $uidarr[$thread['uid']] = 0;
+				!isset($creditarr[$thread['uid']]) && $creditarr[$thread['uid']] = 0;
+				!isset($goldarr[$thread['uid']]) && $goldarr[$thread['uid']] = 0;
+				!isset($digestarr[$thread['uid']]) && $digestarr[$thread['uid']] = 0;
 				// 先减去积分，否则会造成重复加分
 				if($thread['digest'] > 0) {
-					$uidarr[$thread['uid']] -= $this->conf['credits_policy_digest_'.$thread['digest']];
-					$uidarr[$thread['uid']] -= $this->conf['golds_policy_digest_'.$thread['digest']];
+					$creditarr[$thread['uid']] -= $this->conf['credits_policy_digest_'.$thread['digest']];
+					$goldarr[$thread['uid']] -= $this->conf['golds_policy_digest_'.$thread['digest']];
 				}
 				if($rank > 0) {
-					$uidarr[$thread['uid']] += $this->conf['credits_policy_digest_'.$rank];
-					$uidarr[$thread['uid']] += $this->conf['golds_policy_digest_'.$rank];
+					$creditarr[$thread['uid']] += $this->conf['credits_policy_digest_'.$rank];
+					$goldarr[$thread['uid']] += $this->conf['golds_policy_digest_'.$rank];
+				}
+				if($rank > 0 && $thread['digest'] == 0) {
+					$digestarr[$thread['uid']]++;
+				} elseif($rank < 0 && $thread['digest'] > 0) {
+					$digestarr[$thread['uid']]--;
 				}
 				
 				// 记录到版主操作日志
@@ -240,11 +243,12 @@ class mod_control extends common_control {
 				$this->forum->clear_cache($fid);
 			}
 			
-			foreach($uidarr as $uid=>$credits) {
+			foreach($creditarr as $uid=>$credits) {
 				$uid = intval($uid);
 				$user = $this->user->read($uid);
 				$user['credits'] += $credits;
-				$credits > 0 ? $user['digests']++ : $user['digests']--;
+				$user['golds'] += $goldarr[$uid];
+				$user['digests'] += $digestarr[$uid];
 				$this->user->update($user);
 			}
 			

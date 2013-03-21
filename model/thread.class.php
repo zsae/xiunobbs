@@ -13,9 +13,15 @@ class thread extends base_model {
 		$this->maxcol = 'tid';
 	}
 	
-	public function get_threadlist_by_fid($fid, $orderby, $start, $limit) {
-		$orderby = $orderby == 0 ? array('lastpost'=>-1) : array('tid'=>-1);
-		$threadlist = $this->index_fetch(array('fid'=>$fid), $orderby, $start, $limit);
+	public function get_threadlist_by_fid($fid, $digest, $orderby, $start, $limit) {
+		if($digest) {
+			$cond = array('fid'=>$fid, 'digest'=>array('>'=>0));
+			$orderby = array('tid'=>-1);
+		} else {
+			$cond = array('fid'=>$fid);
+			$orderby = $orderby == 0 ? array('lastpost'=>-1) : array('tid'=>-1);
+		}
+		$threadlist = $this->index_fetch($cond, $orderby, $start, $limit);
 		return $threadlist;
 	}
 	

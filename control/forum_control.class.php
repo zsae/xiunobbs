@@ -39,6 +39,9 @@ class forum_control extends common_control {
 		$this->check_forum_exists($forum);
 		$this->check_access($forum, 'read');
 		
+		// digest
+		$digest = misc::mid(intval(core::gpc('digest')), 0, 3);
+		
 		// orderby
 		$orderby = core::gpc('orderby', 'C');
 		$orderby = $orderby === NULL ? $forum['orderby'] : intval($orderby);
@@ -62,7 +65,7 @@ class forum_control extends common_control {
 		if($typeidsum > 0) {
 			$threadlist = $this->thread_type_data->get_threadlist_by_fid($fid, $typeidsum, $start, $limit);
 		} else {
-			$threadlist = $this->thread->get_threadlist_by_fid($fid, $orderby, $start, $limit);
+			$threadlist = $this->thread->get_threadlist_by_fid($fid, $digest, $orderby, $start, $limit);
 		}
 		
 		$toplist = $page == 1 && empty($typeidsum) ? $this->get_toplist($forum) : array();
@@ -89,8 +92,9 @@ class forum_control extends common_control {
 		$readtids = substr($readtids, 1); 
 		$click_server = $this->conf['click_server']."?db=tid&r=$readtids";
 		// hook forum_index_get_list_after.php
+		$digestadd = $digest > 0 ? "-digest-$digest" : '';
 		$typeidadd = $typeidsum > 0 ? "-typeid1-$typeid1-typeid2-$typeid2-typeid3-$typeid3-typeid4-$typeid4" : '';
-		$pages = misc::pages("?forum-index-fid-$fid$typeidadd.htm", $threads, $page, $pagesize);
+		$pages = misc::pages("?forum-index-fid-$fid$digestadd$typeidadd.htm", $threads, $page, $pagesize);
 		$ismod = $this->is_mod($forum, $this->_user);
 		$this->view->assign('fid', $fid);
 		$this->view->assign('typeid1', $typeid1);
@@ -125,7 +129,7 @@ class forum_control extends common_control {
 						continue;
 					}
 				}
-				$threadlist = $this->thread->get_threadlist_by_fid($fid, 0, 0, 10);
+				$threadlist = $this->thread->get_threadlist_by_fid($fid, 0, 0, 0, 10);
 				foreach($threadlist as &$thread) {
 					$thread['dateline_fmt'] = misc::minidate($thread['dateline']);
 				}

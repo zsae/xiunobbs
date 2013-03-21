@@ -3,13 +3,15 @@
 		<table width="100%" cellspacing="0" cellpadding="0" style="word-break: break-all" >
 			<tr align="left">
 				<td valign="middle" class="subject">
-					标题
 					<!--{if $fid}-->
-					&nbsp-&nbsp
+					<a href="?forum-index-fid-$fid.htm" rel="nofollow" {if !core::gpc('digest')}class="grey"{/if}>普通主题</a> <span class="grey2">|</span> 
+					<a href="?forum-index-fid-$fid-digest-1.htm" rel="nofollow" {if core::gpc('digest')}class="grey"{/if}>精华主题</a>
 					<!--{hook thread_list_orderby_before.htm}-->
-					<span id="nav_orderby" style="width: 40px; height: 24px; line-height: 24px;">
-						<a href="?forum-index-fid-$fid-page-$page.htm" class="icon icon-orderby-0  $_checked[orderby][0]" title="顶贴时间排序" rel="nofollow" style="vertical-align: top; margin-top: 4px;"></a><a href="?forum-index-fid-$fid-page-$page.htm" class="icon icon-orderby-1  $_checked[orderby][1]" title="发帖时间排序" rel="nofollow" style="vertical-align: top; margin-top: 4px; margin-left: 4px;"></a>
+					<span id="nav_orderby">
+						<a href="?forum-index-fid-$fid-page-$page.htm" class="icon icon-orderby-0  $_checked[orderby][0]" title="顶贴时间排序" rel="nofollow" style="vertical-align: top; margin-left: 8px;"></a><a href="?forum-index-fid-$fid-page-$page.htm" class="icon icon-orderby-1  $_checked[orderby][1]" title="发帖时间排序" rel="nofollow" style="vertical-align: top; margin-left: 4px;"></a>
 					</span>
+					<!--{else}-->
+					主题
 					<!--{/if}-->
 					<!--{hook thread_list_orderby_after.htm}-->
 				</td>

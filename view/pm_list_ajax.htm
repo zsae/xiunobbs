@@ -104,9 +104,9 @@ function delay_execute(dialog, recall) {
 	*/
 	
 	var window_height = $(window).height() - 20;
-	dialog.set_height(window_height);
+	dialog.set_height(window_height - 60);
 	dialog.set_position('center');
-	var subheight = is_ie6 ? 220 : 180;
+	var subheight = is_ie6 ? 280 : 215;
 	jpmlist.height(window_height - subheight);
 	
 	// 给 page 区域追加事件

@@ -110,14 +110,13 @@ $('#threadlist tr').bind('mouseover', function() {$(this).removeClass('bg1').add
 $('#threadlist tr').bind('mouseout', function() {$(this).removeClass('bg2').addClass('bg1');});
 
 // 最新贴，已读贴，比较最后阅读时间和帖子的最后回复时间
-$('#body span.icon-post-blue').each(function() {
+$('#body table.thread').each(function() {
 	var tid = intval($(this).attr('tid'));
 	var lastpost = intval($(this).attr('lastpost'));
 	var k = tid_is_read(tid, lastpost);
-	trace(k);
+	trace(tid + ' ' + lastpost);
 	if(tid_is_read(tid, lastpost)) {
-		$(this).addClass('xgrey');
-		$(this).parent().parent().addClass('grey');
+		$('a.subject_link', this).addClass('xgrey');
 	}
 });
 
@@ -130,7 +129,8 @@ $.getScript('$click_server&'+Math.random(), function() {
 		viewspan.html(json[tid]);
 		if(json[tid] > $conf[threadlist_hotviews]) {
 			viewspan.addClass('red bold');
-			viewspan.html(viewspan.html() + '<span class="icon icon-post-fire"></span>');
+			$('table[tid='+tid+'] a.subject_link').after(' <span class="icon icon-post-fire" title="火帖"></span>');
+			//viewspan.html(viewspan.html() + '<span class="icon icon-post-fire"></span>');
 		}
 	}
 });

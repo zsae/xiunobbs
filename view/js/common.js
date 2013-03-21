@@ -672,14 +672,16 @@ function tid_is_read(tid, lastpost) {
 // 加入的同时，删除一天前的记录。
 function tid_add_read(tid, time) {
 	var arr = json_decode($.pdata(cookie_pre + 'readtids'));
-	if(!arr) arr = {};
-	arr[tid] = time;
+	if(!arr || arr == 'null') arr = {};
 	for(var k in arr) {
 		// 删除3天以前的数据
 		if(time - arr[tid] > 259200) delete arr[k];
 	}
+	arr[tid] = time;
+	trace(arr);
 	// 保存最后阅读的时间
 	$.pdata(cookie_pre + 'readtids', $.toJSON(arr));
+	
 }
 
 /*function fid_update_lasttime(fid, time) {

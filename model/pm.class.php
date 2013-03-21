@@ -42,18 +42,19 @@ class pm extends base_model {
 			$pmcount = array(
 				'uid1'=>$uid1,
 				'uid2'=>$uid2,
-				'count'=>0,
+				'count'=>1,
 				'dateline'=>$_SERVER['time'],
 			);
-			$page = 1;	
+			$page = 1;
+			$this->pmcount->create($pmcount);	
 		} else {
 			$count = $pmcount ? $pmcount['count'] : 0;
 			$pagesize = 20;
 			$page = ceil(($count + 1) / $pagesize);
+			$pmcount['count']++;
+			$pmcount['dateline'] = $_SERVER['time'];
+			$this->pmcount->update($pmcount);
 		}
-		$pmcount['count']++;
-		$pmcount['dateline'] = $_SERVER['time'];
-		$this->pmcount->update($pmcount);
 		
 		// pm
 		$pm = array(
@@ -75,21 +76,23 @@ class pm extends base_model {
 			$pmnew = array(
 				'recvuid'=>$recvuid,
 				'senduid'=>$senduid,
-				'count'=>0,
+				'count'=>1,
 				'dateline'=>$_SERVER['time'],
 			);
-		}
-		
-		// 如果为两人的某轮第一条短消息
-		if($pmnew['count'] == 0) {
-			// user.newpms
 			$recvuser['newpms']++;
 			$this->user->update($recvuser);
+			$this->pmnew->create($pmnew);
+		} else {
+			// 如果为两人的某轮第一条短消息
+			if($pmnew['count'] == 0) {
+				$recvuser['newpms']++;
+				$this->user->update($recvuser);
+			}
+			$pmnew['count']++;
+			$pmnew['dateline'] = $_SERVER['time'];
+			$this->pmnew->update($pmnew);
 		}
-		$pmnew['count']++;
-		$pmnew['dateline'] = $_SERVER['time'];
-	
-		$this->pmnew->update($pmnew);
+		
 		return $pm;
 	}
 	
