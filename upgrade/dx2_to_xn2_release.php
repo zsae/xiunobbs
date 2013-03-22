@@ -8,7 +8,7 @@
 /*
 	流程：
 		1. 备份原站点：新建目录: dx2, 将所有文件移动到 dx2 中
-		2. 上传 RC2 源代码，通过 url 安装，安装成功以后进入第三步。
+		2. 上传 XiunoBBS 2.0.0 源代码，通过 url 安装，安装成功以后进入第3步。
 		3. 访问 http://www.domain.com/upgrade/dx2_to_xn2.php 开始升级
 		4. 升级完毕后，删除升级目录 upgrade!!!
 */
@@ -170,6 +170,8 @@ function upgrade_forum() {
 	$count = $dx2->index_count('forum_forum');
 	$mthread_type = new thread_type();
 	$mthread_type_cate = new thread_type_cate();
+	$mforum_access = new forum_access($conf);
+	$groupids = array(0, 1, 2, 3, 4, 5, 6, 7, 11, 12, 13, 14, 15);
 	if($start < $count) {
 		$limit = DEBUG ? 10 : 500;	// 每次升级 100
 		$arrlist = $dx2->index_fetch_id('forum_forum', 'fid', array(), array(), $start, $limit);
@@ -185,39 +187,39 @@ function upgrade_forum() {
 			if($old['status'] == 3) {
 				$old['status'] = 0;
 				$old['name'] .= '(群组)';
-				continue;	// 群组数据抛弃
+				continue;	// 群组数据抛弃，thread, post 都应该抛弃，发帖数，回复数都得重新统计！
 			}
 			
-			// fix dx2诡异的“鬼版”，数据库里有，但是前台后台都看不到
-			if($old['fup'] == 0 && $old['posts'] > 0) {
-				$old['fup'] = 1;
+			// 忽略上级版块
+			if($old['fup'] == 0) {
+				continue;
 			}
 			
 			// 判断是否存在
-			
 			$forum = $db->get("forum-fid-$fid");
+			// 多次升级，更新数据
 			if(!empty($forum)) {
 				$forum['name'] = strip_tags($old['name']);
 				// todo: 如果为隐藏版块，则对 forum_access 增加记录
-				if(($old['status']) != 1) {
-				
+				if($old['status'] != 1) {
+					foreach($groupids as $groupid) {
+						$groupid = intval($groupid);
+						$access = array();
+						$access['allowread'] = ($groupid == 1 ? 1 : 0);
+						$access['allowpost'] = 0;
+						$access['allowthread'] = 0;
+						$access['allowdown'] = 0;
+						$access['allowattach'] = 0;
+						$access['allowdown'] = 0;
+						$access['fid'] = $fid;
+						$access['groupid'] = $groupid;
+						$this->forum_access->create($access);
+					}				
 				}
 				$forum['threads'] = intval($old['threads']);
 				$forum['posts'] = intval($old['posts']);
-				$db->set("forum-fid-$fid", $forum);
+				$db->update($forum);
 			} else {
-				
-				// fix dx2诡异的“鬼版”，数据库里有，但是前台后台都看不到
-				if($old['fup'] == 0 && $old['posts'] > 0) {
-					$old['fup'] = 1;
-				}
-				
-				// 第三级的板块往上提一级
-				if($old['type'] == 'sub') {
-					$pforum = $dx2->get("forum_forum-fid-$old[fup]");
-					$old['fup'] = $pforum['fup'];
-				}
-				
 				// a:6:{s:8:"required";b:1;s:8:"listable";b:0;s:6:"prefix";s:1:"0";s:5:"types";a:3:{i:1;s:7:"fenlei1";i:2;s:7:"fenlei2";i:3;s:7:"fenlei3";}s:5:"icons";a:3:{i:1;s:0:"";i:2;s:0:"";i:3;s:0:"";}s:10:"moderators";a:3:{i:1;N;i:2;N;i:3;N;}}
 				// 主题分类一块升
 				if($old2['threadtypes']) {
@@ -266,7 +268,6 @@ function upgrade_forum() {
 					'modids'=> '',
 					'modnames'=> '',
 					'toptids'=> '',
-					'status'=> $old['status'],
 					'orderby'=> 0,
 					'seo_title'=> $old2['seotitle'],
 					'seo_keywords'=> $old2['keywords'],
@@ -610,7 +611,7 @@ function upgrade_user() {
 			}
 			
 			
-			// only bt
+			// todo:only bt
 			$credits = $old3['extcredits2'] * 1 + $old3['extcredits3'] * 4 + $old3['extcredits4'] * 40 + $old3['extcredits5'] * 2;
 			//$credits = $old3['threads'] * 2 + $old3['posts'];
 			
@@ -884,10 +885,9 @@ function laststep() {
 	$db->truncate('kv');
 	$db->truncate('runtime');
 	
-	// 清理 thread
-	$db->index_drop('thread', array('tid'));
-	$db->index_drop('oldtypeid');
-	$db->query("ALTER TABLE {$db->tablepre}thread_type DROP COLUMN oldtypeid;");
+	// todo: 清理 thread
+	//$db->index_drop('oldtypeid');
+	//$db->query("ALTER TABLE {$db->tablepre}thread_type DROP COLUMN oldtypeid;");
 	
 	// 修改管理员用户组
 	message('升级完毕，请<b>删除 upgrade 目录</b>，防止重复升级！！！<a href="../">【进入论坛】</a>');

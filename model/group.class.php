@@ -16,8 +16,9 @@ class group extends base_model {
 	// 取得注册用户的 groupid, 和0
 	public function get_list() {
 		$usergroup = array();
-		$usergroup[0] = $this->get(0);
+		//$usergroup[0] = $this->get(0);
 		$usergroup = $this->index_fetch(array(), array('groupid'=>1), 0, 1000);
+		$usergroup = misc::arrlist_change_key($usergroup, 'groupid');
 		return $usergroup;
 	}
 	

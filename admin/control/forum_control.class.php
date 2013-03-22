@@ -274,10 +274,28 @@ class forum_control extends admin_control {
 			$this->forum->clear_cache($fid, TRUE);
 		}
 		
+		// 版块权限
 		$grouplist = $this->group->get_list();
 		$accesslist = $this->forum_access->get_list_by_fid($fid);
 		if(empty($accesslist)) {
-			$this->forum_access->set_default($accesslist, $grouplist);
+			$groupidarr = array_keys($grouplist);
+			foreach($groupidarr as $groupid) {
+				$accesslist[$groupid] = array();
+				$access = &$accesslist[$groupid];
+				if($groupid == 0) {
+					$access['allowread'] = 1;
+					$access['allowpost'] = 0;
+					$access['allowthread'] = 0;
+					$access['allowattach'] = 0;	// 游客不允许上传附件！写死了！
+					$access['allowdown'] = 1;
+				} else {
+					$access['allowread'] = 1;
+					$access['allowpost'] = 1;
+					$access['allowthread'] = 1;
+					$access['allowattach'] = 1;
+					$access['allowdown'] = 1;
+				}
+			}
 		}
 		
 		$forumoptions = $this->forum->get_options($this->_user['uid'], $this->_user['groupid'], $fid);
