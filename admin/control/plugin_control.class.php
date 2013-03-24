@@ -13,6 +13,7 @@ class plugin_control extends admin_control {
 	private $cates = array(0=>'未分类', 1=>'风格模板', 2=>'小型插件', 3=>'大型插件', 4=>'接口整合');
 	private $styles = array(0=>'未分类', 1=>'红', 2=>'橙', 3=>'黄', 4=>'绿', 5=>'青', 6=>'蓝', 7=>'紫', 8=>'黑白', 9=>'古典', 10=>'现代', 11=>'商务', 12=>'科技', 13=>'中国风');
 	
+	private $official_plugin_site = 'http://plugin.xiuno.net/';
 	function __construct(&$conf) {
 		parent::__construct($conf);
 		$this->check_admin_group();
@@ -20,7 +21,7 @@ class plugin_control extends admin_control {
 	
 	// 本地插件列表，如果有pluginid, 则从官方获取更新
 	public function on_index() {
-		
+		global $bbsconf;
 		$installlist = $disablelist = $unstalllist = array();
 		
 		// 获取本地插件列表，获取更新
@@ -44,8 +45,8 @@ class plugin_control extends admin_control {
 				$pconf['have_new_version'] = 0;
 				$pconf['stars'] = 0;
 			}
-			$pconf['have_setting'] = is_file($this->conf['plugin_path'].$dir.'setting.php');
-			$pconf['icon_url'] = is_file($this->conf['plugin_path'].$dir."icon.png") ? $this->conf['plugin_url'].$dir."icon.png" : "../view/image/plugin_icon.png";
+			$pconf['have_setting'] = is_file($this->conf['plugin_path'].$dir.'/setting.php');
+			$pconf['icon_url'] = is_file($this->conf['plugin_path'].$dir."/icon.png") ? $this->conf['plugin_url'].$dir."/icon.png" : $bbsconf['static_url']."view/image/plugin_icon.png";
 			if($pconf['installed'] == 1) {
 				if($pconf['enable'] == 1) {
 					$installlist[$dir] = $pconf;	// 已启用的插件
@@ -67,6 +68,7 @@ class plugin_control extends admin_control {
 	
 	// 线上插件列表，过滤条件：
 	public function on_list() {
+		global $bbsconf;
 		$cateid = intval(core::gpc('cateid'));
 		$styleid = intval(core::gpc('styleid'));
 		$orderby = core::gpc('orderby');
@@ -76,16 +78,15 @@ class plugin_control extends admin_control {
 		
 		// 从官方获取最新的版本
 		$pluginlist = $this->get_official_list($cateid, $styleid, $orderby, $page, $pagesize);
-		
+		//print_r($pluginlist);exit;
 		// 获取本地插件列表
 		$locallist = core::get_plugins($this->conf);
-		
 		// 合并
 		foreach($pluginlist as $dir=>&$pconf) {
 			if(isset($locallist[$dir])) {
 				$lconf = $locallist[$dir];
 				empty($lconf['version']) && $lconf['version'] = 0;
-				$pconf['have_setting'] = is_file($this->conf['plugin_path'].$dir.'setting.php');
+				$pconf['have_setting'] = is_file($this->conf['plugin_path'].$dir.'/setting.php');
 				$pconf['local_version'] = $lconf['version'];
 				$pconf['have_new_version'] = version_compare($lconf['version'], $pconf['version']);	// 如果有新版本，提示下载，更新
 				$pconf += $lconf; // 追加, installed, enable
@@ -94,6 +95,8 @@ class plugin_control extends admin_control {
 				$pconf['local_version'] = 0;
 				$pconf['have_new_version'] = 0;
 			}
+			$iconffile = $this->conf['plugin_path']."$dir/icon.png";
+			$pconf['icon_url'] = is_file($iconffile) ? $this->conf['plugin_url']."$dir/icon.png" : ($pconf['icon'] ? $this->official_plugin_site."upload/plugin/$pconf[pluginid]/icon.png" : $bbsconf['static_url']."view/image/plugin_icon.png");
 		}
 		
 		$this->_checked['cateid_'.$cateid] = ' class="checked"';
@@ -120,7 +123,6 @@ class plugin_control extends admin_control {
 		$pluginid = intval(core::gpc('pluginid'));
 		$local = $dir ? $this->get_local_plugin($dir) : array();
 		$official = $pluginid ? $this->get_official_plugin($pluginid) : array();
-		
 		if(!$local && !$official) {
 			$this->message('请指定插件 dir 或 pluginid。');
 		}
@@ -133,14 +135,14 @@ class plugin_control extends admin_control {
 			$local['img3_url'] = is_file($this->conf['plugin_path']."$dir/img3.jpg") ? $this->conf['plugin_url']."$dir/img3.jpg" : '../view/image/nopic.gif';
 			$local['img4_url'] = is_file($this->conf['plugin_path']."$dir/img4.jpg") ? $this->conf['plugin_url']."$dir/img4.jpg" : '../view/image/nopic.gif';
 			
-			$local['have_setting'] = is_file($this->conf['plugin_path'].$dir.'setting.php');
+			$local['have_setting'] = is_file($this->conf['plugin_path'].$dir.'/setting.php');
 		}
 		if($official) {
-			$official['icon_url'] = $official['icon'] ? "http://plugin.xiuno.net/upload/plugin/$pluginid/icon.png" : "http://plugin.xiuno.net/view/image/plugin_icon.png";
-			$official['img1_url'] = $official['img1'] ? "http://plugin.xiuno.net/upload/plugin/$pluginid/img1.jpg" : '../view/image/nopic.gif';
-			$official['img2_url'] = $official['img2'] ? "http://plugin.xiuno.net/upload/plugin/$pluginid/img2.jpg" : '../view/image/nopic.gif';
-			$official['img3_url'] = $official['img3'] ? "http://plugin.xiuno.net/upload/plugin/$pluginid/img3.jpg" : '../view/image/nopic.gif';
-			$official['img4_url'] = $official['img4'] ? "http://plugin.xiuno.net/upload/plugin/$pluginid/img4.jpg" : '../view/image/nopic.gif';
+			$official['icon_url'] = $official['icon'] ? $this->official_plugin_site."upload/plugin/$pluginid/icon.png" : "../view/image/plugin_icon.png";
+			$official['img1_url'] = $official['img1'] ? $this->official_plugin_site."upload/plugin/$pluginid/img1.jpg" : '../view/image/nopic.gif';
+			$official['img2_url'] = $official['img2'] ? $this->official_plugin_site."upload/plugin/$pluginid/img2.jpg" : '../view/image/nopic.gif';
+			$official['img3_url'] = $official['img3'] ? $this->official_plugin_site."upload/plugin/$pluginid/img3.jpg" : '../view/image/nopic.gif';
+			$official['img4_url'] = $official['img4'] ? $this->official_plugin_site."upload/plugin/$pluginid/img4.jpg" : '../view/image/nopic.gif';
 			
 			$official['lastupdate_fmt'] = misc::humandate($official['lastupdate']);
 		}
@@ -176,7 +178,7 @@ class plugin_control extends admin_control {
 		if(!is_dir($this->conf['plugin_path'].$dir)) {
 			$siteid =  md5($this->conf['app_url'].$this->conf['auth_key']);
 			$app_url = core::urlencode($this->conf['app_url']);
-			$url = "http://plugin.xiuno.net/?plugin-down-dir-$dir-siteid-$siteid-app_url-$app_url-ajax-1.htm";
+			$url = $this->official_plugin_site."?plugin-down-dir-$dir-siteid-$siteid-app_url-$app_url-ajax-1.htm";
 			if(IN_SAE) {
 				// 提示下载
 				$next = "?plugin-install-dir-$dir.htm";
@@ -250,7 +252,7 @@ class plugin_control extends admin_control {
 		
 		$siteid =  md5($this->conf['app_url'].$this->conf['priavte_key']);
 		$app_url = core::urlencode($this->conf['app_url']);
-		$url = "http://plugin.xiuno.net/?plugin-down-dir-$dir-siteid-$siteid-app_url-$app_url.htm";
+		$url = $this->official_plugin_site."?plugin-down-dir-$dir-siteid-$siteid-app_url-$app_url.htm";
 		$referer = core::gpc('HTTP_REFERER', 'S') OR $referer = '?plugin-index.htm';
 		if(IN_SAE) {
 			$pluginpath = $this->conf['plugin_path'].$dir;
@@ -320,7 +322,7 @@ class plugin_control extends admin_control {
 			try {
 				include $unstall;
 			} catch(Exception $e) {
-				log::write("卸载插件 $dir 可能发生错误:".$e->getMessage());
+				log::write("删除插件 $dir 可能发生错误:".$e->getMessage());
 			}
 		}
 		
@@ -350,9 +352,9 @@ class plugin_control extends admin_control {
 			misc::rmdir($this->conf['plugin_path'].$dir);
 			$this->clear_tmp();
 			if($isview) {
-				$this->message('卸载该风格 $dir 成功，已经还原为系统默认风格。', 1, $referer);
+				$this->message('删除该风格 $dir 成功，已经还原为系统默认风格。', 1, $referer);
 			} else {
-				$this->message("卸载插件 $dir 成功。", 1, $referer);
+				$this->message("删除插件 $dir 成功。", 1, $referer);
 			}
 		}
 	}
@@ -494,7 +496,7 @@ class plugin_control extends admin_control {
 	// 从官方获取最新的 plugin
 	private function get_official_list($cateid, $styleid, $orderby, $page = 1, $pagesize = 20) {
 		$pluginlist = array();
-		$url = "http://plugin.xiuno.net/?plugin-list-cateid-$cateid-styleid-$styleid-orderby-$orderby-page-$page-pagesize-$pagesize-ajax-1.htm";
+		$url = $this->official_plugin_site."?plugin-list-cateid-$cateid-styleid-$styleid-orderby-$orderby-page-$page-pagesize-$pagesize-ajax-1.htm";
 		$s = misc::fetch_url($url, 5);
 		if(empty($s)) throw new Exception('从官方获取更新失败。');
 		$pluginlist = (array)core::json_decode($s);
@@ -503,7 +505,7 @@ class plugin_control extends admin_control {
 	
 	private function get_official_by_dirs($dirs) {
 		$dirsurl = implode(',', (array)$dirs);
-		$url = "http://plugin.xiuno.net/?plugin-update-dirs-$dirsurl-ajax-1.htm";
+		$url = $this->official_plugin_site."?plugin-update-dirs-$dirsurl-ajax-1.htm";
 		$s = misc::fetch_url($url, 5);
 		if(empty($s)) throw new Exception('从官方获取更新失败。');
 		$pluginlist = core::json_decode($s);
@@ -511,7 +513,7 @@ class plugin_control extends admin_control {
 	}
 	
 	private function get_official_plugin($pluginid) {
-		$url = "http://plugin.xiuno.net/?plugin-read-pluginid-$$pluginid-ajax-1.htm";
+		$url = $this->official_plugin_site."?plugin-read-pluginid-$pluginid-ajax-1.htm";
 		$s = misc::fetch_url($url, 5);
 		if(empty($s)) throw new Exception("从官方获取插件 pluginid=$pluginid 失败。");
 		$plugin = core::json_decode($s);

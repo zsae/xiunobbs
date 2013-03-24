@@ -12,6 +12,7 @@ dd {width: 84%;}
 		</div>
 		<div class="body">
 			<dl>
+				
 				<dt>插件名：</dt>
 				<dd>
 					$plugin[name] v$plugin[version]
@@ -20,6 +21,11 @@ dd {width: 84%;}
 				
 				<dt>目录：</dt>
 				<dd>$dir</dd>
+				
+				<dt>插件图标：</dt>
+				<dd>
+					<img src="$plugin[icon_url]" width="54" height="54" />
+				</dd>
 				
 				<!--{if !empty($plugin[username])}-->
 				<dt>作者：</dt>
@@ -31,54 +37,20 @@ dd {width: 84%;}
 				<dd>$plugin[email]</dd>
 				<!--{/if}-->
 				
-				<dt>brief：</dt>
+				<dt>介绍：</dt>
 				<dd>$plugin[brief]</dd>
 				
-				<dt>插件图标：</dt>
-				<dd>
-					<img src="$plugin[icon_url]" width="54" height="54" />
-				</dd>
-				
-				<dt>截图：</dt>
-				<dd>
-					<table width="100%" border="0">
-						<tr>
-							<td width="25%">
-								<img src="$plugin[img1_url]" width="160" style="cursor: pointer;" onclick="window.open(this.src)" class="border" /><br />
-							</td>
-							<td width="25%">
-								<img src="$plugin[img2_url]" width="160" style="cursor: pointer;" onclick="window.open(this.src)" class="border" /><br />
-							</td>
-							<td width="25%">
-								<img src="$plugin[img3_url]" width="160" style="cursor: pointer;" onclick="window.open(this.src)" class="border" /><br />
-							</td>
-							<td width="25%">
-								<img src="$plugin[img4_url]" width="160" style="cursor: pointer;" onclick="window.open(this.src)" class="border" /><br />
-							</td>
-						</tr>
-					</table
-				</dd>
-				
 			<!--{if $official}-->
+				<!--{if $official[price]}-->
 				<dt>价格：</dt>
 				<dd>$official[price]</dd>
+				<!--{/if}-->
 				
-				<dt>官方综合评级：</dt>
+				<dt>官方评级：</dt>
 				<dd><img src="view/image/star_$official[stars].gif" width="63" height="11" align="middle" /></dd>
 				
-				<dt>官方功能评级：</dt>
-				<dd><img src="view/image/star_$official[function_stars].gif" width="63" height="11" align="middle" /></dd>
-				
-				<dt>官方安全评级：</dt>
-				<dd><img src="view/image/star_$official[safe_stars].gif" width="63" height="11" align="middle" /></dd>
-				
-				<dt>官方性能评级：</dt>
-				<dd><img src="view/image/star_$official[perfemance_stars].gif" width="63" height="11" align="middle" /></dd>
-				
-				<!--
-				<dt>用户评级均值：</dt>
+				<dt>用户评级：</dt>
 				<dd><img src="view/image/star_$official[user_stars].gif" width="63" height="11" align="middle" /></dd>
-				-->
 				
 				<dt>安装次数：</dt>
 				<dd>$official[installs]</dd>
@@ -99,6 +71,26 @@ dd {width: 84%;}
 					<!--{if $plugin[md5_ok]}-->OK<!--{else}-->失败(文件可能被修改)<!--{/if}-->
 				</dd>
 			<!--{/if}-->
+			
+				<dt>截图：</dt>
+				<dd>
+					<table width="100%" border="0">
+						<tr valign="top">
+							<td width="25%">
+								<img src="$plugin[img1_url]" width="160" style="cursor: pointer;" onclick="window.open(this.src)" class="border" /><br />
+							</td>
+							<td width="25%">
+								<img src="$plugin[img2_url]" width="160" style="cursor: pointer;" onclick="window.open(this.src)" class="border" /><br />
+							</td>
+							<td width="25%">
+								<img src="$plugin[img3_url]" width="160" style="cursor: pointer;" onclick="window.open(this.src)" class="border" /><br />
+							</td>
+							<td width="25%">
+								<img src="$plugin[img4_url]" width="160" style="cursor: pointer;" onclick="window.open(this.src)" class="border" /><br />
+							</td>
+						</tr>
+					</table
+				</dd>
 			</dl>	
 		</div>
 	</div>
