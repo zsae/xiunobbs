@@ -224,6 +224,9 @@ function upgrade_forum() {
 				// a:6:{s:8:"required";b:1;s:8:"listable";b:0;s:6:"prefix";s:1:"0";s:5:"types";a:3:{i:1;s:7:"fenlei1";i:2;s:7:"fenlei2";i:3;s:7:"fenlei3";}s:5:"icons";a:3:{i:1;s:0:"";i:2;s:0:"";i:3;s:0:"";}s:10:"moderators";a:3:{i:1;N;i:2;N;i:3;N;}}
 				// 主题分类
 				if($old2['threadtypes']) {
+					
+					$mthread_type_cate->create(array('fid'=>$fid, 'cateid'=>1, 'catename'=>'分类', 'rank'=>1, 'enable'=>1));
+					
 					$threadtypes = dx2_unserialize($old2['threadtypes'], $_config['db']['1']['dbcharset']);
 					if(!empty($threadtypes)) {
 						$threadtype = $threadtypes['types'];
@@ -237,6 +240,7 @@ function upgrade_forum() {
 								//'threads'=>0,
 								'typename'=>str_replace(array("\r", "\n"), array('', ''), strip_tags($typename)),
 								'rank'=>0,
+								'enable'=>1,
 							);
 							$db->set("thread_type-fid-$fid-typeid-$typeid", $arr);
 						}
@@ -302,6 +306,7 @@ function upgrade_thread() {
 			$fid = $old['fid'];
 			//if($old['status'] == 0) continue;
 			if($old['displayorder'] == -1) continue;
+			if($old['displayorder'] == -2) continue;
 			
 			/*if($old['lastposter']) {
 				$old['lastposter'] = str_replace('-', '', $old['lastposter']);
@@ -341,6 +346,7 @@ function upgrade_thread() {
 				'typeid2'=> 0,
 				'typeid3'=> 0,
 				'typeid4'=> 0,
+				'digest'=> $old['digest'],
 				'attachnum'=> $old['attachment'],
 				'imagenum'=> 0,
 				'modnum'=> 0,

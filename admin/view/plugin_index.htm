@@ -4,7 +4,12 @@
 		<input type="hidden" name="FORM_HASH" value="{FORM_HASH}" />
 		<h2>本地插件列表  <span class="clear">当前论坛版本: <b>$conf[version]</b></span></h2>
 		
+		<!--{if !$installlist && !$disablelist && !$unstalllist}-->
+		<p>没有安装过插件，您可以尝试浏览“线上插件”。</p>
+		<!--{/if}-->
+		
 		<div class="list">
+			
 			<!--{if $installlist}-->
 			<table class="table">
 				<tr class="header">
