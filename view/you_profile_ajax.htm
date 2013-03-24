@@ -5,6 +5,10 @@
 		<td width="128" valign="top" align="center">
 			<a href="?you-index-uid-$you[uid].htm" target="_blank" title="点击头像查看个人资料"><span class="avatar_huge border" style="{if $you[avatar_huge]}background-image: url($you[avatar_huge]);{/if}"></span></a>
 			<!--<span style="font-size: 12px;">$you[username]</span> ($you[groupname])-->
+			
+			<!--{if $you[homepage]}-->
+			<a href="$you[homepage]" target="_blank" rel="nofollow"><span class="icon icon-myhome"></span>个人空间</a>
+			<!--{/if}-->
 		</td>
 		<td valign="top">
 			<!--{include you_info.inc.htm}-->

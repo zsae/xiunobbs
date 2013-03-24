@@ -57,9 +57,12 @@ class thread_top extends base_model {
 	
 	// 删除某个版块下的所有三级置顶数据
 	public function delete_top_3_by_fid($fid) {
-		$toptids = (array)$this->conf['toptids'];
-		foreach($toptids as $v) {
+		$toptids = trim($this->conf['toptids']);
+		if(empty($toptids)) return;
+		$toptidarr = explode(' ', $toptids);
+		foreach($toptidarr as $v) {
 			list($_fid, $_tid) = explode('-', $v);
+			if(empty($_fid) || empty($_tid)) continue;
 			if($fid == $_fid) {
 				$toptids = misc::key_str_strip($toptids, $v);
 			}

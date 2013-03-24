@@ -322,7 +322,7 @@ if(empty($step) || $step == 'checklicense') {
 			$s = preg_replace('#\'cookie_path\'\s*=\>\s*\'?.*?\'?,#is', "'cookie_path' => '/',", $s);
 			$s = preg_replace('#\'cookie_domain\'\s*=\>\s*\'?.*?\'?,#is', "'cookie_domain' => '',", $s);
 			$s = preg_replace('#\'tmp_path\'\s*=\>\s*\'?.*?\'?,#is', "'tmp_path' => $tmp_path", $s);
-			$s = preg_replace('#\'click_server\'\s*=\>\s*\'?.*?\'?,#is', "'click_server' => '{$appurl}clickd/',", $s);
+			$s = preg_replace('#\'click_server\'\s*=\>\s*\'?.*?\'?,#is', "'click_server' => '{$appurl}service/clickd/',", $s);
 			$s = preg_replace('#\'auth_key\'\s*=\>\s*\'?.*?\'?,#is', "'auth_key' => '$auth_key',", $s);
 			$s = preg_replace('#\'siteid\'\s*=\>\s*\'?.*?\'?,#is', "'siteid' => '$siteid',", $s);
 			$s = preg_replace('#\'timeoffset\'\s*=\>\s*\'?.*?\'?,#is', "'timeoffset' => '$timeoffset',", $s);

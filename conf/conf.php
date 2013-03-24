@@ -124,13 +124,13 @@ return array(
 	// ------------------> 以下为 BBS 相关:
 	
 	// 点击服务器
-	'click_server' => 'http://x.net/clickd/',	// 记录主题点击数，论坛点击数
+	'click_server' => 'http://x.net/service/clickd/',	// 记录主题点击数，论坛点击数
 	
 	// 加密KEY，
-	'auth_key' => '4290fc172ca880d74568b1af72a86f44',
+	'auth_key' => '937d8235bbaf889a9248b6606f46b249',
 	
 	// 站点的ID，用来和官方通信，下载，安装插件。
-	'siteid' => '8b36d3a02a188d326a98c306b99d0a20',
+	'siteid' => '6ae5e4c68d67b32d911b63127e1c460a',
 	
 	'cookie_pre' => 'bbs_',
 	'cookie_domain' => '',

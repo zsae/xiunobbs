@@ -17,6 +17,7 @@
 			<!--{hook you_info_td_2.htm}-->
 		</td>
 		<td width="40%">
+			<p style="line-height: 20px;"><span class="grey">精华：</span><b style="font-size: 14px;">$you[digests]</b></p>
 			<p style="line-height: 20px;"><span class="grey">关注：</span><a href="?you-follow-uid-$you[uid].htm" target="_blank"><b style="font-size: 14px; text-decoration: underline;">$you[follows]</b></a></p>
 			<p style="line-height: 20px;"><span class="grey">粉丝：</span><a href="?you-followed-uid-$you[uid].htm" target="_blank"><b style="font-size: 14px; text-decoration: underline;">$you[followeds]</b></a></p>
 			<!--{hook you_info_td_3.htm}-->
@@ -62,10 +63,6 @@
 			<!--{/if}-->
 			
 			<!--{hook you_info_follow_after.htm}-->
-			
-			<!--{if $you[homepage]}-->
-			<a href="$you[homepage]" target="_blank"><span class="icon icon-myhome"></span>个人空间</a>
-			<!--{/if}-->
 			
 			<!--{if $_user[groupid] != 1 && core::gpc(1) != 'index'}-->
 			<input type="button" class="button smallblue" value="关闭" id="user_profile_close_$you[uid]" />

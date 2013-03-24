@@ -19,6 +19,10 @@
 				<tr>
 					<td width="128" valign="top" align="center">
 						<a href="?you-index-uid-$_user[uid].htm" target="_blank"><span class="avatar_huge border" style="{if $_user[avatar_huge]}background-image: url($_user[avatar_huge]);{/if}"></span></a>
+			
+						<!--{if $_user[homepage]}-->
+						<a href="$_user[homepage]" target="_blank" rel="nofollow"><span class="icon icon-myhome"></span>个人空间</a>
+						<!--{/if}-->
 						<!--{hook my_base_avatar_after.htm}-->
 					</td>
 					<td valign="top">
@@ -41,6 +45,7 @@
 									<!--{hook my_base_td_2_end.htm}-->
 								</td>
 								<td width="40%">
+									<p style="line-height: 20px;"><span class="grey">精华：</span><b style="font-size: 14px;">$_user[digests]</b></p>
 									<p style="line-height: 20px;"><span class="grey">关注：</span><a href="?you-follow-uid-$_user[uid].htm" target="_blank"><b style="font-size: 14px; text-decoration: underline;">$_user[follows]</b></a></p>
 									<p style="line-height: 20px;"><span class="grey">粉丝：</span><a href="?you-followed-uid-$_user[uid].htm" target="_blank"><b style="font-size: 14px; text-decoration: underline;">$_user[followeds]</b></a></p>
 									<!--{hook my_base_td_3_end.htm}-->
@@ -59,10 +64,6 @@
 								</td>
 								<td colspan="2">
 									<span class="grey">注册IP：</span>$_user[regip] 
-									
-									<!--{if $_user[homepage]}-->
-									<a href="$_user[homepage]" target="_blank"><span class="icon icon-myhome"></span>个人空间</a>
-									<!--{/if}-->
 								</td>
 							</tr>
 							<!--{/if}-->

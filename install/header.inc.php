@@ -7,7 +7,7 @@
 </head>
 <body>
 <div id="header" style="overflow: hidden;">
-	<h1 style="color: #FFFFFF; line-height: 26px; margin-left: 16px;">Xiuno BBS <?php echo $conf['version'];?> 安装向导</h1>
+	<h1 style="color: #FFFFFF; line-height: 26px; margin-left: 16px; margin-bottom: 8px;"><span class="green">Xiuno BBS <?php echo $conf['version'];?></span> 安装向导</h1>
 </div>
 <div id="body" style="padding: 16px;">
 	
