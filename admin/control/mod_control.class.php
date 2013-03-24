@@ -55,7 +55,10 @@ class mod_control extends admin_control {
 		}
 		$this->view->assign('error', $error);
 		
-		$forumoptions = $this->forum->get_options($this->_user['uid'], $this->_user['groupid'], $fid);
+		$forumoptions = $this->forum->get_options($this->_user['uid'], $this->_user['groupid'], $fid, $defaultfid);
+		$fid = $defaultfid;
+		$forum = $this->forum->read($fid);
+		
 		$this->view->assign('forumoptions', $forumoptions);
 		$this->view->assign('fid', $fid);
 		
@@ -76,7 +79,7 @@ class mod_control extends admin_control {
 		
 		$fid = intval(core::gpc('fid'));
 		$oldfid = $fid;
-		$forumoptions = $this->forum->get_options($this->_user['uid'], $this->_user['groupid'], $fid);
+		$forumoptions = $this->forum->get_options($this->_user['uid'], $this->_user['groupid'], $fid, $defaultfid);
 		$this->view->assign('forumoptions', $forumoptions);
 		$this->view->assign('fid', $fid);
 		
@@ -112,7 +115,7 @@ class mod_control extends admin_control {
 		$fid = intval(core::gpc('fid'));
 		
 		$oldfid = $fid;
-		$forumoptions = $this->forum->get_options($this->_user['uid'], $this->_user['groupid'], $fid);
+		$forumoptions = $this->forum->get_options($this->_user['uid'], $this->_user['groupid'], $fid, $defaultfid);
 		$this->view->assign('forumoptions', $forumoptions);
 		$this->view->assign('fid', $fid);
 		

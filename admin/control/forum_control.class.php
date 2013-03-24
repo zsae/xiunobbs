@@ -107,7 +107,7 @@ class forum_control extends admin_control {
 		$fid1 = intval(core::gpc('fid1', 'R')); // 保留
 		$fid2 = intval(core::gpc('fid2', 'R')); // 删除
 
-		$forumoptions = $this->forum->get_options($this->_user['uid'], $this->_user['groupid'], $fid1);
+		$forumoptions = $this->forum->get_options($this->_user['uid'], $this->_user['groupid'], $fid1, $defaultfid);
 		$this->view->assign('forumoptions', $forumoptions);
 		
 		$input = $error = array();
@@ -298,7 +298,7 @@ class forum_control extends admin_control {
 			}
 		}
 		
-		$forumoptions = $this->forum->get_options($this->_user['uid'], $this->_user['groupid'], $fid);
+		$forumoptions = $this->forum->get_options($this->_user['uid'], $this->_user['groupid'], $fid, $defaultfid);
 		$this->view->assign('forumoptions', $forumoptions);
 		
 		$orderbyarr = array(0=>'顶贴时间排序', 1=>'发帖时间排序');
