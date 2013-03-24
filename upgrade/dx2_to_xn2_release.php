@@ -307,6 +307,7 @@ function upgrade_thread() {
 			//if($old['status'] == 0) continue;
 			if($old['displayorder'] == -1) continue;
 			if($old['displayorder'] == -2) continue;
+			if($old['displayorder'] == 2) $old['displayorder'] = 1;
 			
 			/*if($old['lastposter']) {
 				$old['lastposter'] = str_replace('-', '', $old['lastposter']);
