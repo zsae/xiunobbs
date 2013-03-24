@@ -38,7 +38,7 @@ class conf_control extends admin_control {
 			$post['golds_policy_digest_1'] = intval(core::gpc('golds_policy_digest_1', 'P'));
 			$post['golds_policy_digest_2'] = intval(core::gpc('golds_policy_digest_2', 'P'));
 			$post['golds_policy_digest_3'] = intval(core::gpc('golds_policy_digest_3', 'P'));
-			$post['reg_on'] = intval(core::gpc('reg_on', 'P'));
+			
 			$post['reg_email_on'] = intval(core::gpc('reg_email_on', 'P'));
 			$post['reg_init_golds'] = intval(core::gpc('reg_init_golds', 'P'));
 			$post['resetpw_on'] = intval(core::gpc('resetpw_on', 'P'));
@@ -57,6 +57,7 @@ class conf_control extends admin_control {
 			$post['site_pv'] = intval(core::gpc('site_pv', 'P'));
 			$post['site_runlevel'] = intval(core::gpc('site_runlevel', 'P'));
 			$post['forum_index_pagesize'] = intval(core::gpc('forum_index_pagesize', 'P'));
+			$post['reg_on'] = intval(core::gpc('reg_on', 'P'));
 			
 			// hook admin_conf_base_gpc_after.php
 			

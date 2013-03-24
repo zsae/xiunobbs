@@ -72,7 +72,6 @@ if(empty($step)) {
 		$db->truncate('mypost');
 		$db->truncate('thread_type');
 		$db->truncate('friendlink');
-		$db->truncate('kv');
 		$db->truncate('runtime');
 		
 		// 用户相关资料
@@ -153,7 +152,7 @@ function upgrade_prepare() {
 	global $conf;
 	
 	$db = get_db();
-	$db->index_create('thread', array('tid'=>1));
+	//$db->index_create('thread', array('tid'=>1));
 	$db->query("ALTER TABLE {$db->tablepre}thread_type ADD column oldtypeid int(11) NOT NULL default '0';");
 	$db->index_create('thread_type', array('oldtypeid'=>1));
 	
@@ -220,10 +219,10 @@ function upgrade_forum() {
 				}
 				$forum['threads'] = intval($old['threads']);
 				$forum['posts'] = intval($old['posts']);
-				$db->update($forum);
+				$db->update("forum-fid-$fid", $forum);
 			} else {
 				// a:6:{s:8:"required";b:1;s:8:"listable";b:0;s:6:"prefix";s:1:"0";s:5:"types";a:3:{i:1;s:7:"fenlei1";i:2;s:7:"fenlei2";i:3;s:7:"fenlei3";}s:5:"icons";a:3:{i:1;s:0:"";i:2;s:0:"";i:3;s:0:"";}s:10:"moderators";a:3:{i:1;N;i:2;N;i:3;N;}}
-				// 主题分类一块升
+				// 主题分类
 				if($old2['threadtypes']) {
 					$threadtypes = dx2_unserialize($old2['threadtypes'], $_config['db']['1']['dbcharset']);
 					if(!empty($threadtypes)) {
@@ -235,11 +234,11 @@ function upgrade_forum() {
 								'fid'=>$fid,
 								'typeid'=>$newtypeid,
 								'oldtypeid'=>$typeid,
-								'threads'=>0,
+								//'threads'=>0,
 								'typename'=>str_replace(array("\r", "\n"), array('', ''), strip_tags($typename)),
 								'rank'=>0,
 							);
-							$db->set("thread_type-typeid-$typeid", $arr);
+							$db->set("thread_type-fid-$fid-typeid-$typeid", $arr);
 						}
 					}
 				}
@@ -292,6 +291,8 @@ function upgrade_thread() {
 	$uc = get_uc();
 	$count = $dx2->index_count('forum_thread');
 	
+	$forum_types = array();
+	$thread_type_data = new thread_type_data($conf);
 	if($start < $count) {
 		$limit = DEBUG ? 10 : 1000;	// 每次升级 100
 		$arrlist = $dx2->index_fetch_id('forum_thread', 'tid', array(), array(), $start, $limit);
@@ -302,12 +303,25 @@ function upgrade_thread() {
 			//if($old['status'] == 0) continue;
 			if($old['displayorder'] == -1) continue;
 			
-			if($old['lastposter']) {
+			/*if($old['lastposter']) {
 				$old['lastposter'] = str_replace('-', '', $old['lastposter']);
 				$lastuser = $uc->get("members-username-$old[lastposter]");
 				$lastuid = $lastuser['uid'];
 			} else {
 				$lastuid = 0;
+			}*/
+			$lastuid = 0;
+			$lastuser = '';
+			
+			// 主题分类
+			$typeid = 0;
+			if(!empty($old['typeid'])) {
+				if(empty($forum_types[$fid])) {
+					$forum_types[$fid] = $db->get('thread_type-oldtypeid-'.$old['typeid']);
+				}
+				$type = $forum_types[$fid];
+				$thread_type_data->xcreate($fid, $tid, $type['typeid'], 0, 0, 0);
+				$typeid = $type['typeid'];
 			}
 			
 			$arr = array (
@@ -323,7 +337,7 @@ function upgrade_thread() {
 				'views'=> $old['views'],
 				'posts'=> ($old['replies'] + 1),
 				'top'=> $old['displayorder'],
-				'typeid1'=> $old['typeid'],
+				'typeid1'=> $typeid,
 				'typeid2'=> 0,
 				'typeid3'=> 0,
 				'typeid4'=> 0,
@@ -334,7 +348,7 @@ function upgrade_thread() {
 				'firstpid'=> $firstpid,
 			);
 			$db->set("thread-fid-$fid-tid-$tid", $arr);
-			$db->set("thread_view-tid-$tid", array('tid'=>$tid, 'views'=>$old['views']));
+			$db->set("thread_views-tid-$tid", array('tid'=>$tid, 'views'=>$old['views']));
 			
 			// 置顶主题
 			if($old['displayorder'] > 0) {
@@ -394,10 +408,10 @@ function upgrade_thread() {
 		$start += $limit;
 		message("正在升级 thread, 一共: $count, 当前: $start...", "?step=upgrade_thread&start=$start", 0);
 	} else {	
-		message('升级 thread 完成，接下来升级 upgrade_thread_type...', '?step=upgrade_thread_type&start=0');
+		message('升级 thread 完成，接下来升级 upgrade_attach...', '?step=upgrade_attach&start=0');
 	}
 }
-
+/*
 // 典型的跳转框架
 function upgrade_thread_type() {
 	global $start;
@@ -413,13 +427,15 @@ function upgrade_thread_type() {
 		$limit = DEBUG ? 20 : 2000;
 		$threadlist = $db->index_fetch('thread', 'tid', array(), array(), $start, $limit);
 		foreach($threadlist as $thread) {
-			if($thread['typeid'] > 0) {
-				$type = $db->get('thread_type-oldtypeid-'.$thread['typeid1']);
+			// oldtypeid
+			if($thread['typeid1'] > 0) {
+				// newtypeid is $type['typeid']
+				$type = $db->get('thread_type-fid-'.$thread[fid].'-oldtypeid-'.$thread['typeid1']);
 				$thread['typeid1'] = $type['typeid'];
 				$thread['typeid2'] = 0;
 				$thread['typeid3'] = 0;
 				$thread['typeid4'] = 0;
-				$thread_type_data->xcreate($thread['fid'], $thread['tid'], $type['newtypeid'], 0, 0);
+				$thread_type_data->xcreate($thread['fid'], $thread['tid'], $type['typeid'], 0, 0, 0);
 			}
 		}
 		$start += $limit;
@@ -427,7 +443,7 @@ function upgrade_thread_type() {
 	} else {
 		message('升级 thread_type 完成，接下来升级 attach...', '?step=upgrade_attach');
 	}
-}
+}*/
 
 function upgrade_attach() {
 	global $start, $conf;
@@ -851,7 +867,7 @@ function laststep() {
 		$typeid = $thread_type['typeid'];
 		$arr = $db->fetch_first("SELECT COUNT(*) AS num FROM {$db->tablepre}thread WHERE typeid='$typeid'");
 		$n = $arr['num'];
-		$thread_type['threads'] = $n;
+		//$thread_type['threads'] = $n;
 		$db->set("thread_type-typeid-$typeid", $thread_type);
 	}
 	
@@ -1003,13 +1019,13 @@ function message($s, $url = '', $timeout = 2) {
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 	<html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title>Discuz!X 2.0 转 Xiuno BBS 2.0.0 RC3 程序 </title>
+		<title>Discuz!X 2.0 转 Xiuno BBS 2.0.0 Release 程序 </title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<link rel="stylesheet" type="text/css" href="../view/common.css" />
 	</head>
 	<body>
 	<div id="header" style="overflow: hidden;">
-		<h3 style="color: #FFFFFF; line-height: 26px;margin-left: 16px;">Discuz! 2.0 转 Xiuno BBS 2.0.0 RC3 程序</h3>
+		<h3 style="color: #FFFFFF; line-height: 26px;margin-left: 16px;">Discuz! 2.0 转 Xiuno BBS 2.0.0 Release 程序</h3>
 		<p style="color: #BBBBBB; margin-left: 16px;">本程序会记录上次升级的进度，如果需要重头转换，请删除进度记录文件'.$conf['tmp_path'].'upgrade_process.txt'.'</p>
 	</div>
 	<div id="body" style="padding: 16px;">
