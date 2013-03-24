@@ -23,7 +23,7 @@
 <!--{hook header_menu_before.htm}-->
 <div id="menu">
 	<div class="width">
-		<table cellpadding="0" cellspacing="0" width="100%">
+		<table cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed;">
 			<tr>
 				<td class="left" valign="top"><a href="./" title="点击进入首页"><span id="logo"></span></a></td>
 				<td class="center">
@@ -40,9 +40,9 @@
 					<!--{hook header_menu_end.htm}-->
 				</td>
 				<!--{if $_user['groupid'] == 0}-->
-				<td class="right" valign="top" width="80">
+				<td class="right" valign="top" width="90">
 				<!--{else}-->
-				<td class="right" valign="top" width="150">
+				<td class="right" valign="top" width="160">
 				<!--{/if}-->
 					<span id="user">
 					<!--{hook header_user_start.htm}-->
@@ -66,8 +66,8 @@
 			
 						<a href="?user-logout.htm" class="ajaxdialog" onclick="return false">退出</a>
 					<!--{/if}-->
-					<a href="?search-index.htm" rel="nofollow">搜索</a>
-					<!--{hook header_user_end.htm}-->
+						<a href="?search-index.htm" rel="nofollow">搜索</a>
+						<!--{hook header_user_end.htm}-->
 					</span>
 				</td>
 			</tr>

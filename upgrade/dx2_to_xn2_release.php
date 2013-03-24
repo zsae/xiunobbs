@@ -124,6 +124,8 @@ if(empty($step)) {
 
 function upgrade_conf() {
 	
+	global $conf;
+	
 	//global $old, $conf;
 	$dx2 = get_dx2();
 	
@@ -138,7 +140,7 @@ function upgrade_conf() {
 	$old = misc::arrlist_key_values($settinglist, 'skey', 'svalue');
 	
 	// 写入配置文件，仅支持mysql
-	$kv = new kv;
+	$kv = core::model($conf, 'kv');
 	$kv->xset('app_name', $old['bbname']);
 	$kv->xsave();
 	
@@ -168,8 +170,8 @@ function upgrade_forum() {
 	$db = get_db();
 	$uc = get_uc();
 	$count = $dx2->index_count('forum_forum');
-	$mthread_type = new thread_type();
-	$mthread_type_cate = new thread_type_cate();
+	$mthread_type = new thread_type($conf);
+	$mthread_type_cate = new thread_type_cate($conf);
 	$mforum_access = new forum_access($conf);
 	$groupids = array(0, 1, 2, 3, 4, 5, 6, 7, 11, 12, 13, 14, 15);
 	if($start < $count) {
@@ -337,12 +339,12 @@ function upgrade_thread() {
 			// 置顶主题
 			if($old['displayorder'] > 0) {
 				if($old['displayorder'] == 3) {
-					$mruntime = new runtime();
+					$mruntime = new runtime($conf);
 					$runtime = $mruntime->xget();
 					$runtime['toptids'] .= trim($runtime['toptids'])." $fid-$tid";
 					$mruntime->xset('toptids', $runtime['toptids']);
 				} elseif($old['displayorder'] == 2 || $old['displayorder'] == 1) {
-					$mforum = new forum();
+					$mforum = new forum($conf);
 					$forum = $mforum->read($fid);
 					if(substr_count($forum['toptids'], ' ', 0) < 8) {
 						$forum['toptids'] = trim($forum['toptids'])." $fid-$tid";
@@ -351,7 +353,7 @@ function upgrade_thread() {
 						// 创建一个主题分类叫：热门。
 						
 						/*
-						$mthreadtype = new thread_type();
+						$mthreadtype = new thread_type($conf);
 						$typelist = $mthreadtype->index_fetch(array('fid'=>$fid), array(), 0, 1000);
 						!empty($typelist) && $typelist = misc::arrlist_key_values($typelist, 'typename', 'typeid');
 						if(!isset($typelist['热门'])) {
@@ -406,7 +408,7 @@ function upgrade_thread_type() {
 	if(empty($count)) {
 		$count = $db->index_count('thread');
 	}
-	$thread_type_data = new thread_type_data();
+	$thread_type_data = new thread_type_data($conf);
 	if($start < $count) {
 		$limit = DEBUG ? 20 : 2000;
 		$threadlist = $db->index_fetch('thread', 'tid', array(), array(), $start, $limit);
@@ -434,7 +436,7 @@ function upgrade_attach() {
 	$db = get_db();
 	$count = $dx2->index_count('forum_attachment');
 	if($start < $count) {
-		$limit = DEBUG ? 20 : 2000;	// 每次升级 100
+		$limit = DEBUG ? 20 : 2000;
 		$arrlist = $dx2->index_fetch_id('forum_attachment', 'aid', array(), array(), $start, $limit);
 		foreach($arrlist as $key) {
 			list($table, $keyname, $aid) = explode('-', $key);
@@ -584,7 +586,6 @@ function upgrade_user() {
 			$old4 = $dx2->get("common_member_status-uid-$uid");
 			$old5 = $dx2->get("common_member_profile-uid-$uid");
 			
-			
 			if(empty($old2)) {
 				$old2 = array('avatarstatus'=>0, 'groupid'=>0, 'adminid'=>0);
 			}
@@ -646,6 +647,7 @@ function upgrade_user() {
 				'newfeeds'=> 0,
 				'homepage'=> '',
 				'accesson'=> 0,
+				'onlinetime'=> 0,
 				'lastactive'=> $old4['lastactivity'],
 			);
 			$db->set("user-uid-$uid", $arr);
@@ -704,7 +706,7 @@ function upgrade_user() {
 		$db->set("user-uid-$maxuid", $arr);
 		
 		// 写入配置
-		$kv = new kv();
+		$kv = new kv($conf);
 		$kv->xset('system_uid', $maxuid);
 		$kv->xset('system_username', '系统');
 		$kv->xsave();
@@ -871,7 +873,6 @@ function laststep() {
 		'attach_download'=>'aid',
 		'friendlink'=>'linkid',
 		'pm'=>'pmid',
-		'pay'=>'payid'
 	);
 	
 	foreach($maxs as $table=>$maxcol) {

@@ -6,7 +6,7 @@ dx2_to_xn2.php: 用来升级 Discuz!X2.0 到 Xiuno BBS 2.0.0 RC2，升级步骤�
 --------------------------------------------------------------------------------------
 		1. 备份原站点：新建目录: dx2, 将所有文件移动到 dx2 中
 		2. 上传 RC2 源代码，通过 url 安装。
-		3. 访问 http://www.domain.com/upgrade/dx2_to_xn2.php 开始升级
+		3. 访问 http://www.domain.com/dx2_to_xn2.php 开始升级
 		4. 升级完毕后，删除升级目录 upgrade!!!
 --------------------------------------------------------------------------------------
 
@@ -19,7 +19,7 @@ rc1_to_rc2.php: 用来升级 Xiuno BBS 2.0.0 RC1 到 Xiuno BBS 2.0.0 RC2，升�
 		2. 上传 RC2 源代码
 		3. 将 rc1/upload 目录往上移动一层，也就是覆盖当前的 ./upload 目录
 		4. 不要安装RC2，删除 install 目录，然后直接进入第5步！
-		5. 升级 RC1：http://www.domain.com/upgrade/rc1_to_rc2.php
+		5. 升级 RC1：http://www.domain.com/rc1_to_rc2.php
 		6. 删除升级目录 upgrade!!!
 --------------------------------------------------------------------------------------
 		
@@ -32,7 +32,7 @@ rc2_to_rc3.php: 用来升级 Xiuno BBS 2.0.0 RC2 到 Xiuno BBS 2.0.0 RC3，升�
 		2. 重命名 plugin 为 plugin2, tmp 为 tmp2
 		3. 上传 rc3 程序到网站根目录，覆盖老程序
 		4. 还原配置文件： conf/conf.php, mail.php
-		5. 访问 http://www.domain.com/upgrade/rc2_to_rc3.php
+		5. 访问 http://www.domain.com/rc2_to_rc3.php
 		6. 删除升级目录 upgrade!!!
 --------------------------------------------------------------------------------------
 
