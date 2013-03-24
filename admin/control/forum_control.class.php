@@ -119,7 +119,7 @@ class forum_control extends admin_control {
 			$this->check_forum_exists($forum2);
 				
 			// 修改fid 所有涉及到 fid 的表！
-			$threads = $this->thread->index_update(array('fid'=>$fid2), array('fid'=>$fid1, 'top'=>0, 'typeid1'=>0, 'typeid2'=>0, 'typeid3'=>0, 'typeid4'=>0));
+			$threads = $this->thread->index_update(array('fid'=>$fid2), array('fid'=>$fid1, 'top'=>0, 'typeid1'=>0, 'typeid2'=>0, 'typeid3'=>0, 'typeid4'=>0, 'modnum'=>0));
 			$posts = $this->post->index_update(array('fid'=>$fid2), array('fid'=>$fid1));
 			$this->attach->index_update(array('fid'=>$fid2), array('fid'=>$fid1));
 			$this->mypost->index_update(array('fid'=>$fid2), array('fid'=>$fid1));

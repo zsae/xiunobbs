@@ -9,7 +9,7 @@
 	流程：
 		1. 备份原站点：新建目录: dx2, 将所有文件移动到 dx2 中
 		2. 上传 XiunoBBS 2.0.0 源代码，通过 url 安装，安装成功以后进入第3步。
-		3. 访问 http://www.domain.com/upgrade/dx2_to_xn2.php 开始升级
+		3. 访问 http://www.domain.com/dx2_to_xn2.php 开始升级
 		4. 升级完毕后，删除升级目录 upgrade!!!
 */
 
@@ -27,7 +27,7 @@
 
 define('DEBUG', 0);
 
-define('BBS_PATH', '../');
+define('BBS_PATH', './');
 
 // DX2_PATH 需要配置正确！
 define('DX2_PATH', BBS_PATH.'dx2/');
