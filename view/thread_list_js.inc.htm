@@ -105,6 +105,7 @@ $('#mod_move').click(function() {
 
 
 <script type="text/javascript">
+
 // 鼠标背景变色
 $('#threadlist tr').bind('mouseover', function() {$(this).removeClass('bg1').addClass('bg2');});
 $('#threadlist tr').bind('mouseout', function() {$(this).removeClass('bg2').addClass('bg1');});
@@ -115,7 +116,7 @@ $('#body table.thread').each(function() {
 	var lastpost = intval($(this).attr('lastpost'));
 	var k = tid_is_read(tid, lastpost);
 	if(tid_is_read(tid, lastpost)) {
-		$('a.subject_link', this).addClass('xgrey');
+		$('a.subject_link', this).addClass('grey');
 	}
 });
 
