@@ -373,6 +373,13 @@ class post_control extends common_control {
 				$thread['lastusername'] = $username;
 				$this->thread->update($thread);
 				
+				// 斑竹回复的话， 短消息通知楼主，有人回帖，每个主题前10名用户
+				if($this->_user['groupid'] <= 5) {
+					$pmsubject = utf8::substr($thread['subject'], 0, 16);
+					$pmmessage = "版主【{$this->_user['username']}】回复了您的主题：<a href=\"?thread-index-fid-$fid-tid-$tid.htm\" target=\"_blank\">【{$pmsubject}】</a>。";
+					$this->pm->system_send($thread['uid'], $thread['username'], $pmmessage);
+				}
+				
 				// hook post_post_succeed.php
 			}
 			$this->message($error);
