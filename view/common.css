@@ -19,8 +19,8 @@ input {margin: 0px;}
 a {text-decoration: none; color: #3D4351; filter:none; outline-style:none;}
 a:hover {text-decoration: underline; color: #00BA53;}
 h1,h2,h3,h4,h5,p,body,textarea {margin: 0px; padding: 0px; text-indent: 0px; }
-hr {height:1px; border:none; border-top:1px solid #EFEFEF; margin:0 auto; *margin:0 auto -14px auto; float:none; *float:left; display:block; clear: both;}
-.hr {height: 1px; overflow: hidden; background: #EFEFEF; clear: both;}
+hr {height:1px; border:none; border-top:1px solid #E0E0E0; margin:0 auto; *margin:0 auto -14px auto; float:none; *float:left; display:block; clear: both;}
+.hr {height: 1px; overflow: hidden; background: #E0E0E0; clear: both;}
 h1 {font-size:24px; margin-top: 12px;}
 h2 {font-size:18px; margin-top: 8px;}
 h3 {font-size:14px; margin-top: 4px;}
