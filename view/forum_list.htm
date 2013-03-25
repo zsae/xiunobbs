@@ -26,12 +26,12 @@ ul.threadlist {font-size: 14px; line-height: 1.6; margin: 0px; _margin-left: 16p
 	<!--{hook forum_list_nav_after.htm}-->
 	
 	<!--{loop $threadlists $fid $threadlist}-->
-		<div class="div" style="margin-top: 4px; margin-right: 8px; width: 48%; height: 220px; float: left;">
+		<div class="div" style="margin-top: 4px; margin-right: 8px; width: 48%; height: 265px; float: left;">
 			<div class="header"><a href="?forum-index-fid-$fid.htm">$forumarr[$fid]</a></div>
 			<div class="body">
 				<ul class="threadlist">
 					<!--{loop $threadlist $thread}-->
-					<li><a href="?thread-index-fid-$thread[fid]-tid-$thread[tid].htm">$thread[subject]</a> <span class="small grey">  $thread[dateline_fmt]</span></li>
+					<li><a href="?thread-index-fid-$thread[fid]-tid-$thread[tid].htm">$thread[subject_fmt]</a> <span class="small grey">  $thread[dateline_fmt]</span></li>
 					<!--{/loop}-->
 				</ul>
 			</div>
