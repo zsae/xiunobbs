@@ -67,12 +67,12 @@ class follow extends base_model{
 	// 查看两人的关系, uid1, uid2, 0:互相不关注， 1: uid1 关注 uid2, 2: uid2 关注 uid1, 3:互相关注
 	public function check_follow($uid1, $uid2) {
 		// 单向关注 & 相互关注
-		$r1 = $this->get($uid1, $uid2);
+		$r1 = $this->read($uid1, $uid2);
 		if(!empty($r1)) {
 			return $r1['direction'] == 1 ? 1 : 3;
 		}
 		// 被关注
-		$r2 = $this->get($uid2, $uid1);
+		$r2 = $this->read($uid2, $uid1);
 		if(!empty($r1)) {
 			return 2;
 		}
