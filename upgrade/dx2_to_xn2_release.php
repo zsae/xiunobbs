@@ -467,7 +467,7 @@ function upgrade_attach() {
 	
 	if($start < $count) {
 		$limit = DEBUG ? 20 : 2000;
-		$arrlist = $dx2->index_fetch_id('forum_attachment', 'aid', array(array('aid'=>array('>'=>$maxaid))), array(), $start, $limit);
+		$arrlist = $dx2->index_fetch_id('forum_attachment', 'aid', array('aid'=>array('>'=>$maxaid)), array(), $start, $limit);
 		foreach($arrlist as $key) {
 			list($table, $keyname, $aid) = explode('-', $key);
 			$attach = $dx2->get("forum_attachment-aid-$aid");
@@ -539,7 +539,7 @@ function upgrade_post() {
 	
 	if($start < $count) {
 		$limit = DEBUG ? 20 : 2000;	// 每次升级 100
-		$arrlist = $dx2->index_fetch_id('forum_post', 'pid', array(array('pid'=>array('>'=>$maxpid))), array(), $start, $limit);
+		$arrlist = $dx2->index_fetch_id('forum_post', 'pid', array('pid'=>array('>'=>$maxpid)), array(), $start, $limit);
 		foreach($arrlist as $key) {
 			list($table, $_, $pid) = explode('-', $key);
 			$old = $dx2->get("forum_post-pid-$pid");
@@ -611,14 +611,17 @@ function upgrade_user() {
 	
 	if($start < $count) {
 		$limit = DEBUG ? 20 : 2000;	// 每次升级 100
-		$arrlist = $uc->index_fetch_id('members', 'uid', array(array('uid'=>array('>'=>$maxuid))), array(), $start, $limit);
+		$arrlist = $uc->index_fetch_id('members', 'uid', array('uid'=>array('>'=>$maxuid)), array(), $start, $limit);
 		
 		foreach($arrlist as $key) {
 			list($table, $col, $uid) = explode('-', $key);
 			
+			// todo: only bt, 不升级没发帖的用户
+			$old3 = $dx2->get("common_member_count-uid-$uid");
+			if($old3['posts'] == 0 && $old3['threads'] == 0) continue;
+			
 			$old1 = $uc->get("members-uid-$uid");
 			$old2 = $dx2->get("common_member-uid-$uid");
-			$old3 = $dx2->get("common_member_count-uid-$uid");
 			$old4 = $dx2->get("common_member_status-uid-$uid");
 			$old5 = $dx2->get("common_member_profile-uid-$uid");
 			
@@ -655,11 +658,6 @@ function upgrade_user() {
 			// email 为空
 			if(empty($old1['email'])) {
 				$old1['email'] = $old1['uid'].'@'.$_SERVER['HTTP_HOST'];
-			}
-			// 判断 email 是否已经存在，可能会重复，这里比较恶心... 一个email居然可以对应多个账号，太混乱了。
-			$useremail = $db->index_fetch('user', 'uid', array('email'=>$old1['email']), array(), 0, 1);
-			if(!$empty($useremail)) {
-				 $old1['email'] = $old1['uid'].'@'.$_SERVER['HTTP_HOST'];
 			}
 			
 			$arr = array (
@@ -709,7 +707,7 @@ function upgrade_user() {
 		$remain_hour = intval($remaintime / 3500);
 		$remain_min = intval(($remaintime % 3600) / 60);
 		$remain_sec = intval(($remaintime % 3600) % 60);
-		message("正在升级 user, 一共: $count, 当前: $start... （本次耗时：$processtime 秒，大约还需要 $remain_hour 小时, $remain_min 分钟， $remain_sec 秒 ）", "?step=upgrade_user&start=$start&count=$count", 0);
+		message("正在升级 user, 一共: $count, 当前: $start... （本次耗时：$processtime 秒，大约还需要 $remain_hour 小时 $remain_min 分钟 $remain_sec 秒 ）", "?step=upgrade_user&start=$start&count=$count&maxuid=$maxuid", 0);
 	} else {
 		// 生成系统用户，系统用户名：系统，如果发现重名，则改名。
 		//INSERT INTO bbs_user SET uid='2', regip='12345554', regdate=UNIX_TIMESTAMP(), username='系统', password='d14be7f4d15d16de92b7e34e18d0d0f7', salt='99adde', email='system@admin.com', groupid='11', golds='0';
