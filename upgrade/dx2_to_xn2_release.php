@@ -293,13 +293,16 @@ function upgrade_thread() {
 	$dx2 = get_dx2();
 	$db = get_db();
 	$uc = get_uc();
-	$count = $dx2->index_count('forum_thread');
+	$maxtid = intval(core::gpc('maxtid'));
+	empty($maxtid) && $maxtid = $db->index_maxid('thread-tid');
+	
+	$count = $dx2->index_count('forum_thread', array('tid'=>array('>'=>$maxtid)));
 	
 	$forum_types = array();
 	$thread_type_data = new thread_type_data($conf);
 	if($start < $count) {
 		$limit = DEBUG ? 10 : 1000;	// 每次升级 100
-		$arrlist = $dx2->index_fetch_id('forum_thread', 'tid', array(), array(), $start, $limit);
+		$arrlist = $dx2->index_fetch_id('forum_thread', 'tid', array('tid'=>array('>'=>$maxtid)), array(), $start, $limit);
 		foreach($arrlist as $key) {
 			list($table, $_, $tid) = explode('-', $key);
 			$old = $dx2->get("forum_thread-tid-$tid");
@@ -413,7 +416,7 @@ function upgrade_thread() {
 		}
 		
 		$start += $limit;
-		message("正在升级 thread, 一共: $count, 当前: $start...", "?step=upgrade_thread&start=$start", 0);
+		message("正在升级 thread, 一共: $count, 当前: $start...", "?step=upgrade_thread&start=$start&maxtid=$maxtid", 0);
 	} else {	
 		message('升级 thread 完成，接下来升级 upgrade_attach...', '?step=upgrade_attach&start=0');
 	}
@@ -457,10 +460,14 @@ function upgrade_attach() {
 	$dx2_attach_path = DX2_ATTACH_PATH;
 	$dx2 = get_dx2();
 	$db = get_db();
-	$count = $dx2->index_count('forum_attachment');
+	
+	$maxaid = intval(core::gpc('maxaid'));
+	empty($maxaid) && $maxaid = $db->index_maxid('attach-aid');
+	$count = $dx2->index_count('forum_attachment', array('aid'=>array('>'=>$maxaid)));
+	
 	if($start < $count) {
 		$limit = DEBUG ? 20 : 2000;
-		$arrlist = $dx2->index_fetch_id('forum_attachment', 'aid', array(), array(), $start, $limit);
+		$arrlist = $dx2->index_fetch_id('forum_attachment', 'aid', array(array('aid'=>array('>'=>$maxaid))), array(), $start, $limit);
 		foreach($arrlist as $key) {
 			list($table, $keyname, $aid) = explode('-', $key);
 			$attach = $dx2->get("forum_attachment-aid-$aid");
@@ -514,7 +521,7 @@ function upgrade_attach() {
 		}
 		
 		$start += $limit;
-		message("正在升级 attach, 一共: $count, 当前: $start...", "?step=upgrade_attach&start=$start", 0);
+		message("正在升级 attach, 一共: $count, 当前: $start...", "?step=upgrade_attach&start=$start&maxaid=$maxaid", 0);
 	} else {	
 		message('升级 attach 完成，接下来升级 post ...', '?step=upgrade_post&start=0');
 	}
@@ -525,10 +532,14 @@ function upgrade_post() {
 	
 	$dx2 = get_dx2();
 	$db = get_db();
-	$count = $dx2->index_count('forum_post');
+	
+	$maxpid = intval(core::gpc('maxpid'));
+	empty($maxpid) && $maxpid = $db->index_maxid('post-pid');
+	$count = $dx2->index_count('forum_post', array('pid'=>array('>'=>$maxpid)));
+	
 	if($start < $count) {
 		$limit = DEBUG ? 20 : 2000;	// 每次升级 100
-		$arrlist = $dx2->index_fetch_id('forum_post', 'pid', array(), array(), $start, $limit);
+		$arrlist = $dx2->index_fetch_id('forum_post', 'pid', array(array('pid'=>array('>'=>$maxpid))), array(), $start, $limit);
 		foreach($arrlist as $key) {
 			list($table, $_, $pid) = explode('-', $key);
 			$old = $dx2->get("forum_post-pid-$pid");
@@ -572,7 +583,7 @@ function upgrade_post() {
 		}
 		
 		$start += $limit;
-		message("正在升级 post, 一共: $count, 当前: $start...", "?step=upgrade_post&start=$start", 0);
+		message("正在升级 post, 一共: $count, 当前: $start...", "?step=upgrade_post&start=$start&maxpid=$maxpid", 0);
 	} else {	
 		message('升级 post，接下来升级 user...', '?step=upgrade_user&start=0');
 	}
@@ -594,11 +605,13 @@ function upgrade_user() {
 	
 	$start_time = microtime(1);
 	
-	$count = isset($_GET['count']) ? intval($_GET['count']) : $uc->index_count('members');
+	$maxuid = intval(core::gpc('maxuid'));
+	empty($maxuid) && $maxuid = $db->index_maxid('user-uid');
+	$count = isset($_GET['count']) ? intval($_GET['count']) : $uc->index_count('members', array('uid'=>array('>'=>$maxuid)));
 	
 	if($start < $count) {
 		$limit = DEBUG ? 20 : 2000;	// 每次升级 100
-		$arrlist = $uc->index_fetch_id('members', 'uid', array(), array(), $start, $limit);
+		$arrlist = $uc->index_fetch_id('members', 'uid', array(array('uid'=>array('>'=>$maxuid))), array(), $start, $limit);
 		
 		foreach($arrlist as $key) {
 			list($table, $col, $uid) = explode('-', $key);
@@ -867,21 +880,8 @@ function laststep() {
 	clear_tmp('');
 	$db = get_db();
 	
-	// 重新统计 thread_types.threads 最多3000个主题分类，够了吧。
-	$thread_type_list = $db->index_fetch('thread_type', 'typeid', array(), array(), 0, 3000);
-	foreach($thread_type_list as $thread_type) {
-		// 统计
-		$typeid = $thread_type['typeid'];
-		$arr = $db->fetch_first("SELECT COUNT(*) AS num FROM {$db->tablepre}thread WHERE typeid='$typeid'");
-		$n = $arr['num'];
-		//$thread_type['threads'] = $n;
-		$db->set("thread_type-typeid-$typeid", $thread_type);
-	}
-	
-	// 清空置顶
 	$db = get_db();
 	
-	// 同步
 	// copy  from install_mongodb		
 	$maxs = array(
 		'group'=>'groupid',
@@ -906,7 +906,6 @@ function laststep() {
 		$db->count($table, $n);
 	}
 	
-	$db->truncate('kv');
 	$db->truncate('runtime');
 	
 	// todo: 清理 thread
