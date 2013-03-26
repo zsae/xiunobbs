@@ -132,6 +132,7 @@ class forum_control extends common_control {
 				$threadlist = $this->thread->get_threadlist_by_fid($fid, 0, 0, 0, 10);
 				foreach($threadlist as &$thread) {
 					$thread['dateline_fmt'] = misc::minidate($thread['dateline']);
+					$thread['subject_fmt'] = utf8::substr($thread['subject'], 0, 24);
 				}
 				$threadlists[$fid] = $threadlist;
 			}
