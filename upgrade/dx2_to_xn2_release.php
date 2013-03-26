@@ -29,7 +29,7 @@ define('DEBUG', 0);
 
 define('BBS_PATH', './');
 
-// DX2_PATH 需要配置正确！
+// DX2_PATH 需要配置正确！ linux 下可以用如下命令行： ln -s /data/www/oldbbs.com /data/www/xiunobbs/dx2
 define('DX2_PATH', BBS_PATH.'dx2/');
 
 // 以下为默认路径，一般情况不需要修改！
