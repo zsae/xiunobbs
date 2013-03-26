@@ -8,9 +8,9 @@
 /*
 	流程：
 		1. 备份原站点：新建目录: dx2, 将所有文件移动到 dx2 中
-		2. 上传 XiunoBBS 2.0.0 源代码，通过 url 安装，安装成功以后进入第3步。
+		2. 上传 XiunoBBS 2.0.0 upload_me 文件夹下的源代码到根目录，通过 url 访问，安装，安装成功以后进入第3步。
 		3. 访问 http://www.domain.com/dx2_to_xn2.php 开始升级
-		4. 升级完毕后，删除升级目录 upgrade!!!
+		4. 升级完毕后，删除升级程序：dx2_to_xn2.php
 */
 
 
@@ -29,7 +29,7 @@ define('DEBUG', 0);
 
 define('BBS_PATH', './');
 
-// DX2_PATH 需要配置正确！
+// DX2_PATH 需要配置正确！ linux 下可以用如下命令行： ln -s /data/www/oldbbs.com /data/www/xiunobbs/dx2
 define('DX2_PATH', BBS_PATH.'dx2/');
 
 // 以下为默认路径，一般情况不需要修改！
@@ -51,16 +51,46 @@ core::init();
 core::ob_start();
 
 // 初始化参数
-$step = isset($_GET['step']) ? $_GET['step'] : 'upgrade_user';
-$start = isset($_GET['start']) ? intval($_GET['start']) : 0;
-$start2 = isset($_GET['start2']) ? intval($_GET['start2']) : 0;
+loading_upgrade_process($step, $start, $start2);
+$step = isset($_GET['step']) ? $_GET['step'] : $step;
+$start = isset($_GET['start']) ? intval($_GET['start']) : $start;
+$start2 = isset($_GET['start2']) ? intval($_GET['start2']) : $start2;
 
 // 输入 dx2 路径！ 检查 xn2 安装。取得 max uid
 
 
 // 升级配置文件
 if(empty($step)) {
-
+	// 如果没有升级进度，则清空
+	$file = $conf['tmp_path'].'upgrade_process.txt';
+	if(!is_file($file)) {
+		$db = get_db();
+		$db->truncate('forum');
+		$db->truncate('thread');
+		$db->truncate('post');
+		$db->truncate('user');
+		$db->truncate('mypost');
+		$db->truncate('thread_type');
+		$db->truncate('friendlink');
+		$db->truncate('runtime');
+		
+		// 用户相关资料
+		$db->query("CREATE TABLE IF NOT EXISTS {$db->tablepre}user_ext (
+	  uid int(11) unsigned NOT NULL default '0',	
+	  gender tinyint(11) unsigned NOT NULL default '0',	
+	  birthyear int(11) unsigned NOT NULL default '0',	
+	  birthmonth int(11) unsigned NOT NULL default '0',	
+	  birthday int(11) unsigned NOT NULL default '0',	
+	  province char(16) NOT NULL default '',
+	  city char(16) NOT NULL default '',
+	  county char(16) NOT NULL default '',
+	  KEY (birthyear, birthmonth),
+	  KEY (province),
+	  KEY (city),
+	  KEY (county),
+	  PRIMARY KEY (uid));");
+	}
+	upgrade_conf();
 } elseif($step == 'upgrade_prepare') {
 	upgrade_prepare();
 } elseif($step == 'upgrade_forum') {
@@ -125,7 +155,6 @@ function upgrade_prepare() {
 	//$db->index_create('thread', array('tid'=>1));
 	$db->query("ALTER TABLE {$db->tablepre}thread_type ADD column oldtypeid int(11) NOT NULL default '0';");
 	$db->index_create('thread_type', array('oldtypeid'=>1));
-	//$db->index_create('post', array('pid'=>1));
 	
 	message('准备完毕，接下来升级 forum...', '?step=upgrade_forum');
 }
@@ -167,88 +196,78 @@ function upgrade_forum() {
 				continue;
 			}
 			
-			// 判断是否存在
-			$forum = $db->get("forum-fid-$fid");
-			// 多次升级，更新数据
-			if(!empty($forum)) {
-				$forum['name'] = strip_tags($old['name']);
-				// todo: 如果为隐藏版块，则对 forum_access 增加记录
-				if($old['status'] != 1) {
-					foreach($groupids as $groupid) {
-						$groupid = intval($groupid);
-						$access = array();
-						$access['allowread'] = ($groupid == 1 ? 1 : 0);
-						$access['allowpost'] = 0;
-						$access['allowthread'] = 0;
-						$access['allowdown'] = 0;
-						$access['allowattach'] = 0;
-						$access['allowdown'] = 0;
-						$access['fid'] = $fid;
-						$access['groupid'] = $groupid;
-						$this->forum_access->create($access);
-					}				
-				}
-				$forum['threads'] = intval($old['threads']);
-				$forum['posts'] = intval($old['posts']);
-				$db->update("forum-fid-$fid", $forum);
-			} else {
-				// a:6:{s:8:"required";b:1;s:8:"listable";b:0;s:6:"prefix";s:1:"0";s:5:"types";a:3:{i:1;s:7:"fenlei1";i:2;s:7:"fenlei2";i:3;s:7:"fenlei3";}s:5:"icons";a:3:{i:1;s:0:"";i:2;s:0:"";i:3;s:0:"";}s:10:"moderators";a:3:{i:1;N;i:2;N;i:3;N;}}
-				// 主题分类
-				if($old2['threadtypes']) {
-					
-					$mthread_type_cate->create(array('fid'=>$fid, 'cateid'=>1, 'catename'=>'分类', 'rank'=>1, 'enable'=>1));
-					
-					$threadtypes = dx2_unserialize($old2['threadtypes'], $_config['db']['1']['dbcharset']);
-					if(!empty($threadtypes)) {
-						$threadtype = $threadtypes['types'];
-						$newtypeid = 0;
-						foreach($threadtype as $typeid=>$typename) {
-							$newtypeid++;
-							$arr = array(
-								'fid'=>$fid,
-								'typeid'=>$newtypeid,
-								'oldtypeid'=>$typeid,
-								//'threads'=>0,
-								'typename'=>str_replace(array("\r", "\n"), array('', ''), strip_tags($typename)),
-								'rank'=>0,
-								'enable'=>1,
-							);
-							$db->set("thread_type-fid-$fid-typeid-$typeid", $arr);
-						}
+			// a:6:{s:8:"required";b:1;s:8:"listable";b:0;s:6:"prefix";s:1:"0";s:5:"types";a:3:{i:1;s:7:"fenlei1";i:2;s:7:"fenlei2";i:3;s:7:"fenlei3";}s:5:"icons";a:3:{i:1;s:0:"";i:2;s:0:"";i:3;s:0:"";}s:10:"moderators";a:3:{i:1;N;i:2;N;i:3;N;}}
+			// 主题分类
+			if($old2['threadtypes']) {
+				
+				$mthread_type_cate->create(array('fid'=>$fid, 'cateid'=>1, 'catename'=>'分类', 'rank'=>1, 'enable'=>1));
+				
+				$threadtypes = dx2_unserialize($old2['threadtypes'], $_config['db']['1']['dbcharset']);
+				if(!empty($threadtypes)) {
+					$threadtype = $threadtypes['types'];
+					$newtypeid = 0;
+					foreach($threadtype as $typeid=>$typename) {
+						$newtypeid++;
+						$arr = array(
+							'fid'=>$fid,
+							'typeid'=>$newtypeid,
+							'oldtypeid'=>$typeid,
+							'typename'=>str_replace(array("\r", "\n"), array('', ''), strip_tags($typename)),
+							'rank'=>0,
+							'enable'=>1,
+						);
+						$db->set("thread_type-fid-$fid-typeid-$typeid", $arr);
 					}
 				}
-				
-				//5	subjectxxx	1343525778	star
-				if($old['lastpost']) {
-					$last = explode("\t", $old['lastpost']);
-					$last[0] = intval($last[0]);
-					$last[2] = intval($last[2]);
-					$last[3] = str_replace('-', '', $last[3]);
-					$lastuser = $uc->get("members-username-$last[3]");
-					$lastuid = $lastuser['uid'];
-				} else {
-					$last = array(0, '', 0, '');
-					$lastuid = 0;
-				}
-				
-				$arr = array (
-					'fid'=> $old['fid'],
-					'name'=> strip_tags($old['name']),
-					'rank'=> $old['displayorder'],
-					'threads'=> $old['threads'],
-					'posts'=> $old['posts'],
-					'todayposts'=> $old['todayposts'],
-					'lasttid'=> $last[0],
-					'brief'=> strip_tags($old2['description']),
-					'accesson'=> 0,
-					'modids'=> '',
-					'modnames'=> '',
-					'toptids'=> '',
-					'orderby'=> 0,
-					'seo_title'=> $old2['seotitle'],
-					'seo_keywords'=> $old2['keywords'],
-				);
-				$db->set("forum-fid-$fid", $arr);
+			}
+			
+			//5	subjectxxx	1343525778	star
+			if($old['lastpost']) {
+				$last = explode("\t", $old['lastpost']);
+				$last[0] = intval($last[0]);
+				$last[2] = intval($last[2]);
+				$last[3] = str_replace('-', '', $last[3]);
+				$lastuser = $uc->get("members-username-$last[3]");
+				$lastuid = $lastuser['uid'];
+			} else {
+				$last = array(0, '', 0, '');
+				$lastuid = 0;
+			}
+			
+			$arr = array (
+				'fid'=> $old['fid'],
+				'name'=> strip_tags($old['name']),
+				'rank'=> $old['displayorder'],
+				'threads'=> $old['threads'],
+				'posts'=> $old['posts'],
+				'todayposts'=> $old['todayposts'],
+				'lasttid'=> $last[0],
+				'brief'=> strip_tags($old2['description']),
+				'accesson'=> 0,
+				'modids'=> '',
+				'modnames'=> '',
+				'toptids'=> '',
+				'orderby'=> 0,
+				'seo_title'=> $old2['seotitle'],
+				'seo_keywords'=> $old2['keywords'],
+			);
+			
+			$db->set("forum-fid-$fid", $arr);
+			
+			// todo: 如果为隐藏版块，则对 forum_access 增加记录
+			if($old['status'] != 1) {
+				foreach($groupids as $groupid) {
+					$access = array();
+					$access['allowread'] = ($groupid == 1 ? 1 : 0);
+					$access['allowpost'] = 0;
+					$access['allowthread'] = 0;
+					$access['allowdown'] = 0;
+					$access['allowattach'] = 0;
+					$access['allowdown'] = 0;
+					$access['fid'] = $fid;
+					$access['groupid'] = $groupid;
+					$mforum_access->create($access);
+				}				
 			}
 		}
 		
@@ -578,11 +597,11 @@ function upgrade_user() {
 	
 	$maxuid = intval(core::gpc('maxuid'));
 	empty($maxuid) && $maxuid = $db->index_maxid('user-uid');
-	$count = isset($_GET['count']) ? intval($_GET['count']) : $dx2->index_count('common_member_count', array('posts'=>0, 'threads'=>array('>'=>0)));
+	$count = isset($_GET['count']) ? intval($_GET['count']) : $uc->index_count('members', array('uid'=>array('>'=>$maxuid)));
 	
 	if($start < $count) {
 		$limit = DEBUG ? 20 : 2000;	// 每次升级 100
-		$arrlist = $dx2->index_fetch_id('common_member_count', 'uid', array('posts'=>0, 'threads'=>array('>'=>0)), array(), $start, $limit);
+		$arrlist = $uc->index_fetch_id('members', 'uid', array('uid'=>array('>'=>$maxuid)), array(), $start, $limit);
 		
 		foreach($arrlist as $key) {
 			list($table, $col, $uid) = explode('-', $key);
@@ -595,9 +614,6 @@ function upgrade_user() {
 			$old2 = $dx2->get("common_member-uid-$uid");
 			$old4 = $dx2->get("common_member_status-uid-$uid");
 			$old5 = $dx2->get("common_member_profile-uid-$uid");
-			
-			$user = $db->get("user-uid-$uid");
-			if(!empty($user)) continue;
 			
 			if(empty($old2)) {
 				$old2 = array('avatarstatus'=>0, 'groupid'=>0, 'adminid'=>0);
