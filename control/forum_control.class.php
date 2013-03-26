@@ -94,7 +94,11 @@ class forum_control extends common_control {
 		// hook forum_index_get_list_after.php
 		$digestadd = $digest > 0 ? "-digest-$digest" : '';
 		$typeidadd = $typeidsum > 0 ? "-typeid1-$typeid1-typeid2-$typeid2-typeid3-$typeid3-typeid4-$typeid4" : '';
-		$pages = misc::pages("?forum-index-fid-$fid$digestadd$typeidadd.htm", $threads, $page, $pagesize);
+		if(empty($digest)) {
+			$pages = misc::pages("?forum-index-fid-$fid$digestadd$typeidadd.htm", $threads, $page, $pagesize);
+		} else {
+			$pages = misc::simple_pages("?forum-index-fid-$fid$digestadd$typeidadd.htm", count($threadlist), $page, $pagesize);
+		}
 		$ismod = $this->is_mod($forum, $this->_user);
 		$this->view->assign('fid', $fid);
 		$this->view->assign('typeid1', $typeid1);

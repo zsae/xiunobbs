@@ -54,13 +54,13 @@
 	
 	<!--{require thread_list.inc.htm}-->
 	
+	<!--{if $page == 1}-->
 	<div class="div" style="margin-top: 8px;">
 		<div class="header">板块信息</div>
 		<div class="body">
-			<!--{if $page == 1}-->
 			<p>
 				<span>
-					<span class="grey">版块名：</span><b>$forum[name]</b> &nbsp; <span class="grey2">|</span> 
+					<span class="grey">版块名称：</span><b>$forum[name]</b> &nbsp; <span class="grey2">|</span> 
 					<span class="grey">主题：</span><b>$forum[threads]</b> &nbsp;  <span class="grey2">|</span> 
 					<span class="grey">帖子：</span><b>$forum[posts]</b> &nbsp;  <span class="grey2">|</span> 
 					<span class="grey">今日帖子：</span><span class="blue bold">$forum[todayposts]</span> &nbsp;
@@ -70,10 +70,13 @@
 					<!--{/if}-->
 				</span>
 			</p>
-			<!--{/if}-->
+			<p style="margin-top: 8px;">
+				<span class="grey">版块介绍：$forum[brief]</span>
+			</p>
 		</div>
 		<div class="footer"></div>
 	</div>
+	<!--{/if}-->
 	
 </div>	
 
