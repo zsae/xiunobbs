@@ -8,7 +8,7 @@ rc3_to_release.php: 用来升级 Xiuno BBS 2.0.0 RC3 到 Xiuno BBS 2.0.0 Release
 		2. 上传 XiunoBBS 2.0.0 upload_me 文件夹下的源代码到根目录
 		3. 将 upgrade/rc3_to_release.php 移动到根目录
 		4. 访问 http://www.domain.com/rc3_to_release.php 开始升级
-		6. 删除升级程序 rc3_to_release.php
+		5. 删除升级程序 rc3_to_release.php
 --------------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------------
