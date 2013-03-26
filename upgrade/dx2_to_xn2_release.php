@@ -293,13 +293,16 @@ function upgrade_thread() {
 	$dx2 = get_dx2();
 	$db = get_db();
 	$uc = get_uc();
-	$count = $dx2->index_count('forum_thread');
+	$maxtid = intval(core::gpc('maxtid'));
+	empty($maxtid) && $maxtid = $db->index_maxid('thread-tid');
+	
+	$count = $dx2->index_count('forum_thread', array('tid'=>array('>'=>$maxtid)));
 	
 	$forum_types = array();
 	$thread_type_data = new thread_type_data($conf);
 	if($start < $count) {
 		$limit = DEBUG ? 10 : 1000;	// 每次升级 100
-		$arrlist = $dx2->index_fetch_id('forum_thread', 'tid', array(), array(), $start, $limit);
+		$arrlist = $dx2->index_fetch_id('forum_thread', 'tid', array('tid'=>array('>'=>$maxtid)), array(), $start, $limit);
 		foreach($arrlist as $key) {
 			list($table, $_, $tid) = explode('-', $key);
 			$old = $dx2->get("forum_thread-tid-$tid");
@@ -413,7 +416,7 @@ function upgrade_thread() {
 		}
 		
 		$start += $limit;
-		message("正在升级 thread, 一共: $count, 当前: $start...", "?step=upgrade_thread&start=$start", 0);
+		message("正在升级 thread, 一共: $count, 当前: $start...", "?step=upgrade_thread&start=$start&maxtid=$maxtid", 0);
 	} else {	
 		message('升级 thread 完成，接下来升级 upgrade_attach...', '?step=upgrade_attach&start=0');
 	}
@@ -457,10 +460,14 @@ function upgrade_attach() {
 	$dx2_attach_path = DX2_ATTACH_PATH;
 	$dx2 = get_dx2();
 	$db = get_db();
-	$count = $dx2->index_count('forum_attachment');
+	
+	$maxaid = intval(core::gpc('maxaid'));
+	empty($maxaid) && $maxaid = $db->index_maxid('attach-aid');
+	$count = $dx2->index_count('forum_attachment', array('aid'=>array('>'=>$maxaid)));
+	
 	if($start < $count) {
 		$limit = DEBUG ? 20 : 2000;
-		$arrlist = $dx2->index_fetch_id('forum_attachment', 'aid', array(), array(), $start, $limit);
+		$arrlist = $dx2->index_fetch_id('forum_attachment', 'aid', array('aid'=>array('>'=>$maxaid)), array(), $start, $limit);
 		foreach($arrlist as $key) {
 			list($table, $keyname, $aid) = explode('-', $key);
 			$attach = $dx2->get("forum_attachment-aid-$aid");
@@ -514,7 +521,7 @@ function upgrade_attach() {
 		}
 		
 		$start += $limit;
-		message("正在升级 attach, 一共: $count, 当前: $start...", "?step=upgrade_attach&start=$start", 0);
+		message("正在升级 attach, 一共: $count, 当前: $start...", "?step=upgrade_attach&start=$start&maxaid=$maxaid", 0);
 	} else {	
 		message('升级 attach 完成，接下来升级 post ...', '?step=upgrade_post&start=0');
 	}
@@ -525,10 +532,14 @@ function upgrade_post() {
 	
 	$dx2 = get_dx2();
 	$db = get_db();
-	$count = $dx2->index_count('forum_post');
+	
+	$maxpid = intval(core::gpc('maxpid'));
+	empty($maxpid) && $maxpid = $db->index_maxid('post-pid');
+	$count = $dx2->index_count('forum_post', array('pid'=>array('>'=>$maxpid)));
+	
 	if($start < $count) {
 		$limit = DEBUG ? 20 : 2000;	// 每次升级 100
-		$arrlist = $dx2->index_fetch_id('forum_post', 'pid', array(), array(), $start, $limit);
+		$arrlist = $dx2->index_fetch_id('forum_post', 'pid', array('pid'=>array('>'=>$maxpid)), array(), $start, $limit);
 		foreach($arrlist as $key) {
 			list($table, $_, $pid) = explode('-', $key);
 			$old = $dx2->get("forum_post-pid-$pid");
@@ -572,7 +583,7 @@ function upgrade_post() {
 		}
 		
 		$start += $limit;
-		message("正在升级 post, 一共: $count, 当前: $start...", "?step=upgrade_post&start=$start", 0);
+		message("正在升级 post, 一共: $count, 当前: $start...", "?step=upgrade_post&start=$start&maxpid=$maxpid", 0);
 	} else {	
 		message('升级 post，接下来升级 user...', '?step=upgrade_user&start=0');
 	}
@@ -594,20 +605,20 @@ function upgrade_user() {
 	
 	$start_time = microtime(1);
 	
-	$count = isset($_GET['count']) ? intval($_GET['count']) : $uc->index_count('members');
+	$maxuid = intval(core::gpc('maxuid'));
+	empty($maxuid) && $maxuid = $db->index_maxid('user-uid');
+	$count = isset($_GET['count']) ? intval($_GET['count']) : $uc->index_count('members', array('uid'=>array('>'=>$maxuid)));
 	
 	if($start < $count) {
 		$limit = DEBUG ? 20 : 2000;	// 每次升级 100
-		$arrlist = $uc->index_fetch_id('members', 'uid', array(), array(), $start, $limit);
+		$arrlist = $uc->index_fetch_id('members', 'uid', array('uid'=>array('>'=>$maxuid)), array(), $start, $limit);
 		
 		foreach($arrlist as $key) {
 			list($table, $col, $uid) = explode('-', $key);
 			
-			// todo: 为了加快转换速度，不转换未发帖的用户。
-			if($count > 200000000) {
-				$old3 = $dx2->get("common_member_count-uid-$uid");
-				if($old3['posts'] == 0 && $old3['threads'] == 0) continue;
-			}
+			// todo: only bt, 不升级没发帖的用户
+			$old3 = $dx2->get("common_member_count-uid-$uid");
+			if($old3['posts'] == 0 && $old3['threads'] == 0) continue;
 			
 			$old1 = $uc->get("members-uid-$uid");
 			$old2 = $dx2->get("common_member-uid-$uid");
@@ -639,6 +650,7 @@ function upgrade_user() {
 				$myposts = 0;
 			}
 			
+			
 			// todo:only bt
 			$credits = $old3['extcredits2'] * 1 + $old3['extcredits3'] * 4 + $old3['extcredits4'] * 40 + $old3['extcredits5'] * 2;
 			//$credits = $old3['threads'] * 2 + $old3['posts'];
@@ -647,8 +659,6 @@ function upgrade_user() {
 			if(empty($old1['email'])) {
 				$old1['email'] = $old1['uid'].'@'.$_SERVER['HTTP_HOST'];
 			}
-			
-			// 判断 email 是否已经存在，可能会重复，这里比较恶心... 一个email居然可以对应多个账号，太混乱了。
 			
 			$arr = array (
 				'uid'=> intval($uid),
@@ -676,6 +686,7 @@ function upgrade_user() {
 			);
 			$db->set("user-uid-$uid", $arr);
 			
+			
 			$arr = array(
 				'gender'=>$old5['gender'],
 				'birthyear'=>$old5['birthyear'],
@@ -696,7 +707,7 @@ function upgrade_user() {
 		$remain_hour = intval($remaintime / 3500);
 		$remain_min = intval(($remaintime % 3600) / 60);
 		$remain_sec = intval(($remaintime % 3600) % 60);
-		message("正在升级 user, 一共: $count, 当前: $start... （本次耗时：$processtime 秒，大约还需要 $remain_hour 小时, $remain_min 分钟， $remain_sec 秒 ）", "?step=upgrade_user&start=$start&count=$count", 0);
+		message("正在升级 user, 一共: $count, 当前: $start... （本次耗时：$processtime 秒，大约还需要 $remain_hour 小时 $remain_min 分钟 $remain_sec 秒 ）", "?step=upgrade_user&start=$start&count=$count&maxuid=$maxuid", 0);
 	} else {
 		// 生成系统用户，系统用户名：系统，如果发现重名，则改名。
 		//INSERT INTO bbs_user SET uid='2', regip='12345554', regdate=UNIX_TIMESTAMP(), username='系统', password='d14be7f4d15d16de92b7e34e18d0d0f7', salt='99adde', email='system@admin.com', groupid='11', golds='0';
@@ -867,21 +878,8 @@ function laststep() {
 	clear_tmp('');
 	$db = get_db();
 	
-	// 重新统计 thread_types.threads 最多3000个主题分类，够了吧。
-	$thread_type_list = $db->index_fetch('thread_type', 'typeid', array(), array(), 0, 3000);
-	foreach($thread_type_list as $thread_type) {
-		// 统计
-		$typeid = $thread_type['typeid'];
-		$arr = $db->fetch_first("SELECT COUNT(*) AS num FROM {$db->tablepre}thread WHERE typeid='$typeid'");
-		$n = $arr['num'];
-		//$thread_type['threads'] = $n;
-		$db->set("thread_type-typeid-$typeid", $thread_type);
-	}
-	
-	// 清空置顶
 	$db = get_db();
 	
-	// 同步
 	// copy  from install_mongodb		
 	$maxs = array(
 		'group'=>'groupid',
@@ -906,7 +904,6 @@ function laststep() {
 		$db->count($table, $n);
 	}
 	
-	$db->truncate('kv');
 	$db->truncate('runtime');
 	
 	// todo: 清理 thread
@@ -1028,7 +1025,7 @@ function message($s, $url = '', $timeout = 2) {
 	<head>
 		<title>Discuz!X 2.0 转 Xiuno BBS 2.0.0 Release 程序 </title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<link rel="stylesheet" type="text/css" href="view/common.css" />
+		<link rel="stylesheet" type="text/css" href="../view/common.css" />
 	</head>
 	<body>
 	<div id="header" style="overflow: hidden;">
