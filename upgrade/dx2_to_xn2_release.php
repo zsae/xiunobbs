@@ -603,9 +603,14 @@ function upgrade_user() {
 		foreach($arrlist as $key) {
 			list($table, $col, $uid) = explode('-', $key);
 			
+			// todo: 为了加快转换速度，不转换未发帖的用户。
+			if($count > 200000000) {
+				$old3 = $dx2->get("common_member_count-uid-$uid");
+				if($old3['posts'] == 0 && $old3['threads'] == 0) continue;
+			}
+			
 			$old1 = $uc->get("members-uid-$uid");
 			$old2 = $dx2->get("common_member-uid-$uid");
-			$old3 = $dx2->get("common_member_count-uid-$uid");
 			$old4 = $dx2->get("common_member_status-uid-$uid");
 			$old5 = $dx2->get("common_member_profile-uid-$uid");
 			
@@ -634,7 +639,6 @@ function upgrade_user() {
 				$myposts = 0;
 			}
 			
-			
 			// todo:only bt
 			$credits = $old3['extcredits2'] * 1 + $old3['extcredits3'] * 4 + $old3['extcredits4'] * 40 + $old3['extcredits5'] * 2;
 			//$credits = $old3['threads'] * 2 + $old3['posts'];
@@ -643,11 +647,8 @@ function upgrade_user() {
 			if(empty($old1['email'])) {
 				$old1['email'] = $old1['uid'].'@'.$_SERVER['HTTP_HOST'];
 			}
+			
 			// 判断 email 是否已经存在，可能会重复，这里比较恶心... 一个email居然可以对应多个账号，太混乱了。
-			$useremail = $db->index_fetch('user', 'uid', array('email'=>$old1['email']), array(), 0, 1);
-			if(!$empty($useremail)) {
-				 $old1['email'] = $old1['uid'].'@'.$_SERVER['HTTP_HOST'];
-			}
 			
 			$arr = array (
 				'uid'=> intval($uid),
@@ -674,7 +675,6 @@ function upgrade_user() {
 				'lastactive'=> $old4['lastactivity'],
 			);
 			$db->set("user-uid-$uid", $arr);
-			
 			
 			$arr = array(
 				'gender'=>$old5['gender'],
@@ -1028,7 +1028,7 @@ function message($s, $url = '', $timeout = 2) {
 	<head>
 		<title>Discuz!X 2.0 转 Xiuno BBS 2.0.0 Release 程序 </title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<link rel="stylesheet" type="text/css" href="../view/common.css" />
+		<link rel="stylesheet" type="text/css" href="view/common.css" />
 	</head>
 	<body>
 	<div id="header" style="overflow: hidden;">

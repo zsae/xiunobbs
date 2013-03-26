@@ -1,97 +1,82 @@
-<!--{include header.htm}-->
+<!doctype html>
+<html>
+<head>
+	<title></title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="keywords" content="" />
+	<meta name="description" content=" " />
+	<meta name="generator" content="Xiuno BBS" />
+	<meta name="author" content="Xiuno Team" />
+	<meta name="copyright" content="2008-2012 xiuno.com" />
+	<meta name="MSSmartTagsPreventParsing" content="True" />
+	<meta http-equiv="MSThemeCompatible" content="Yes" />
+	<!--<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />-->
+	<link href="http://x.net/view/common.css" type="text/css" rel="stylesheet" />
+	<script type="text/javascript">
+	var cookie_pre = 'bbs_';
+	</script>
+</head>
+<body>
 
-<div id="body">
-	<!--#ajax width="780" title="回复帖子"-->
-	
-	<style type="text/css">
-	#thread_post_form dt {width: 7%;}
-	#thread_post_form dd {width: 92%; _width: 91%;}
-	</style>
-	<form action="?post-post-fid-$fid-tid-$tid-ajax-1.htm" method="post" id="thread_post_form" target="_blank">
-		<input type="hidden" name="FORM_HASH" value="{FORM_HASH}" />
-		<dl>
-			<dt>回复：</dt>
-			<dd>$thread[subject]</dd>
-			
-			<dt><label for="message">内容：</label></dt>
-			<dd><textarea name="message" id="message" style="width: 650px; height: 300px;"></textarea></dd>
-			
-			<dt></dt>
-			<dd>
-				<input type="submit" class="button bigblue" id="thread_post_submit" value="回复" />
-				<input type="button" class="button biggrey" value="取消" id="thread_post_cancel" />
-				<div class="notice" id="thread_post_notice" style="display: none;"></div>
-			</dd>
-		</dl>
-	</form>
+<div id="body" style="width: 980px; padding: 10px;">
+	<textarea id="textarea1" style="width: 400px; height: 100px;"></textarea>
+	<div id="div1" contentEditable="true" designMode="on" style="border: 1px solid #b00;">
+	xxxxxxxxxxxxxxxxxxxx
+		<p>MapR是一个Hadoop优化公司，专注于可用性和数据安全的优化。日前公司获得了一个3000万美元的C轮融资，本轮融资由Mayfield Fund领投。在此之前，光速创投、NEA（New Enterprise Associates）和红点投资（Redpoint Ventures）也对其进行了投资。目前，MapR的总金额达到了5900万美元。</p>
+		<img src="http://www.baidu.com/img/shouye_b5486898c692066bd2cbaeda86d74448.gif" width="270" height="129" />
+		<br />
+		<table width="400" border="1">
+			<tr>
+				<td>aaaaa</td>
+				<td>bbbbb</td>
+			</tr>
+			<tr>
+				<td>ccccc</td>
+				<td>dddd</td>
+			</tr>
+		</table>
+		<br />
+		<p>DNNResearch是多伦多大学一家神经网络方面的初创公司，该公司的负责人是Geoffrey Hinton，作为机器深度学习方面的领军人物，他的研究有助于推动谷歌基于语音和图片领域搜索的发展。不难看出，Google在科技领域的超前思维和成果已经远超于苹果、Amazon、Facebook等众多竞争对手。</p>
+	</div>
+	<br />
+	<div id="div2" contentEditable="true" designMode="on" style="border: 1px solid #0b0;">
+	xxxxxxxxxxxxxxxxxxxx
+		<p>MapR是一个Hadoop优化公司，专注于可用性和数据安全的优化。日前公司获得了一个3000万美元的C轮融资，本轮融资由Mayfield Fund领投。在此之前，光速创投、NEA（New Enterprise Associates）和红点投资（Redpoint Ventures）也对其进行了投资。目前，MapR的总金额达到了5900万美元。</p>
+		<img src="http://www.baidu.com/img/shouye_b5486898c692066bd2cbaeda86d74448.gif" width="270" height="129" />
+		<br />
+		<table width="400" border="1">
+			<tr>
+				<td>aaaaa</td>
+				<td>bbbbb</td>
+			</tr>
+			<tr>
+				<td>ccccc</td>
+				<td>dddd</td>
+			</tr>
+		</table>
+		<br />
+		<p>DNNResearch是多伦多大学一家神经网络方面的初创公司，该公司的负责人是Geoffrey Hinton，作为机器深度学习方面的领军人物，他的研究有助于推动谷歌基于语音和图片领域搜索的发展。不难看出，Google在科技领域的超前思维和成果已经远超于苹果、Amazon、Facebook等众多竞争对手。</p>
+	</div>
+	<br />
+	<div>
+		<input type="button" value="click me" id="button1" />
+	</div>
 </div>
 	
-<!--{include footer.htm}-->
-
-<link href="view/js/editor/index.css" type="text/css" rel="stylesheet" />
+<script src="http://x.net/view/js/jquery-1.4.full.js" type="text/javascript" ></script>
+<script src="http://x.net/view/js/dialog.js" type="text/javascript"></script>
+<script src="http://x.net/view/js/common.js" type="text/javascript"></script>
 <script type="text/javascript">
-	
-// post 参数
-var postparams = {};
-postparams[cookie_pre + 'sid'] = '$_sid';
-postparams[cookie_pre + 'auth'] = '$_auth';
-$.xload('view/js/swfupload/index.js', "view/js/editor-color/index.js", "view/js/editor/index.js", function() {
-	$('#message').editor({imageupload:"?post-uploadimage-fid-$fid-ajax-1.htm", 
-		videoupload: "?post-uploadvideo-fid-$fid-ajax-1.htm",
-		onmax: function() {
-			var width = $(window).width() * 90 / 100;
-			var height = $(window).height() - 165;
-			$('#message')[0].editor.set_width(width);
-			$('#message')[0].editor.set_height(height);
-		}, 
-		onmin: function() {
-			$('#message')[0].editor.set_width(650);
-			$('#message')[0].editor.set_height(300);
-		},
-		onctrlenter: function() {
-			$('#thread_post_submit').trigger('click');
-		},
-		baseurl: 'view/js/editor/', 
-		postparams: postparams});
-	
-	postparams = null;// 销毁，防止跨站！
-	
-	$('#message')[0].editor._focus();
-});
-$('#thread_post_submit').click(function() {
-		
-	$('div.alert').remove();
-	$('#thread_post_notice').html('正在提交，请稍后 ...').show();
-	var postdata = $("#thread_post_form").serialize();
-	$.post($('#thread_post_form').attr('action'), postdata,  function(json){
-		$('#thread_post_notice').html('').hide();
-		if(error = json_error(json)) {alert(error); return false;}
+if($.browser.msie) {
+	//_doc.contentEditable = 'true';
+	$('#div1').get(0).contentEditable = 'true';
+} else {
+	$('#div1').get(0).designMode = 'On';
+}
 
-		json = json.message;
-		if(json.message) {
-			$('#message').parent().alert(json.message, {width: 250, delay: 3000}).focus();
-			return false;
-		}
-		var page = json.page;
-		
-		$('#message')[0].editor.set('');
-		dialog.set_body('<div class="ok">回复成功！</div><p><a href="?thread-index-fid-$fid-tid-$tid.htm">【点击查看】</a></p>');
-		
-		setTimeout(function(){
- 			dialog.close();
- 			$('#thread_post_notice').html('');
- 			window.location= '?thread-index-fid-$fid-tid-$tid-page-'+page+'-scrollbottom-1.htm';
- 		}, 500);
-	  }, "json");
-	return false;
-});
-$('#thread_post_cancel').click(function() {
-	dialog.close();
-});
+// 聚焦
+
 </script>
-
-
-
 </body>
 
 </html>
