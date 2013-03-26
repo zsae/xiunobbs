@@ -62,7 +62,9 @@ $start2 = isset($_GET['start2']) ? intval($_GET['start2']) : $start2;
 // 升级配置文件
 if(empty($step)) {
 	// 如果没有升级进度，则清空
+	$db = get_db();
 	$file = $conf['tmp_path'].'upgrade_process.txt';
+	/*
 	if(!is_file($file)) {
 		$db = get_db();
 		$db->truncate('forum');
@@ -73,23 +75,26 @@ if(empty($step)) {
 		$db->truncate('thread_type');
 		$db->truncate('friendlink');
 		$db->truncate('runtime');
-		
-		// 用户相关资料
-		$db->query("CREATE TABLE IF NOT EXISTS {$db->tablepre}user_ext (
-	  uid int(11) unsigned NOT NULL default '0',	
-	  gender tinyint(11) unsigned NOT NULL default '0',	
-	  birthyear int(11) unsigned NOT NULL default '0',	
-	  birthmonth int(11) unsigned NOT NULL default '0',	
-	  birthday int(11) unsigned NOT NULL default '0',	
-	  province char(16) NOT NULL default '',
-	  city char(16) NOT NULL default '',
-	  county char(16) NOT NULL default '',
-	  KEY (birthyear, birthmonth),
-	  KEY (province),
-	  KEY (city),
-	  KEY (county),
-	  PRIMARY KEY (uid));");
-	}
+	*/
+	// 用户相关资料
+	try {
+	$db->query("CREATE TABLE IF NOT EXISTS {$db->tablepre}user_ext (
+		  uid int(11) unsigned NOT NULL default '0',	
+		  gender tinyint(11) unsigned NOT NULL default '0',	
+		  birthyear int(11) unsigned NOT NULL default '0',	
+		  birthmonth int(11) unsigned NOT NULL default '0',	
+		  birthday int(11) unsigned NOT NULL default '0',	
+		  province char(16) NOT NULL default '',
+		  city char(16) NOT NULL default '',
+		  county char(16) NOT NULL default '',
+		  KEY (birthyear, birthmonth),
+		  KEY (province),
+		  KEY (city),
+		  KEY (county),
+		  PRIMARY KEY (uid));");
+	
+	$db->query("ALTER TABLE {$db->tablepre}forum ADD COLUMN fup int not null default '0';");
+	} catch(Exception $e) {}
 	upgrade_conf();
 } elseif($step == 'upgrade_prepare') {
 	upgrade_prepare();
@@ -153,8 +158,10 @@ function upgrade_prepare() {
 	
 	$db = get_db();
 	//$db->index_create('thread', array('tid'=>1));
+	try {
 	$db->query("ALTER TABLE {$db->tablepre}thread_type ADD column oldtypeid int(11) NOT NULL default '0';");
 	$db->index_create('thread_type', array('oldtypeid'=>1));
+	} catch(Exception $e) {}
 	
 	message('准备完毕，接下来升级 forum...', '?step=upgrade_forum');
 }
@@ -236,6 +243,7 @@ function upgrade_forum() {
 			
 			$arr = array (
 				'fid'=> $old['fid'],
+				'fup'=> $old['fup'],
 				'name'=> strip_tags($old['name']),
 				'rank'=> $old['displayorder'],
 				'threads'=> $old['threads'],
@@ -610,6 +618,9 @@ function upgrade_user() {
 			$old3 = $dx2->get("common_member_count-uid-$uid");
 			if($old3['posts'] == 0 && $old3['threads'] == 0) continue;
 			
+			$user = $db->get("user-uid-$uid");
+                        if($user) continue;
+                        
 			$old1 = $uc->get("members-uid-$uid");
 			$old2 = $dx2->get("common_member-uid-$uid");
 			$old4 = $dx2->get("common_member_status-uid-$uid");
