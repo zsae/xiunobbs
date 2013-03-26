@@ -51,46 +51,16 @@ core::init();
 core::ob_start();
 
 // 初始化参数
-loading_upgrade_process($step, $start, $start2);
-$step = isset($_GET['step']) ? $_GET['step'] : $step;
-$start = isset($_GET['start']) ? intval($_GET['start']) : $start;
-$start2 = isset($_GET['start2']) ? intval($_GET['start2']) : $start2;
+$step = isset($_GET['step']) ? $_GET['step'] : 'upgrade_user';
+$start = isset($_GET['start']) ? intval($_GET['start']) : 0;
+$start2 = isset($_GET['start2']) ? intval($_GET['start2']) : 0;
 
 // 输入 dx2 路径！ 检查 xn2 安装。取得 max uid
 
 
 // 升级配置文件
 if(empty($step)) {
-	// 如果没有升级进度，则清空
-	$file = $conf['tmp_path'].'upgrade_process.txt';
-	if(!is_file($file)) {
-		$db = get_db();
-		$db->truncate('forum');
-		$db->truncate('thread');
-		$db->truncate('post');
-		$db->truncate('user');
-		$db->truncate('mypost');
-		$db->truncate('thread_type');
-		$db->truncate('friendlink');
-		$db->truncate('runtime');
-		
-		// 用户相关资料
-		$db->query("CREATE TABLE IF NOT EXISTS {$db->tablepre}user_ext (
-	  uid int(11) unsigned NOT NULL default '0',	
-	  gender tinyint(11) unsigned NOT NULL default '0',	
-	  birthyear int(11) unsigned NOT NULL default '0',	
-	  birthmonth int(11) unsigned NOT NULL default '0',	
-	  birthday int(11) unsigned NOT NULL default '0',	
-	  province char(16) NOT NULL default '',
-	  city char(16) NOT NULL default '',
-	  county char(16) NOT NULL default '',
-	  KEY (birthyear, birthmonth),
-	  KEY (province),
-	  KEY (city),
-	  KEY (county),
-	  PRIMARY KEY (uid));");
-	}
-	upgrade_conf();
+
 } elseif($step == 'upgrade_prepare') {
 	upgrade_prepare();
 } elseif($step == 'upgrade_forum') {
@@ -155,6 +125,7 @@ function upgrade_prepare() {
 	//$db->index_create('thread', array('tid'=>1));
 	$db->query("ALTER TABLE {$db->tablepre}thread_type ADD column oldtypeid int(11) NOT NULL default '0';");
 	$db->index_create('thread_type', array('oldtypeid'=>1));
+	//$db->index_create('post', array('pid'=>1));
 	
 	message('准备完毕，接下来升级 forum...', '?step=upgrade_forum');
 }
@@ -607,11 +578,11 @@ function upgrade_user() {
 	
 	$maxuid = intval(core::gpc('maxuid'));
 	empty($maxuid) && $maxuid = $db->index_maxid('user-uid');
-	$count = isset($_GET['count']) ? intval($_GET['count']) : $uc->index_count('members', array('uid'=>array('>'=>$maxuid)));
+	$count = isset($_GET['count']) ? intval($_GET['count']) : $dx2->index_count('common_member_count', array('posts'=>0, 'threads'=>array('>'=>0)));
 	
 	if($start < $count) {
 		$limit = DEBUG ? 20 : 2000;	// 每次升级 100
-		$arrlist = $uc->index_fetch_id('members', 'uid', array('uid'=>array('>'=>$maxuid)), array(), $start, $limit);
+		$arrlist = $dx2->index_fetch_id('common_member_count', 'uid', array('posts'=>0, 'threads'=>array('>'=>0)), array(), $start, $limit);
 		
 		foreach($arrlist as $key) {
 			list($table, $col, $uid) = explode('-', $key);
@@ -624,6 +595,9 @@ function upgrade_user() {
 			$old2 = $dx2->get("common_member-uid-$uid");
 			$old4 = $dx2->get("common_member_status-uid-$uid");
 			$old5 = $dx2->get("common_member_profile-uid-$uid");
+			
+			$user = $db->get("user-uid-$uid");
+			if(!empty($user)) continue;
 			
 			if(empty($old2)) {
 				$old2 = array('avatarstatus'=>0, 'groupid'=>0, 'adminid'=>0);
@@ -789,11 +763,15 @@ function upgrade_postpage() {
 
 	$dx2 = get_dx2();
 	$db = get_db();
-	$count = $dx2->index_count('forum_thread');
+	
+	$maxtid = intval(core::gpc('maxtid'));
+	empty($maxtid) && $maxtid = $db->index_maxid('thread-tid');
+	$count = $dx2->index_count('forum_thread', array('tid'=>array('>'=>$maxtid)));
+	
 	if($start < $count) {
-		$limit = DEBUG ? 10 : 2000;	// 每次升级 100
-		$limit2 = DEBUG ? 20 : 2000;
-		$tidkeys = $dx2->index_fetch_id('forum_thread', array('tid'), array(), array(), $start, $limit);
+		$limit = DEBUG ? 10 : 500;	// 每次升级 100
+		$limit2 = DEBUG ? 20 : 500;
+		$tidkeys = $dx2->index_fetch_id('forum_thread', array('tid'), array('tid'=>array('>'=>$maxtid)), array(), $start, $limit);
 		foreach($tidkeys as $key) {
 			list($table, $_, $tid) = explode('-', $key);
 			$thread = $dx2->get("forum_thread-tid-$tid");
@@ -842,7 +820,7 @@ function upgrade_postpage() {
 				$start += 1;
 			}
 		}
-		message("正在升级 post.page, 进度 thread: $start / $count, post: $start2 / $count2...", "?step=upgrade_postpage&start=$start&start2=$start2&count2=$count2", 0);
+		message("正在升级 post.page, 进度 thread: $start / $count, post: $start2 / $count2...", "?step=upgrade_postpage&start=$start&start2=$start2&count2=$count2&maxtid=$maxtid", 0);
 	} else {	
 		message('升级 upgrade_postpage 完成，接下来升级 upgrade_forum2 ...', '?step=upgrade_forum2&start=0');
 	}

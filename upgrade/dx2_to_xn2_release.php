@@ -196,88 +196,78 @@ function upgrade_forum() {
 				continue;
 			}
 			
-			// 判断是否存在
-			$forum = $db->get("forum-fid-$fid");
-			// 多次升级，更新数据
-			if(!empty($forum)) {
-				$forum['name'] = strip_tags($old['name']);
-				// todo: 如果为隐藏版块，则对 forum_access 增加记录
-				if($old['status'] != 1) {
-					foreach($groupids as $groupid) {
-						$groupid = intval($groupid);
-						$access = array();
-						$access['allowread'] = ($groupid == 1 ? 1 : 0);
-						$access['allowpost'] = 0;
-						$access['allowthread'] = 0;
-						$access['allowdown'] = 0;
-						$access['allowattach'] = 0;
-						$access['allowdown'] = 0;
-						$access['fid'] = $fid;
-						$access['groupid'] = $groupid;
-						$this->forum_access->create($access);
-					}				
-				}
-				$forum['threads'] = intval($old['threads']);
-				$forum['posts'] = intval($old['posts']);
-				$db->update("forum-fid-$fid", $forum);
-			} else {
-				// a:6:{s:8:"required";b:1;s:8:"listable";b:0;s:6:"prefix";s:1:"0";s:5:"types";a:3:{i:1;s:7:"fenlei1";i:2;s:7:"fenlei2";i:3;s:7:"fenlei3";}s:5:"icons";a:3:{i:1;s:0:"";i:2;s:0:"";i:3;s:0:"";}s:10:"moderators";a:3:{i:1;N;i:2;N;i:3;N;}}
-				// 主题分类
-				if($old2['threadtypes']) {
-					
-					$mthread_type_cate->create(array('fid'=>$fid, 'cateid'=>1, 'catename'=>'分类', 'rank'=>1, 'enable'=>1));
-					
-					$threadtypes = dx2_unserialize($old2['threadtypes'], $_config['db']['1']['dbcharset']);
-					if(!empty($threadtypes)) {
-						$threadtype = $threadtypes['types'];
-						$newtypeid = 0;
-						foreach($threadtype as $typeid=>$typename) {
-							$newtypeid++;
-							$arr = array(
-								'fid'=>$fid,
-								'typeid'=>$newtypeid,
-								'oldtypeid'=>$typeid,
-								//'threads'=>0,
-								'typename'=>str_replace(array("\r", "\n"), array('', ''), strip_tags($typename)),
-								'rank'=>0,
-								'enable'=>1,
-							);
-							$db->set("thread_type-fid-$fid-typeid-$typeid", $arr);
-						}
+			// a:6:{s:8:"required";b:1;s:8:"listable";b:0;s:6:"prefix";s:1:"0";s:5:"types";a:3:{i:1;s:7:"fenlei1";i:2;s:7:"fenlei2";i:3;s:7:"fenlei3";}s:5:"icons";a:3:{i:1;s:0:"";i:2;s:0:"";i:3;s:0:"";}s:10:"moderators";a:3:{i:1;N;i:2;N;i:3;N;}}
+			// 主题分类
+			if($old2['threadtypes']) {
+				
+				$mthread_type_cate->create(array('fid'=>$fid, 'cateid'=>1, 'catename'=>'分类', 'rank'=>1, 'enable'=>1));
+				
+				$threadtypes = dx2_unserialize($old2['threadtypes'], $_config['db']['1']['dbcharset']);
+				if(!empty($threadtypes)) {
+					$threadtype = $threadtypes['types'];
+					$newtypeid = 0;
+					foreach($threadtype as $typeid=>$typename) {
+						$newtypeid++;
+						$arr = array(
+							'fid'=>$fid,
+							'typeid'=>$newtypeid,
+							'oldtypeid'=>$typeid,
+							'typename'=>str_replace(array("\r", "\n"), array('', ''), strip_tags($typename)),
+							'rank'=>0,
+							'enable'=>1,
+						);
+						$db->set("thread_type-fid-$fid-typeid-$typeid", $arr);
 					}
 				}
-				
-				//5	subjectxxx	1343525778	star
-				if($old['lastpost']) {
-					$last = explode("\t", $old['lastpost']);
-					$last[0] = intval($last[0]);
-					$last[2] = intval($last[2]);
-					$last[3] = str_replace('-', '', $last[3]);
-					$lastuser = $uc->get("members-username-$last[3]");
-					$lastuid = $lastuser['uid'];
-				} else {
-					$last = array(0, '', 0, '');
-					$lastuid = 0;
-				}
-				
-				$arr = array (
-					'fid'=> $old['fid'],
-					'name'=> strip_tags($old['name']),
-					'rank'=> $old['displayorder'],
-					'threads'=> $old['threads'],
-					'posts'=> $old['posts'],
-					'todayposts'=> $old['todayposts'],
-					'lasttid'=> $last[0],
-					'brief'=> strip_tags($old2['description']),
-					'accesson'=> 0,
-					'modids'=> '',
-					'modnames'=> '',
-					'toptids'=> '',
-					'orderby'=> 0,
-					'seo_title'=> $old2['seotitle'],
-					'seo_keywords'=> $old2['keywords'],
-				);
-				$db->set("forum-fid-$fid", $arr);
+			}
+			
+			//5	subjectxxx	1343525778	star
+			if($old['lastpost']) {
+				$last = explode("\t", $old['lastpost']);
+				$last[0] = intval($last[0]);
+				$last[2] = intval($last[2]);
+				$last[3] = str_replace('-', '', $last[3]);
+				$lastuser = $uc->get("members-username-$last[3]");
+				$lastuid = $lastuser['uid'];
+			} else {
+				$last = array(0, '', 0, '');
+				$lastuid = 0;
+			}
+			
+			$arr = array (
+				'fid'=> $old['fid'],
+				'name'=> strip_tags($old['name']),
+				'rank'=> $old['displayorder'],
+				'threads'=> $old['threads'],
+				'posts'=> $old['posts'],
+				'todayposts'=> $old['todayposts'],
+				'lasttid'=> $last[0],
+				'brief'=> strip_tags($old2['description']),
+				'accesson'=> 0,
+				'modids'=> '',
+				'modnames'=> '',
+				'toptids'=> '',
+				'orderby'=> 0,
+				'seo_title'=> $old2['seotitle'],
+				'seo_keywords'=> $old2['keywords'],
+			);
+			
+			$db->set("forum-fid-$fid", $arr);
+			
+			// todo: 如果为隐藏版块，则对 forum_access 增加记录
+			if($old['status'] != 1) {
+				foreach($groupids as $groupid) {
+					$access = array();
+					$access['allowread'] = ($groupid == 1 ? 1 : 0);
+					$access['allowpost'] = 0;
+					$access['allowthread'] = 0;
+					$access['allowdown'] = 0;
+					$access['allowattach'] = 0;
+					$access['allowdown'] = 0;
+					$access['fid'] = $fid;
+					$access['groupid'] = $groupid;
+					$mforum_access->create($access);
+				}				
 			}
 		}
 		
@@ -795,8 +785,8 @@ function upgrade_postpage() {
 	$count = $dx2->index_count('forum_thread', array('tid'=>array('>'=>$maxtid)));
 	
 	if($start < $count) {
-		$limit = DEBUG ? 10 : 2000;	// 每次升级 100
-		$limit2 = DEBUG ? 20 : 2000;
+		$limit = DEBUG ? 10 : 500;	// 每次升级 100
+		$limit2 = DEBUG ? 20 : 500;
 		$tidkeys = $dx2->index_fetch_id('forum_thread', array('tid'), array('tid'=>array('>'=>$maxtid)), array(), $start, $limit);
 		foreach($tidkeys as $key) {
 			list($table, $_, $tid) = explode('-', $key);
