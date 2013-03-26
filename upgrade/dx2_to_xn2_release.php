@@ -789,11 +789,15 @@ function upgrade_postpage() {
 
 	$dx2 = get_dx2();
 	$db = get_db();
-	$count = $dx2->index_count('forum_thread');
+	
+	$maxtid = intval(core::gpc('maxtid'));
+	empty($maxtid) && $maxtid = $db->index_maxid('thread-tid');
+	$count = $dx2->index_count('forum_thread', array('tid'=>array('>'=>$maxtid)));
+	
 	if($start < $count) {
 		$limit = DEBUG ? 10 : 2000;	// 每次升级 100
 		$limit2 = DEBUG ? 20 : 2000;
-		$tidkeys = $dx2->index_fetch_id('forum_thread', array('tid'), array(), array(), $start, $limit);
+		$tidkeys = $dx2->index_fetch_id('forum_thread', array('tid'), array('tid'=>array('>'=>$maxtid)), array(), $start, $limit);
 		foreach($tidkeys as $key) {
 			list($table, $_, $tid) = explode('-', $key);
 			$thread = $dx2->get("forum_thread-tid-$tid");
@@ -842,7 +846,7 @@ function upgrade_postpage() {
 				$start += 1;
 			}
 		}
-		message("正在升级 post.page, 进度 thread: $start / $count, post: $start2 / $count2...", "?step=upgrade_postpage&start=$start&start2=$start2&count2=$count2", 0);
+		message("正在升级 post.page, 进度 thread: $start / $count, post: $start2 / $count2...", "?step=upgrade_postpage&start=$start&start2=$start2&count2=$count2&maxtid=$maxtid", 0);
 	} else {	
 		message('升级 upgrade_postpage 完成，接下来升级 upgrade_forum2 ...', '?step=upgrade_forum2&start=0');
 	}
