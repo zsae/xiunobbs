@@ -13,6 +13,7 @@ class user extends base_model{
 		$this->maxcol = 'uid';
 	}
 	
+	// 关联创建用户
 	public function xcreate($arr) {
 		empty($arr['uid']) && $arr['uid'] = $this->maxid('+1');
 		$arr['regdate'] = $_SERVER['time'];
@@ -140,8 +141,6 @@ class user extends base_model{
 		} elseif(htmlspecialchars($username) != $username) {
 			return '用户名中不能含有HTML字符（尖括号）';
 		}
-		// 最多为6个中文字符
-		//$username = misc::safe_str($username, '\'-.');
 		
 		return '';
 	}

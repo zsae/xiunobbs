@@ -4,7 +4,7 @@
  * Copyright (C) xiuno.com
  */
 
-// 本程序用来升级 DiscuzX 2.0 到 Xiuno BBS 2.0.0 Release，支持重复升级，断点升级。
+// 本程序用来升级 DiscuzX 2.0 到 Xiuno BBS 2.0.0 Release，支持重复升级，断点升级，可以反复升级，不会导致数据错乱。
 /*
 	流程：
 		1. 备份原站点：新建目录: dx2, 将所有文件移动到 dx2 中
@@ -61,10 +61,10 @@ $start2 = isset($_GET['start2']) ? intval($_GET['start2']) : $start2;
 
 // 升级配置文件
 if(empty($step)) {
+	/*
 	// 如果没有升级进度，则清空
 	$db = get_db();
 	$file = $conf['tmp_path'].'upgrade_process.txt';
-	/*
 	if(!is_file($file)) {
 		$db = get_db();
 		$db->truncate('forum');
@@ -76,28 +76,11 @@ if(empty($step)) {
 		$db->truncate('friendlink');
 		$db->truncate('runtime');
 	*/
-	// 用户相关资料
-	try {
-	$db->query("CREATE TABLE IF NOT EXISTS {$db->tablepre}user_ext (
-		  uid int(11) unsigned NOT NULL default '0',	
-		  gender tinyint(11) unsigned NOT NULL default '0',	
-		  birthyear int(11) unsigned NOT NULL default '0',	
-		  birthmonth int(11) unsigned NOT NULL default '0',	
-		  birthday int(11) unsigned NOT NULL default '0',	
-		  province char(16) NOT NULL default '',
-		  city char(16) NOT NULL default '',
-		  county char(16) NOT NULL default '',
-		  KEY (birthyear, birthmonth),
-		  KEY (province),
-		  KEY (city),
-		  KEY (county),
-		  PRIMARY KEY (uid));");
-	
-	$db->query("ALTER TABLE {$db->tablepre}forum ADD COLUMN fup int not null default '0';");
-	} catch(Exception $e) {}
 	upgrade_conf();
 } elseif($step == 'upgrade_prepare') {
 	upgrade_prepare();
+} elseif($step == 'upgrade_forum_policy') {
+	upgrade_forum_policy();
 } elseif($step == 'upgrade_forum') {
 	upgrade_forum();
 } elseif($step == 'upgrade_thread') {
@@ -159,16 +142,223 @@ function upgrade_prepare() {
 	$db = get_db();
 	//$db->index_create('thread', array('tid'=>1));
 	try {
-	$db->query("ALTER TABLE {$db->tablepre}thread_type ADD column oldtypeid int(11) NOT NULL default '0';");
-	$db->index_create('thread_type', array('oldtypeid'=>1));
+		$db->query("CREATE TABLE IF NOT EXISTS {$db->tablepre}user_ext (
+			  uid int(11) unsigned NOT NULL default '0',	
+			  gender tinyint(11) unsigned NOT NULL default '0',	
+			  birthyear int(11) unsigned NOT NULL default '0',	
+			  birthmonth int(11) unsigned NOT NULL default '0',	
+			  birthday int(11) unsigned NOT NULL default '0',	
+			  province char(16) NOT NULL default '',
+			  city char(16) NOT NULL default '',
+			  county char(16) NOT NULL default '',
+			  KEY (birthyear, birthmonth),
+			  KEY (province),
+			  KEY (city),
+			  KEY (county),
+			  PRIMARY KEY (uid));");
 	} catch(Exception $e) {}
+	try {$db->query("ALTER TABLE {$db->tablepre}forum ADD COLUMN fup int not null default '0';");} catch(Exception $e) {}
+	try {$db->query("ALTER TABLE {$db->tablepre}thread_type ADD column oldtypeid int(11) NOT NULL default '0';");} catch(Exception $e) {}
+	try {$db->query("ALTER TABLE {$db->tablepre}thread_type ADD column oldfid int(11) NOT NULL default '0';");} catch(Exception $e) {}
+	try {$db->index_create('thread_type', array('oldtypeid'=>1));} catch(Exception $e) {}
+	try {$db->index_create('thread_type', array('oldfid'=>1));} catch(Exception $e) {}
 	
-	message('准备完毕，接下来升级 forum...', '?step=upgrade_forum');
+		
+	
+	
+	message('准备完毕，接下来设置升级策略...', '?step=upgrade_forum_policy');
+}
+
+// 用户选择版块的升级方法。
+function upgrade_forum_policy() {
+	global $conf;
+	$dx2 = get_dx2();
+	$db = get_db();
+	$uc = get_uc();
+	
+	$policy = load_upgrade_policy();
+	
+	if(isset($_POST['submit'])) {
+		$policy['keepfup'] =  core::gpc('keepfup', 'P');
+		$policy['fidto'] =  core::gpc('fidto', 'P');
+		$policy['threadtypefid'] =  core::gpc('threadtypefid', 'P');
+		file_put_contents($policyfile, core::json_encode($policy));
+		message('升级策略已经保存，下一步开始升级版块！', '?step=upgrade_forum');
+	}
+	
+	show_header();
+	
+	echo '
+		<div id="body" style="line-height: 1.8">
+		<h1>设置版块升级策略</h1>
+		<ul>
+			<li>因为 Xiuno 采用的分类方式为 一级版块 +　多维主题分类，所以您需要选择下升级过去后的版块+主题分类的结构：</li>
+			<li>一般在您版块比较多的情况下，我们建议采用“保留大区，下属版块作为主题分类”。</li>
+			<li>版块比较少的话，建议选择抛弃大区，下属版块作为 Xiuno 一级版块。</li>
+			<li><b>注意：</b>只支持二级版块的转换，三级子版块请调整后再进行转换。</li>
+		</ul>';
+	
+	$catelist = $dx2->index_fetch('forum_forum', 'fid', array('fup'=>0), array(), 0, 1000);
+	
+	echo '<form action="'.$_SERVER['PHP_SELF'].'?step=upgrade_forum" method="post">';
+	foreach($catelist as $cate) {
+		$fup = $cate['fid'];
+		if($cate['status'] == 3) continue;
+		if($cate['name'] == '') continue;
+		
+		$cate['name'] = strip_tags($cate['name']); 
+		
+		$check1 = $policy['keepfup'][$fup] == 1 ? ' checked="checked"' : '';
+		$check2 = $policy['keepfup'][$fup] == 0 ? ' checked="checked"' : '';
+		
+		$forumlist = $dx2->index_fetch('forum_forum', 'fid', array('fup'=>$fup), array(), 0, 1000);
+		
+		if(empty($forumlist)) continue;
+		
+		echo '<div class="catediv" style="margin: 32px;">';
+		
+		echo "<p>
+			<table width=\"700\">
+				<tr>
+					<td><b>$cate[name]</b></td>
+					<td width=\"160\" class=\"grey\"><input type=\"radio\" name=\"keepfup[$fup]\" value=\"0\" class=\"grey\" $check2 />升级所属版块为一级</td>
+					<td width=\"160\" class=\"grey\"><input type=\"radio\" name=\"keepfup[$fup]\" value=\"1\" class=\"grey\" $check1 />升级大区成一级</td>
+					<td width=\"160\" class=\"grey\">&nbsp;</td>
+				</tr>
+			</table>
+			</p>";
+	
+		foreach($forumlist as $forum) {
+			if($cate['status'] == 3) continue;
+			if($cate['name'] == '') continue;
+		
+			$fid = $forum['fid'];
+			
+			$check1 = $policy['fidto'][$fid] == 'forum' ? ' checked="checked"' : '';
+			$check2 = $policy['fidto'][$fid] == 'threadtype' ? ' checked="checked"' : '';
+			$check3 = $policy['threadtypefid'][$fup] == 1 ? ' checked="checked"' : '';
+		
+			$forum['name'] = strip_tags($forum['name']); 
+			echo "<table width=\"700\">
+					<tr>
+						<td>&nbsp; &nbsp; &nbsp; &nbsp; $forum[name]</td>
+						<td width=\"160\" class=\"grey\"><input type=\"radio\" name=\"fidto[$fid]\" value=\"forum\" checked=\"checked\" $check1 />升级为 Xiuno 一级版块 &nbsp; </td>
+						<td width=\"160\" class=\"grey\"><input type=\"radio\" name=\"fidto[$fid]\" value=\"threadtype\" $check2 />升级为主题分类 &nbsp; </td>
+						<td width=\"160\" class=\"grey\"><input type=\"radio\" name=\"threadtypefid[$fup]\" value=\"$fid\" $check3 />该板主题分类为二级分类</td>
+					</tr>
+				</table>";
+		}
+		echo '</div>';
+	}
+	echo "<p><input name=\"submit\" type=\"submit\" value=\"确定升级版块策略，下一步\" /></p>";
+	echo '</div>';
+	echo "</form>";
+	
+	echo '
+		<script src="../view/js/jquery-1.4.min.js" ></script>
+		<script type="text/javascript">
+			$("div.catediv").each(function() {
+				var _div = this;
+				$("input[name^=keepfup]", this).click(function() {
+					var _input = this;
+					// 保留大区
+					if($(this).val() == 1) {
+						$("input[value=forum]", _div).attr("checked", "");
+						$("input[value=threadtype]", _div).attr("checked", "checked");
+						$("input[name^=threadtypefid]", _div).attr("disabled", "");
+						$("input[name^=threadtypefid]:first", _div).attr("checked", "checked");
+					} else {
+						$("input[value=forum]", _div).attr("checked", "checked");
+						$("input[value=threadtype]", _div).attr("checked", "");
+						$("input[name^=threadtypefid]", _div).attr("disabled", "disabled");
+					}
+				});
+				$("input", this).click(function() {
+					var _input = this;
+					var _tr = $(this).closest("tr");
+					if($("input[value=forum]", _tr).attr("checked") && $("input[name^=threadtypefid]", _tr).attr("checked")) {
+						$("input[value=forum]", _tr).attr("checked", "");
+						$("input[value=threadtype]", _tr).attr("checked", "checked");
+					}
+				});
+			});
+		</script>
+	';
+	
+	show_footer();
+}
+
+function load_upgrade_policy() {
+	global $conf;
+	$dx2 = get_dx2();
+	
+	// 策略文件。
+	$policyfile = $conf['tmp_path'].'upgrade_policy.txt';
+	if(!is_file($policyfile)) {
+		return init_policy();
+	}
+	$s = file_get_contents($policyfile);
+	$policy = (array)core::json_decode($s);
+	
+	// 初始化。
+	if(empty($policy) || !isset($policy['keepfup']) || !isset($policy['fidto']) || !isset($policy['threadtypefid'])) {
+		$policy = init_policy();
+	}
+	return $policy;
+}
+
+function init_policy() {
+	global $conf;
+	$dx2 = get_dx2();
+	
+	$forumlist = $dx2->index_fetch('forum_forum', 'fid', array(), array(), 0, 4000);
+	$fuparr = array();
+	foreach($forumlist as $forum) {
+		$policy['keepfup'][$forum['fid']] = 0;
+		$policy['fidto'][$forum['fid']] = 'forum';
+		$policy['threadtypefid'][$forum['fid']] = 0;
+		$policy['fup'][$forum['fid']] = $forum['fup'];
+	}
+	$policyfile = $conf['tmp_path'].'upgrade_policy.txt';
+	file_put_contents($policyfile, core::json_encode($policy));
+	return $policy;
+}
+
+// 根据策略，调整 fid
+function get_fid_by_policy($fid, $policy) {
+	$fup = $policy['fup'][$fid];
+	if($fup == 0) {
+		if($policy['keepfup']) {
+			return $fid;
+		} else {
+			return 0;
+		}
+	} else {
+		// 移动到上一级
+		if($policy['keepfup']) {
+			return $fup;
+		} else {
+			return $fid;
+		}
+	}
+}
+
+// 获取fid 所在的位置，0-40，一级主题分类的值范围。
+function get_fid_order($policy, $fid) {
+	$i = 0;
+	$fup = $policy['fuparr'][$fid];
+	foreach($policy['fuparr'] as $_fid=>$_fup) {
+		$fup == $_fup && $i++;
+		if($fid == $_fid) return $i;
+	}
+	return 0;
 }
 
 function upgrade_forum() {
 	global $start, $conf;
 	$dx2_attach_path = DX2_ATTACH_PATH;
+	
+	$policy = load_upgrade_policy();
 	
 	include DX2_CONF_FILE;
 	
@@ -198,90 +388,174 @@ function upgrade_forum() {
 				continue;	// 群组数据抛弃，thread, post 都应该抛弃，发帖数，回复数都得重新统计！
 			}
 			
-			// 忽略上级版块
-			if($old['fup'] == 0) {
+			// 忽略第三级子版块
+			if($old['type'] == 'sub') {
+				continue;
+			}
+			
+			// 根据策略忽略版块
+			if($old['fup'] == 0 && $policy['keepfup'][$fup] == 0) {
 				continue;
 			}
 			
 			// a:6:{s:8:"required";b:1;s:8:"listable";b:0;s:6:"prefix";s:1:"0";s:5:"types";a:3:{i:1;s:7:"fenlei1";i:2;s:7:"fenlei2";i:3;s:7:"fenlei3";}s:5:"icons";a:3:{i:1;s:0:"";i:2;s:0:"";i:3;s:0:"";}s:10:"moderators";a:3:{i:1;N;i:2;N;i:3;N;}}
-			// 主题分类
-			if($old2['threadtypes']) {
+			
+			// 四种情况： 大区|版块  *  保留大区|保留大区
+			if($old['fup'] == 0) {
+				// 初始化一个空壳版块，
+				$arr = array (
+					'fid'=> $old['fid'],
+					'fup'=> $old['fup'],
+					'name'=> strip_tags($old['name']),
+					'rank'=> $old['displayorder'],
+					'threads'=> 0,
+					'posts'=> 0,
+					'todayposts'=> 0,
+					'lasttid'=> 0,
+					'brief'=> '',
+					'accesson'=> 0,
+					'modids'=> '',
+					'modnames'=> '',
+					'toptids'=> '',
+					'orderby'=> 0,
+					'seo_title'=> '',
+					'seo_keywords'=> '',
+				);
 				
-				$mthread_type_cate->create(array('fid'=>$fid, 'cateid'=>1, 'catename'=>'分类', 'rank'=>1, 'enable'=>1));
+				$db->set("forum-fid-$fid", $arr);
+			} else {
 				
-				$threadtypes = dx2_unserialize($old2['threadtypes'], $_config['db']['1']['dbcharset']);
-				if(!empty($threadtypes)) {
-					$threadtype = $threadtypes['types'];
-					$newtypeid = 0;
-					foreach($threadtype as $typeid=>$typename) {
-						$newtypeid++;
-						$arr = array(
-							'fid'=>$fid,
-							'typeid'=>$newtypeid,
-							'oldtypeid'=>$typeid,
-							'typename'=>str_replace(array("\r", "\n"), array('', ''), strip_tags($typename)),
-							'rank'=>0,
-							'enable'=>1,
-						);
-						$db->set("thread_type-fid-$fid-typeid-$typeid", $arr);
+				// 判断 fup keepup
+				$fup = $policy['fup'][$fid];
+				
+				// 将当前版块设置成主题分类
+				if($policy['keepfup'] == $fup) {
+					$savefid = get_fid_by_policy($fid, $policy);
+						
+					$mthread_type_cate->create(array('fid'=>$fup, 'cateid'=>1, 'catename'=>'分类', 'rank'=>1, 'enable'=>1));
+					$newtypeid = get_fid_order($policy, $fid);
+					$arr = array(
+						'fid'=>$fup,
+						'typeid'=>$newtypeid,
+						'oldtypeid'=>0,
+						'oldfid'=>$fid,
+						'typename'=>str_replace(array("\r", "\n"), array('', ''), strip_tags($forum['name'])),
+						'rank'=>0,
+						'enable'=>1,
+					);
+					$db->set("thread_type-fid-$fid-typeid-$newtypeid", $arr);
+					
+					// 升级版块下的主题分类
+					if($policy['threadtypefid'][$fup] == $fid && $old2['threadtypes']) {
+						$mthread_type_cate->create(array('fid'=>$fup, 'cateid'=>2, 'catename'=>'原分类', 'rank'=>2, 'enable'=>1));
+						$threadtypes = dx2_unserialize($old2['threadtypes'], $dx2->dbcharset);
+						if(!empty($threadtypes)) {
+							$threadtype = $threadtypes['types'];
+							$newtypeid = 0;
+							foreach($threadtype as $typeid=>$typename) {
+								$newtypeid++;
+								$arr = array(
+									'fid'=>$fup,
+									'typeid'=>$mthread_type->map[2][$newtypeid],
+									'oldtypeid'=>$typeid,
+									'oldfid'=>0,
+									'typename'=>str_replace(array("\r", "\n"), array('', ''), strip_tags($typename)),
+									'rank'=>0,
+									'enable'=>1,
+								);
+								$db->set("thread_type-fid-$fid-typeid-$typeid", $arr);
+							}
+						}
+					}
+					
+					// 帖子总数加到上级版块，这里不加了，最后重新统计。
+					
+				// 正常升级成版块	
+				} else {
+					
+					// 主题分类
+					if($old2['threadtypes']) {
+						
+						$mthread_type_cate->create(array('fid'=>$fid, 'cateid'=>1, 'catename'=>'分类', 'rank'=>1, 'enable'=>1));
+						
+						$threadtypes = dx2_unserialize($old2['threadtypes'], $dx2->dbcharset);
+						if(!empty($threadtypes)) {
+							$threadtype = $threadtypes['types'];
+							$newtypeid = 0;
+							foreach($threadtype as $typeid=>$typename) {
+								$newtypeid++;
+								$arr = array(
+									'fid'=>$fid,
+									'typeid'=>$newtypeid,
+									'oldtypeid'=>$typeid,
+									'oldfid'=>0,
+									'typename'=>str_replace(array("\r", "\n"), array('', ''), strip_tags($typename)),
+									'rank'=>0,
+									'enable'=>1,
+								);
+								$db->set("thread_type-fid-$fid-typeid-$typeid", $arr);
+							}
+						}
+					}
+					
+					//5	subjectxxx	1343525778	star
+					if($old['lastpost']) {
+						$last = explode("\t", $old['lastpost']);
+						$last[0] = intval($last[0]);
+						$last[2] = intval($last[2]);
+						$last[3] = str_replace('-', '', $last[3]);
+						$lastuser = $uc->get("members-username-$last[3]");
+						$lastuid = $lastuser['uid'];
+					} else {
+						$last = array(0, '', 0, '');
+						$lastuid = 0;
+					}
+					
+					$arr = array (
+						'fid'=> $old['fid'],
+						'fup'=> $old['fup'],
+						'name'=> strip_tags($old['name']),
+						'rank'=> $old['displayorder'],
+						'threads'=> $old['threads'], // 最后要重新统计。
+						'posts'=> $old['posts'], // 最后要重新统计。
+						'todayposts'=> $old['todayposts'],
+						'lasttid'=> $last[0],
+						'brief'=> strip_tags($old2['description']),
+						'accesson'=> 0,
+						'modids'=> '',
+						'modnames'=> '',
+						'toptids'=> '',
+						'orderby'=> 0,
+						'seo_title'=> $old2['seotitle'],
+						'seo_keywords'=> $old2['keywords'],
+					);
+					
+					$db->set("forum-fid-$fid", $arr);
+					
+					// todo: 如果为隐藏版块，则对 forum_access 增加记录
+					if($old['status'] != 1) {
+						foreach($groupids as $groupid) {
+							$access = array();
+							$access['allowread'] = ($groupid == 1 ? 1 : 0);
+							$access['allowpost'] = 0;
+							$access['allowthread'] = 0;
+							$access['allowdown'] = 0;
+							$access['allowattach'] = 0;
+							$access['allowdown'] = 0;
+							$access['fid'] = $fid;
+							$access['groupid'] = $groupid;
+							$mforum_access->create($access);
+						}				
 					}
 				}
-			}
-			
-			//5	subjectxxx	1343525778	star
-			if($old['lastpost']) {
-				$last = explode("\t", $old['lastpost']);
-				$last[0] = intval($last[0]);
-				$last[2] = intval($last[2]);
-				$last[3] = str_replace('-', '', $last[3]);
-				$lastuser = $uc->get("members-username-$last[3]");
-				$lastuid = $lastuser['uid'];
-			} else {
-				$last = array(0, '', 0, '');
-				$lastuid = 0;
-			}
-			
-			$arr = array (
-				'fid'=> $old['fid'],
-				'fup'=> $old['fup'],
-				'name'=> strip_tags($old['name']),
-				'rank'=> $old['displayorder'],
-				'threads'=> $old['threads'],
-				'posts'=> $old['posts'],
-				'todayposts'=> $old['todayposts'],
-				'lasttid'=> $last[0],
-				'brief'=> strip_tags($old2['description']),
-				'accesson'=> 0,
-				'modids'=> '',
-				'modnames'=> '',
-				'toptids'=> '',
-				'orderby'=> 0,
-				'seo_title'=> $old2['seotitle'],
-				'seo_keywords'=> $old2['keywords'],
-			);
-			
-			$db->set("forum-fid-$fid", $arr);
-			
-			// todo: 如果为隐藏版块，则对 forum_access 增加记录
-			if($old['status'] != 1) {
-				foreach($groupids as $groupid) {
-					$access = array();
-					$access['allowread'] = ($groupid == 1 ? 1 : 0);
-					$access['allowpost'] = 0;
-					$access['allowthread'] = 0;
-					$access['allowdown'] = 0;
-					$access['allowattach'] = 0;
-					$access['allowdown'] = 0;
-					$access['fid'] = $fid;
-					$access['groupid'] = $groupid;
-					$mforum_access->create($access);
-				}				
 			}
 		}
 		
 		$start += $limit;
 		message("正在升级 forum, 一共: $count, 当前: $start...", "?step=upgrade_forum&start=$start", 0);
-	} else {	
+	} else {
+		
+		// fid, typeid -> newfid, typeid1, typeid2
 		message('升级 forum 完成，接下来升级 thread ...', '?step=upgrade_thread&start=0');
 	}
 }
@@ -291,10 +565,14 @@ function upgrade_thread() {
 	$dx2 = get_dx2();
 	$db = get_db();
 	$uc = get_uc();
+	
+	$policy = load_upgrade_policy();
+	
 	$maxtid = intval(core::gpc('maxtid'));
 	empty($maxtid) && $maxtid = $db->index_maxid('thread-tid');
 	
-	$count = $dx2->index_count('forum_thread', array('tid'=>array('>'=>$maxtid)));
+	$count = intval(core::gpc('count'));
+	empty($count) && $count = $dx2->index_count('forum_thread', array('tid'=>array('>'=>$maxtid)));
 	
 	$forum_types = array();
 	$thread_type_data = new thread_type_data($conf);
@@ -310,29 +588,41 @@ function upgrade_thread() {
 			if($old['displayorder'] == -2) continue;
 			if($old['displayorder'] == 2) $old['displayorder'] = 1;
 			
-			/*if($old['lastposter']) {
-				$old['lastposter'] = str_replace('-', '', $old['lastposter']);
-				$lastuser = $uc->get("members-username-$old[lastposter]");
-				$lastuid = $lastuser['uid'];
-			} else {
-				$lastuid = 0;
-			}*/
 			$lastuid = 0;
 			$lastuser = '';
 			
+			$newfid = get_fid_by_policy($fid, $policy);
+			
 			// 主题分类
-			$typeid = 0;
+			$typeid1 = $typeid2 = 0;
+			if($fid != $newfid) {
+				$threadtypelist = $db->index_fetch('thread_type', 'typeid', array('oldfid'=>$old['fid']), array(), 0, 1);
+				if($threadtypelist) {
+					$type = array_pop($threadtypelist);
+					$typeid1 = $type['typeid'];
+				}
+			}
 			if(!empty($old['typeid'])) {
 				if(empty($forum_types[$fid])) {
 					$forum_types[$fid] = $db->get('thread_type-oldtypeid-'.$old['typeid']);
 				}
 				$type = $forum_types[$fid];
-				$thread_type_data->xcreate($fid, $tid, $type['typeid'], 0, 0, 0);
-				$typeid = $type['typeid'];
+				$typeid2 = $type['typeid'];
+			}
+			if(!$typeid1 && $typeid2) {
+				$typeid1 = $typeid2;
+				$typeid2 = 0;
 			}
 			
+			$thread_type_data->xcreate($fid, $tid, $typeid1, $typeid2, 0, 0);
+			
+			// firstpid
+			$pidkeylist = $dx2->index_fetch_id('forum_post', 'pid', array('tid'=>$old['tid'], 'first'=>1), array(), 0, 1);
+			if(empty($pidkeylist)) continue;
+			list($_, $_, $firstpid) = explode('-', $pidkeylist[0]);
+			
 			$arr = array (
-				'fid'=> $old['fid'],
+				'fid'=> $newfid,
 				'tid'=> $old['tid'],
 				'username'=> rename_system_user($old['author']),
 				'uid'=> $old['authorid'],
@@ -344,8 +634,8 @@ function upgrade_thread() {
 				'views'=> $old['views'],
 				'posts'=> ($old['replies'] + 1),
 				'top'=> $old['displayorder'],
-				'typeid1'=> $typeid,
-				'typeid2'=> 0,
+				'typeid1'=> $typeid1,
+				'typeid2'=> $typeid2,
 				'typeid3'=> 0,
 				'typeid4'=> 0,
 				'digest'=> $old['digest'],
@@ -355,7 +645,7 @@ function upgrade_thread() {
 				'closed'=> $old['closed'],
 				'firstpid'=> $firstpid,
 			);
-			$db->set("thread-fid-$fid-tid-$tid", $arr);
+			$db->set("thread-fid-$newfid-tid-$tid", $arr);
 			$db->set("thread_views-tid-$tid", array('tid'=>$tid, 'views'=>$old['views']));
 			
 			// 置顶主题
@@ -363,38 +653,15 @@ function upgrade_thread() {
 				if($old['displayorder'] == 3) {
 					$mruntime = new runtime($conf);
 					$runtime = $mruntime->xget();
-					$runtime['toptids'] .= trim($runtime['toptids'])." $fid-$tid";
+					$runtime['toptids'] .= trim($runtime['toptids'])." $newfid-$tid";
 					$mruntime->xset('toptids', $runtime['toptids']);
 				} elseif($old['displayorder'] == 2 || $old['displayorder'] == 1) {
 					$mforum = new forum($conf);
 					$forum = $mforum->read($fid);
 					if(substr_count($forum['toptids'], ' ', 0) < 8) {
-						$forum['toptids'] = trim($forum['toptids'])." $fid-$tid";
+						$forum['toptids'] = trim($forum['toptids'])." $newfid-$tid";
 						$mforum->update($forum);
 					} else {
-						// 创建一个主题分类叫：热门。
-						
-						/*
-						$mthreadtype = new thread_type($conf);
-						$typelist = $mthreadtype->index_fetch(array('fid'=>$fid), array(), 0, 1000);
-						!empty($typelist) && $typelist = misc::arrlist_key_values($typelist, 'typename', 'typeid');
-						if(!isset($typelist['热门'])) {
-							$type = array(
-									'fid'=>$fid,
-									'typename'=>'热门',
-									'rank'=>0,
-									'enable'=>1,
-								);
-							$typeid = $mthreadtype->create($type);
-						} else {
-							$typeid = $typelist['热门'];
-						}
-						
-						// 归类到主题分类，<span class="blue">热门</span>
-						$arr['typeid1'] = $typeid;
-						//$arr['typename'] = '热门';
-						$db->set("thread-fid-$fid-tid-$tid", $arr);
-						*/
 					}
 				}
 			}
@@ -402,12 +669,12 @@ function upgrade_thread() {
 			// mypost
 			$arr = array (
 				'uid'=>$old['authorid'],
-				'fid'=>$old['fid'],
+				'fid'=>$newfid,
 				'tid'=>$old['tid'],
 				'pid'=>$firstpid,
 			);
 			try {
-				$db->set("mypost-uid-$thread[uid]-fid-$fid-pid-$firstpid", $arr);
+				$db->set("mypost-uid-$thread[uid]-fid-$newfid-pid-$firstpid", $arr);
 			} catch(Exception $e) {
 				continue;
 			}
@@ -419,39 +686,6 @@ function upgrade_thread() {
 		message('升级 thread 完成，接下来升级 upgrade_attach...', '?step=upgrade_attach&start=0');
 	}
 }
-/*
-// 典型的跳转框架
-function upgrade_thread_type() {
-	global $start;
-	global $conf;
-	$db = get_db();
-	
-	$count = core::gpc('count');
-	if(empty($count)) {
-		$count = $db->index_count('thread');
-	}
-	$thread_type_data = new thread_type_data($conf);
-	if($start < $count) {
-		$limit = DEBUG ? 20 : 2000;
-		$threadlist = $db->index_fetch('thread', 'tid', array(), array(), $start, $limit);
-		foreach($threadlist as $thread) {
-			// oldtypeid
-			if($thread['typeid1'] > 0) {
-				// newtypeid is $type['typeid']
-				$type = $db->get('thread_type-fid-'.$thread[fid].'-oldtypeid-'.$thread['typeid1']);
-				$thread['typeid1'] = $type['typeid'];
-				$thread['typeid2'] = 0;
-				$thread['typeid3'] = 0;
-				$thread['typeid4'] = 0;
-				$thread_type_data->xcreate($thread['fid'], $thread['tid'], $type['typeid'], 0, 0, 0);
-			}
-		}
-		$start += $limit;
-		message("正在升级 upgrade_thread_type, 一共: $count, 当前: $start...", "?step=upgrade_thread_type&start=$start&count=$count", 0);
-	} else {
-		message('升级 thread_type 完成，接下来升级 attach...', '?step=upgrade_attach');
-	}
-}*/
 
 function upgrade_attach() {
 	global $start, $conf;
@@ -459,12 +693,14 @@ function upgrade_attach() {
 	$dx2 = get_dx2();
 	$db = get_db();
 	
+	$policy = load_upgrade_policy();
+	
 	$maxaid = intval(core::gpc('maxaid'));
 	empty($maxaid) && $maxaid = $db->index_maxid('attach-aid');
 	$count = $dx2->index_count('forum_attachment', array('aid'=>array('>'=>$maxaid)));
 	
 	if($start < $count) {
-		$limit = DEBUG ? 20 : 2000;
+		$limit = DEBUG ? 20 : 500;
 		$arrlist = $dx2->index_fetch_id('forum_attachment', 'aid', array('aid'=>array('>'=>$maxaid)), array(), $start, $limit);
 		foreach($arrlist as $key) {
 			list($table, $keyname, $aid) = explode('-', $key);
@@ -497,8 +733,10 @@ function upgrade_attach() {
 			!is_file($newfile) && copy($oldattach, $newfile);
 			$forum = $dx2->get("forum_thread-tid-$old[tid]");
 			
+			$newfid = get_fid_by_policy($fid, $policy);
+			
 			$arr = array (
-				'fid'=> intval($forum['fid']),
+				'fid'=> intval($newfid),
 				'aid'=> intval($old['aid']),
 				'pid'=> intval($old['pid']),
 				'tid'=> intval($old['tid']),
@@ -531,21 +769,25 @@ function upgrade_post() {
 	$dx2 = get_dx2();
 	$db = get_db();
 	
+	$policy = load_upgrade_policy();
+	
 	$maxpid = intval(core::gpc('maxpid'));
 	empty($maxpid) && $maxpid = $db->index_maxid('post-pid');
 	$count = $dx2->index_count('forum_post', array('pid'=>array('>'=>$maxpid)));
 	
 	if($start < $count) {
-		$limit = DEBUG ? 20 : 2000;	// 每次升级 100
+		$limit = DEBUG ? 20 : 500;	// 每次升级 100
 		$arrlist = $dx2->index_fetch_id('forum_post', 'pid', array('pid'=>array('>'=>$maxpid)), array(), $start, $limit);
 		foreach($arrlist as $key) {
 			list($table, $_, $pid) = explode('-', $key);
 			$old = $dx2->get("forum_post-pid-$pid");
 			$fid = $old['fid'];
 			
+			$newfid = get_fid_by_policy($fid, $policy);
+			
 			// 帖子附件
 			if($old['attachment']) {
-				$attachlist = $db->index_fetch('attach', 'aid', array('fid'=>$fid, 'pid'=>$pid), array('aid'=>1), array(), 0, 1000);
+				$attachlist = $db->index_fetch('attach', 'aid', array('fid'=>$newfid, 'pid'=>$pid), array('aid'=>1), array(), 0, 1000);
 				if($attachlist) {
 					foreach($attachlist as $attach) {
 						$attachinsert = '[attach]'.$attach['aid'].'[/attach]';
@@ -563,7 +805,7 @@ function upgrade_post() {
 			//$s = preg_replace('#\[attach\]([^[]*?)\[/attach\]#i', '', $s);
 			
 			$arr = array (
-				'fid'=> intval($old['fid']),
+				'fid'=> intval($newfid),
 				'pid'=> intval($old['pid']),
 				'tid'=> intval($old['tid']),
 				'uid'=> intval($old['authorid']),
@@ -577,7 +819,7 @@ function upgrade_post() {
 				'message'=> $old['message'],
 			);
 			
-			$db->set("post-fid-$fid-pid-$pid", $arr);
+			$db->set("post-fid-$newfid-pid-$pid", $arr);
 		}
 		
 		$start += $limit;
@@ -608,7 +850,7 @@ function upgrade_user() {
 	$count = isset($_GET['count']) ? intval($_GET['count']) : $uc->index_count('members', array('uid'=>array('>'=>$maxuid)));
 	
 	if($start < $count) {
-		$limit = DEBUG ? 20 : 2000;	// 每次升级 100
+		$limit = DEBUG ? 20 : 500;	// 每次升级 100
 		$arrlist = $uc->index_fetch_id('members', 'uid', array('uid'=>array('>'=>$maxuid)), array(), $start, $limit);
 		
 		foreach($arrlist as $key) {
@@ -650,7 +892,6 @@ function upgrade_user() {
 			} else {
 				$myposts = 0;
 			}
-			
 			
 			// todo:only bt
 			$credits = $old3['extcredits2'] * 1 + $old3['extcredits3'] * 4 + $old3['extcredits4'] * 40 + $old3['extcredits5'] * 2;
@@ -859,7 +1100,7 @@ function upgrade_forum2() {
 	$dx2 = get_dx2();
 	$db = get_db();	
 
-	$forumlist = $db->index_fetch('forum', 'fid', array(), array(), 0, 2000);
+	$forumlist = $db->index_fetch('forum', 'fid', array(), array(), 0, 500);
 	foreach($forumlist as $forum) {
 		
 		$modids = $modnames = '';
@@ -870,7 +1111,12 @@ function upgrade_forum2() {
 			$modids .= (empty($modids) ? '' : ' ').$mod['uid'];
 			$modnames .= (empty($modnames) ? '' : ' ').$user['username'];
 		}
+		// 重新统计 threads, posts
+		$threads = $db->index_count('thread', array('fid'=>$fid));
+		$posts = $db->index_count('post', array('fid'=>$fid));
 		
+		$forum['threads'] = $threads;
+		$forum['posts'] = $posts;
 		$forum['modids'] = $modids;
 		$forum['modnames'] = $modnames;
 		$db->update("forum-fid-$id", $forum);
@@ -1010,20 +1256,8 @@ function save_upgrade_process() {
 	file_put_contents($file, "$step $start $start2");
 }
 
-function message($s, $url = '', $timeout = 2) {
-	DEBUG && $timeout = 1000;
+function show_header() {
 	global $conf;
-	
-	$s = $url ? "<h2>$s</h2><p><a href=\"$url\">页面将在<b>$timeout</b>秒后自动跳转，点击这里手工跳转。</a></p>
-		<script>
-			setTimeout(function() {
-				window.location=\"$url\";
-				setInterval(function() {
-					window.location=\"$url\";
-				}, 30000);
-			}, ".($timeout * 1000).");
-		</script>
-	" : "<h2>$s</h2>";
 	echo '
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 	<html xmlns="http://www.w3.org/1999/xhtml">
@@ -1037,14 +1271,32 @@ function message($s, $url = '', $timeout = 2) {
 		<h3 style="color: #FFFFFF; line-height: 26px;margin-left: 16px;">Discuz! 2.0 转 Xiuno BBS 2.0.0 Release 程序</h3>
 		<p style="color: #BBBBBB; margin-left: 16px;">本程序会记录上次升级的进度，如果需要重头转换，请删除进度记录文件'.$conf['tmp_path'].'upgrade_process.txt'.'</p>
 	</div>
-	<div id="body" style="padding: 16px;">
-		'.$s.'
-	</div>
-	<div id="footer"> Powered by Xiuno (c) 2010 </div>
-	<div style="color: #888888;">'.(DEBUG ? nl2br(print_r($_SERVER['sqls'], 1)) : '').'</div>
-	</body>
-	</html>';
-	
+	<div id="body" style="padding: 16px;">';
+}
+
+function show_footer() {
+	echo '
+		</div>
+			<div id="footer"> Powered by Xiuno (c) 2010 </div>
+			<div style="color: #888888;">'.(DEBUG ? nl2br(print_r($_SERVER['sqls'], 1)) : '').'</div>
+			</body>
+			</html>';
+}
+
+function message($s, $url = '', $timeout = 2) {
+	DEBUG && $timeout = 1000;
+	show_header();
+	echo $url ? "<h2>$s</h2><p><a href=\"$url\">页面将在<b>$timeout</b>秒后自动跳转，点击这里手工跳转。</a></p>
+		<script>
+			setTimeout(function() {
+				window.location=\"$url\";
+				setInterval(function() {
+					window.location=\"$url\";
+				}, 30000);
+			}, ".($timeout * 1000).");
+		</script>
+	" : "<h2>$s</h2>";
+	show_footer();
 	save_upgrade_process();
 	exit;
 }
