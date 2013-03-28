@@ -181,8 +181,7 @@ function upgrade_forum_policy() {
 		$policy['threadtypefid'] =  core::gpc('threadtypefid', 'P');
 		$policyfile = $conf['tmp_path'].'upgrade_policy.txt';
 		file_put_contents($policyfile, core::json_encode($policy));
-		print_r($policy);exit;
-		message('升级策略已经保存，下一步开始升级版块！', '?step=upgrade_forum');
+		message('升级策略已经保存，下一步开始升级版块！', '?step=upgrade_forum&start=0');
 	}
 	
 	show_header();
@@ -235,7 +234,7 @@ function upgrade_forum_policy() {
 			
 			$check1 = $policy['fidto'][$fid] == 'forum' ? ' checked="checked"' : '';
 			$check2 = $policy['fidto'][$fid] == 'threadtype' ? ' checked="checked"' : '';
-			$check3 = $policy['threadtypefid'][$fup] == 1 ? ' checked="checked"' : '';
+			$check3 = $policy['threadtypefid'][$fup] == $fid ? ' checked="checked"' : '';
 		
 			$forum['name'] = strip_tags($forum['name']); 
 			echo "<table width=\"700\">
@@ -300,7 +299,7 @@ function load_upgrade_policy() {
 	$policy = (array)core::json_decode($s);
 	
 	// 初始化。
-	if(empty($policy) || !isset($policy['keepfup']) || !isset($policy['fidto']) || !isset($policy['threadtypefid'])) {
+	if(empty($policy)) {
 		$policy = init_policy();
 	}
 	return $policy;
@@ -376,6 +375,7 @@ function upgrade_forum() {
 			list($table, $col, $fid) = explode('-', $key);
 			$old = $dx2->get("forum_forum-fid-$fid");
 			$old2 = $dx2->get("forum_forumfield-fid-$fid");
+			$fup = $old['fup'];
 			
 			// fix dx2 empty forumname
 			if(empty($old['name'])) continue;
@@ -392,43 +392,44 @@ function upgrade_forum() {
 				continue;
 			}
 			
-			// 根据策略忽略版块
-			if($old['fup'] == 0 && $policy['keepfup'][$fup] == 0) {
-				continue;
-			}
-			
 			// a:6:{s:8:"required";b:1;s:8:"listable";b:0;s:6:"prefix";s:1:"0";s:5:"types";a:3:{i:1;s:7:"fenlei1";i:2;s:7:"fenlei2";i:3;s:7:"fenlei3";}s:5:"icons";a:3:{i:1;s:0:"";i:2;s:0:"";i:3;s:0:"";}s:10:"moderators";a:3:{i:1;N;i:2;N;i:3;N;}}
 			
 			// 四种情况： 大区|版块  *  保留大区|保留大区
 			if($old['fup'] == 0) {
-				// 初始化一个空壳版块，
-				$arr = array (
-					'fid'=> $old['fid'],
-					'fup'=> $old['fup'],
-					'name'=> strip_tags($old['name']),
-					'rank'=> $old['displayorder'],
-					'threads'=> 0,
-					'posts'=> 0,
-					'todayposts'=> 0,
-					'lasttid'=> 0,
-					'brief'=> '',
-					'accesson'=> 0,
-					'modids'=> '',
-					'modnames'=> '',
-					'toptids'=> '',
-					'orderby'=> 0,
-					'seo_title'=> '',
-					'seo_keywords'=> '',
-				);
 				
-				$db->set("forum-fid-$fid", $arr);
+				// 根据策略忽略版块
+				if(empty($policy['keepfup'][$fid])) {
+					continue;
+				} else {
+					
+					// 初始化一个空壳版块，
+					$arr = array (
+						'fid'=> $old['fid'],
+						'fup'=> $old['fup'],
+						'name'=> strip_tags($old['name']),
+						'rank'=> $old['displayorder'],
+						'threads'=> 0,
+						'posts'=> 0,
+						'todayposts'=> 0,
+						'lasttid'=> 0,
+						'brief'=> '',
+						'accesson'=> 0,
+						'modids'=> '',
+						'modnames'=> '',
+						'toptids'=> '',
+						'orderby'=> 0,
+						'seo_title'=> '',
+						'seo_keywords'=> '',
+					);
+					
+					$db->set("forum-fid-$fid", $arr);
+				}
 			} else {
 				
-				// 判断 fup keepup
-				$fup = $policy['fup'][$fid];
+				// ---------> 普通二级版块（非大区）
 				
-				// 将当前版块设置成主题分类
-				if($policy['keepfup'] == $fup) {
+				// 判断大区是否保留，如果保留大区：则当前二级版块为主题分类
+				if($policy['keepfup'][$fup]) {
 					$savefid = get_fid_by_policy($fid, $policy);
 						
 					$mthread_type_cate->create(array('fid'=>$fup, 'cateid'=>1, 'catename'=>'分类', 'rank'=>1, 'enable'=>1));
@@ -445,7 +446,7 @@ function upgrade_forum() {
 					$db->set("thread_type-fid-$fid-typeid-$newtypeid", $arr);
 					
 					// 升级版块下的主题分类
-					if($policy['threadtypefid'][$fup] == $fid && $old2['threadtypes']) {
+					if(isset($policy['threadtypefid'][$fup]) && $policy['threadtypefid'][$fup] == $fid && $old2['threadtypes']) {
 						$mthread_type_cate->create(array('fid'=>$fup, 'cateid'=>2, 'catename'=>'原分类', 'rank'=>2, 'enable'=>1));
 						$threadtypes = dx2_unserialize($old2['threadtypes'], $dx2->dbcharset);
 						if(!empty($threadtypes)) {
@@ -467,9 +468,7 @@ function upgrade_forum() {
 						}
 					}
 					
-					// 帖子总数加到上级版块，这里不加了，最后重新统计。
-					
-				// 正常升级成版块	
+				// 判断大区是否保留，如果不保留大区：正常升级成版块	
 				} else {
 					
 					// 主题分类
