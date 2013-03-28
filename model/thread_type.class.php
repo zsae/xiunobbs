@@ -67,11 +67,8 @@ class thread_type extends base_model {
 	// 将 typeid, 插入到 nextid 之前
 	public function update_rank($fid, $typeid, $nextid, $typecateid) {
 		
-		// 初始化 type
-		$this->init($fid, $typecateid);
-		
 		$typecateid = misc::mid($typecateid, 1, 4);
-		$arrlist = $this->get_list_by_fid_cateid($fid, $typecateid);
+		$arrlist = $this->get_list_by_fid_cateid($fid, $typecateid, TRUE);
 		$type = $arrlist[$typeid];
 		$next = $arrlist[$nextid];
 		
@@ -80,7 +77,16 @@ class thread_type extends base_model {
 		$values = array_values($arrlist);
 		$start = array_search($nextid, $keys);
 		$end = array_search($typeid, $keys);
-		$movelist = array_slice($values, $start, $end - $start + 1);
+		
+		/*
+			更新 start - end 之间的元素的 rank 值
+			1	2	3	4	5	6
+			A	B	C	D	E	F
+				|start			end|
+		*/
+		$movelist = array_slice($values, $start, $end - $start + 1); // 中间一块的数据
+		//$s = "start: $start, end: $end";
+		//echo $s;exit;
 		foreach($movelist as $k=>$v) {
 			$v['rank'] = $v['typeid'] == $typeid ? $next['rank'] : $movelist[$k + 1]['rank'];
 			$this->update($v);

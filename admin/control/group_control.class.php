@@ -71,7 +71,6 @@ class group_control extends admin_control {
 			$namearr = core::gpc('name', 'P');
 			$creditsfromarr = core::gpc('creditsfrom', 'P');
 			$creditstoarr = core::gpc('creditsto', 'P');
-			$colorarr = core::gpc('color', 'P');
 
 			// update group
 			foreach((array)$namearr as $groupid=>$v) {
@@ -79,7 +78,6 @@ class group_control extends admin_control {
 				$name = $namearr[$groupid];
 				$creditsfrom = intval($creditsfromarr[$groupid]);
 				$creditsto = intval($creditstoarr[$groupid]);
-				$color = $colorarr[$groupid];
 				
 				// 错误检查
 				$error[$groupid]['name'] = $this->group->check_name($name);
@@ -90,7 +88,6 @@ class group_control extends admin_control {
 					$group['name'] = $name;
 					$group['creditsfrom'] = $creditsfrom;
 					$group['creditsto'] = $creditsto;
-					$group['color'] = $color;
 					$this->group->update($group);
 				}
 			}
@@ -99,13 +96,11 @@ class group_control extends admin_control {
 			$newnamearr = core::gpc('newname', 'P');
 			$newcreditsfromarr = core::gpc('newcreditsfrom', 'P');
 			$newcreditstoarr = core::gpc('newcreditsto', 'P');
-			$newcolorarr = core::gpc('newcolor', 'P');
 			foreach((array)$newnamearr as $groupid=>$v) {
 				$error[$groupid] = array();
 				$name = $newnamearr[$groupid];
 				$creditsfrom = intval($newcreditsfromarr[$groupid]);
 				$creditsto = intval($newcreditstoarr[$groupid]);
-				$color = $newcolorarr[$groupid];
 				
 				// 错误检查
 				$error[$groupid]['creditsto'] = $groupid > 10 && $name ? $this->group->check_creditsto($creditsto) : '';
@@ -116,7 +111,6 @@ class group_control extends admin_control {
 					$group['name'] = $name;
 					$group['creditsfrom'] = $creditsfrom;
 					$group['creditsto'] = $creditsto;
-					$group['color'] = $color;
 					$group['maxcredits'] = 0;
 					$group['maxgolds'] = 0;
 					$group['allowread'] = 1;
@@ -160,7 +154,6 @@ class group_control extends admin_control {
 			$name = core::gpc('name', 'P');
 			$creditsfrom = intval(core::gpc('creditsfrom', 'P'));
 			$creditsto = intval(core::gpc('creditsto', 'P'));
-			$color = core::gpc('color', 'P');
 			$maxcredits = intval(core::gpc('maxcredits', 'P'));
 			$maxgolds = intval(core::gpc('maxgolds', 'P'));
 
@@ -172,7 +165,6 @@ class group_control extends admin_control {
 				$group['name'] = $name;
 				$group['creditsfrom'] = $creditsfrom;
 				$group['creditsto'] = $creditsto;
-				$group['color'] = $color;
 				$group['maxcredits'] = $maxcredits;
 				$group['maxgolds'] = $maxgolds;
 				

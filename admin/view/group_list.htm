@@ -13,17 +13,15 @@
 					<td>用户组名称</td>
 					<td>起始积分</td>
 					<td>截止积分</td>
-					<td>颜色</td>
 					<td width="100" style="text-align: center;"></td>
 					<td width="100" style="text-align: center;">详情</td>
 				</tr>
 			<!--{loop $grouplist1 $group}-->
 				<tr align="center" groupid="$group[groupid]">
 					<td style="text-align: center;">$group[groupid]</td>
-					<td><input type="text" size="12" name="name[{$group[groupid]}]" value="$group[name]" {if $group[color]}style="color: $group[color]"{/if} /></td>
+					<td><input type="text" size="12" name="name[{$group[groupid]}]" value="$group[name]" /></td>
 					<td><input type="text" size="8" name="creditsfrom[{$group[groupid]}]" value="$group[creditsfrom]" disabled="disabled" /></td>
 					<td><input type="text" size="8" name="creditsto[{$group[groupid]}]" value="$group[creditsto]" disabled="disabled" /></td>
-					<td><input type="text" size="8" name="color[{$group[groupid]}]" value="$group[color]" /></td>
 					<td style="text-align: center;"></td>
 					<td align="left" style="text-align: center;"><a href="?group-detail-groupid-$group[groupid].htm">详情</a></td>
 				</tr>
@@ -44,17 +42,15 @@
 					<td>用户组名称</td>
 					<td>起始积分</td>
 					<td>截止积分</td>
-					<td>颜色</td>
 					<td width="100" style="text-align: center;"></td>
 					<td width="100" style="text-align: center;">详情</td>
 				</tr>
 			<!--{loop $grouplist2 $group}-->
 				<tr align="center" groupid="$group[groupid]">
 					<td style="text-align: center;">$group[groupid]</td>
-					<td><input type="text" size="12" name="name[{$group[groupid]}]" value="$group[name]" {if $group[color]}style="color: $group[color]"{/if}  /></td>
+					<td><input type="text" size="12" name="name[{$group[groupid]}]" value="$group[name]" /></td>
 					<td><input type="text" size="8" name="creditsfrom[{$group[groupid]}]" value="$group[creditsfrom]" disabled="disabled" /></td>
 					<td><input type="text" size="8" name="creditsto[{$group[groupid]}]" value="$group[creditsto]" disabled="disabled" /></td>
-					<td><input type="text" size="8" name="color[{$group[groupid]}]" value="$group[color]" /></td>
 					<td style="text-align: center;"><input type="button" value="删除" class="button smallgrey" onclick="if(window.confirm('删除用户组时，系统会自动调整改组用户，可能比较慢，确定删除该用户组吗？'))window.location='?group-delete-groupid-$group[groupid].htm'" /></td>
 					<td style="text-align: center;"><a href="?group-detail-groupid-$group[groupid].htm">详情</a></td>
 				</tr>
@@ -65,7 +61,6 @@
 					<td><input type="text" size="12" name="newname[$newgroupid2]" value="" /></td>
 					<td><input type="text" size="8" name="newcreditsfrom[$newgroupid2]" value="0" disabled="disabled" /></td>
 					<td><input type="text" size="8" name="newcreditsto[$newgroupid2]" value="0" disabled="disabled" /></td>
-					<td><input type="text" size="8" name="newcolor[$newgroupid2]" value="0" /></td>
 					<td style="text-align: center;"><input type="button" value="新增" class="button smallblue" id="addspecialgroup" /></td>
 					<td></td>
 				</tr>
@@ -94,10 +89,9 @@
 				<!--{loop $grouplist3 $group}-->
 				<tr align="center" groupid="$group[groupid]">
 					<td style="text-align: center;">$group[groupid]</td>
-					<td><input type="text" size="12" name="name[{$group[groupid]}]" value="$group[name]" {if $group[color]}style="color: $group[color]"{/if} /></td>
+					<td><input type="text" size="12" name="name[{$group[groupid]}]" value="$group[name]" /></td>
 					<td><input type="text" size="8" name="creditsfrom[{$group[groupid]}]" value="$group[creditsfrom]" /></td>
 					<td><input type="text" size="8" name="creditsto[{$group[groupid]}]" value="$group[creditsto]" /></td>
-					<td><input type="text" size="8" name="color[{$group[groupid]}]" value="$group[color]" /></td>
 					<td style="text-align: center;"><input type="button" value="删除" class="button smallgrey" onclick="if(window.confirm('删除用户组时，系统会自动调整改组用户，可能比较慢，确定删除该用户组吗？'))window.location='?group-delete-groupid-$group[groupid].htm'" /></td>
 					<td style="text-align: center;"><a href="?group-detail-groupid-$group[groupid].htm">详情</a></td>
 				</tr>
@@ -107,7 +101,6 @@
 					<td><input type="text" size="12" name="newname[$newgroupid]" value="" /></td>
 					<td><input type="text" size="8" name="newcreditsfrom[$newgroupid]" value="" /></td>
 					<td><input type="text" size="8" name="newcreditsto[$newgroupid]" value="" /></td>
-					<td><input type="text" size="8" name="newcolor[$newgroupid]" value="" /></td>
 					<td style="text-align: center;"><input type="button" value="新增" class="button smallblue" id="addusergroup" /></td>
 					<td></td>
 				</tr>
@@ -152,7 +145,6 @@ $('#addusergroup').click(function() {
 	$('td:eq(1) input', jlasttr).val('').attr('name', 'newname['+groupid+']');
 	$('td:eq(2) input', jlasttr).val('').attr('name', 'newcreditsfrom['+groupid+']');
 	$('td:eq(3) input', jlasttr).val('').attr('name', 'newcreditsto['+groupid+']');
-	$('td:eq(4) input', jlasttr).val('').attr('name', 'newcolor['+groupid+']');
 	
 	jlasttr.before(jclone);
 });
@@ -174,7 +166,6 @@ $('#addspecialgroup').click(function() {
 	$('td:eq(1) input', jlasttr).val('').attr('name', 'newname['+groupid+']');
 	$('td:eq(2) input', jlasttr).val('').attr('name', 'newcreditsfrom['+groupid+']');
 	$('td:eq(3) input', jlasttr).val('').attr('name', 'newcreditsto['+groupid+']');
-	$('td:eq(4) input', jlasttr).val('').attr('name', 'newcolor['+groupid+']');
 	
 	jlasttr.before(jclone);
 });
@@ -203,9 +194,6 @@ $('#groupsubmit1, #groupsubmit2, #groupsubmit3').click(function() {
 			}
 			if(json[groupid]['creditsto']) {
 				$('tr[groupid='+groupid+'] td:eq(3) input').alert(json[groupid]['creditsto']); succeed = 0;
-			}
-			if(json[groupid]['color']) {
-				$('tr[groupid='+groupid+'] td:eq(4) input').alert(json[groupid]['color']); succeed = 0;
 			}
 		}
 		
