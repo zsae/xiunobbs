@@ -52,7 +52,7 @@ p {margin-top: 4px;}
 .grey, .grey a{color: #888888;}
 .grey2, .grey2 a{color: #BBBBBB;}
 .xgrey {opacity: 0.5; filter:Alpha(Opacity=50); }/* filter:progid:DXImageTransform.Microsoft.BasicImage(grayscale=1); FILTER: gray;  */
-.code, .quote, pre {border: 1px solid #AAAAAA; background: #E9E9E9; padding: 4px; font-size: 12px; margin-top: 4px; margin-bottom: 4px;}
+.code, .quote, pre {border: 1px dashed #C8C8C8; background: #FAFAFA; padding: 8px; font-size: 12px; margin-top: 4px; margin-bottom: 4px;}
 .submit {margin-top: 4px;}
 .checked {font-weight: 800;}
 

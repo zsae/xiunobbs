@@ -258,6 +258,13 @@ class post_control extends common_control {
 		
 		if(!$this->form_submit()) {
 			
+			$pid = intval(core::gpc('pid'));
+			$post = $this->post->read($fid, $pid);
+			$this->check_post_exists($post);
+			
+			// 引用前两百个字
+			$message = $this->quote_message($post);
+			
 			// 附件相关
 			$attachlist = $this->get_attachlist_by_tmp($uid);
 			$this->init_editor_attach($attachlist, '00');
@@ -265,6 +272,7 @@ class post_control extends common_control {
 			$this->view->assign('fid', $fid);
 			$this->view->assign('tid', $tid);
 			$this->view->assign('thread', $thread);
+			$this->view->assign('message', $message);
 			$this->view->assign('forum', $forum);
 			// hook post_post_before.php
 			$this->view->display('post_post_ajax.htm');
@@ -657,6 +665,17 @@ class post_control extends common_control {
 		$this->view->assign('typeselect3', $typeselect3);
 		$this->view->assign('typeselect4', $typeselect4);
 		return array('typeselect1'=>$typeselect1, 'typeselect2'=>$typeselect2, 'typeselect3'=>$typeselect3, 'typeselect4'=>$typeselect4);
+	}
+	
+	private function quote_message($post) {
+		$s = $post['message'];
+		$s = str_ireplace(array('<br>', '<br />', '<br  />'), "\n", $s);
+		$s = preg_replace('#<div\s*class=\"quote\">.*?</div>#ism', "", $s); // 避免引用嵌套！
+		$s = strip_tags($s);
+		$s = preg_replace('#[\r\n]{2,}#', "<br />", $s);
+		$s = utf8::substr($s, 0, 200);
+		$s = "<div class=\"quote\"><span class=\"grey\">引用 $post[username]：</span><p>$s</p></div><br /><br />";
+		return $s;
 	}
 	//hook post_control_after.php
 }
