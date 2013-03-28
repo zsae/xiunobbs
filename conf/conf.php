@@ -127,10 +127,10 @@ return array(
 	'click_server' => 'http://x.net/service/clickd/',	// 记录主题点击数，论坛点击数
 	
 	// 加密KEY，
-	'auth_key' => '937d8235bbaf889a9248b6606f46b249',
+	'auth_key' => '0a4d12ce2593da4f1d236d5911c8a2ed',
 	
 	// 站点的ID，用来和官方通信，下载，安装插件。
-	'siteid' => '6ae5e4c68d67b32d911b63127e1c460a',
+	'siteid' => '557f5fe3315fcfa776601359a28068bc',
 	
 	'cookie_pre' => 'bbs_',
 	'cookie_domain' => '',

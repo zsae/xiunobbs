@@ -244,7 +244,11 @@
 		<div style="text-align: center;">
 			<input type="checkbox" name="tidarr[]" value="$thread[fid]-$thread[tid]" checked="checked" style="display: none;" />
 			<input type="button" class="button smallblue" id="mod_top"  value="置顶" />
+			<input type="button" class="button smallblue" id="mod_top"  value="置顶" />
+			<!--{if $forum[typecates]}-->
 			<input type="button" class="button smallblue" id="mod_type"  value="主题分类" />
+			<!--{/if}-->
+			<input type="button" class="button smallblue" id="mod_digest"  value="精华" />
 			<input type="button" class="button smallblue" id="mod_move"  value="移动" />
 			<!--{hook thread_index_mod_before_delete.htm}-->
 			<input type="button" class="button smallblue" id="mod_delete"  value="删除" />
@@ -285,6 +289,22 @@ $('#mod_type').click(function() {
 	ajaxdialog_request('?mod-type-fid-$fid.htm'+sep+postdata, function() {
 		window.location.reload();
 	});
+});
+
+// 精华
+$('#mod_digest').click(function() {
+	var postdata = sep;
+	$.each($('#body input[name="tidarr[]"]:checked'), function(k, v) {
+		postdata += '&tidarr[]='+v.value;
+	});
+	if(postdata == sep) {
+		alert('请选择主题！');
+		return false;
+	}
+	ajaxdialog_request('?mod-digest-fid-$fid.htm'+sep+postdata, function() {
+		window.location.reload();
+	});
+	return false;
 });
 
 // 删除
