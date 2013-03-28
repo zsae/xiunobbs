@@ -61,7 +61,6 @@ class cron extends base_model {
 			$arr = explode(' ', $_SERVER['time_fmt']);
 			list($y, $n, $d) = explode('-', $arr[0]);
 			
-			// windows 下的锁有可能会出问题。保险起见，判断一下。
 			$stat = $this->stat->read($y, $n, $d);
 			if(empty($stat)) {
 				$threads = $this->thread->count();
@@ -80,7 +79,6 @@ class cron extends base_model {
 				$this->stat->create($stat);
 			}
 		
-			// 每日清空一次此文件
 			$this->kv->delete('resetpw');
 			
 			// 清空
