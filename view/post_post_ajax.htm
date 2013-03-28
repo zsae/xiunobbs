@@ -307,10 +307,13 @@ function delay_execute(dialog, recall) {
 				$('a.file', _this.toolbar).click(function() {
 					$('#file_upload_00').dialog('open');
 				});
+				
+				//alert($('#post_message')[0].editor);
 			},
 			baseurl: 'view/js/editor/'
 		});
 		
+		$('#post_message')[0].editor._focus();
 		
 		$('#post_submit').click(function() {
 			$('div.alert').remove();
