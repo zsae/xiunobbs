@@ -119,6 +119,7 @@ class thread extends base_model {
 		// 发表主题的积分策略不同于回帖的策略。
 		$ruser[$uid]['credits'] = $ruser[$uid]['credits'] - $this->conf['credits_policy_post'] +  - $this->conf['credits_policy_thread'];
 		$ruser[$uid]['golds'] = $ruser[$uid]['golds'] - $this->conf['golds_policy_post'] +  - $this->conf['golds_policy_thread'];
+		$ruser[$uid]['threads']++;
 		
 		$rforum['threads']++;
 		$rforum['posts'] += $thread['posts'];

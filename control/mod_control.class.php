@@ -423,11 +423,11 @@ class mod_control extends common_control {
 				$thread['typeid4'] = 0;
 				$this->thread->update($thread);
 				
-				$this->thread->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2));
-				$this->post->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2));
-				$this->attach->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2));
-				$this->mypost->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2));
-				$this->modlog->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2));
+				$this->thread->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2), TRUE);
+				$this->post->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2), TRUE);
+				$this->attach->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2), TRUE);
+				$this->mypost->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2), TRUE);
+				$this->modlog->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2), TRUE);
 				
 				// ----------->更新相关数据的 fid end
 				
