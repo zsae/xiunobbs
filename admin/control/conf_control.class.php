@@ -252,7 +252,6 @@ class conf_control extends admin_control {
 				'post'=>'pid',
 				'attach'=>'aid',
 				'attach_download'=>'aid',
-				'friendlink'=>'linkid',
 				'pm'=>'pmid'
 			);
 			

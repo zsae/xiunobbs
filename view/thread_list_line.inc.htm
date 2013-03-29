@@ -19,10 +19,10 @@
 			<!--{if $thread[top]}--><span class="icon icon-top-$thread[top]" style="margin-right: 2px;" title="置顶主题"></span><!--{/if}-->
 			<!--{if $thread[digest]}--><span class="icon icon-digest-$thread[digest]" style="margin-right: 2px;" title="精华主题"></span><!--{/if}-->
 		
-			<!--{if $thread[typename1]}--><a href="?forum-index-fid-$thread[fid]-typeid1-$thread[typeid1].htm" target="_blank" class="grey middle">[{$thread[typename1]}]</a><!--{/if}-->
-			<!--{if $thread[typename2]}--><a href="?forum-index-fid-$thread[fid]-typeid2-$thread[typeid2].htm" target="_blank" class="grey middle">[{$thread[typename2]}]</a><!--{/if}-->
-			<!--{if $thread[typename3]}--><a href="?forum-index-fid-$thread[fid]-typeid3-$thread[typeid3].htm" target="_blank" class="grey middle">[{$thread[typename3]}]</a><!--{/if}-->
-			<!--{if $thread[typename4]}--><a href="?forum-index-fid-$thread[fid]-typeid4-$thread[typeid4].htm" target="_blank" class="grey middle">[{$thread[typename4]}]</a><!--{/if}-->
+			<!--{if $thread[typename1]}--><a href="?forum-index-fid-$thread[fid]-typeid1-$thread[typeid1].htm" class="grey middle">[{$thread[typename1]}]</a><!--{/if}-->
+			<!--{if $thread[typename2]}--><a href="?forum-index-fid-$thread[fid]-typeid2-$thread[typeid2].htm" class="grey middle">[{$thread[typename2]}]</a><!--{/if}-->
+			<!--{if $thread[typename3]}--><a href="?forum-index-fid-$thread[fid]-typeid3-$thread[typeid3].htm" class="grey middle">[{$thread[typename3]}]</a><!--{/if}-->
+			<!--{if $thread[typename4]}--><a href="?forum-index-fid-$thread[fid]-typeid4-$thread[typeid4].htm" class="grey middle">[{$thread[typename4]}]</a><!--{/if}-->
 		 	
 			 <!--{hook thread_list_line_inc_subject_before.htm}-->
 			<a href="?thread-index-fid-$thread[fid]-tid-$thread[tid].htm" class="subject_link">$thread[subject]</a>

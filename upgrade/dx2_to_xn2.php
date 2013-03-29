@@ -311,6 +311,9 @@ function init_policy() {
 	global $conf;
 	$dx2 = get_dx2();
 	
+	if(is_file($policyfile)) {
+		throw new Exception('tmp/upgrade_policy.txt 已经存在！');
+	}
 	$forumlist = $dx2->index_fetch('forum_forum', 'fid', array(), array(), 0, 4000);
 	$fuparr = array();
 	foreach($forumlist as $forum) {
@@ -335,7 +338,7 @@ function get_fid_by_policy($fid, $policy) {
 		}
 	} else {
 		// 移动到上一级
-		if($policy['keepfup']) {
+		if($policy['fidto'][$fid] == 'threadtype') {
 			return $fup;
 		} else {
 			return $fid;
@@ -558,7 +561,7 @@ function upgrade_forum() {
 	} else {
 		
 		// fid, typeid -> newfid, typeid1, typeid2
-		message('升级 forum 完成，接下来升级 thread ...', '?step=upgrade_thread&start=0');
+		message('升级 forum 完成，接下来升级 thread ...', '?step=upgrade_thread');
 	}
 }
 
@@ -584,13 +587,15 @@ function upgrade_thread() {
 		foreach($arrlist as $key) {
 			list($table, $_, $tid) = explode('-', $key);
 			$old = $dx2->get("forum_thread-tid-$tid");
+			
+			if(empty($old)) continue;
 			$fid = $old['fid'];
 			//if($old['status'] == 0) continue;
 			if($old['displayorder'] == -1) continue;
 			if($old['displayorder'] == -2) continue;
 			if($old['displayorder'] == 2) $old['displayorder'] = 1;
-			if(!isset($policy['fuparr'][$fid]) ) continue;
-			$fup = $policy['fuparr'][$fid];
+			if(!isset($policy['fuparr'][$fid]) ) continue; // 版块不存在，则不升级
+			$fup = $policy['fuparr'][$fid];			// 大区也不升级
 			if($fup == 0) continue;
 			
 			$lastuid = 0;
