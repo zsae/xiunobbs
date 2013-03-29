@@ -8,9 +8,9 @@
 /*
 	流程：
 		1. 新建 rc3 目录，将所有文件目录移动到 rc3/ 下。
-		2. 上传 release 程序到网站根目录
-		3. 拷贝 upgrade/rc3_release.php 这个文件到网站根目录
-		3. 访问 http://www.domain.com/rc3_release.php
+		2. 上传 upload_me 下的文件到网站根目录
+		3. 拷贝 upgrade/rc3_release.php 到网站根目录
+		3. 访问 http://www.domain.com/rc3_to_release.php
 		5. 删除升级程序 rc3_release.php
 */
 
@@ -24,11 +24,11 @@ define('BBS_PATH', str_replace('\\', '/', dirname(__FILE__)).'/');
 if(!($conf = include BBS_PATH.'conf/conf.php')) {
 	message('配置文件不存在。');
 }
-
 define('FRAMEWORK_PATH', BBS_PATH.'xiunophp/');
 define('FRAMEWORK_TMP_PATH', $conf['tmp_path']);
 define('FRAMEWORK_LOG_PATH', $conf['log_path']);
 include FRAMEWORK_PATH.'core.php';
+
 core::init();
 core::ob_start();
 $step = core::gpc('step');
@@ -84,34 +84,26 @@ function upgrade_conf() {
 	
 	$conf = include BBS_PATH.'conf/conf.php';
 	$mkv = new kv($conf);
-	$mkv->xset('app_name', $old['app_name']); 
-	$mkv->xset('app_copyright', $old['app_copyright']); 
-	$mkv->xset('timeoffset', $old['timeoffset']); 
-	$mkv->xset('forum_index_pagesize', $old['forum_index_pagesize']); 
-	$mkv->xset('site_pv', $old['site_pv']); 
-	$mkv->xset('site_runlevel', $old['site_runlevel']); 
-	$mkv->xset('threadlist_hotviews', $old['threadlist_hotviews']); 
-	$mkv->xset('seo_title', $old['seo_title']); 
-	$mkv->xset('seo_keywords', $old['seo_keywords']); 
-	$mkv->xset('seo_description', $old['seo_description']); 
-	$mkv->xset('search_type', $old['search_type']); 
-	$mkv->xset('china_icp', $old['china_icp']); 
-	$mkv->xset('footer_js', $old['footer_js']); 
-	$mkv->xset('iptable_on', $old['iptable_on']); 
-	$mkv->xset('badword_on', $old['badword_on']); 
+	$mkv->xset('app_name', $old['app_name']);
+	$mkv->xset('app_copyright', $old['app_copyright']);
+	$mkv->xset('timeoffset', $old['timeoffset']);
+	$mkv->xset('forum_index_pagesize', $old['forum_index_pagesize']);
+	$mkv->xset('site_pv', $old['site_pv']);
+	$mkv->xset('site_runlevel', $old['site_runlevel']);
+	$mkv->xset('threadlist_hotviews', $old['threadlist_hotviews']);
+	$mkv->xset('seo_title', $old['seo_title']);
+	$mkv->xset('seo_keywords', $old['seo_keywords']);
+	$mkv->xset('seo_description', $old['seo_description']);
+	$mkv->xset('search_type', $old['search_type']);
+	$mkv->xset('china_icp', $old['china_icp']);
+	$mkv->xset('footer_js', $old['footer_js']);
+	$mkv->xset('iptable_on', $old['iptable_on']);
+	$mkv->xset('badword_on', $old['badword_on']);
 	$mkv->xset('online_hold_time', $old['online_hold_time']);
 	$mkv->xsave();
-	
-	
-	foreach(array('credits_policy_post', 'credits_policy_thread', 
-					'credits_policy_digest_1', 'credits_policy_digest_2', 'credits_policy_digest_3',
-					'golds_policy_post', 'golds_policy_thread',
-					'golds_policy_digest_1', 'golds_policy_digest_2', 'golds_policy_digest_3',
-					'reg_email_on', 'reg_init_golds', 'resetpw_on',
-					'sphinx_host', 'sphinx_port', 'sphinx_datasrc', 'sphinx_deltasrc',
 					
 	// 生成局部配置
-	$kvconf = array(
+	$kvconf = array (
 		'credits_policy_thread' => 2,		// 发主题增加的积分
 		'credits_policy_post' => 0,		
 		'credits_policy_digest_1' => 1,	
@@ -142,153 +134,163 @@ function alter_table() {
 	global $conf;
 	// 2. 修改表结构
 	$sql = "
-		alter table bbs_attach 
-			add column tid int(11) NOT NULL  DEFAULT '0' after aid, 
-			change pid pid int(11) NOT NULL  DEFAULT '0' after tid, 
-			add KEY fidtid (fid,tid), COMMENT='';
-		
-		alter table bbs_forum 
-			change name name char(16) NOT NULL  after fid, 
-			change todayposts todayposts mediumint(8) unsigned NOT NULL  DEFAULT '0' after posts, 
-			change lasttid lasttid int(11) NOT NULL  DEFAULT '0' after todayposts, 
-			change brief brief text NOT NULL  after lasttid, 
-			change accesson accesson tinyint(1) NOT NULL  DEFAULT '0' after brief, 
-			add column typecates char(26) NOT NULL  after modnames, 
-			change toptids toptids char(240) NOT NULL  after typecates, 
-			change status status tinyint(11) NOT NULL  DEFAULT '0' after toptids, 
-			change orderby orderby tinyint(11) NOT NULL  DEFAULT '0' after status, 
-			change seo_title seo_title char(64) NOT NULL  after orderby, 
-			drop column fup, 
-			drop column replies, 
-			drop column digests, 
-			drop column todayreplies, 
-			drop column tops, 
-			drop column lastpost, 
-			drop column lastsubject, 
-			drop column lastuid, 
-			drop column lastusername, 
-			drop column rule, 
-			drop column icon, 
-			drop column lastcachetime, 
-			drop column listtype, 
-			drop column indexforums, 
-			drop key fup, COMMENT='';
-		
-		alter table bbs_group 
-			change color color char(7) NOT NULL  after creditsto, 
-			change allowupdate allowupdate int(10) NOT NULL  DEFAULT '0' after allowtop, 
-			drop column upfloors, 
-			drop column allowdigest, COMMENT='';
-		
-		alter table bbs_kv 
-			change k k char(32) NOT NULL  first, 
-			change expiry expiry int(11) unsigned NOT NULL  DEFAULT '0' after v, COMMENT='';
-		
-		alter table bbs_post 
-			change rates rates int(11) unsigned NOT NULL  DEFAULT '0' after imagenum, 
-			drop column replies, COMMENT='';
-		
-		alter table bbs_runtime 
-			change k k char(32) NOT NULL  first, 
-			change v v text NOT NULL  after k, 
-			add column expiry int(11) unsigned NOT NULL  DEFAULT '0' after v,  Engine=MyISAM, COMMENT='';
-		
-		alter table bbs_stat 
-			change users users int(11) unsigned NOT NULL  DEFAULT '0' after posts, 
-			change newusers newusers int(11) unsigned NOT NULL  DEFAULT '0' after newposts, 
-			drop column replies, 
-			drop column newreplies, COMMENT='';
-		
-		alter table bbs_thread 
-			change top top tinyint(1) NOT NULL  DEFAULT '0' after posts, 
-			add column typeid1 int(10) unsigned NOT NULL  DEFAULT '0' after top, 
-			add column typeid2 int(10) unsigned NOT NULL  DEFAULT '0' after typeid1, 
-			add column typeid3 int(10) unsigned NOT NULL  DEFAULT '0' after typeid2, 
-			add column typeid4 int(10) unsigned NOT NULL  DEFAULT '0' after typeid3, 
-			change attachnum attachnum tinyint(3) NOT NULL  DEFAULT '0' after typeid4, 
-			change lastuid lastuid int(11) unsigned NOT NULL  DEFAULT '0' after status, 
-			drop column replies, 
-			drop column digest, 
-			drop column typename, 
-			drop column cateids, 
-			drop column catenames, 
-			drop column seo_keywords, 
-			drop column pids, 
-			drop column coverimg, 
-			drop column brief;
+	
+alter table bbs_attach 
+	add column tid int(11) NOT NULL  DEFAULT '0' after aid, 
+	change pid pid int(11) NOT NULL  DEFAULT '0' after tid, 
+	add KEY fidtid (fid,tid), COMMENT='';
+
+drop table bbs_digest;
+
+drop table bbs_digestcate;
+
+alter table bbs_forum 
+	change name name char(16) NOT NULL  after fid, 
+	change digests digests int(11) unsigned NOT NULL  DEFAULT '0' after posts, 
+	change lasttid lasttid int(11) NOT NULL  DEFAULT '0' after todayposts, 
+	change brief brief text NOT NULL  after lasttid, 
+	change accesson accesson tinyint(1) NOT NULL  DEFAULT '0' after brief, 
+	add column typecates char(26) NOT NULL  after modnames, 
+	change toptids toptids char(240) NOT NULL  after typecates, 
+	change orderby orderby tinyint(11) NOT NULL  DEFAULT '0' after toptids, 
+	change seo_title seo_title char(64) NOT NULL  after orderby, 
+	drop column fup, 
+	drop column replies, 
+	drop column todayreplies, 
+	drop column tops, 
+	drop column lastpost, 
+	drop column lastsubject, 
+	drop column lastuid, 
+	drop column lastusername, 
+	drop column rule, 
+	drop column icon, 
+	drop column lastcachetime, 
+	drop column status, 
+	drop column listtype, 
+	drop column indexforums, 
+	drop key fup, COMMENT='';
+
+drop table bbs_friendlink;
+
+alter table bbs_group 
+	change maxcredits maxcredits int(10) NOT NULL  DEFAULT '0' after creditsto, 
+	drop column upfloors, 
+	drop column color, COMMENT='';
+
+alter table bbs_kv 
+	change k k char(32) NOT NULL  first, 
+	change expiry expiry int(11) unsigned NOT NULL  DEFAULT '0' after v, COMMENT='';
+
+drop table bbs_pay;
+
+alter table bbs_post 
+	change rates rates int(11) unsigned NOT NULL  DEFAULT '0' after imagenum, 
+	drop column replies, COMMENT='';
+
+alter table bbs_runtime 
+	change k k char(32) NOT NULL  first, 
+	change v v text NOT NULL  after k, 
+	add column expiry int(11) unsigned NOT NULL  DEFAULT '0' after v,  Engine=MyISAM, COMMENT='';
+
+alter table bbs_stat 
+	change users users int(11) unsigned NOT NULL  DEFAULT '0' after posts, 
+	change newusers newusers int(11) unsigned NOT NULL  DEFAULT '0' after newposts, 
+	drop column replies, 
+	drop column newreplies, COMMENT='';
+
+alter table bbs_thread 
+	change floortime floortime int(10) unsigned NOT NULL  DEFAULT '0' after lastpost, 
+	change top top tinyint(1) NOT NULL  DEFAULT '0' after posts, 
+	add column typeid1 int(10) unsigned NOT NULL  DEFAULT '0' after top, 
+	add column typeid2 int(10) unsigned NOT NULL  DEFAULT '0' after typeid1, 
+	add column typeid3 int(10) unsigned NOT NULL  DEFAULT '0' after typeid2, 
+	add column typeid4 int(10) unsigned NOT NULL  DEFAULT '0' after typeid3, 
+	change digest digest tinyint(3) unsigned NOT NULL  DEFAULT '0' after typeid4, 
+	change attachnum attachnum tinyint(3) NOT NULL  DEFAULT '0' after digest, 
+	change lastuid lastuid int(11) unsigned NOT NULL  DEFAULT '0' after status, 
+	drop column replies, 
+	drop column typename, 
+	drop column cateids, 
+	drop column catenames, 
+	drop column seo_keywords, 
+	drop column pids, 
+	drop column coverimg, 
+	drop column brief, 
+	drop key fid, add KEY fid (fid,lastpost), 
+	add KEY fid_2 (fid,digest,tid);
 		alter table bbs_thread drop key typeid;
 		alter table bbs_thread drop key typeid_2;
-		
 		DROP TABLE IF EXISTS bbs_thread_type_old;
 		CREATE TABLE bbs_thread_type_old (
-		  typeid int(11) unsigned NOT NULL auto_increment,	# 主题分类id
-		  fid smallint(6) NOT NULL default '0',			# 版块id
-		  newtypeid smallint(11) NOT NULL default '0',		# 
-		  threads int(11) NOT NULL default '0',			# 该主题分类下有多少主题数
-		  typename char(16) NOT NULL default '',		# 主题分类
-		  rank tinyint(3) unsigned NOT NULL default '0',	# 排序，越大越靠前，最大255
+		  typeid int(11) unsigned NOT NULL auto_increment,	
+		  fid smallint(6) NOT NULL default '0',			
+		  newtypeid smallint(11) NOT NULL default '0',		 
+		  threads int(11) NOT NULL default '0',			
+		  typename char(16) NOT NULL default '',		
+		  rank tinyint(3) unsigned NOT NULL default '0',	
 		  PRIMARY KEY (typeid),
 		  KEY (fid)
 		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-		INSERT INTO  bbs_thread_type_old (typeid, fid, newtypeid, threads, typename, rank) SELECT typeid, fid, 0, threads, typename, rank FROM bbs_thread_type;
 		
-		DROP TABLE IF EXISTS bbs_thread_type;
-		CREATE TABLE bbs_thread_type (
-		  fid smallint(6) NOT NULL default '0',			# 版块id
-		  typeid int(11) NOT NULL default '0',			# 主题分类id，为唯一。
-		  typename char(16) NOT NULL default '',		# 主题分类
-		  rank int(11) unsigned NOT NULL default '0',		# 排序，越小越靠前，最大255
-		  enable tinyint(3) unsigned NOT NULL default '0',	# 是否启用，预留
-		  PRIMARY KEY (fid, typeid)
-		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-		
-		DROP TABLE IF bbs_thread_type_cate;
-		create table bbs_thread_type_cate ( 
-			fid smallint(6) NOT NULL  DEFAULT '0'  , 
-			cateid int(11) NOT NULL  DEFAULT '0'  , 
-			catename char(16) NOT NULL   , 
-			rank int(11) unsigned NOT NULL  DEFAULT '0'  , 
-			enable tinyint(3) unsigned NOT NULL  DEFAULT '0'  , 
-			PRIMARY KEY (fid,cateid) 
-		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-		
-		DROP TABLE IF bbs_thread_type_count;
-		create table bbs_thread_type_count ( 
-			fid smallint(6) NOT NULL  DEFAULT '0'  , 
-			typeidsum int(11) unsigned NOT NULL  DEFAULT '0'  , 
-			threads int(11) NOT NULL  DEFAULT '0'  , 
-			PRIMARY KEY (fid,typeidsum) 
-		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-		
-		DROP TABLE IF bbs_thread_type_data;
-		create table bbs_thread_type_data ( 
-			fid smallint(6) NOT NULL  DEFAULT '0'  , 
-			tid int(11) NOT NULL  DEFAULT '0'  , 
-			typeidsum int(11) unsigned NOT NULL  DEFAULT '0'  , 
-			PRIMARY KEY (fid,tid,typeidsum) , 
-			KEY fid (fid,typeidsum,tid) 
-		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-		
-		DROP TABLE IF bbs_thread_views;
-		create table bbs_thread_views ( 
-			tid int(11) unsigned NOT NULL  auto_increment  , 
-			views int(11) unsigned NOT NULL  DEFAULT '0'  , 
-			PRIMARY KEY (tid) 
-		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-		
-		alter table bbs_user 
-			change myposts myposts mediumint(8) unsigned NOT NULL  DEFAULT '0' after posts, 
-			change avatar avatar int(11) unsigned NOT NULL  DEFAULT '0' after myposts, 
-			change follows follows smallint(3) unsigned NOT NULL  DEFAULT '0' after golds, 
-			change accesson accesson tinyint(1) NOT NULL  DEFAULT '0' after homepage, 
-			add column onlinetime int(1) NOT NULL  DEFAULT '0' after accesson, 
-			change lastactive lastactive int(1) NOT NULL  DEFAULT '0' after onlinetime, 
-			drop column replies, 
-			drop column digests, 
-			drop column money, 
-			drop column signature, 
-			drop key email, add KEY email (email), COMMENT='';
-	";
+INSERT INTO  bbs_thread_type_old (typeid, fid, newtypeid, threads, typename, rank) SELECT typeid, fid, 0, threads, typename, rank FROM bbs_thread_type;
+
+DROP TABLE IF EXISTS bbs_thread_type;
+CREATE TABLE bbs_thread_type(                      
+                   `fid` smallint(6) NOT NULL default '0',             
+                   `typeid` int(11) NOT NULL default '0',              
+                   `typename` char(16) NOT NULL default '',            
+                   `rank` int(11) unsigned NOT NULL default '0',       
+                   `enable` tinyint(3) unsigned NOT NULL default '0',  
+                   PRIMARY KEY  (`fid`,`typeid`)                       
+                 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS bbs_thread_type_cate;
+create table bbs_thread_type_cate ( 
+	fid smallint(6) NOT NULL  DEFAULT '0'  , 
+	cateid int(11) NOT NULL  DEFAULT '0'  , 
+	catename char(16) NOT NULL   , 
+	rank int(11) unsigned NOT NULL  DEFAULT '0'  , 
+	enable tinyint(3) unsigned NOT NULL  DEFAULT '0'  , 
+	PRIMARY KEY (fid,cateid) 
+)Engine=MyISAM;
+
+DROP TABLE IF EXISTS bbs_thread_type_count;
+create table bbs_thread_type_count ( 
+	fid smallint(6) NOT NULL  DEFAULT '0'  , 
+	typeidsum int(11) unsigned NOT NULL  DEFAULT '0'  , 
+	threads int(11) NOT NULL  DEFAULT '0'  , 
+	PRIMARY KEY (fid,typeidsum) 
+)Engine=MyISAM;
+
+DROP TABLE IF EXISTS bbs_thread_type_data;
+create table bbs_thread_type_data ( 
+	fid smallint(6) NOT NULL  DEFAULT '0'  , 
+	tid int(11) NOT NULL  DEFAULT '0'  , 
+	typeidsum int(11) unsigned NOT NULL  DEFAULT '0'  , 
+	PRIMARY KEY (fid,tid,typeidsum) , 
+	KEY fid (fid,typeidsum,tid) 
+)Engine=MyISAM;
+
+DROP TABLE IF EXISTS bbs_thread_views;
+create table bbs_thread_views ( 
+	tid int(11) unsigned NOT NULL  auto_increment  , 
+	views int(11) unsigned NOT NULL  DEFAULT '0'  , 
+	PRIMARY KEY (tid) 
+)Engine=MyISAM;
+
+alter table bbs_user 
+	change myposts myposts mediumint(8) unsigned NOT NULL  DEFAULT '0' after posts, 
+	change avatar avatar int(11) unsigned NOT NULL  DEFAULT '0' after myposts, 
+	change digests digests int(11) unsigned NOT NULL  DEFAULT '0' after golds, 
+	change follows follows smallint(3) unsigned NOT NULL  DEFAULT '0' after digests, 
+	change accesson accesson tinyint(1) NOT NULL  DEFAULT '0' after homepage, 
+	add column onlinetime int(1) NOT NULL  DEFAULT '0' after accesson, 
+	change lastactive lastactive int(1) NOT NULL  DEFAULT '0' after onlinetime, 
+	drop column replies, 
+	drop column money, 
+	drop column signature, 
+	drop key email, add KEY email (email), COMMENT='';
+";
 	
 	$db = new db_mysql($conf['db']['mysql']);
 	$s = $sql;
@@ -511,13 +513,13 @@ function message($s, $url = '', $timeout = 2) {
 	<html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<title>Xiuno BBS 2.0.0 RC3 - Xiuno BBS 2.0.0 Release 升级程序 </title>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
 		<link rel="stylesheet" type="text/css" href="view/common.css" />
 	</head>
 	<body>
 	<div id="header" style="overflow: hidden;">
-		<h3 style="color: #FFFFFF; line-height: 26px; margin-left: 16px;">Xiuno BBS 2.0.0 RC3 - Xiuno BBS 2.0.0 Release  升级程序</h3>
-		<p style="color: #BBBBBB; margin-left: 16px;">本程序用来升级Xiuno BBS RC3。</p>
+		<h3 style="color: #FFFFFF;line-height: 26px;margin-left: 16px;">Xiuno BBS 2.0.0 RC3 - Xiuno BBS 2.0.0 Release  升级程序</h3>
+		<p style="color: #BBBBBB;margin-left: 16px;">本程序用来升级Xiuno BBS RC3。</p>
 	</div>
 	<div id="body" style="padding: 16px;">
 		'.$s.'
