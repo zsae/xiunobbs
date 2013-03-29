@@ -60,11 +60,11 @@ class forum_control extends common_control {
 		
 		$start = ($page - 1) * $pagesize;
 		$limit = $pagesize;
-		$threads = $typeidsum ? $this->thread_type_count->get_threads($fid, $typeidsum) : $forum['threads'];
-		
 		if($typeidsum > 0) {
+			$threads = $this->thread_type_count->get_threads($fid, $typeidsum);
 			$threadlist = $this->thread_type_data->get_threadlist_by_fid($fid, $typeidsum, $start, $limit);
 		} else {
+			$threads = $forum['threads'];
 			$threadlist = $this->thread->get_threadlist_by_fid($fid, $digest, $orderby, $start, $limit);
 		}
 		
