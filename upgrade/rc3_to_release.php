@@ -103,10 +103,23 @@ function upgrade_conf() {
 	$mkv->xsave();
 	
 	
+	foreach(array('credits_policy_post', 'credits_policy_thread', 
+					'credits_policy_digest_1', 'credits_policy_digest_2', 'credits_policy_digest_3',
+					'golds_policy_post', 'golds_policy_thread',
+					'golds_policy_digest_1', 'golds_policy_digest_2', 'golds_policy_digest_3',
+					'reg_email_on', 'reg_init_golds', 'resetpw_on',
+					'sphinx_host', 'sphinx_port', 'sphinx_datasrc', 'sphinx_deltasrc',
+					
 	// 生成局部配置
 	$kvconf = array(
 		'credits_policy_thread' => 2,		// 发主题增加的积分
 		'credits_policy_post' => 0,		
+		'credits_policy_digest_1' => 1,	
+		'credits_policy_digest_2' => 2,		
+		'credits_policy_digest_3' => 4,		
+		'golds_policy_digest_1' => 1,		
+		'golds_policy_digest_2' => 2,		
+		'golds_policy_digest_3' => 4,		
 		'golds_policy_thread' => 1,		// 发主题增加的金币 golds（积分不能消费，金币可以消费，充值）
 		'golds_policy_post' => 1,		
 		'post_update_expiry' => 86400,		// 帖子多长时间后不能修改，默认为86400，一天，0不限制

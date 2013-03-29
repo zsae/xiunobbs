@@ -119,10 +119,10 @@ class forum_control extends admin_control {
 			$this->check_forum_exists($forum2);
 				
 			// 修改fid 所有涉及到 fid 的表！
-			$threads = $this->thread->index_update(array('fid'=>$fid2), array('fid'=>$fid1, 'top'=>0, 'typeid1'=>0, 'typeid2'=>0, 'typeid3'=>0, 'typeid4'=>0, 'modnum'=>0));
-			$posts = $this->post->index_update(array('fid'=>$fid2), array('fid'=>$fid1));
-			$this->attach->index_update(array('fid'=>$fid2), array('fid'=>$fid1));
-			$this->mypost->index_update(array('fid'=>$fid2), array('fid'=>$fid1));
+			$this->thread->index_update(array('fid'=>$fid2), array('fid'=>$fid1, 'top'=>0, 'typeid1'=>0, 'typeid2'=>0, 'typeid3'=>0, 'typeid4'=>0, 'modnum'=>0), TRUE);
+			$this->post->index_update(array('fid'=>$fid2), array('fid'=>$fid1), TRUE);
+			$this->attach->index_update(array('fid'=>$fid2), array('fid'=>$fid1), TRUE);
+			$this->mypost->index_update(array('fid'=>$fid2), array('fid'=>$fid1), TRUE);
 			
 			// 删除原来板块的数据
 			$this->forum_access->delete_by_fid($fid2);
@@ -133,8 +133,8 @@ class forum_control extends admin_control {
 			$this->thread_top->delete_top_3_by_fid($fid2);
 			
 			// 更新统计数
-			$forum1['posts'] += $posts;
-			$forum1['threads'] += $threads;
+			$forum1['posts'] += $forum2['posts'];
+			$forum1['threads'] += $forum2['threads'];
 			$this->forum->update($forum1);
 			
 			// 更新缓存

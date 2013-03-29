@@ -233,25 +233,6 @@ CREATE TABLE bbs_post (
   KEY (fid, tid, page)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-# 盖楼，通过fid分区，每个主题最多允许1000层的盖楼。删除楼层，留空，显示被删除。
-DROP TABLE IF EXISTS bbs_reply;
-CREATE TABLE bbs_reply (
-  fid smallint(6) unsigned NOT NULL default '0',	# 版块id
-  tid int(11) unsigned NOT NULL default '0',		# 主题id
-  pid int(10) unsigned NOT NULL default '0',		# 帖子id
-  replyid int(11) unsigned NOT NULL auto_increment,	# replyid
-  uid int(11) unsigned NOT NULL default '0',		# 用户id
-  username char(16) NOT NULL default '',		# 用户名
-  touid int(11) unsigned NOT NULL default '0',		# 针对用户id
-  tousername char(16) NOT NULL default '',		# 针对用户名
-  dateline int(10) unsigned NOT NULL default '0',	# 发贴时间
-  userip int(11) NOT NULL default '0',			# 发帖时用户ip ip2long()
-  page smallint(11) unsigned NOT NULL default '0',	# 分页，每页40条
-  subject char(128) NOT NULL default '',		# 主题，不允许使用html标签，最多 128 个字符。
-  PRIMARY KEY (fid, replyid),				# 定位到某一条 replyid
-  KEY (fid, pid, page)					# 按照分页取数据
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
 #论坛附件表  fid->tid->pid->aid，只能按照从上往下的方式查找和删除！ 此表如果大，可以考虑通过 aid 分区。
 DROP TABLE IF EXISTS bbs_attach;
 CREATE TABLE bbs_attach (

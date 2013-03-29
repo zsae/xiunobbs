@@ -156,15 +156,12 @@ function upgrade_prepare() {
 			  KEY (city),
 			  KEY (county),
 			  PRIMARY KEY (uid));");
+		$db->query("ALTER TABLE {$db->tablepre}forum ADD COLUMN fup int not null default '0';");
+		$db->query("ALTER TABLE {$db->tablepre}thread_type ADD column oldtypeid int(11) NOT NULL default '0';");
+		$db->query("ALTER TABLE {$db->tablepre}thread_type ADD column oldfid int(11) NOT NULL default '0';");
+		$db->index_create('thread_type', array('oldtypeid'=>1));
+		$db->index_create('thread_type', array('oldfid'=>1));
 	} catch(Exception $e) {}
-	try {$db->query("ALTER TABLE {$db->tablepre}forum ADD COLUMN fup int not null default '0';");} catch(Exception $e) {}
-	try {$db->query("ALTER TABLE {$db->tablepre}thread_type ADD column oldtypeid int(11) NOT NULL default '0';");} catch(Exception $e) {}
-	try {$db->query("ALTER TABLE {$db->tablepre}thread_type ADD column oldfid int(11) NOT NULL default '0';");} catch(Exception $e) {}
-	try {$db->index_create('thread_type', array('oldtypeid'=>1));} catch(Exception $e) {}
-	try {$db->index_create('thread_type', array('oldfid'=>1));} catch(Exception $e) {}
-	
-		
-	
 	
 	message('准备完毕，接下来设置升级策略...', '?step=upgrade_forum_policy');
 }
@@ -182,8 +179,9 @@ function upgrade_forum_policy() {
 		$policy['keepfup'] =  core::gpc('keepfup', 'P');
 		$policy['fidto'] =  core::gpc('fidto', 'P');
 		$policy['threadtypefid'] =  core::gpc('threadtypefid', 'P');
+		$policyfile = $conf['tmp_path'].'upgrade_policy.txt';
 		file_put_contents($policyfile, core::json_encode($policy));
-		message('升级策略已经保存，下一步开始升级版块！', '?step=upgrade_forum');
+		message('升级策略已经保存，下一步开始升级版块！', '?step=upgrade_forum&start=0');
 	}
 	
 	show_header();
@@ -200,7 +198,7 @@ function upgrade_forum_policy() {
 	
 	$catelist = $dx2->index_fetch('forum_forum', 'fid', array('fup'=>0), array(), 0, 1000);
 	
-	echo '<form action="'.$_SERVER['PHP_SELF'].'?step=upgrade_forum" method="post">';
+	echo '<form action="'.$_SERVER['PHP_SELF'].'?step=upgrade_forum_policy" method="post">';
 	foreach($catelist as $cate) {
 		$fup = $cate['fid'];
 		if($cate['status'] == 3) continue;
@@ -220,7 +218,7 @@ function upgrade_forum_policy() {
 		echo "<p>
 			<table width=\"700\">
 				<tr>
-					<td><b>$cate[name]</b></td>
+					<td><b>$cate[name]</b> <span class=\"grey\">($cate[fid])</span></td>
 					<td width=\"160\" class=\"grey\"><input type=\"radio\" name=\"keepfup[$fup]\" value=\"0\" class=\"grey\" $check2 />升级所属版块为一级</td>
 					<td width=\"160\" class=\"grey\"><input type=\"radio\" name=\"keepfup[$fup]\" value=\"1\" class=\"grey\" $check1 />升级大区成一级</td>
 					<td width=\"160\" class=\"grey\">&nbsp;</td>
@@ -236,12 +234,12 @@ function upgrade_forum_policy() {
 			
 			$check1 = $policy['fidto'][$fid] == 'forum' ? ' checked="checked"' : '';
 			$check2 = $policy['fidto'][$fid] == 'threadtype' ? ' checked="checked"' : '';
-			$check3 = $policy['threadtypefid'][$fup] == 1 ? ' checked="checked"' : '';
+			$check3 = $policy['threadtypefid'][$fup] == $fid ? ' checked="checked"' : '';
 		
 			$forum['name'] = strip_tags($forum['name']); 
 			echo "<table width=\"700\">
 					<tr>
-						<td>&nbsp; &nbsp; &nbsp; &nbsp; $forum[name]</td>
+						<td>&nbsp; &nbsp; &nbsp; &nbsp; $forum[name] <span class=\"grey\">($forum[fid])</span></td>
 						<td width=\"160\" class=\"grey\"><input type=\"radio\" name=\"fidto[$fid]\" value=\"forum\" checked=\"checked\" $check1 />升级为 Xiuno 一级版块 &nbsp; </td>
 						<td width=\"160\" class=\"grey\"><input type=\"radio\" name=\"fidto[$fid]\" value=\"threadtype\" $check2 />升级为主题分类 &nbsp; </td>
 						<td width=\"160\" class=\"grey\"><input type=\"radio\" name=\"threadtypefid[$fup]\" value=\"$fid\" $check3 />该板主题分类为二级分类</td>
@@ -301,7 +299,7 @@ function load_upgrade_policy() {
 	$policy = (array)core::json_decode($s);
 	
 	// 初始化。
-	if(empty($policy) || !isset($policy['keepfup']) || !isset($policy['fidto']) || !isset($policy['threadtypefid'])) {
+	if(empty($policy)) {
 		$policy = init_policy();
 	}
 	return $policy;
@@ -377,6 +375,7 @@ function upgrade_forum() {
 			list($table, $col, $fid) = explode('-', $key);
 			$old = $dx2->get("forum_forum-fid-$fid");
 			$old2 = $dx2->get("forum_forumfield-fid-$fid");
+			$fup = $old['fup'];
 			
 			// fix dx2 empty forumname
 			if(empty($old['name'])) continue;
@@ -393,43 +392,44 @@ function upgrade_forum() {
 				continue;
 			}
 			
-			// 根据策略忽略版块
-			if($old['fup'] == 0 && $policy['keepfup'][$fup] == 0) {
-				continue;
-			}
-			
 			// a:6:{s:8:"required";b:1;s:8:"listable";b:0;s:6:"prefix";s:1:"0";s:5:"types";a:3:{i:1;s:7:"fenlei1";i:2;s:7:"fenlei2";i:3;s:7:"fenlei3";}s:5:"icons";a:3:{i:1;s:0:"";i:2;s:0:"";i:3;s:0:"";}s:10:"moderators";a:3:{i:1;N;i:2;N;i:3;N;}}
 			
 			// 四种情况： 大区|版块  *  保留大区|保留大区
 			if($old['fup'] == 0) {
-				// 初始化一个空壳版块，
-				$arr = array (
-					'fid'=> $old['fid'],
-					'fup'=> $old['fup'],
-					'name'=> strip_tags($old['name']),
-					'rank'=> $old['displayorder'],
-					'threads'=> 0,
-					'posts'=> 0,
-					'todayposts'=> 0,
-					'lasttid'=> 0,
-					'brief'=> '',
-					'accesson'=> 0,
-					'modids'=> '',
-					'modnames'=> '',
-					'toptids'=> '',
-					'orderby'=> 0,
-					'seo_title'=> '',
-					'seo_keywords'=> '',
-				);
 				
-				$db->set("forum-fid-$fid", $arr);
+				// 根据策略忽略版块
+				if(empty($policy['keepfup'][$fid])) {
+					continue;
+				} else {
+					
+					// 初始化一个空壳版块，
+					$arr = array (
+						'fid'=> $old['fid'],
+						'fup'=> $old['fup'],
+						'name'=> strip_tags($old['name']),
+						'rank'=> $old['displayorder'],
+						'threads'=> 0,
+						'posts'=> 0,
+						'todayposts'=> 0,
+						'lasttid'=> 0,
+						'brief'=> '',
+						'accesson'=> 0,
+						'modids'=> '',
+						'modnames'=> '',
+						'toptids'=> '',
+						'orderby'=> 0,
+						'seo_title'=> '',
+						'seo_keywords'=> '',
+					);
+					
+					$db->set("forum-fid-$fid", $arr);
+				}
 			} else {
 				
-				// 判断 fup keepup
-				$fup = $policy['fup'][$fid];
+				// ---------> 普通二级版块（非大区）
 				
-				// 将当前版块设置成主题分类
-				if($policy['keepfup'] == $fup) {
+				// 判断大区是否保留，如果保留大区：则当前二级版块为主题分类
+				if($policy['keepfup'][$fup]) {
 					$savefid = get_fid_by_policy($fid, $policy);
 						
 					$mthread_type_cate->create(array('fid'=>$fup, 'cateid'=>1, 'catename'=>'分类', 'rank'=>1, 'enable'=>1));
@@ -446,7 +446,7 @@ function upgrade_forum() {
 					$db->set("thread_type-fid-$fid-typeid-$newtypeid", $arr);
 					
 					// 升级版块下的主题分类
-					if($policy['threadtypefid'][$fup] == $fid && $old2['threadtypes']) {
+					if(isset($policy['threadtypefid'][$fup]) && $policy['threadtypefid'][$fup] == $fid && $old2['threadtypes']) {
 						$mthread_type_cate->create(array('fid'=>$fup, 'cateid'=>2, 'catename'=>'原分类', 'rank'=>2, 'enable'=>1));
 						$threadtypes = dx2_unserialize($old2['threadtypes'], $dx2->dbcharset);
 						if(!empty($threadtypes)) {
@@ -468,9 +468,7 @@ function upgrade_forum() {
 						}
 					}
 					
-					// 帖子总数加到上级版块，这里不加了，最后重新统计。
-					
-				// 正常升级成版块	
+				// 判断大区是否保留，如果不保留大区：正常升级成版块	
 				} else {
 					
 					// 主题分类

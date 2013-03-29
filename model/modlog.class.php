@@ -14,7 +14,7 @@ class modlog extends base_model {
 	}
 	
 	public function delete_by_fid($fid) {
-		return $this->index_delete(array('fid'=>$fid));
+		$this->index_delete(array('fid'=>$fid), TRUE);
 	}
 	
 	public function delete_by_fid_tid($fid, $tid) {
