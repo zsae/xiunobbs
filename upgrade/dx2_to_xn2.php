@@ -330,14 +330,23 @@ function init_policy() {
 // 根据策略，调整 fid
 function get_fid_by_policy($fid, $policy) {
 	$fup = $policy['fuparr'][$fid];
+	
+	// 大区
 	if($fup == 0) {
 		if($policy['keepfup']) {
 			return $fid;
 		} else {
 			return 0;
 		}
+	// 普通版块
 	} else {
 		// 移动到上一级
+		
+		// 子版块 type = sub
+		if(!isset($policy['fidto'][$fid])){
+			return $fid;
+		}
+		
 		if($policy['fidto'][$fid] == 'threadtype') {
 			return $fup;
 		} else {
@@ -574,10 +583,10 @@ function upgrade_thread() {
 	$policy = load_upgrade_policy();
 	
 	$maxtid = intval(core::gpc('maxtid'));
-	empty($maxtid) && $maxtid = $db->index_maxid('thread-tid');
+	!isset($_GET['maxtid']) && $maxtid = $db->index_maxid('thread-tid');
 	
 	$count = intval(core::gpc('count'));
-	empty($count) && $count = $dx2->index_count('forum_thread', array('tid'=>array('>'=>$maxtid)));
+	!isset($_GET['count']) && $count = $dx2->index_count('forum_thread', array('tid'=>array('>'=>$maxtid)));
 	
 	$forum_types = array();
 	$thread_type_data = new thread_type_data($conf);
@@ -597,6 +606,7 @@ function upgrade_thread() {
 			if(!isset($policy['fuparr'][$fid]) ) continue; // 版块不存在，则不升级
 			$fup = $policy['fuparr'][$fid];			// 大区也不升级
 			if($fup == 0) continue;
+			if(isset($policy['fuparr'][$fup]) && $policy['fuparr'][$fup] != 0) continue; // type = sub
 			
 			$lastuid = 0;
 			$lastuser = '';
@@ -706,8 +716,9 @@ function upgrade_attach() {
 	$policy = load_upgrade_policy();
 	
 	$maxaid = intval(core::gpc('maxaid'));
-	empty($maxaid) && $maxaid = $db->index_maxid('attach-aid');
-	$count = $dx2->index_count('forum_attachment', array('aid'=>array('>'=>$maxaid)));
+	$count = intval(core::gpc('count'));
+	!isset($_GET['maxaid']) && $maxaid = $db->index_maxid('attach-aid');
+	!isset($_GET['count']) && $count = $dx2->index_count('forum_attachment', array('aid'=>array('>'=>$maxaid)));
 	
 	if($start < $count) {
 		$limit = DEBUG ? 20 : 500;
@@ -732,6 +743,7 @@ function upgrade_attach() {
 			if(!isset($policy['fuparr'][$fid]) ) continue;
 			$fup = $policy['fuparr'][$fid];
 			if($fup == 0) continue;
+			if(isset($policy['fuparr'][$fup]) && $policy['fuparr'][$fup] != 0) continue; // type = sub
 			
 			$newfid = get_fid_by_policy($fid, $policy);
 			if(empty($newfid)) continue;
@@ -793,8 +805,9 @@ function upgrade_post() {
 	$policy = load_upgrade_policy();
 	
 	$maxpid = intval(core::gpc('maxpid'));
-	empty($maxpid) && $maxpid = $db->index_maxid('post-pid');
-	$count = $dx2->index_count('forum_post', array('pid'=>array('>'=>$maxpid)));
+	$count = intval(core::gpc('count'));
+	!isset($_GET['maxpid']) && $maxpid = $db->index_maxid('post-pid');
+	!isset($_GET['count']) && $count = $dx2->index_count('forum_post', array('pid'=>array('>'=>$maxpid)));
 	
 	if($start < $count) {
 		$limit = DEBUG ? 20 : 500;	// 每次升级 100
@@ -811,6 +824,7 @@ function upgrade_post() {
 			if($fup == 0) continue;
 			$newfid = get_fid_by_policy($fid, $policy);
 			if(empty($newfid)) continue;
+			if(isset($policy['fuparr'][$fup]) && $policy['fuparr'][$fup] != 0) continue; // type = sub
 			
 			// 帖子附件
 			if($old['attachment']) {
@@ -1060,8 +1074,9 @@ function upgrade_postpage() {
 	$db = get_db();
 	
 	$maxtid = intval(core::gpc('maxtid'));
-	empty($maxtid) && $maxtid = $db->index_maxid('thread-tid');
-	$count = $dx2->index_count('forum_thread', array('tid'=>array('>'=>$maxtid)));
+	$count = intval(core::gpc('count'));
+	!isset($_GET['maxtid']) && $maxtid = $db->index_maxid('thread-tid');
+	!isset($_GET['count']) && $count = $dx2->index_count('forum_thread', array('tid'=>array('>'=>$maxtid)));
 	
 	if($start < $count) {
 		$limit = DEBUG ? 10 : 500;	// 每次升级 100
