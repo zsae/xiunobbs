@@ -4,7 +4,7 @@
 			<p style="line-height: 20px;"><span class="grey">　用户组：</span>$you[groupname]</p>
 			<p style="line-height: 20px;"><span class="grey">注册时间：</span>$you[regdate_fmt]</p>
 			<p style="line-height: 20px;"><span class="grey">最后活跃：</span>$you[lastactive_fmt]</p>
-			<p style="line-height: 20px;"><span class="grey">在线状态：</span><!--{if $you[isonline]}--><span class="icon icon-online"></span><b class="red">在线</b><!--{else}--><span class="icon icon-offline"></span>离线<!--{/if}--></p>
+			<p style="line-height: 20px;"><span class="grey">在线状态：</span><!--{if $you[isonline]}--><b class="red">在线</b><!--{else}-->离线<!--{/if}--></p>
 			<!--{hook you_info_td_1.htm}-->
 		</td>
 		<td width="20%">

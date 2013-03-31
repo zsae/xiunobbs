@@ -117,11 +117,7 @@ a.icon:hover {background-image: url(image/icon-hover.gif)}
 .icon-move {width: 14px; height: 12px; background-position: -112px -80px;}
 
 /* 第七行 */
-.icon-post-update {background-position: -0px -96px;}
-.icon-post-delete {background-position: -16px -96px;}
 .icon-post-fire {background-position: -32px -96px;}
-.icon-online {background-position: -48px -96px;}
-.icon-offline {background-position: -64px -96px;}
 .icon-myhome {background-position: -80px -96px;}
 .icon-stat {background-position: -96px -96px;}
 

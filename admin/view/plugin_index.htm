@@ -17,10 +17,10 @@
 				</tr>
 				<!--{loop $installlist $dir $pconf}-->
 				<tr valign="top" plugindir="$dir">
-					<td width="54"><a href="http://plugin.xiuno.net/?plugin-read-dir-$dir.htm" target="_blank"><img src="$pconf[icon_url]" width="54" height="54" /></a></td>
+					<td width="54"><a href="?plugin-read-dir-$dir.htm"><img src="$pconf[icon_url]" width="54" height="54" /></a></td>
 					<td width="160">
 						<a href="?plugin-read-dir-$dir.htm"><b>$pconf[name] </b></a>v$pconf[version]
-						<!--{if $pconf[have_new_version]}--><a href="http://plugin.xiuno.net/?plugin-upgrade-dir-$dir.htm" target="_blank" title="点击升级"><span class="red small">(NEW! v$pconf[official_version])</span></a><!--{/if}-->
+						<!--{if $pconf[have_new_version]}--><a href="?plugin-upgrade-dir-$dir.htm" target="_blank" title="点击升级"><span class="red small">(NEW! v$pconf[official_version])</span></a><!--{/if}-->
 						<br /><span class="small">$dir</span>
 						<br /><img src="view/image/star_$pconf[stars].gif" width="63" height="11" align="middle" />
 					</td>
@@ -48,7 +48,7 @@
 				</tr>
 				<!--{loop $disablelist $dir $pconf}-->
 				<tr valign="top" plugindir="$dir">
-					<td width="54"><a href="http://plugin.xiuno.net/?plugin-read-dir-$dir.htm" target="_blank"><img src="$pconf[icon_url]" width="54" height="54" /></a></td>
+					<td width="54"><a href="?plugin-read-dir-$dir.htm"><img src="$pconf[icon_url]" width="54" height="54" /></a></td>
 					<td width="160">
 						<a href="?plugin-read-dir-$dir.htm"><b>$pconf[name] </b></a>v$pconf[version]
 						<!--{if $pconf[have_new_version]}--><a href="http://plugin.xiuno.net/?plugin-upgrade-dir-$dir.htm" target="_blank" title="点击升级"><span class="red small">(NEW! v$pconf[official_version])</span></a><!--{/if}-->
@@ -80,7 +80,7 @@
 				</tr>
 				<!--{loop $unstalllist $dir $pconf}-->
 				<tr valign="top" plugindir="$dir">
-					<td width="54"><a href="http://plugin.xiuno.net/?plugin-read-dir-$dir.htm" target="_blank"><img src="$pconf[icon_url]" width="54" height="54" /></a></td>
+					<td width="54"><a href="?plugin-read-dir-$dir.htm"><img src="$pconf[icon_url]" width="54" height="54" /></a></td>
 					<td width="160">
 						<a href="?plugin-read-dir-$dir.htm"><b>$pconf[name] </b>v$pconf[version]</a>
 						<!--{if $pconf[have_new_version]}--><span class="red small">(NEW! v<a href="http://plugin.xiuno.net/?plugin-upgrade-dir-$dir.htm" target="_blank">$pconf[official_version]</a>)</span><!--{/if}-->

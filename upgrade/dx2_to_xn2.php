@@ -384,7 +384,7 @@ function upgrade_forum() {
 	$groupids = array(0, 1, 2, 3, 4, 5, 6, 7, 11, 12, 13, 14, 15);
 	if($start < $count) {
 		$limit = DEBUG ? 10 : 500;	// 每次升级 100
-		$arrlist = $dx2->index_fetch_id('forum_forum', 'fid', array(), array(), $start, $limit);
+		$arrlist = $dx2->index_fetch_id('forum_forum', 'fid', array(), array('fid'=>1), $start, $limit);
 		foreach($arrlist as $key) {
 			list($table, $col, $fid) = explode('-', $key);
 			$old = $dx2->get("forum_forum-fid-$fid");
@@ -592,7 +592,7 @@ function upgrade_thread() {
 	$thread_type_data = new thread_type_data($conf);
 	if($start < $count) {
 		$limit = DEBUG ? 10 : 1000;	// 每次升级 100
-		$arrlist = $dx2->index_fetch_id('forum_thread', 'tid', array('tid'=>array('>'=>$maxtid)), array(), $start, $limit);
+		$arrlist = $dx2->index_fetch_id('forum_thread', 'tid', array('tid'=>array('>'=>$maxtid)), array('tid'=>1), $start, $limit);
 		foreach($arrlist as $key) {
 			list($table, $_, $tid) = explode('-', $key);
 			$old = $dx2->get("forum_thread-tid-$tid");
@@ -722,7 +722,7 @@ function upgrade_attach() {
 	
 	if($start < $count) {
 		$limit = DEBUG ? 20 : 500;
-		$arrlist = $dx2->index_fetch_id('forum_attachment', 'aid', array('aid'=>array('>'=>$maxaid)), array(), $start, $limit);
+		$arrlist = $dx2->index_fetch_id('forum_attachment', 'aid', array('aid'=>array('>'=>$maxaid)), array('aid'=>1), $start, $limit);
 		foreach($arrlist as $key) {
 			list($table, $keyname, $aid) = explode('-', $key);
 			$attach = $dx2->get("forum_attachment-aid-$aid");
@@ -811,7 +811,7 @@ function upgrade_post() {
 	
 	if($start < $count) {
 		$limit = DEBUG ? 20 : 500;	// 每次升级 100
-		$arrlist = $dx2->index_fetch_id('forum_post', 'pid', array('pid'=>array('>'=>$maxpid)), array(), $start, $limit);
+		$arrlist = $dx2->index_fetch_id('forum_post', 'pid', array('pid'=>array('>'=>$maxpid)), array('pid'=>1), $start, $limit);
 		foreach($arrlist as $key) {
 			list($table, $_, $pid) = explode('-', $key);
 			$old = $dx2->get("forum_post-pid-$pid");
@@ -892,7 +892,7 @@ function upgrade_user() {
 	
 	if($start < $count) {
 		$limit = DEBUG ? 20 : 500;	// 每次升级 100
-		$arrlist = $uc->index_fetch_id('members', 'uid', array('uid'=>array('>'=>$maxuid)), array(), $start, $limit);
+		$arrlist = $uc->index_fetch_id('members', 'uid', array('uid'=>array('>'=>$maxuid)), array('uid'=>1), $start, $limit);
 		
 		foreach($arrlist as $key) {
 			list($table, $col, $uid) = explode('-', $key);
@@ -1081,7 +1081,7 @@ function upgrade_postpage() {
 	if($start < $count) {
 		$limit = DEBUG ? 10 : 500;	// 每次升级 100
 		$limit2 = DEBUG ? 20 : 500;
-		$tidkeys = $dx2->index_fetch_id('forum_thread', array('tid'), array('tid'=>array('>'=>$maxtid)), array(), $start, $limit);
+		$tidkeys = $dx2->index_fetch_id('forum_thread', array('tid'), array('tid'=>array('>'=>$maxtid)), array('tid'=>1), $start, $limit);
 		foreach($tidkeys as $key) {
 			list($table, $_, $tid) = explode('-', $key);
 			$thread = $dx2->get("forum_thread-tid-$tid");
