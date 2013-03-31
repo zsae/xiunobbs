@@ -259,11 +259,15 @@ class post_control extends common_control {
 		if(!$this->form_submit()) {
 			
 			$pid = intval(core::gpc('pid'));
-			$post = $this->post->read($fid, $pid);
-			$this->check_post_exists($post);
-			
-			// 引用前两百个字
-			$message = $this->quote_message($post);
+			if($pid) {
+				$post = $this->post->read($fid, $pid);
+				$this->check_post_exists($post);
+				
+				// 引用前两百个字
+				$message = $this->quote_message($post);
+			} else {
+				$message = '';
+			}
 			
 			// 附件相关
 			$attachlist = $this->get_attachlist_by_tmp($uid);
