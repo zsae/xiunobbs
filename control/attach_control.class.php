@@ -138,7 +138,7 @@ class attach_control extends common_control {
                         header('Cache-control: max-age=86400');
 			header('Content-Transfer-Encoding: binary');
 			header("Pragma: public");
-			header('Content-Disposition: attachment; filename='.$attach['orgfilename']);
+			header('Content-Disposition: attachment; filename="'.$attach['orgfilename'].'"');
 			header('Content-Type: application/octet-stream');
 			//header("Content-Type: application/force-download");	// 后面的会覆盖前面
 			
