@@ -415,14 +415,19 @@ if(empty($step) || $step == 'checklicense') {
 				include './header.inc.php';
 				if(IN_SAE) {
 					echo '<h3>SAE 环境下安装需要手工编辑 conf/conf.php，复制以下代码，粘贴到 conf/conf.php：</h3>';
+					echo '<div><textarea style="width: 700px; height: 400px">'.$s.'</textarea></div>';
+					echo '<div>【注意】 需要使用UTF-8编辑器，请不要使用WINDOWS 记事本！</div>';
+					echo '<div><input type="submit" value=" 下一步" name="formsubmit" onclick="window.location=\'index.php?step=saedown\'" /></div>';
+					include './footer.inc.php';
+					exit;
 				} else {
 					echo '<h3>当前的配置文件不可写，需要手工编辑 conf/conf.php，复制以下代码，粘贴到 conf/conf.php：</h3>';
+					echo '<div><textarea style="width: 700px; height: 400px">'.$s.'</textarea></div>';
+					echo '<div>【注意】 需要使用UTF-8编辑器，请不要使用WINDOWS 记事本！</div>';
+					echo '<div><input type="submit" value=" 下一步" name="formsubmit" onclick="window.location=\'index.php?step=complete\'" /></div>';
+					include './footer.inc.php';
+					exit;
 				}
-				echo '<div><textarea style="width: 700px; height: 400px">'.$s.'</textarea></div>';
-				echo '<div>【注意】 需要使用UTF-8编辑器，请不要使用WINDOWS 记事本！</div>';
-				echo '<div><input type="submit" value=" 下一步" name="formsubmit" onclick="window.location=\'index.php?step=complete\'" /></div>';
-				include './footer.inc.php';
-				exit;
 			} else {
 				file_put_contents($configfile, $s);
 			}
