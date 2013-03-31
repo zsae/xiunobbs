@@ -27,12 +27,15 @@ class attach_control extends common_control {
 	public function on_dialog() {
 		$uid = $this->_user['uid'];
 		
+		$fid = intval(core::gpc('fid'));
 		$aid = intval(core::gpc('aid'));
-		$attach = $this->attach->read($aid);
+		$attach = $this->attach->read($fid, $aid);
+		if(empty($attach)) $this->message('附件不存在。', 0);
 		$this->attach->format($attach);
 		
 		// 权限检测
-		$forum = $this->forum->read($attach['fid']);
+		$forum = $this->forum->read($fid);
+		$this->check_forum_exists($forum);
 		$havepriv = ($attach['uid'] == $uid || $this->check_access($forum, 'down'));	// 是否有权限下载。
 		
 		if($uid) {
@@ -50,16 +53,15 @@ class attach_control extends common_control {
 	public function on_download() {
 		$uid = $this->_user['uid'];
 		
+		$fid = intval(core::gpc('fid'));
 		$aid = intval(core::gpc('aid'));
-		$attach = $this->attach->read($aid);
-		if(empty($attach)) {
-			$this->message('附件不存在。');
-		}
+		$attach = $this->attach->read($fid, $aid);
+		if(empty($attach)) $this->message('附件不存在。');
 		
 		// hook attach_download_check_before.php
 		
 		// 权限检测
-		$forum = $this->forum->read($attach['fid']);
+		$forum = $this->forum->read($fid);
 		
 		// 如果不是斑竹，并且不是自己，开始判断权限
 		if(!$this->is_mod($forum, $this->_user) && $attach['uid'] != $uid) {
@@ -207,7 +209,7 @@ class attach_control extends common_control {
 				'uid'=>$this->_user['uid'],
 			);
 			$aid = $this->attach->create($arr);
-			$this->attach->save_aid_to_tmp($aid, $uid);
+			$this->attach->save_aid_to_tmp($fid, $aid, $uid);
 			
 			$uploadpath = $this->conf['upload_path'].'attach/';
 			$uploadurl = $this->conf['upload_url'].'attach/';
@@ -233,6 +235,7 @@ class attach_control extends common_control {
 			}
 			
 			$arr['aid'] = $aid;
+			$arr['fid'] = $fid;
 			$arr['filesize'] = $r['filesize'];
 			$arr['width'] = $r['width'];
 			$arr['height'] = $r['height'];
@@ -295,7 +298,7 @@ class attach_control extends common_control {
 			
 			// $aid 保存到临时文件，每个用户一个文件，里面记录 aid。在读取后删除该文件。
 			// 如果tmp为内存，则在用户未完成期间，可能会导致垃圾数据产生。可以通过 uid=123 and pid=0，来判断附件归属，不过这个查询未建立索引，可以定期清理，一般不需要。
-			$this->attach->save_aid_to_tmp($aid, $uid);
+			$this->attach->save_aid_to_tmp($fid, $aid, $uid);
 			
 			$uploadpath = $this->conf['upload_path'].'attach/';
 			$uploadurl = $this->conf['upload_url'].'attach/';
@@ -306,6 +309,7 @@ class attach_control extends common_control {
 			$destfile = $uploadpath.$pathadd.'/'.$filename;
 			$desturl = $uploadurl.$pathadd.'/'.$filename;
 
+			$arr['fid'] = $fid;
 			$arr['aid'] = $aid;
 			$arr['filename'] = $pathadd.'/'.$filename;
 			$arr['filesize'] = filesize($file['tmp_name']);
@@ -318,7 +322,7 @@ class attach_control extends common_control {
 				$this->message($arr);
 			} else {
 				// 回滚
-				$this->attach->delete($aid);
+				$this->attach->delete($fid, $aid);
 				$this->message('保存失败！', 0);
 			}
 			
@@ -329,9 +333,10 @@ class attach_control extends common_control {
 
 	// 更新一个文件，文件名不变！
 	public function on_updatefile() {
+		$fid = core::gpc('fid');
 		$aid = core::gpc('aid');
 		$uid = $this->_user['uid'];
-		$attach = $this->attach->read($aid);
+		$attach = $this->attach->read($fid, $aid);
 		if($attach['uid'] != $this->_user['uid']) {
 			$this->message('您不能更新别人的附件！');
 		}
@@ -355,17 +360,19 @@ class attach_control extends common_control {
 	public function on_deletefile() {
 		$this->check_login();
 		
+		$fid = intval(core::gpc('fid'));
 		$aid = intval(core::gpc('aid'));
 		
 		// 权限判断
-		$attach = $this->attach->read($aid);
+		$attach = $this->attach->read($fid, $aid);
+		if(empty($attach)) $this->message('附件不存在。');
 		if($attach['uid'] != $this->_user['uid']) {
 			$this->message('您不能删除别人的附件！');
 		}
 		
 		// 如果附件没有归属，那么可能存在于 kv.uid_aids.tmp 文件中
 		if($attach['pid'] == 0) {
-			$this->attach->remove_aid_from_tmp($aid, $this->_user['uid']);
+			$this->attach->remove_aid_from_tmp($fid, $aid, $this->_user['uid']);
 		} else {
 			// 附件数--
 			$post = $this->post->read($attach['fid'], $attach['pid']);
@@ -381,7 +388,7 @@ class attach_control extends common_control {
 		}
 		
 		// 下载（购买）历史，如果最后一次购买的时间在24小时以内，附件不能被删除。保护购买人的权利，否则还没来得及下载，已经被删除。
-		$this->attach->delete($aid);
+		$this->attach->delete($fid, $aid);
 		
 		// hook attach_deletefile_after.php
 		$this->message('删除成功');
@@ -392,15 +399,15 @@ class attach_control extends common_control {
 		$this->check_login();
 		$uid = $this->_user['uid'];
 		$user = $this->user->read($uid);
+		$fid = intval(core::gpc('fid'));
+		$forum = $this->forum->read($fid);
+		$this->check_forum_exists($forum);
 		$gold = core::gpc('gold', 'P');
-		foreach($gold as $fid_aid=>$golds) {
-			if(strpos($fid_aid, '_') === FALSE) continue;
-			list($fid, $aid) = explode('_', $fid_aid);
-			$fid = intval($fid);			
-			$aid = intval($aid);			
+		foreach($gold as $aid=>$golds) {
+			$aid = intval($aid);		
 			$golds = intval($golds);
-			$attach = $this->attach->read($aid);
-			$forum = $this->forum->read($attach['fid']);
+			$attach = $this->attach->read($fid, $aid);
+			if(empty($attach)) continue;
 			if($attach['uid'] != $uid && !$this->is_mod($forum, $user)) continue;
 			if($attach['golds'] != $golds) {
 				$attach['golds'] = $golds;
@@ -409,7 +416,7 @@ class attach_control extends common_control {
 		}
 		
 		// hook attach_updategold_after.php
-		$this->message('更新附件售价成功。');
+		$this->message('更新附件售价成功。', 1);
 	}
 
 	// hook attach_control_after.php

@@ -161,6 +161,7 @@ function upgrade_prepare() {
 		$db->query("ALTER TABLE {$db->tablepre}thread_type ADD column oldfid int(11) NOT NULL default '0';");
 		$db->index_create('thread_type', array('oldtypeid'=>1));
 		$db->index_create('thread_type', array('oldfid'=>1));
+		$db->index_create('attach', array('aid'=>1));
 	} catch(Exception $e) {}
 	
 	message('准备完毕，接下来设置升级策略...', '?step=upgrade_forum_policy');
@@ -786,7 +787,7 @@ function upgrade_attach() {
 				'isimage'=> 0,
 				'golds'=> 0,
 			);
-			$db->set("attach-aid-$aid", $arr);
+			$db->set("attach-fid-$newfid-aid-$aid", $arr);
 		}
 		
 		$start += $limit;

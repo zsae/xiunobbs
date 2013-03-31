@@ -28,7 +28,7 @@ return array(
 				'host' => 'localhost',								
 				'user' => 'root',				
 				'password' => 'root',				
-				'name' => 'xiuno_release',				
+				'name' => 'test',				
 				'charset' => 'utf8',				
 				'tablepre' => 'bbs_',								
 				'engine'=>'MyISAM',
@@ -127,10 +127,10 @@ return array(
 	'click_server' => 'http://x.net/service/clickd/',	// 记录主题点击数，论坛点击数
 	
 	// 加密KEY，
-	'auth_key' => '00ac90f86089874291dd49b52e825a89',
+	'auth_key' => 'acfc65dabd7292ff1b34e9e954f006c0',
 	
 	// 站点的ID，用来和官方通信，下载，安装插件。
-	'siteid' => '3d49716139540995f7b84cd23984d5ba',
+	'siteid' => '4c07dd45c6567044ad24af3dec76e8f6',
 	
 	'cookie_pre' => 'bbs_',
 	'cookie_domain' => '',

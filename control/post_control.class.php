@@ -150,10 +150,14 @@ class post_control extends common_control {
 				// 更新 $attach 上传文件的pid
 				$attachnum = $imagenum = 0;
 				$aidarr = $this->attach->get_aid_from_tmp($uid);
-				foreach($aidarr as $aid) {
-					$attach = $this->attach->read($aid);
+				foreach($aidarr as $fid_aid) {
+					$arr = explode('_', $fid_aid);
+					$fid = intval($arr[0]);
+					$aid = intval($arr[1]);
+					$attach = $this->attach->read($fid, $aid);
 					if(empty($attach)) continue;
 					if($attach['uid'] != $uid) continue;
+					$attach['fid'] = $post['fid'];
 					$attach['pid'] = $post['pid'];
 					$attach['tid'] = $post['tid'];
 					if($attach['isimage'] == 1) {
@@ -161,7 +165,7 @@ class post_control extends common_control {
 					} else {
 						$attachnum++;
 					}
-					$this->attach->update($attach);
+					$this->attach->db_cache_update("attach-fid-$fid-aid-$aid", $attach);
 				}
 				$this->attach->clear_aid_from_tmp($uid);
 				
@@ -324,10 +328,14 @@ class post_control extends common_control {
 				
 				// 更新 $attach 上传文件的pid
 				$aidarr = $this->attach->get_aid_from_tmp($uid);
-				foreach($aidarr as $aid) {
-					$attach = $this->attach->read($aid);
+				foreach($aidarr as $fid_aid) {
+					$arr = explode('_', $fid_aid);
+					$fid = intval($arr[0]);
+					$aid = intval($arr[1]);
+					$attach = $this->attach->read($fid, $aid);
 					if(empty($attach)) continue;
 					if($attach['uid'] != $uid) continue;
+					$attach['fid'] = $post['fid'];
 					$attach['pid'] = $post['pid'];
 					$attach['tid'] = $post['tid'];
 					if($attach['isimage'] == 1) {
@@ -335,7 +343,7 @@ class post_control extends common_control {
 					} else {
 						$attachnum++;
 					}
-					$this->attach->update($attach);
+					$this->attach->db_cache_update("attach-fid-$fid-aid-$aid", $attach);
 				}
 				$this->attach->clear_aid_from_tmp($uid);
 				
@@ -507,10 +515,15 @@ class post_control extends common_control {
 				// 更新 $attach 上传文件的pid
 				$attachnum = $imagenum = 0;
 				$aidarr = $this->attach->get_aid_from_tmp($uid);
-				foreach($aidarr as $aid) {
-					$attach = $this->attach->read($aid);
+				foreach($aidarr as $fid_aid) {
+					$arr = explode('_', $fid_aid);
+					$fid = intval($arr[0]);
+					$aid = intval($arr[1]);
+					
+					$attach = $this->attach->read($fid, $aid);
 					if(empty($attach)) continue;
 					if($attach['uid'] != $uid) continue;
+					$attach['fid'] = $post['fid'];
 					$attach['pid'] = $post['pid'];
 					$attach['tid'] = $post['tid'];
 					if($attach['isimage'] == 1) {
@@ -518,7 +531,7 @@ class post_control extends common_control {
 					} else {
 						$attachnum++;
 					}
-					$this->attach->update($attach);
+					$this->attach->db_cache_update("attach-fid-$fid-aid-$aid", $attach);
 				}
 				$this->attach->clear_aid_from_tmp($uid);
 				
@@ -530,7 +543,7 @@ class post_control extends common_control {
 					if($attach['filename'] && strpos($post['message'], $attach['filename']) === FALSE) {
 						// 删除没有被引用的附件，有点粗暴，可以理解为 word 的编辑方式，删除的图片需要重新上传。
 						$this->attach->unlink($attach);
-						$this->attach->delete($attach['aid']);
+						$this->attach->delete($attach['fid'], $attach['aid']);
 						$imagenum--;
 					}
 				}
@@ -626,11 +639,12 @@ class post_control extends common_control {
 	}
 
 	private function get_attachlist_by_tmp($uid) {
-		$aids = $this->kv->get("upload_{$uid}_aids.tmp");
+		$aids = $this->kv->get("upload_{$uid}_fid_aids.tmp");
 		$aidarr = $aids ? explode(' ', $aids) : array();
 		$attachlist = array();
-		foreach($aidarr as $aid) {
-			$attach = $this->attach->read($aid);
+		foreach($aidarr as $fid_aid) {
+			list($fid, $aid) = explode('_', $fid_aid);
+			$attach = $this->attach->read($fid, $aid);
 			if($attach) {
 				$this->attach->format($attach);
 				$attachlist[$aid] = $attach;

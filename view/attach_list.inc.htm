@@ -1,9 +1,9 @@
 <div class="dialog bg2 border shadow" title="上传文件" id="file_upload_$pid" style="width: 640px; height: 400px; overflow: visible;">
-	<form action="?attach-updategold-ajax-1.htm" id="file_upload_form_$pid" method="post">
+	<form action="?attach-updategold-fid-$fid-ajax-1.htm" id="file_upload_form_$pid" method="post">
 		<input type="hidden" name="FORM_HASH" value="{FORM_HASH}" />
 		<table width="597" style="table-layout: fixed;">
 			<tr class="header" align="left">
-				<td width="232">文件名</td>
+				<td>文件名</td>
 				<td width="60">大小</td>
 				<td width="152">上传进度</td>
 				<td width="61">金币</td>
@@ -15,7 +15,7 @@
 				<td>
 					<a href="$attach[fileurl]" target="_blank">
 					<img src="view/image/filetype/$attach[filetype].gif" />
-					<span class="filename">$attach[orgfilename]</span></a>
+					<span class="filename" title="$attach[orgfilename]">$attach[orgfilename_fmt]</span></a>
 					<!--{if $pid != 0}--><span class="update">[更新]</span><!--{/if}-->
 				</td>
 				<td>$attach[filesize_fmt]</td>
@@ -25,7 +25,7 @@
 					<span class="stop" style="cursor: pointer; display: none;">停止</span>
 					<span class="start" style="cursor: pointer; display: none;">继续</span>
 				</td>
-				<td><input type="text" name="gold[{$attach[fid]}_{$attach[aid]}]" value="$attach[golds]" size="4" /></td>
+				<td><input type="text" name="gold[{$attach[aid]}]" value="$attach[golds]" size="4" /></td>
 				<td><span class="delete" style="cursor: pointer;">删除</span></td>
 			</tr>
 			<tr><td colspan="5"><hr /></td></tr>

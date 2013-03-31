@@ -252,7 +252,7 @@ CREATE TABLE bbs_attach (
   downloads int(10) NOT NULL default '0',		# 下载次数
   isimage tinyint(1) NOT NULL default '0',		# 图片|文件，跟 filetype 含义不同，这个主要为了区分是否为可下载的附件。
   golds int(10) NOT NULL default '0',			# 金币
-  PRIMARY KEY (aid),
+  PRIMARY KEY (fid, aid),
   KEY fidtid (fid, tid),				# 该索引主要为用来移动主题
   KEY fidpid (fid, pid),
   KEY uid (uid, isimage)

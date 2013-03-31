@@ -135,6 +135,8 @@ function alter_table() {
 	// 2. 修改表结构
 	$sql = "
 	
+alter table bbs_attach add unique fid (fid, aid);
+alter table bbs_attach drop PRIMARY key;
 alter table bbs_attach 
 	add column tid int(11) NOT NULL  DEFAULT '0' after aid, 
 	change pid pid int(11) NOT NULL  DEFAULT '0' after tid, 
@@ -455,7 +457,7 @@ function upgrade_attach() {
 		foreach($arrlist as $attach) {
 			$post = $mpost->read($attach['fid'], $attach['pid']);
 			$attach['tid'] = $post['tid'];
-			$db->set("attach-aid-$attach[aid]", $attach);
+			$db->set("attach-fid-$attach[fid]-aid-$attach[aid]", $attach);
 		}
 		$start += $limit;
 		message("正在升级 upgrade_attach, 一共: $count, 当前: $start...", "?step=upgrade_attach&start=$start&count=$count", 0);
