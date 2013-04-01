@@ -141,28 +141,27 @@ function upgrade_prepare() {
 	
 	$db = get_db();
 	//$db->index_create('thread', array('tid'=>1));
-	try {
-		$db->query("CREATE TABLE IF NOT EXISTS {$db->tablepre}user_ext (
-			  uid int(11) unsigned NOT NULL default '0',	
-			  gender tinyint(11) unsigned NOT NULL default '0',	
-			  birthyear int(11) unsigned NOT NULL default '0',	
-			  birthmonth int(11) unsigned NOT NULL default '0',	
-			  birthday int(11) unsigned NOT NULL default '0',	
-			  province char(16) NOT NULL default '',
-			  city char(16) NOT NULL default '',
-			  county char(16) NOT NULL default '',
-			  KEY (birthyear, birthmonth),
-			  KEY (province),
-			  KEY (city),
-			  KEY (county),
-			  PRIMARY KEY (uid));");
-		$db->query("ALTER TABLE {$db->tablepre}forum ADD COLUMN fup int not null default '0';");
-		$db->query("ALTER TABLE {$db->tablepre}thread_type ADD column oldtypeid int(11) NOT NULL default '0';");
-		$db->query("ALTER TABLE {$db->tablepre}thread_type ADD column oldfid int(11) NOT NULL default '0';");
-		$db->index_create('thread_type', array('oldtypeid'=>1));
-		$db->index_create('thread_type', array('oldfid'=>1));
-		$db->index_create('attach', array('aid'=>1));
-	} catch(Exception $e) {}
+	$db->query("CREATE TABLE IF NOT EXISTS {$db->tablepre}user_ext (
+		  uid int(11) unsigned NOT NULL default '0',	
+		  gender tinyint(11) unsigned NOT NULL default '0',	
+		  birthyear int(11) unsigned NOT NULL default '0',	
+		  birthmonth int(11) unsigned NOT NULL default '0',	
+		  birthday int(11) unsigned NOT NULL default '0',	
+		  province char(16) NOT NULL default '',
+		  city char(16) NOT NULL default '',
+		  county char(16) NOT NULL default '',
+		  KEY (birthyear, birthmonth),
+		  KEY (province),
+		  KEY (city),
+		  KEY (county),
+		  PRIMARY KEY (uid));");
+	$db->query("ALTER TABLE {$db->tablepre}forum ADD COLUMN fup int not null default '0';");
+	$db->query("ALTER TABLE {$db->tablepre}thread_type ADD column oldtypeid int(11) NOT NULL default '0';");
+	$db->query("ALTER TABLE {$db->tablepre}thread_type ADD column oldfid int(11) NOT NULL default '0';");
+	$db->index_create('thread_type', array('oldtypeid'=>1));
+	$db->index_create('thread_type', array('oldfid'=>1));
+	$db->index_create('attach', array('aid'=>1));
+	$db->index_create('post', array('pid'=>1));
 	
 	message('准备完毕，接下来设置升级策略...', '?step=upgrade_forum_policy');
 }
@@ -702,7 +701,11 @@ function upgrade_thread() {
 		}
 		
 		$start += $limit;
-		message("正在升级 thread, 一共: $count, 当前: $start...", "?step=upgrade_thread&start=$start&maxtid=$maxtid&count=$count", 0);
+		if($start < 200000) {
+			message("正在升级 thread, 一共: $count, 当前: $start...", "?step=upgrade_thread&start=$start&maxtid=$maxtid&count=$count", 0);
+		} else {
+			message("正在升级 thread, 一共: $count, 当前: $start...", "?step=upgrade_thread&start=0", 0);
+		}
 	} else {	
 		message('升级 thread 完成，接下来升级 upgrade_attach...', '?step=upgrade_attach&start=0');
 	}
@@ -791,7 +794,11 @@ function upgrade_attach() {
 		}
 		
 		$start += $limit;
-		message("正在升级 attach, 一共: $count, 当前: $start...", "?step=upgrade_attach&start=$start&maxaid=$maxaid&count=$count", 0);
+		if($start < 200000) {
+			message("正在升级 attach, 一共: $count, 当前: $start...", "?step=upgrade_attach&start=$start&maxaid=$maxaid&count=$count", 0);
+		} else{
+			message("正在升级 attach, 一共: $count, 当前: $start...", "?step=upgrade_attach&start=0", 0);
+		}
 	} else {	
 		message('升级 attach 完成，接下来升级 post ...', '?step=upgrade_post&start=0');
 	}
@@ -867,7 +874,12 @@ function upgrade_post() {
 		}
 		
 		$start += $limit;
-		message("正在升级 post, 一共: $count, 当前: $start...", "?step=upgrade_post&start=$start&maxpid=$maxpid&count=$count", 0);
+		if($start < 200000) {
+			message("正在升级 post, 一共: $count, 当前: $start...", "?step=upgrade_post&start=$start&maxpid=$maxpid&count=$count", 0);
+		} else {
+			message("正在升级 post, 一共: $count, 当前: $start...", "?step=upgrade_post&start=0", 0);
+		}
+		
 	} else {	
 		message('升级 post，接下来升级 user...', '?step=upgrade_user&start=0');
 	}
@@ -993,7 +1005,13 @@ function upgrade_user() {
 		$remain_hour = intval($remaintime / 3500);
 		$remain_min = intval(($remaintime % 3600) / 60);
 		$remain_sec = intval(($remaintime % 3600) % 60);
-		message("正在升级 user, 一共: $count, 当前: $start... （本次耗时：$processtime 秒，大约还需要 $remain_hour 小时 $remain_min 分钟 $remain_sec 秒 ）", "?step=upgrade_user&start=$start&count=$count&maxuid=$maxuid", 0);
+		
+		if($start < 200000) {
+			message("正在升级 user, 一共: $count, 当前: $start... （本次耗时：$processtime 秒，大约还需要 $remain_hour 小时 $remain_min 分钟 $remain_sec 秒 ）", "?step=upgrade_user&start=$start&count=$count&maxuid=$maxuid", 0);
+		} else {
+			message("正在升级 user, 一共: $count, 当前: $start... （本次耗时：$processtime 秒，大约还需要 $remain_hour 小时 $remain_min 分钟 $remain_sec 秒 ）", "?step=upgrade_user&start=0", 0);
+		}
+		
 	} else {
 		// 生成系统用户，系统用户名：系统，如果发现重名，则改名。
 		//INSERT INTO bbs_user SET uid='2', regip='12345554', regdate=UNIX_TIMESTAMP(), username='系统', password='d14be7f4d15d16de92b7e34e18d0d0f7', salt='99adde', email='system@admin.com', groupid='11', golds='0';
@@ -1133,7 +1151,11 @@ function upgrade_postpage() {
 				$start += 1;
 			}
 		}
-		message("正在升级 post.page, 进度 thread: $start / $count, post: $start2 / $count2...", "?step=upgrade_postpage&start=$start&start2=$start2&count2=$count2&maxtid=$maxtid", 0);
+		if($start < 200000) {
+			message("正在升级 post.page, 进度 thread: $start / $count, post: $start2 / $count2...", "?step=upgrade_postpage&start=$start&start2=$start2&count=$count&count2=$count2&maxtid=$maxtid", 0);
+		} else {
+			message("正在升级 post.page, 进度 thread: $start / $count, post: $start2 / $count2...", "?step=upgrade_postpage&start=0", 0);
+		}
 	} else {	
 		message('升级 upgrade_postpage 完成，接下来升级 upgrade_forum2 ...', '?step=upgrade_forum2&start=0');
 	}
