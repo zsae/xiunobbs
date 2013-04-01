@@ -153,7 +153,7 @@ class mmisc extends base_model {
 		if(!empty($badword)) {
 			foreach($badword as $k=>$v) {
 				if($v == '#' && strpos($s, $k) !== FALSE) {
-					return '数据中包含有不允许的关键字('.$k.')。';
+					return '包含有敏感词：'.$k.'';
 				}
 			}
 			$keys = array_keys($badword);

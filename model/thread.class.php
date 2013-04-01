@@ -34,15 +34,15 @@ class thread extends base_model {
 	
 	// ------------------> 杂项
 	public function check_subject(&$subject) {
-		if(empty($subject)) {
-			return '标题不能为空。';
-		}
 		if(utf8::strlen($subject) > 200) {
 			return '标题不能超过 200 字，当前长度：'.strlen($subject);
 		}
 		$error = $this->mmisc->check_badword($subject);
 		if($error) {
 			return $error;
+		}
+		if(empty($subject)) {
+			return '标题不能为空。';
 		}
 		return '';
 	}
