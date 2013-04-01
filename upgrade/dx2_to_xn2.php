@@ -825,6 +825,8 @@ function upgrade_post() {
 			if($fup == 0) continue;
 			$newfid = get_fid_by_policy($fid, $policy);
 			if(empty($newfid)) continue;
+			$post = $db->get("post-fid-$newfid-pid-$pid");
+			if($post) continue;
 			if(isset($policy['fuparr'][$fup]) && $policy['fuparr'][$fup] != 0) continue; // type = sub
 			
 			// 帖子附件

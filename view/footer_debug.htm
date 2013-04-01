@@ -21,7 +21,7 @@
 <!--{if DEBUG == 2}-->
 <b>time:</b> = <!--{$_SERVER[time]}--><br />
 <b>_user</b> = <!--{php print_r($_user);}-->
-<b>conf</b> = <!--{php //print_r($conf);}-->
+<b>conf</b> = <!--{php unset($conf['db'], $conf['cache']);print_r($conf);}-->
 <!--{/if}-->
 
 <b>include:</b> = <!--{php print_r(get_included_files());}-->

@@ -40,6 +40,10 @@ class post extends base_model {
 		if(utf8::strlen($message) > 2000000) {
 			return '内容不能超过200万个字符。';
 		}
+		$error = $this->mmisc->check_badword($message);
+		if($error) {
+			return $error;
+		}
 		return '';
 	}
 	

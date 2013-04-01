@@ -109,8 +109,6 @@ class post_control extends common_control {
 			
 			$error['subject'] = $this->thread->check_subject($thread['subject']);
 			$error['message'] = $this->post->check_message($message);
-			empty($error['subject']) && $error['subject'] = $this->mmisc->check_badword($subject);
-			empty($error['message']) && $error['message'] = $this->mmisc->check_badword($message);
 			
 			if(!array_filter($error)) {
 				$error = array();
@@ -315,7 +313,6 @@ class post_control extends common_control {
 			);
 			
 			$error['message'] = $this->post->check_message($post['message']);
-			empty($error['message']) && $error['message'] = $this->mmisc->check_badword($post['message']);
 			
 			// hook post_post_after.php
 			if(!array_filter($error)) {
@@ -500,11 +497,9 @@ class post_control extends common_control {
 				$thread['typeid4'] = $typeid4;
 				$thread['subject'] = $subject;
 				$error['subject'] = $this->thread->check_subject($thread['subject']);
-				empty($error['subject']) && $error['subject'] = $this->mmisc->check_badword($thread['subject']);
 			}
 			$post['message'] = $message;
 			$error['message'] = $this->post->check_message($post['message']);
-			empty($error['message']) && $error['message'] = $this->mmisc->check_badword($post['message']);
 			
 			// hook post_update_after.php
 			

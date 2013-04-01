@@ -236,7 +236,7 @@ span.nopic {width: 54px; height: 54px; background: url(image/nopic.gif) no-repea
 	#menu td.center a:hover{background-position: 0px -50px; text-decoration: none;}
 	#menu td.center a.checked{background-position: 0px -100px; cursor: default; color: #FFFFFF}
 	#menu td.center span.sep {height: 35px; float: left; width: 2px; background: url(image/menu_bg.gif) 0px -150px;}
-	#menu td.right {text-align: right; line-height: 35px;}
+	#menu td.right {text-align: right; line-height: 35px; white-space:nowrap;}
 	#user {color: #AEB2BE; font-size: 12px; *margin-top: 8px;}
 	#user a {color: #AAAAAA;}
 	#pm {}
