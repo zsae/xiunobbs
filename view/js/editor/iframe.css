@@ -1,2 +1,3 @@
 @import url(../../common.css);
 body {background: #FFFFFF;}
+body, td, div, p {font-size: 14px; line-height: 1.6}
