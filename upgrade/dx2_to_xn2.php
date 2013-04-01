@@ -1059,7 +1059,7 @@ function upgrade_pm() {
 
 function upgrade_friendlink() {
 	global $conf;
-	$dx2 = get_dx2();
+	/*$dx2 = get_dx2();
 	$db = get_db();
 	$arrlist = $dx2->index_fetch('common_friendlink', 'id', array(), array(), 0, 1000);
 	foreach($arrlist as $old) {
@@ -1072,7 +1072,7 @@ function upgrade_friendlink() {
 			'logo'=> $old['logo'],
 		);
 		$db->set("friendlink-linkid-$old[id]", $arr);
-	}
+	}*/
 		
 	message('升级 friendlink 完成，接下来升级 mod...', '?step=upgrade_mod&start=0');
 }
