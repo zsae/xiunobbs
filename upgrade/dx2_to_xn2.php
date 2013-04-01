@@ -702,7 +702,7 @@ function upgrade_thread() {
 		}
 		
 		$start += $limit;
-		message("正在升级 thread, 一共: $count, 当前: $start...", "?step=upgrade_thread&start=$start&maxtid=$maxtid", 0);
+		message("正在升级 thread, 一共: $count, 当前: $start...", "?step=upgrade_thread&start=$start&maxtid=$maxtid&count=$count", 0);
 	} else {	
 		message('升级 thread 完成，接下来升级 upgrade_attach...', '?step=upgrade_attach&start=0');
 	}
@@ -791,7 +791,7 @@ function upgrade_attach() {
 		}
 		
 		$start += $limit;
-		message("正在升级 attach, 一共: $count, 当前: $start...", "?step=upgrade_attach&start=$start&maxaid=$maxaid", 0);
+		message("正在升级 attach, 一共: $count, 当前: $start...", "?step=upgrade_attach&start=$start&maxaid=$maxaid&count=$count", 0);
 	} else {	
 		message('升级 attach 完成，接下来升级 post ...', '?step=upgrade_post&start=0');
 	}
@@ -867,7 +867,7 @@ function upgrade_post() {
 		}
 		
 		$start += $limit;
-		message("正在升级 post, 一共: $count, 当前: $start...", "?step=upgrade_post&start=$start&maxpid=$maxpid", 0);
+		message("正在升级 post, 一共: $count, 当前: $start...", "?step=upgrade_post&start=$start&maxpid=$maxpid&count=$count", 0);
 	} else {	
 		message('升级 post，接下来升级 user...', '?step=upgrade_user&start=0');
 	}
