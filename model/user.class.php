@@ -142,6 +142,11 @@ class user extends base_model{
 			return '用户名中不能含有HTML字符（尖括号）';
 		}
 		
+		$error = $this->mmisc->check_badword($username);
+		if($error) {
+			return $error;
+		}
+		
 		return '';
 	}
 	

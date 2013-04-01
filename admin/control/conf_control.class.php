@@ -211,6 +211,7 @@ class conf_control extends admin_control {
 			$this->kv->set('badword', $badword);
 			$this->kv->xset('badword_on', $badword_on);
 			$this->runtime->xset('badword_on', $badword_on);
+			$this->conf['badword_on'] = $badword_on;
 		}
 		$input['badword_on'] = form::get_radio_yes_no('badword_on', $this->conf['badword_on']);
 		core::htmlspecialchars($badword);
