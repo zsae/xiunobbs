@@ -471,7 +471,8 @@ class user_control extends common_control {
 	// 检测用户是否可以注册
 	public function on_checkname() {
 		$username = core::gpc('username');
-		$error = $this->user->check_username_exists($username);
+		$error = $this->user->check_username($username);
+		empty($error) && $error = $this->user->check_username_exists($username);
 		if(empty($error)) {
 			$this->message('可以注册', 1);
 		} else {
