@@ -101,8 +101,7 @@ function get_key_add($primarykey, $arr) {
 	return $s;
 }
 
-/*
-// 生成 tmp 缓存
+// 生成 tmp 缓存, IN_SAE
 function make_tmp($conf) {
 	
 	//$tmppath = IN_SAE ? FRAMEWORK_TMP_TMP_PATH.'tmp/' : FRAMEWORK_TMP_PATH;	// 这样比较保险，但是目前看来没有必要。
@@ -184,7 +183,7 @@ function make_tmp($conf) {
 	
 	// --------> bbsadmin start
 	
-	$conf2 = $conf;
+	$bbsconf = $conf;
 	$adminconf = include BBS_PATH.'admin/conf/conf.php';
 	$adminconf += $conf;
 	$conf = $adminconf;
@@ -227,7 +226,7 @@ function make_tmp($conf) {
 	}
 	unset($view);
 	
-	$conf = $conf2;
+	$conf = $bbsconf;
 	
 	// --------> bbsadmin end
 	
@@ -237,5 +236,4 @@ function make_tmp($conf) {
 		copy($tmppath.'tmp.zip', 'saestor://upload/tmp.zip');
 	}
 }
-*/
 ?>

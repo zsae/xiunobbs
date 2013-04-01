@@ -33,7 +33,7 @@
 									<p style="line-height: 20px;"><span class="grey">　用户组：</span>$_user[groupname]</p>
 									<p style="line-height: 20px;"><span class="grey">注册时间：</span>$_user[regdate_fmt]</p>
 									<p style="line-height: 20px;"><span class="grey">最后活跃：</span>$_user[lastactive_fmt]</p>
-									<p style="line-height: 20px;"><span class="grey">在线状态：</span><!--{if $_user[isonline]}--><span class="icon icon-online"></span><b class="red">在线</b><!--{else}--><span class="icon icon-offline"></span>离线<!--{/if}--></p>
+									<p style="line-height: 20px;"><span class="grey">在线状态：</span><!--{if $_user[isonline]}--><b class="red">在线</b><!--{else}-->离线<!--{/if}--></p>
 									<!--{hook my_base_td_1_end.htm}-->
 								</td>
 								<td width="20%">

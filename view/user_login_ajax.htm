@@ -69,8 +69,8 @@ function delay_execute(dialog, recall) {
 				
 				// 服务端已经设置了 xn_auth, js 不用再管
 				
-				var adminadd = user.groupid == 1 ? ' <a href="$conf[app_url]admin/">后台管理</a> ' : '';
-				$('#user').html('<a href="?my-profile.htm">' + user.username + '</a> <a href="?my-profile.htm">个人资料</a>，'+adminadd+'<a href="$conf[app_url]?user-logout.htm" class="ajaxdialog" onclick="return false">退出</a>');
+				var adminadd = user.groupid == 1 ? ' <a href="$conf[app_url]admin/">管理</a> ' : '';
+				$('#user').html('<a href="?my-profile.htm">' + user.username + '</a> '+adminadd+'<a href="$conf[app_url]?user-logout.htm" class="ajaxdialog" onclick="return false">退出</a>');
 		 		
 				// 同步登陆可以插入到此处
 				// hook user_login_success_js.htm

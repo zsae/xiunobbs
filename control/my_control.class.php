@@ -351,7 +351,7 @@ class my_control extends common_control {
 		$fid = intval(core::gpc('fid'));
 		$aid = intval(core::gpc('aid'));
 		
-		$attach = $this->attach->read($aid);
+		$attach = $this->attach->read($fid, $aid);
 		$this->attach->format($attach);
 		
 		// hook my_downlog_before.php
@@ -359,7 +359,7 @@ class my_control extends common_control {
 		$page = misc::page();
 		$pagesize = 20;
 		$downlist = $this->attach_download->get_list_by_aid($aid, $page, $pagesize);
-		$pages = misc::simple_pages("?my-downlog-aid-$aid.htm", count($downlist), $page, $pagesize);
+		$pages = misc::simple_pages("?my-downlog-fid-$fid-aid-$aid.htm", count($downlist), $page, $pagesize);
 		$this->view->assign('pages', $pages);
 		$this->view->assign('downlist', $downlist);
 		$this->view->assign('aid', $aid);

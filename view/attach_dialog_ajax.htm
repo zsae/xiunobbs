@@ -21,8 +21,8 @@
 	
 	<dt></dt>
 	<dd>
-		<input type="submit" class="button bigblue" onclick="window.open('?attach-download-aid-$attach[aid].htm');" value="点击下载" />
-		<input type="button" class="button biggrey" value="关闭" id="down_cancel_$attach[aid]"/>
+		<input type="submit" class="button bigblue" onclick="window.open('?attach-download-fid-$attach[fid]-aid-$attach[aid].htm');" id="down_click_$attach[aid]" value="点击下载" />
+		<input type="button" class="button biggrey" value="关闭" id="down_cancel_$attach[aid]" />
 	</dd>
 </dl>
 
@@ -31,6 +31,9 @@
 // 延迟执行的脚本，约定名字为：delay_execute()
 function delay_execute(dialog, recall) {
 	$('#down_cancel_$attach[aid]').click(function() {
+		dialog.close();
+	});
+	$('#down_click_$attach[aid]').click(function() {
 		dialog.close();
 	});
 }

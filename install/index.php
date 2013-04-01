@@ -33,6 +33,13 @@ define('FRAMEWORK_LOG_PATH', $conf['log_path']);
 include FRAMEWORK_PATH.'core.php';
 core::init();
 
+include BBS_PATH.'model/user.class.php';
+include BBS_PATH.'model/forum.class.php';
+include BBS_PATH.'model/thread.class.php';
+include BBS_PATH.'model/post.class.php';
+include BBS_PATH.'model/kv.class.php';
+include BBS_PATH.'model/runtime.class.php';
+
 $step = isset($_GET['step']) ? $_GET['step'] : '';
 
 if(empty($step) || $step == 'checklicense') {
@@ -329,7 +336,7 @@ if(empty($step) || $step == 'checklicense') {
 			$s = preg_replace('#\'installed\'\s*=\>\s*\'?.*?\'?,#is', "'installed' => 1,", $s);
 			
 			// 修改密码
-			$muser = core::model($conf, 'user');
+			$muser = new user($conf);
 			$admin = $db->get("user-uid-1");
 			$admin['username'] = $adminuser;
 			$admin['salt'] = rand(100000, 999999);
@@ -354,7 +361,7 @@ if(empty($step) || $step == 'checklicense') {
 			!IN_SAE && clear_tmp('', $conf['tmp_path']);
 			
 			// 生成全局配置
-			$kv = core::model($conf, 'kv');
+			$kv = new kv($conf);
 			$kvconf = array(
 				'app_name' => 'Xiuno BBS',		// 站点名称
 				'urlrewrite' => 0,			// 是否开启 URL-Rewrite
@@ -401,22 +408,26 @@ if(empty($step) || $step == 'checklicense') {
 			);
 			$kv->set('conf_ext', $kvconf);
 			
-			$runtime = core::model($conf, 'runtime');
-			$runtime->xupdate('forumarr');
-			$runtime->xupdate('grouparr');
+			$runtime = new runtime($conf);
+			$runtime->truncate();
 			
 			if(!misc::is_writable($configfile)) {
 				include './header.inc.php';
 				if(IN_SAE) {
 					echo '<h3>SAE 环境下安装需要手工编辑 conf/conf.php，复制以下代码，粘贴到 conf/conf.php：</h3>';
+					echo '<div><textarea style="width: 700px; height: 400px">'.$s.'</textarea></div>';
+					echo '<div>【注意】 需要使用UTF-8编辑器，请不要使用WINDOWS 记事本！</div>';
+					echo '<div><input type="submit" value=" 下一步" name="formsubmit" onclick="window.location=\'index.php?step=saedown\'" /></div>';
+					include './footer.inc.php';
+					exit;
 				} else {
 					echo '<h3>当前的配置文件不可写，需要手工编辑 conf/conf.php，复制以下代码，粘贴到 conf/conf.php：</h3>';
+					echo '<div><textarea style="width: 700px; height: 400px">'.$s.'</textarea></div>';
+					echo '<div>【注意】 需要使用UTF-8编辑器，请不要使用WINDOWS 记事本！</div>';
+					echo '<div><input type="submit" value=" 下一步" name="formsubmit" onclick="window.location=\'index.php?step=complete\'" /></div>';
+					include './footer.inc.php';
+					exit;
 				}
-				echo '<div><textarea style="width: 700px; height: 400px">'.$s.'</textarea></div>';
-				echo '<div>【注意】 需要使用UTF-8编辑器，请不要使用WINDOWS 记事本！</div>';
-				echo '<div><input type="submit" value=" 下一步" name="formsubmit" onclick="window.location=\'index.php?step=plugin\'" /></div>';
-				include './footer.inc.php';
-				exit;
 			} else {
 				file_put_contents($configfile, $s);
 			}
@@ -437,12 +448,21 @@ if(empty($step) || $step == 'checklicense') {
 	include './footer.inc.php';
 	exit;
 	
-} elseif($step == 'complete') {
+} elseif($step == 'saedown') {
 	// 检查 tmp 目录是否为空
-	if(IN_SAE && !is_file($conf['tmp_path'].'_runtime.php')) {
-		message('SAE 环境下需要手工上传 tmp 文件夹，请返回上一步，下载 tmp.zip ，解压后上传到服务器。');
+	if(IN_SAE) {
+		// 关闭所有插件
+		$file = $conf['upload_path'].'plugin.json';
+		file_put_contents($file, '');
+		
+		// 生成 tmp
+		make_tmp($conf);
+		message('SAE 环境安装，此步需要手工安装，点击<a href="'.$conf['upload_url'].'tmp.zip'.'" target="_blank"><b>【下载压缩包:tmp.zip】</b></a>，解压后，将文件上传到 tmp 目录，完成点击<a href="?step=complete"><b>【下一步】</b></a>。');
 	}
-	
+} elseif($step == 'complete') {
+	if(IN_SAE && !is_file($conf['tmp_path'].'_runtime.php')) {
+		message('SAE 环境下需要手工上传 tmp 文件夹，请返回上一步，下载 tmp.zip ，解压后上传到服务器。', 'javascript:history:back();');
+	}
 	// 设置 cookie
 	header('Content-Type: text/html; charset=UTF-8');
 	include './header.inc.php';	
@@ -452,3 +472,5 @@ if(empty($step) || $step == 'checklicense') {
 	file_put_contents($conf['upload_path'].'install.lock', '');
 	exit;
 }
+
+?>

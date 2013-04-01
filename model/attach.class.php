@@ -47,7 +47,7 @@ class attach extends base_model {
 	function __construct(&$conf) {
 		parent::__construct($conf);
 		$this->table = 'attach';
-		$this->primarykey = array('aid');
+		$this->primarykey = array('fid', 'aid');
 		$this->maxcol = 'aid';
 	}
 	
@@ -151,6 +151,7 @@ class attach extends base_model {
 		// format data here.
 		if(empty($attach)) return;
 		$attach['filesize_fmt'] = misc::humansize($attach['filesize']);
+		$attach['orgfilename_fmt'] = utf8::substr($attach['orgfilename'], 0, 12);
 		$attach['dateline_fmt'] = misc::humandate($attach['dateline']);
 		$attach['forumname'] = $this->conf['forumarr'][$attach['fid']];
 		$attach['incomes'] = $attach['golds'] * $attach['downloads'];
@@ -199,26 +200,28 @@ class attach extends base_model {
 	
 	// upload 相关，可能会给人偶然扫描到。todo: 安全性
 	public function get_aid_from_tmp($uid) {
-		$aids = $this->kv->get("upload_{$uid}_aids.tmp");
-		return explode(' ', $aids);
+		$aids = $this->kv->get("upload_{$uid}_fid_aids.tmp");
+		return array_filter(explode(' ', trim($aids)));
 	}
 	
 	public function clear_aid_from_tmp($uid) {
-		$this->kv->delete("upload_{$uid}_aids.tmp");
+		$this->kv->delete("upload_{$uid}_fid_aids.tmp");
 	}
 	
-	public function save_aid_to_tmp($aid, $uid) {
-		$oldaids = trim($this->kv->get("upload_{$uid}_aids.tmp"));
-		$aids = $oldaids ? $oldaids.' '.$aid : $aid;
-		$this->kv->set("upload_{$uid}_aids.tmp", $aids);
+	public function save_aid_to_tmp($fid, $aid, $uid) {
+		$oldfidaid = trim($this->kv->get("upload_{$uid}_fid_aids.tmp"));
+		$fidaid = "{$fid}_{$aid}";
+		$fidaid = $oldfidaid ? $oldfidaid.' '.$fidaid : $fidaid;
+		$this->kv->set("upload_{$uid}_fid_aids.tmp", trim($fidaid));
 	}
 	
-	public function remove_aid_from_tmp($aid, $uid) {
-		$s = trim($this->kv->get("upload_{$uid}_aids.tmp"));
-		$aidarr = explode(' ', $s);
-		$newarr = array_diff($aidarr, array($aid));
-		$aids = implode(' ', $newarr);
-		$this->kv->set("upload_{$uid}_aids.tmp", $aids);
+	public function remove_aid_from_tmp($fid, $aid, $uid) {
+		$s = trim($this->kv->get("upload_{$uid}_fid_aids.tmp"));
+		$fidaidarr = explode(' ', $s);
+		$fidaid = $fid."_".$aid;
+		$newarr = array_diff($fidaidarr, array($fidaid));
+		$fidaids = implode(' ', $newarr);
+		$this->kv->set("upload_{$uid}_fid_aids.tmp", $fidaids);
 	}
 	
 	// hook attach_model_end.php

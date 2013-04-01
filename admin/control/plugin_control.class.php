@@ -27,8 +27,8 @@ class plugin_control extends admin_control {
 		// 获取本地插件列表，获取更新
 		$pluginlist = core::get_plugins($this->conf);
 		$dirs = array();
-		foreach($pluginlist as $plugin) {
-			$plugin['pluginid'] && $dirs[] = $plugin['dir'];
+		foreach($pluginlist as $dir=>$plugin) {
+			$plugin['pluginid'] && $dirs[] = $dir;
 		}
 		// 如果全部为第三方插件，这里则不会请求服务器
 		$officiallist = $dirs ? $this->get_official_by_dirs($dirs) : array();
@@ -78,7 +78,6 @@ class plugin_control extends admin_control {
 		
 		// 从官方获取最新的版本
 		$pluginlist = $this->get_official_list($cateid, $styleid, $orderby, $page, $pagesize);
-		//print_r($pluginlist);exit;
 		// 获取本地插件列表
 		$locallist = core::get_plugins($this->conf);
 		// 合并
@@ -122,6 +121,7 @@ class plugin_control extends admin_control {
 		$dir = core::gpc('dir');
 		$pluginid = intval(core::gpc('pluginid'));
 		$local = $dir ? $this->get_local_plugin($dir) : array();
+		isset($local['pluginid']) && $pluginid = $local['pluginid'];
 		$official = $pluginid ? $this->get_official_plugin($pluginid) : array();
 		if(!$local && !$official) {
 			$this->message('请指定插件 dir 或 pluginid。');
@@ -178,7 +178,7 @@ class plugin_control extends admin_control {
 		if(!is_dir($this->conf['plugin_path'].$dir)) {
 			$siteid =  md5($this->conf['app_url'].$this->conf['auth_key']);
 			$app_url = core::urlencode($this->conf['app_url']);
-			$url = $this->official_plugin_site."?plugin-down-dir-$dir-siteid-$siteid-app_url-$app_url-ajax-1.htm";
+			$url = $this->official_plugin_site."plugin-down-dir-$dir-siteid-$siteid-ajax-1.htm?app_url=$app_url";
 			if(IN_SAE) {
 				// 提示下载
 				$next = "?plugin-install-dir-$dir.htm";
@@ -248,11 +248,11 @@ class plugin_control extends admin_control {
 	// 升级，直接跳转到安装?
 	public function on_upgrade() {
 		$dir = core::gpc('dir');
-		$this->is_right_dir($dir) && $this->message('dir 格式不对', 0);
+		!$this->is_right_dir($dir) && $this->message('dir 格式不对', 0);
 		
-		$siteid =  md5($this->conf['app_url'].$this->conf['priavte_key']);
+		$siteid =  md5($this->conf['app_url'].$this->conf['auth_key']);
 		$app_url = core::urlencode($this->conf['app_url']);
-		$url = $this->official_plugin_site."?plugin-down-dir-$dir-siteid-$siteid-app_url-$app_url.htm";
+		$url = $this->official_plugin_site."plugin-down-dir-$dir-siteid-$siteid.htm?app_url=$app_url";
 		$referer = core::gpc('HTTP_REFERER', 'S') OR $referer = '?plugin-index.htm';
 		if(IN_SAE) {
 			$pluginpath = $this->conf['plugin_path'].$dir;
@@ -275,7 +275,7 @@ class plugin_control extends admin_control {
 			$pluginzip = $this->conf['tmp_path']."$dir.zip";
 			file_put_contents($pluginzip, $s);
 			misc::rmdir($this->conf['plugin_path'].$dir);
-			xn_zip::unzip($pluginzip, $this->conf['plugin_path'].$dir);
+			xn_zip::unzip($pluginzip, $this->conf['plugin_path'].$dir.'/');
 			$this->clear_tmp();
 			$this->message('升级完毕。', 1, $referer);
 		}
@@ -496,27 +496,36 @@ class plugin_control extends admin_control {
 	// 从官方获取最新的 plugin
 	private function get_official_list($cateid, $styleid, $orderby, $page = 1, $pagesize = 20) {
 		$pluginlist = array();
-		$url = $this->official_plugin_site."?plugin-list-cateid-$cateid-styleid-$styleid-orderby-$orderby-page-$page-pagesize-$pagesize-ajax-1.htm";
+		$url = $this->official_plugin_site."plugin-list-cateid-$cateid-styleid-$styleid-orderby-$orderby-page-$page-pagesize-$pagesize-ajax-1.htm";
 		$s = misc::fetch_url($url, 5);
 		if(empty($s)) throw new Exception('从官方获取更新失败。');
 		$pluginlist = (array)core::json_decode($s);
+		if(!empty($pluginlist['servererror'])) {
+			throw new Exception("从官方获取插件信息失败: $pluginlist[servererror],  URL: $url 。");
+		}
 		return $pluginlist;
 	}
 	
 	private function get_official_by_dirs($dirs) {
 		$dirsurl = implode(',', (array)$dirs);
-		$url = $this->official_plugin_site."?plugin-update-dirs-$dirsurl-ajax-1.htm";
+		$url = $this->official_plugin_site."plugin-dirs-dirs-$dirsurl-ajax-1.htm";
 		$s = misc::fetch_url($url, 5);
 		if(empty($s)) throw new Exception('从官方获取更新失败。');
 		$pluginlist = core::json_decode($s);
+		if(!empty($pluginlist['servererror'])) {
+			throw new Exception("从官方获取插件信息失败: $pluginlist[servererror] , URL: $url 。");
+		}
 		return $pluginlist;
 	}
 	
 	private function get_official_plugin($pluginid) {
-		$url = $this->official_plugin_site."?plugin-read-pluginid-$pluginid-ajax-1.htm";
+		$url = $this->official_plugin_site."plugin-read-pluginid-$pluginid-ajax-1.htm";
 		$s = misc::fetch_url($url, 5);
 		if(empty($s)) throw new Exception("从官方获取插件 pluginid=$pluginid 失败。");
 		$plugin = core::json_decode($s);
+		if(!empty($plugin['servererror'])) {
+			throw new Exception("从官方获取插件信息失败: $plugin[servererror],  URL: $url 。");
+		}
 		return $plugin;
 	}
 	

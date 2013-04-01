@@ -16,7 +16,7 @@ dd {width: 84%;}
 				<dt>插件名：</dt>
 				<dd>
 					$plugin[name] v$plugin[version]
-					<!--{if $local && $official && $plugin[have_new_version]}--><a href="http://plugin.xiuno.net/?plugin-upgrade-dir-$dir.htm" target="_blank" title="点击升级"><span class="red small">(NEW! v$official[version])</span></a><!--{/if}-->
+					<!--{if $local && $official && $plugin[have_new_version]}--><a href="?plugin-upgrade-dir-$dir.htm" target="_blank" title="点击升级"><span class="red small">(NEW! v$official[version])</span></a><!--{/if}-->
 				</dd>
 				
 				<dt>目录：</dt>
@@ -59,10 +59,10 @@ dd {width: 84%;}
 				<dd>$official[sells]</dd>
 				
 				<dt>通过官方认证：</dt>
-				<dd><!--{if $official[is_cert]}-->是<!--{else}-->否<!--{/if}--></dd>
+				<dd><!--{if $official[is_cert]}--><span class="green bold">通过</span><!--{else}--><span class="red bold">未通过</span><!--{/if}--></dd>
 			<!--{else}-->
 				<dt>通过官方认证：</dt>
-				<dd>否</dd>
+				<dd><span class="red bold">未通过</span> <span class="red">(安装此插件，可能存在安全风险)</span></dd>
 			<!--{/if}-->
 			
 			<!--{if $local && $official}-->

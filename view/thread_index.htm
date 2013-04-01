@@ -80,7 +80,7 @@
 							<!--{loop $post[attachlist] $attach}-->
 							<tr>
 								<td>
-									<a href="?attach-dialog-aid-$attach[aid]-ajax-1.htm" class="ajaxdialog" ajaxdialog="{showtitle: false, cache: true, position: 6, modal: false}" onclick="return false;" target="_blank" rel="nofollow"><img src="view/image/filetype/$attach[filetype].gif" width="16" height="16" />$attach[orgfilename]</a>
+									<a href="?attach-dialog-fid-$fid-aid-$attach[aid]-ajax-1.htm" class="ajaxdialog" ajaxdialog="{showtitle: false, cache: true, position: 6, modal: false}" onclick="return false;" target="_blank" rel="nofollow"><img src="view/image/filetype/$attach[filetype].gif" width="16" height="16" />$attach[orgfilename]</a>
 								</td>
 								<td class="red">$attach[golds] 金币</td>
 								<td class="grey">$attach[filesize_fmt]</td>
@@ -243,7 +243,6 @@
 		<!--{if $ismod}-->
 		<div style="text-align: center;">
 			<input type="checkbox" name="tidarr[]" value="$thread[fid]-$thread[tid]" checked="checked" style="display: none;" />
-			<input type="button" class="button smallblue" id="mod_top"  value="置顶" />
 			<input type="button" class="button smallblue" id="mod_top"  value="置顶" />
 			<!--{if $forum[typecates]}-->
 			<input type="button" class="button smallblue" id="mod_type"  value="主题分类" />

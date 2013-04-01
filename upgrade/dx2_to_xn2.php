@@ -161,6 +161,7 @@ function upgrade_prepare() {
 		$db->query("ALTER TABLE {$db->tablepre}thread_type ADD column oldfid int(11) NOT NULL default '0';");
 		$db->index_create('thread_type', array('oldtypeid'=>1));
 		$db->index_create('thread_type', array('oldfid'=>1));
+		$db->index_create('attach', array('aid'=>1));
 	} catch(Exception $e) {}
 	
 	message('准备完毕，接下来设置升级策略...', '?step=upgrade_forum_policy');
@@ -288,6 +289,87 @@ function upgrade_forum_policy() {
 	show_footer();
 }
 
+<<<<<<< HEAD
+=======
+function load_upgrade_policy() {
+	global $conf;
+	$dx2 = get_dx2();
+	
+	// 策略文件。
+	$policyfile = $conf['tmp_path'].'upgrade_policy.txt';
+	if(!is_file($policyfile)) {
+		return init_policy();
+	}
+	$s = file_get_contents($policyfile);
+	$policy = (array)core::json_decode($s);
+	
+	// 初始化。
+	if(empty($policy)) {
+		$policy = init_policy();
+	}
+	return $policy;
+}
+
+function init_policy() {
+	global $conf;
+	$dx2 = get_dx2();
+	
+	if(is_file($policyfile)) {
+		throw new Exception('tmp/upgrade_policy.txt 已经存在！');
+	}
+	$forumlist = $dx2->index_fetch('forum_forum', 'fid', array(), array(), 0, 4000);
+	$fuparr = array();
+	foreach($forumlist as $forum) {
+		$policy['keepfup'][$forum['fid']] = 0;
+		$policy['fidto'][$forum['fid']] = 'forum';
+		$policy['threadtypefid'][$forum['fid']] = 0;
+		$policy['fuparr'][$forum['fid']] = $forum['fup'];
+	}
+	$policyfile = $conf['tmp_path'].'upgrade_policy.txt';
+	file_put_contents($policyfile, core::json_encode($policy));
+	return $policy;
+}
+
+// 根据策略，调整 fid
+function get_fid_by_policy($fid, $policy) {
+	$fup = $policy['fuparr'][$fid];
+	
+	// 大区
+	if($fup == 0) {
+		if($policy['keepfup']) {
+			return $fid;
+		} else {
+			return 0;
+		}
+	// 普通版块
+	} else {
+		// 移动到上一级
+		
+		// 子版块 type = sub
+		if(!isset($policy['fidto'][$fid])){
+			return $fid;
+		}
+		
+		if($policy['fidto'][$fid] == 'threadtype') {
+			return $fup;
+		} else {
+			return $fid;
+		}
+	}
+}
+
+// 获取fid 所在的位置，0-40，一级主题分类的值范围。
+function get_fid_order($policy, $fid) {
+	$i = 0;
+	$fup = $policy['fuparr'][$fid];
+	foreach($policy['fuparr'] as $_fid=>$_fup) {
+		$fup == $_fup && $i++;
+		if($fid == $_fid) return $i;
+	}
+	return 0;
+}
+
+>>>>>>> b10c9f1143b823d1b496f2a2efeea50c63c73c22
 function upgrade_forum() {
 	global $start, $conf;
 	$dx2_attach_path = DX2_ATTACH_PATH;
@@ -306,7 +388,7 @@ function upgrade_forum() {
 	$groupids = array(0, 1, 2, 3, 4, 5, 6, 7, 11, 12, 13, 14, 15);
 	if($start < $count) {
 		$limit = DEBUG ? 10 : 500;	// 每次升级 100
-		$arrlist = $dx2->index_fetch_id('forum_forum', 'fid', array(), array(), $start, $limit);
+		$arrlist = $dx2->index_fetch_id('forum_forum', 'fid', array(), array('fid'=>1), $start, $limit);
 		foreach($arrlist as $key) {
 			list($table, $col, $fid) = explode('-', $key);
 			$old = $dx2->get("forum_forum-fid-$fid");
@@ -514,7 +596,7 @@ function upgrade_thread() {
 	$thread_type_data = new thread_type_data($conf);
 	if($start < $count) {
 		$limit = DEBUG ? 10 : 1000;	// 每次升级 100
-		$arrlist = $dx2->index_fetch_id('forum_thread', 'tid', array('tid'=>array('>'=>$maxtid)), array(), $start, $limit);
+		$arrlist = $dx2->index_fetch_id('forum_thread', 'tid', array('tid'=>array('>'=>$maxtid)), array('tid'=>1), $start, $limit);
 		foreach($arrlist as $key) {
 			list($table, $_, $tid) = explode('-', $key);
 			$old = $dx2->get("forum_thread-tid-$tid");
@@ -528,6 +610,7 @@ function upgrade_thread() {
 			if(!isset($policy['fuparr'][$fid]) ) continue; // 版块不存在，则不升级
 			$fup = $policy['fuparr'][$fid];			// 大区也不升级
 			if($fup == 0) continue;
+			if(isset($policy['fuparr'][$fup]) && $policy['fuparr'][$fup] != 0) continue; // type = sub
 			
 			$lastuid = 0;
 			$lastuser = '';
@@ -637,14 +720,19 @@ function upgrade_attach() {
 	$policy = load_upgrade_policy();
 	
 	$maxaid = intval(core::gpc('maxaid'));
+<<<<<<< HEAD
 	!isset($_GET['maxaid']) && $maxaid = $db->index_maxid('attach-aid');
 	
 	$count = intval(core::gpc('count'));
+=======
+	$count = intval(core::gpc('count'));
+	!isset($_GET['maxaid']) && $maxaid = $db->index_maxid('attach-aid');
+>>>>>>> b10c9f1143b823d1b496f2a2efeea50c63c73c22
 	!isset($_GET['count']) && $count = $dx2->index_count('forum_attachment', array('aid'=>array('>'=>$maxaid)));
 	
 	if($start < $count) {
 		$limit = DEBUG ? 20 : 500;
-		$arrlist = $dx2->index_fetch_id('forum_attachment', 'aid', array('aid'=>array('>'=>$maxaid)), array(), $start, $limit);
+		$arrlist = $dx2->index_fetch_id('forum_attachment', 'aid', array('aid'=>array('>'=>$maxaid)), array('aid'=>1), $start, $limit);
 		foreach($arrlist as $key) {
 			list($table, $keyname, $aid) = explode('-', $key);
 			$attach = $dx2->get("forum_attachment-aid-$aid");
@@ -665,6 +753,7 @@ function upgrade_attach() {
 			if(!isset($policy['fuparr'][$fid]) ) continue;
 			$fup = $policy['fuparr'][$fid];
 			if($fup == 0) continue;
+			if(isset($policy['fuparr'][$fup]) && $policy['fuparr'][$fup] != 0) continue; // type = sub
 			
 			$newfid = get_fid_by_policy($fid, $policy);
 			if(empty($newfid)) continue;
@@ -707,7 +796,7 @@ function upgrade_attach() {
 				'isimage'=> 0,
 				'golds'=> 0,
 			);
-			$db->set("attach-aid-$aid", $arr);
+			$db->set("attach-fid-$newfid-aid-$aid", $arr);
 		}
 		
 		$start += $limit;
@@ -726,14 +815,19 @@ function upgrade_post() {
 	$policy = load_upgrade_policy();
 	
 	$maxpid = intval(core::gpc('maxpid'));
+<<<<<<< HEAD
 	!isset($_GET['maxpid']) && $maxpid = $db->index_maxid('post-pid');
 	
 	$count = intval(core::gpc('count'));
+=======
+	$count = intval(core::gpc('count'));
+	!isset($_GET['maxpid']) && $maxpid = $db->index_maxid('post-pid');
+>>>>>>> b10c9f1143b823d1b496f2a2efeea50c63c73c22
 	!isset($_GET['count']) && $count = $dx2->index_count('forum_post', array('pid'=>array('>'=>$maxpid)));
 	
 	if($start < $count) {
 		$limit = DEBUG ? 20 : 500;	// 每次升级 100
-		$arrlist = $dx2->index_fetch_id('forum_post', 'pid', array('pid'=>array('>'=>$maxpid)), array(), $start, $limit);
+		$arrlist = $dx2->index_fetch_id('forum_post', 'pid', array('pid'=>array('>'=>$maxpid)), array('pid'=>1), $start, $limit);
 		foreach($arrlist as $key) {
 			list($table, $_, $pid) = explode('-', $key);
 			$old = $dx2->get("forum_post-pid-$pid");
@@ -746,8 +840,12 @@ function upgrade_post() {
 			if($fup == 0) continue;
 			$newfid = get_fid_by_policy($fid, $policy);
 			if(empty($newfid)) continue;
+<<<<<<< HEAD
 			$post = $db->get("post-fid-$newfid-pid-$pid");
 			if($post) continue;
+=======
+			if(isset($policy['fuparr'][$fup]) && $policy['fuparr'][$fup] != 0) continue; // type = sub
+>>>>>>> b10c9f1143b823d1b496f2a2efeea50c63c73c22
 			
 			// 帖子附件
 			if($old['attachment']) {
@@ -817,7 +915,7 @@ function upgrade_user() {
 	
 	if($start < $count) {
 		$limit = DEBUG ? 20 : 500;	// 每次升级 100
-		$arrlist = $uc->index_fetch_id('members', 'uid', array('uid'=>array('>'=>$maxuid)), array(), $start, $limit);
+		$arrlist = $uc->index_fetch_id('members', 'uid', array('uid'=>array('>'=>$maxuid)), array('uid'=>1), $start, $limit);
 		
 		foreach($arrlist as $key) {
 			list($table, $col, $uid) = explode('-', $key);
@@ -999,15 +1097,20 @@ function upgrade_postpage() {
 	$db = get_db();
 	
 	$maxtid = intval(core::gpc('maxtid'));
+<<<<<<< HEAD
 	!isset($_GET['maxtid']) && $maxtid = $db->index_maxid('thread-tid');
 	
 	$count = intval(core::gpc('count'));
+=======
+	$count = intval(core::gpc('count'));
+	!isset($_GET['maxtid']) && $maxtid = $db->index_maxid('thread-tid');
+>>>>>>> b10c9f1143b823d1b496f2a2efeea50c63c73c22
 	!isset($_GET['count']) && $count = $dx2->index_count('forum_thread', array('tid'=>array('>'=>$maxtid)));
 	
 	if($start < $count) {
 		$limit = DEBUG ? 10 : 500;	// 每次升级 100
 		$limit2 = DEBUG ? 20 : 500;
-		$tidkeys = $dx2->index_fetch_id('forum_thread', array('tid'), array('tid'=>array('>'=>$maxtid)), array(), $start, $limit);
+		$tidkeys = $dx2->index_fetch_id('forum_thread', array('tid'), array('tid'=>array('>'=>$maxtid)), array('tid'=>1), $start, $limit);
 		foreach($tidkeys as $key) {
 			list($table, $_, $tid) = explode('-', $key);
 			$thread = $dx2->get("forum_thread-tid-$tid");

@@ -127,7 +127,7 @@ function delay_execute(dialog, recall) {
 		 
 			 // hook user_create_success_js.htm
 		 
-	 		$('#user').html('<a href="?my-profile.htm">' + user.username + '</a>，您好，注册成功，<a href="?user-logout.htm" class="ajaxdialog" onclick="return false">退出</a>');
+	 		$('#user').html('<a href="?my-profile.htm">' + user.username + '</a>，您好，<a href="?user-logout.htm" class="ajaxdialog" onclick="return false">退出</a>');
 	 		dialog.set_body('<div class="ok">注册完毕，自动登录成功。!</div>');
 	 		if(recall) {
 	 			dialog.close();

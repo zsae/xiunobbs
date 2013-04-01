@@ -45,7 +45,7 @@ class attach_download extends base_model {
 	// 用来显示给用户
 	public function format(&$down) {
 		// format data here.
-		$down['attach'] = $this->attach->read($down['aid']);
+		$down['attach'] = $this->attach->read($down['fid'], $down['aid']);
 		$down['user'] = $this->user->read($down['uid']);
 		$down['dateline_fmt'] = misc::humandate($down['dateline']);
 		$this->attach->format($down['attach']);

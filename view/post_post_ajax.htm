@@ -154,7 +154,7 @@ function delay_execute(dialog, recall) {
 					if(window.confirm('确认删除附件吗？')) {
 						var jtr = $(this).closest('tr');
 						var aid = jtr.attr('aid');
-						$.get('?attach-deletefile-aid-'+aid+'-ajax-1.htm', function(s) {
+						$.get('?attach-deletefile-fid-$fid-aid-'+aid+'-ajax-1.htm', function(s) {
 							var json = json_decode(s);
 							if(error = json_error(json)) {alert(error); return false;}
 							if(json.status <= 0) {alert(json.message); return false;}
