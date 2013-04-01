@@ -133,7 +133,7 @@ class user extends base_model{
 		if(empty($username)) {
 			return '用户名不能为空。';
 		} elseif(utf8::strlen($username) > 16) {
-			return '用户名太长';
+			return '用户名太长:'.utf8::strlen($username);
 		} elseif(str_replace(array("\t", "\r", "\n", ' ', '　', ',', '，', '-'), '', $username) != $username) {
 			return '用户名中不能含有空格和 , - 等字符';
 		//} elseif(!preg_match('#^[\w\'\-\x7f-\xff]+$#', $username)) {
@@ -141,10 +141,8 @@ class user extends base_model{
 		} elseif(htmlspecialchars($username) != $username) {
 			return '用户名中不能含有HTML字符（尖括号）';
 		}
-		
-		$error = $this->mmisc->check_badword($username);
-		if($error) {
-			return $error;
+		if(($error = $this->mmisc->have_badword($username))) {
+			return '包含敏感词：'.$error;
 		}
 		
 		return '';

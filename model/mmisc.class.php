@@ -128,15 +128,24 @@ class mmisc extends base_model {
 		return $email;
 	}
 	
-	public function check_badword(&$s) {
-		if($k = $this->replace_badword($s)) {
-			return '数据中包含有不允许的关键字('.$k.')。';
+	// 检测是否含有关键词
+	public function have_badword($s) {
+		if(empty($this->conf['badword_on'])) {
+			return '';
+		}
+		$badword = $this->kv->get('badword');
+		if(!empty($badword)) {
+			foreach($badword as $k=>$v) {
+				if(strpos($s, $k) !== FALSE) {
+					return $k;
+				}
+			}
 		}
 		return '';
 	}
 	
-	// 关键词过滤
-	public function replace_badword(&$s) {
+	// 检测并且过滤
+	public function check_badword(&$s) {
 		if(empty($this->conf['badword_on'])) {
 			return '';
 		}
@@ -144,7 +153,7 @@ class mmisc extends base_model {
 		if(!empty($badword)) {
 			foreach($badword as $k=>$v) {
 				if($v == '#' && strpos($s, $k) !== FALSE) {
-					return $k;
+					return '数据中包含有不允许的关键字('.$k.')。';
 				}
 			}
 			$keys = array_keys($badword);

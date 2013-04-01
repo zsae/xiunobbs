@@ -194,11 +194,10 @@ class conf_control extends admin_control {
 	// 关键词过滤
 	public function on_badword() {
 		$badword = (array)$this->kv->get('badword');
-		$badword = array_filter($badword);
 		$badword_on = $this->conf['badword_on'];
 		$error = $input = array();
 		if($this->form_submit()) {
-			$badword = core::gpc('badword', 'P');
+			$badword = trim(core::gpc('badword', 'P'));
 			$badword = str_replace("　 ", ' ', $badword);
 			$badword = str_replace("：", ':', $badword);
 			$badword = str_replace(": ", ':', $badword);
@@ -206,8 +205,8 @@ class conf_control extends admin_control {
 			$badword_on = intval(core::gpc('badword_on', 'P'));
 			// $error['badword'] = $badword;
 			$badword = misc::explode(':', ' ', $badword);
-			$badword = array_filter($badword);
-			
+			//$badword = array_filter($badword);
+
 			$this->kv->set('badword', $badword);
 			$this->kv->xset('badword_on', $badword_on);
 			$this->runtime->xset('badword_on', $badword_on);
