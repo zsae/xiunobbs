@@ -1155,11 +1155,20 @@ function upgrade_postpage() {
 			
 			$floor += $n;
 			$maxpid = $pid;	   // 不停的增加 maxpid
-			$floorlimit += $n; // 多轮循环后 $floorlimit 将会 <= 0
+			$floorlimit -= $n; // 多轮循环后 $floorlimit 将会 <= 0
 			
 			// $floorlimit 用完，中断 tid 大循环，进入下一轮跳转。
 			if($floorlimit <= 0) {
 				break;
+			// 如果 $floortime 没用完，但是已经取完了。
+			} else {
+				// 进入下一轮 tid 循环，并且将 floor, maxpid 重设
+				if($n < $limit2) {
+					$floor = 0;
+					$maxpid = 0;
+					$maxtid = $thread['tid'];
+					continue;
+				}
 			}
 		}
 	}

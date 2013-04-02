@@ -129,12 +129,6 @@ class conf_control extends admin_control {
 		
 		// hook admin_conf_base_input_after.php
 		
-		$maxtid = $this->thread->maxid();
-		
-		$limittid = $maxtid; // $maxtid * 2
-		
-		$this->view->assign('limittid', $limittid);
-		$this->view->assign('maxtid', $maxtid);
 		$this->view->assign('input', $input);
 		$this->view->assign('kvconf', $kvconf);
 		$this->view->assign('error', $error);
