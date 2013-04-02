@@ -53,8 +53,7 @@ class cron extends base_model {
 			$forumlist = $this->forum->get_list();
 			foreach($forumlist as $forum) {
 				$forum['todayposts'] = 0;
-				$this->forum->update($forum);
-				$this->mcache->clear('forum', $forum['fid']);
+				$this->forum->xupdate($forum);
 			}
 			
 			// 统计

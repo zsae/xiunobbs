@@ -14,8 +14,7 @@ class thread_top extends base_model {
 	public function add_top_1($forum, $fidtidarr) {
 		$tidkeys = $this->tidarr_to_fidtid($fidtidarr);
 		$forum['toptids'] = misc::key_str_merge($forum['toptids'], $tidkeys);
-		$this->forum->update($forum);
-		$this->mcache->clear('forum', $forum['fid']);
+		$this->forum->xupdate($forum);
 		
 		// 更新到 $thread
 		$this->update_thread_top($forum, $fidtidarr, 1);
@@ -27,8 +26,7 @@ class thread_top extends base_model {
 	public function delete_top_1($forum, $fidtidarr) {
 		$tidkeys = $this->tidarr_to_fidtid($fidtidarr);
 		$forum['toptids'] = misc::key_str_strip($forum['toptids'], $tidkeys);
-		$this->forum->update($forum);
-		$this->mcache->clear('forum', $forum['fid']);
+		$this->forum->xupdate($forum);
 		
 		// 更新到 $thread
 		$this->update_thread_top($forum, $fidtidarr, 0);

@@ -138,8 +138,9 @@ class forum_control extends admin_control {
 			$this->forum->update($forum1);
 			
 			// 更新缓存
-			$this->forum->clear_cache($fid1, TRUE);
-			$this->forum->clear_cache($fid2, TRUE);
+			$this->mcache->clear('forum', $fid1);
+			$this->mcache->clear('forum', $fid2);
+			$this->runtime->xupdate('forumarr');
 			
 			$this->forum->delete($fid2);
 			
@@ -271,7 +272,8 @@ class forum_control extends admin_control {
 			// ------------> 初始化 thread_type end
 		
 			// 清除缓存
-			$this->forum->clear_cache($fid, TRUE);
+			$this->mcache->clear('forum', $fid);
+			$this->runtime->xupdate('forumarr');
 		}
 		
 		// 版块权限

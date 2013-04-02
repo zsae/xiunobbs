@@ -213,8 +213,7 @@ class post_control extends common_control {
 				$forum['posts']++;
 				$forum['todayposts']++;
 				$forum['lasttid'] = $tid;
-				$this->forum->update($forum);
-				$this->forum->clear_cache($fid, TRUE); // 发帖强行更新！发帖量特别大，可能需要优化，todo:
+				$this->forum->xupdate($forum);
 				$this->runtime->xset('posts', '+1');
 				$this->runtime->xset('threads', '+1');
 				$this->runtime->xset('todayposts', '+1');
@@ -376,8 +375,7 @@ class post_control extends common_control {
 				$forum['posts']++;
 				$forum['todayposts']++;
 				$forum['lasttid'] = $thread['tid'];
-				$this->forum->update($forum);
-				$this->forum->clear_cache($fid);
+				$this->forum->xupdate($forum);
 				
 				// 今日总的发帖数
 				$this->runtime->xset('posts', '+1');
@@ -556,7 +554,7 @@ class post_control extends common_control {
 				$this->post->update($post);
 				// hook post_update_thread_update_after.php
 				
-				$this->forum->clear_cache($fid);
+				$this->forum->xupdate($forum);
 				
 				// hook post_update_succeed.php
 				$this->message('更新成功！');
@@ -606,7 +604,9 @@ class post_control extends common_control {
 			$this->thread->xdelete($fid, $tid, TRUE);	// 删除 $postlist, 更新 $forum $userlist
 			// hook post_delete_post_after.php
 			
-			$this->forum->clear_cache($fid);
+			$forum['posts'] -= $thread['posts'];
+			$forum['threads']--;
+			$this->forum->xupdate($forum);
 			
 			$this->location("?forum-index-fid-$fid.htm");
 			
@@ -615,6 +615,9 @@ class post_control extends common_control {
 			// hook post_delete_thread_before.php
 			$this->post->xdelete($fid, $pid, TRUE);
 			// hook post_delete_thread_after.php
+			
+			$forum['posts']--;
+			$this->forum->xupdate($forum);
 			
 			// 重建页数
 			$this->post->rebuild_page($fid, $tid, $pid, $post['page']);

@@ -129,11 +129,16 @@ class forum extends base_model {
 	}
 	
 	// 清除某个版块的缓存
-	public function clear_cache($fid, $force = FALSE) {
-		if($this->conf['site_pv'] <= 100000 || $force) {
-			$this->mcache->clear('forum', $fid);
-			$this->runtime->xupdate('forumarr');
+	public function xupdate($new) {
+		$fid = $new['fid'];
+		$forum = $this->read($fid);
+		$cache = $this->mcache->read('forum', $fid);
+		foreach($new as $k=>$v) {
+			$forum[$k] = $v;
+			$cache[$k] = $v;
 		}
+		$this->update($forum);
+		$this->mcache->real_set('forum', $fid, $cache);
 	}
 	
 	// hook forum_model_end.php

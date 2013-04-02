@@ -162,8 +162,7 @@ class post extends base_model {
 				$forum['posts'] -= $arr['posts'];
 				$forum['todayposts'] -= $arr['todayposts'];
 				$todayposts += $arr['todayposts'];
-				$this->forum->update($forum);
-				$this->mcache->clear('forum', $fid);
+				$this->forum->xupdate($forum);
 			}
 			
 			$this->runtime->xset('todayposts', '-'.$todayposts);

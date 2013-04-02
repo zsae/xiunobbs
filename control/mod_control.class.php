@@ -184,7 +184,7 @@ class mod_control extends common_control {
 				// 更新论坛精华数 todo: 准确？ 没啥用
 				$forum = $this->forum->read($fid);
 				$rank == 0 ? ($thread['digest'] && $forum['digests']--) : (!$thread['digest'] && $forum['digests']++);
-				$this->forum->update($forum);
+				$this->forum->xupdate($forum);
 				$fidarr[$fid] = $fid;
 				
 				// 更新用户精华数，积分
@@ -237,10 +237,6 @@ class mod_control extends common_control {
 				}
 				
 				// hook mod_digest_loop_after.php
-			}
-			
-			foreach($fidarr as $fid) {
-				$this->forum->clear_cache($fid);
 			}
 			
 			foreach($creditarr as $uid=>$credits) {
@@ -465,12 +461,8 @@ class mod_control extends common_control {
 			$forum['posts'] -= $pidnum;
 			$forum2['posts'] += $pidnum;
 			
-			$this->forum->update($forum);
-			$this->forum->update($forum2);
-			
-			// 更新缓存
-			$this->forum->clear_cache($fid, TRUE);
-			$this->forum->clear_cache($fid2, TRUE);
+			$this->forum->xupdate($forum);
+			$this->forum->xupdate($forum2);
 			
 			// hook mod_move_succeed.php
 			$this->message("操作成功！", 1, '?forum-index-fid-$fid2.htm');

@@ -216,9 +216,8 @@ class thread extends base_model {
 				$forum['threads'] -= $arr['threads'];
 				$forum['posts'] -= $arr['posts'];
 				$forum['todayposts'] -= $arr['todayposts'];
-				$this->forum->update($forum);
+				$this->forum->xupdate($forum);
 				$this->forum->update_last($fid);
-				$this->mcache->clear('forum', $fid);
 				$this->runtime->xupdate('forumarr');
 			}
 		}

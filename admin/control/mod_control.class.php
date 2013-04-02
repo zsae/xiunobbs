@@ -48,8 +48,7 @@ class mod_control extends admin_control {
 			if(!array_filter($error)) {
 				$forum = $this->forum->read($fid);
 				$forum['brief'] = $brief;
-				$this->forum->update($forum);
-				$this->mcache->clear('forum', $fid);
+				$this->forum->xupdate($forum);
 				$error = array();
 			}
 		}
