@@ -129,13 +129,109 @@ class forum extends base_model {
 	}
 	
 	// 清除某个版块的缓存
+	/*
+	
+	Array
+(
+    [fid] => 1
+    [name] => 默认版块1
+    [rank] => 0
+    [threads] => 2
+    [posts] => 2
+    [digests] => 0
+    [todayposts] => 2
+    [lasttid] => 2
+    [brief] => 默认版块1
+    [accesson] => 0
+    [modids] => 
+    [modnames] => 
+    [typecates] => Array
+        (
+            [1] => AAA
+        )
+
+    [toptids] => 
+    [orderby] => 0
+    [seo_title] => 
+    [seo_keywords] => 
+    [modlist] => Array
+        (
+        )
+
+    [types] => Array
+        (
+            [1] => Array
+                (
+                    [1] => A1
+                    [2] => A2
+                    [3] => A3
+                )
+
+        )
+
+)
+Array
+(
+    [fid] => 1
+    [name] => 默认版块1
+    [rank] => 0
+    [threads] => 4
+    [posts] => 4
+    [digests] => 0
+    [todayposts] => 4
+    [lasttid] => 4
+    [brief] => 默认版块1
+    [accesson] => 0
+    [modids] => 
+    [modnames] => 
+    [typecates] => 
+    [toptids] => 
+    [orderby] => 0
+    [seo_title] => 
+    [seo_keywords] => 
+)
+Array
+(
+    [fid] => 1
+    [name] => 默认版块1
+    [rank] => 0
+    [threads] => 4
+    [posts] => 4
+    [digests] => 0
+    [todayposts] => 4
+    [lasttid] => 4
+    [brief] => 默认版块1
+    [accesson] => 0
+    [modids] => 
+    [modnames] => 
+    [typecates] => 
+    [toptids] => 
+    [orderby] => 0
+    [seo_title] => 
+    [seo_keywords] => 
+    [modlist] => Array
+        (
+        )
+
+    [types] => Array
+        (
+            [1] => Array
+                (
+                    [1] => A1
+                    [2] => A2
+                    [3] => A3
+                )
+
+        )
+
+)*/
 	public function xupdate($new) {
 		$fid = $new['fid'];
 		$forum = $this->read($fid);
 		$cache = $this->mcache->read('forum', $fid);
 		foreach($new as $k=>$v) {
 			isset($forum[$k]) && !is_array($new[$k]) && $forum[$k] = $v;
-			isset($cache[$k]) && $cache[$k] = $v;
+			isset($cache[$k]) && $k != 'typecates' && $cache[$k] = $v;
 		}
 		$this->update($forum);
 		$this->mcache->real_set('forum', $fid, $cache);

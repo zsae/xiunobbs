@@ -77,10 +77,10 @@ return array(
 	'app_id' => 'bbs',
 	
 	// 应用的绝对路径： 如: http://www.domain.com/bbs/
-	'app_url' => 'http://xiuno.net/',
+	'app_url' => 'http://x.net/',
 	
 	// CDN 缓存的静态域名，如 http://static.domain.com/
-	'static_url' => 'http://xiuno.net/',
+	'static_url' => 'http://x.net/',
 	
 	// 模板使用的目录，按照顺序搜索，这样可以支持风格切换,结果缓存在 tmp/bbs_xxx.htm.php
 	'view_path' => array(BBS_PATH.'view/'), 
@@ -103,7 +103,7 @@ return array(
 	'upload_path' => BBS_PATH.'upload/',
 	
 	// 模板的URL，用作CDN时请填写绝对路径，需要时，填写绝对路径： 如: http://www.domain.com/bbs/upload/, SAE: http://xxx-upload.stor.sinaapp.com/1.txt  (建立 upload 域，安装的时候需要设置)
-	'upload_url' => 'http://xiuno.net/upload/',
+	'upload_url' => 'http://x.net/upload/',
 	
 	// 日志目录，需要可写
 	'log_path' => BBS_PATH.'log/',
@@ -112,7 +112,7 @@ return array(
 	'plugin_path' => BBS_PATH.'plugin/',
 	
 	// 插件目录对应的URL
-	'plugin_url' => 'http://xiuno.net/plugin/',
+	'plugin_url' => 'http://x.net/plugin/',
 	
 	// 服务器所在的时区
 	'timeoffset' => '+8',
@@ -124,7 +124,7 @@ return array(
 	// ------------------> 以下为 BBS 相关:
 	
 	// 点击服务器
-	'click_server' => 'http://xiuno.net/service/clickd/',	// 记录主题点击数，论坛点击数
+	'click_server' => 'http://x.net/service/clickd/',	// 记录主题点击数，论坛点击数
 	
 	// 加密KEY，
 	'auth_key' => 'ee96bc01c90aab79c2a7f768ef0fe3cf',
@@ -149,6 +149,6 @@ return array(
 	'upload_image_max_width' => 1210,	// 上传图片最大宽度
 	
 	'version' => '2.0.0 Release',		// 版本号
-	'installed' => 0,			// 是否安装的标志位
+	'installed' => 1,			// 是否安装的标志位
 );
 ?>
