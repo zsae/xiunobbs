@@ -323,6 +323,7 @@ function init_policy() {
 	global $conf;
 	$dx2 = get_dx2();
 	
+	$policyfile = $conf['tmp_path'].'upgrade_policy.txt';
 	if(is_file($policyfile)) {
 		throw new Exception('tmp/upgrade_policy.txt 已经存在！');
 	}
@@ -1106,6 +1107,8 @@ function upgrade_postpage() {
 	$dx2 = get_dx2();
 	$db = get_db();
 	
+	$policy = load_upgrade_policy();
+	
 	$maxtid = intval(core::gpc('maxtid'));
 	$maxpid = intval(core::gpc('maxpid'));
 	$floor = intval(core::gpc('floor'));
@@ -1121,6 +1124,40 @@ function upgrade_postpage() {
 		list($table, $_, $tid) = explode('-', $key);
 		$thread = $dx2->get("forum_thread-tid-$tid");
 		$fid = $thread['fid'];
+		
+		// 过滤掉关联错误的 post
+		if(empty($thread)) {
+			$floor = 0;
+			$maxpid = 0;
+			$maxtid = $thread['tid'];
+			continue;
+		}
+		if(!isset($policy['fuparr'][$fid]) ) {
+			$floor = 0;
+			$maxpid = 0;
+			$maxtid = $thread['tid'];
+			continue;
+		}
+		$fup = $policy['fuparr'][$fid];
+		if($fup == 0) {
+			$floor = 0;
+			$maxpid = 0;
+			$maxtid = $thread['tid'];
+			continue;
+		}
+		$newfid = get_fid_by_policy($fid, $policy);
+		if(empty($newfid)) {
+			$floor = 0;
+			$maxpid = 0;
+			$maxtid = $thread['tid'];
+			continue;
+		}
+		if(isset($policy['fuparr'][$fup]) && $policy['fuparr'][$fup] != 0) {
+			$floor = 0;
+			$maxpid = 0;
+			$maxtid = $thread['tid'];
+			continue;
+		}
 		
 		//$count2 = $dx2->index_count('forum_post', array('tid'=>1));
 		
@@ -1142,14 +1179,14 @@ function upgrade_postpage() {
 			foreach($pidkeys as $key2) {
 				$i++;
 				list($table, $_, $pid) = explode('-', $key2);
-				$post = $db->get("post-fid-$fid-pid-$pid");
+				$post = $db->get("post-fid-$newfid-pid-$pid");
 				$page = max(1, ceil(($floor + $i) / 20));
 				$post['page'] = $page;
 				if($conf['db']['type'] == 'mysql') {
 					// 提高写入速度
-					$db->query("UPDATE {$db->tablepre}post SET page='$page' WHERE fid='$fid' AND pid='$pid'");
+					$db->query("UPDATE {$db->tablepre}post SET page='$page' WHERE fid='$newfid' AND pid='$pid'");
 				} else {
-					$db->set("post-fid-$fid-pid-$pid", $post);
+					$db->set("post-fid-$newfid-pid-$pid", $post);
 				}
 			}
 			
