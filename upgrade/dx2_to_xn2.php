@@ -131,7 +131,8 @@ function upgrade_conf() {
 	$kv->xset('app_name', $old['bbname']);
 	$kv->xsave();
 	
-	message('修改配置文件成功，接下来一些准备工作...', '?step=upgrade_prepare');
+	$sql = "ALTER TABLE {$dx2->tablepre}forum_post ADD INDEX tidpid(tid, pid);";
+	message('修改配置文件成功，接下来一些准备工作... 为了加快您的升级速度，如果您的数据量很大，超出 100w 帖子，请您手工执行如下SQL: <br /><br />'.$sql, '?step=upgrade_prepare');
 }
 
 // 一些准备工作
@@ -155,6 +156,16 @@ function upgrade_prepare() {
 		  KEY (city),
 		  KEY (county),
 		  PRIMARY KEY (uid));");
+	$db->query("CREATE TABLE {$db->tablepre}friendlink(
+		  linkid int(10) unsigned NOT NULL auto_increment,
+		  type tinyint(1) NOT NULL default '0',
+		  rank tinyint(1) unsigned NOT NULL default '0',
+		  sitename char(16) NOT NULL default '',
+		  url char(64) NOT NULL default '',
+		  logo char(64) NOT NULL default '',
+		  PRIMARY KEY (linkid),
+		  KEY type (type, rank)
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
 	$db->query("ALTER TABLE {$db->tablepre}forum ADD COLUMN fup int not null default '0';");
 	$db->query("ALTER TABLE {$db->tablepre}thread_type ADD column oldtypeid int(11) NOT NULL default '0';");
 	$db->query("ALTER TABLE {$db->tablepre}thread_type ADD column oldfid int(11) NOT NULL default '0';");
@@ -162,6 +173,7 @@ function upgrade_prepare() {
 	$db->index_create('thread_type', array('oldfid'=>1));
 	$db->index_create('attach', array('aid'=>1));
 	$db->index_create('post', array('pid'=>1));
+	$dx2->index_create('post', array('tid'=>1, 'pid'=>1));
 	
 	message('准备完毕，接下来设置升级策略...', '?step=upgrade_forum_policy');
 }
@@ -1059,7 +1071,7 @@ function upgrade_pm() {
 
 function upgrade_friendlink() {
 	global $conf;
-	/*$dx2 = get_dx2();
+	$dx2 = get_dx2();
 	$db = get_db();
 	$arrlist = $dx2->index_fetch('common_friendlink', 'id', array(), array(), 0, 1000);
 	foreach($arrlist as $old) {
@@ -1072,7 +1084,7 @@ function upgrade_friendlink() {
 			'logo'=> $old['logo'],
 		);
 		$db->set("friendlink-linkid-$old[id]", $arr);
-	}*/
+	}
 		
 	message('升级 friendlink 完成，接下来升级 mod...', '?step=upgrade_mod&start=0');
 }
@@ -1086,7 +1098,7 @@ function upgrade_stat() {
 }
 
 function upgrade_postpage() {
-	global $start, $start2, $conf;
+	global $conf;
 	
 	include DX2_CONF_FILE;
 	$dx2_tablepre = $_config['db'][1]['tablepre'];
@@ -1095,70 +1107,64 @@ function upgrade_postpage() {
 	$db = get_db();
 	
 	$maxtid = intval(core::gpc('maxtid'));
-	$count = intval(core::gpc('count'));
-	!isset($_GET['maxtid']) && $maxtid = $db->index_maxid('thread-tid');
-	!isset($_GET['count']) && $count = $dx2->index_count('forum_thread', array('tid'=>array('>'=>$maxtid)));
-	
-	if($start < $count) {
-		$limit = DEBUG ? 10 : 500;	// 每次升级 100
-		$limit2 = DEBUG ? 20 : 500;
-		$tidkeys = $dx2->index_fetch_id('forum_thread', array('tid'), array('tid'=>array('>'=>$maxtid)), array('tid'=>1), $start, $limit);
-		foreach($tidkeys as $key) {
-			list($table, $_, $tid) = explode('-', $key);
-			$thread = $dx2->get("forum_thread-tid-$tid");
-			$fid = $thread['fid'];
-			
-			if($thread['replies'] <= 19) {
-				$start += 1;
-				continue;
-			}
-			
-			if(empty($start2) || !isset($_GET['count2'])) {
-				$count2 = $dx2->fetch_first("SELECT COUNT(*) AS num FROM {$dx2_tablepre}forum_post WHERE tid='$tid'");
-				$count2 = intval($count2['num']);
-			} else {
-				$count2 = intval($_GET['count2']);
-			}
-			
-			while($start2 < $count2  && $limit2 > 0) {
-				$pidkeys = $dx2->index_fetch_id('forum_post', array('pid'), array('tid'=>$tid), array('pid'=>1), $start2, $limit2);
-				$i = 0;
-				foreach($pidkeys as $key2) {
-					$i++;
-					list($table, $_, $pid) = explode('-', $key2);
-					$post = $db->get("post-fid-$fid-pid-$pid");
-					$page = max(1, ceil(($start2 + $i) / 20));
-					$post['page'] = $page;
-					if($conf['db']['type'] == 'mysql') {
-						// 提高写入速度
-						$db->query("UPDATE {$db->tablepre}post SET page='$page' WHERE fid='$fid' AND pid='$pid'");
-					} else {
-						$db->set("post-fid-$fid-pid-$pid", $post);
-					}
-				}
-				
-				$n = count($pidkeys);
-				$limit2 -= $n;
-				$start2 += $n;
-				//echo "start: $start,  limit: $limit, count: $count, start2: $start2, limit2: $limit2,  count2: $count2, n: $n, tid: $tid";
-				if(empty($n)) break;
-			}
-			
-			if($limit2 <= 0) {
-				break;
-			} else {
-				$start2 = 0;
-				$start += 1;
-			}
-		}
-		if($start < 200000) {
-			message("正在升级 post.page, 进度 thread: $start / $count, post: $start2 / $count2...", "?step=upgrade_postpage&start=$start&start2=$start2&count=$count&count2=$count2&maxtid=$maxtid", 0);
-		} else {
-			message("正在升级 post.page, 进度 thread: $start / $count, post: $start2 / $count2...", "?step=upgrade_postpage&start=0", 0);
-		}
-	} else {	
+	$maxpid = intval(core::gpc('maxpid'));
+	$floor = intval(core::gpc('floor'));
+	$limit = DEBUG ? 10 : 500;	// 每次升级 100
+	$limit2 = DEBUG ? 20 : 500;
+	$floorlimit = DEBUG ? 20 : 500; // 每次升级的楼层数， 
+	$tidkeys = $dx2->index_fetch_id('forum_thread', array('tid'), array('tid'=>array('>'=>$maxtid)), array('tid'=>1), 0, $limit);
+	// 结束循环
+	if(empty($tidkeys)) {
 		message('升级 upgrade_postpage 完成，接下来升级 upgrade_forum2 ...', '?step=upgrade_forum2&start=0');
 	}
+	foreach($tidkeys as $key) {
+		list($table, $_, $tid) = explode('-', $key);
+		$thread = $dx2->get("forum_thread-tid-$tid");
+		$fid = $thread['fid'];
+		
+		//$count2 = $dx2->index_count('forum_post', array('tid'=>1));
+		
+		// 保证一次能取出 $limit2 个 post，$limit2 次用完，则进入下一轮跳转循环。
+		$pidkeys = $dx2->index_fetch_id('forum_post', array('pid'), array('tid'=>$tid, 'pid'=>array('>'=>$maxpid)), array('pid'=>1), 0, $limit2);
+		$n = count($pidkeys);
+		
+		// 进入下一轮 tid 循环
+		if($n == 0) {
+			$floor = 0;
+			$maxpid = 0;
+			$maxtid = $thread['tid'];
+			continue;
+		// 进入下一轮 pid 循环
+		} else {
+			// 写入 post 表
+			$i = 0;
+			$pid = 0;
+			foreach($pidkeys as $key2) {
+				$i++;
+				list($table, $_, $pid) = explode('-', $key2);
+				$post = $db->get("post-fid-$fid-pid-$pid");
+				$page = max(1, ceil(($floor + $i) / 20));
+				$post['page'] = $page;
+				if($conf['db']['type'] == 'mysql') {
+					// 提高写入速度
+					$db->query("UPDATE {$db->tablepre}post SET page='$page' WHERE fid='$fid' AND pid='$pid'");
+				} else {
+					$db->set("post-fid-$fid-pid-$pid", $post);
+				}
+			}
+			
+			$floor += $n;
+			$maxpid = $pid;	   // 不停的增加 maxpid
+			$floorlimit += $n; // 多轮循环后 $floorlimit 将会 <= 0
+			
+			// $floorlimit 用完，中断 tid 大循环，进入下一轮跳转。
+			if($floorlimit <= 0) {
+				break;
+			}
+		}
+	}
+
+	message("正在升级 post.page, 进度 maxtid: $maxtid, maxpid: $maxpid...", "?step=upgrade_postpage&maxpid=$maxpid&maxtid=$maxtid&floor=$floor", 0);
 }
 
 // 第二次升级 forum
