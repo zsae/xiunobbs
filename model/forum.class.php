@@ -231,7 +231,8 @@ Array
 		$cache = $this->mcache->read('forum', $fid);
 		foreach($new as $k=>$v) {
 			isset($forum[$k]) && !is_array($new[$k]) && $forum[$k] = $v;
-			isset($cache[$k]) && $k != 'typecates' && $cache[$k] = $v;
+			if($k == 'typecates' && !is_array($v)) continue;
+			isset($cache[$k]) && $cache[$k] = $v;
 		}
 		$this->update($forum);
 		$this->mcache->real_set('forum', $fid, $cache);
