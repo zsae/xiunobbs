@@ -134,7 +134,7 @@ class forum extends base_model {
 		$forum = $this->read($fid);
 		$cache = $this->mcache->read('forum', $fid);
 		foreach($new as $k=>$v) {
-			isset($forum[$k]) && $forum[$k] = $v;
+			isset($forum[$k]) && !is_array($new[$k]) && $forum[$k] = $v;
 			isset($cache[$k]) && $cache[$k] = $v;
 		}
 		$this->update($forum);
