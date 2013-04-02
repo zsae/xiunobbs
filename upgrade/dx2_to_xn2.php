@@ -1222,6 +1222,7 @@ function upgrade_forum2() {
 	$forumlist = $db->index_fetch('forum', 'fid', array(), array(), 0, 500);
 	foreach($forumlist as $forum) {
 		
+		$fid = $forum['fid'];
 		$modids = $modnames = '';
 		$modlist = $dx2->index_fetch('forum_moderator', array('uid', 'fid'), array('fid'=>$fid, 'inherited'=>0), array(), 0, 12);
 		$modlist = array_slice($modlist, 0, 6);
