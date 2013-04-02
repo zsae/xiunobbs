@@ -1527,13 +1527,14 @@ function bbcode2html($s, $parseurl=1) {
 	$s = str_replace(array(
 		'[b]', '[/b]','[i]', '[i=s]', '[/i]', '[u]', '[/u]', '[/color]', '[/size]', '[/font]', 
 		'[p]', '[/p]', '[/align]', '[/list]', '[/td]', '[/tr]', '[/table]', '[td]', '[tr]', '[table]', 
-		'[hr]', '[quote]', '[/quote]', '[hide]', '[/hide]'), array(
+		'[hr]', '[quote]', '[/quote]', '[hide]', '[/hide]', '[/backcolor]'), array(
 		'<b>', '</b>', '<i>', '<i>', '</i>', '<u>', '</u>', '</font>', '</font>', '</font>', 
 		'<p>', '</p>', '</div>', '</ul>', '</td>', '</tr>', '</table>', '<td>', '<tr>', '<table>', 
-		'<hr />', '<div class="quote">', '</div>', '', ''), $s);
+		'<hr />', '<div class="quote">', '</div>', '', '', '</span>'), $s);
 	$s = preg_replace('#\[em:([0-9]+):\]#i', '', $s);
 	$s = preg_replace('#\[quote\]([^[]*?)\[/quote\]#i', '<div class="bg2 border shadow">\\1</div>', $s);
 	$s = preg_replace('#\[color=([^]]+)\]#i', '<font color="\\1">', $s);
+	$s = preg_replace('#\[backcolor=([^]]+)\]#i', '<span style="background:\\1">', $s);
 	$s = preg_replace('#\[size=(\w+)\]#i', '<font size="\\1">', $s);
 	$s = preg_replace('#\[font=([^]]+)\]#i', '<font="\\1">', $s);
 	$s = preg_replace('#\[align=([^]]+)\]#i', '<div align="\\1">', $s);
