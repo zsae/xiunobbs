@@ -53,11 +53,8 @@ class mod_control extends common_control {
 			$comment = core::gpc('comment', 'P');
 			$this->check_comment($comment);
 			
-			if($this->_user['groupid'] == 3 && $rank != 1) {
-				$this->message('您只能对帖子进行板块置顶！', 0);
-			}
-			if($this->_user['groupid'] == 2 && $rank == 3) {
-				$this->message('您不能对帖子进行全站置顶！', 0);
+			if(($this->_user['groupid'] == 4 || $this->_user['groupid'] == 5) && $rank != 1 && $rank != 0) {
+				$this->message('您只有本版块置顶权限！', 0);
 			}
 			
 			// -------> 统计 top_1 2 3 的总数，是否超过5个。

@@ -119,7 +119,7 @@ return array(
 	
 	'disable_plugin'=>0,			// 禁止掉所有插件
 	
-	'urlrewrite' => 1,			// 手工开启 URL-Rewrite 后，需要清空下 tmp 目录！
+	'urlrewrite' => 0,			// 手工开启 URL-Rewrite 后，需要清空下 tmp 目录！
 	
 	// ------------------> 以下为 BBS 相关:
 	
