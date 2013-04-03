@@ -37,10 +37,10 @@ return array(
 		),		
 		'pdo_mysql' => array(
 			'master' => array(
-				'host' => 'w.rdc.sae.sina.com.cn:3307',
-				'user' => 'zj3zj51mzx',
-				'password' => 'il034im042015hjijkz32y2z5ymyxxx4k552mw51',
-				'name' => 'app_axiuno',
+				'host' => 'localhost',
+				'user' => 'root',
+				'password' => 'root',
+				'name' => 'test',
 				'charset' => 'utf8',
 				'tablepre' => 'bbs_',
 				'engine'=>'MyISAM',
@@ -152,6 +152,3 @@ return array(
 	'installed' => 1,			// 是否安装的标志位
 );
 ?>
-
-
-

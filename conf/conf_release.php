@@ -14,41 +14,41 @@
 		3. $conf['upload_path'] = 'saestor://upload/';
 	
 	【站点搬家】
-		站点更换域名、搬家，需要修改此文件中的域名部分，然后清空 tmp 目录。
+		1. 站点更换域名、搬家，需要修改此文件中的域名部分，然后清空 tmp 目录。
 ***************************************************************************************************/
 
-return array (
+return array(
 
 	// ------------------> 以下为框架依赖:
-	// 数据库配置， type 为默认的数据库类型，可以支持多种数据库: mysql|pdo_mysql|pdo_oracle|mongodb
-	'db' => array (		
-		'type' => 'mysql',		
-		'mysql' => array (			
-			'master' => array (				
-				'host' => 'localhost',				
+	// 数据库配置， type 为默认的数据库类型，可以支持多种数据库: mysql|pdo_mysql|pdo_oracle|mongodb	
+	'db' => array(				
+		'type' => 'mysql',			
+		'mysql' => array(			
+			'master' => array(								
+				'host' => 'localhost',								
 				'user' => 'root',				
 				'password' => 'root',				
 				'name' => 'test',				
 				'charset' => 'utf8',				
-				'tablepre' => 'bbs_',				
+				'tablepre' => 'bbs_',								
 				'engine'=>'MyISAM',
 			),			
-			'slaves' => array ()
-		),
-		'pdo_mysql' => array (
-			'master' => array (				
-				'host' => 'localhost',				
-				'user' => 'root',				
-				'password' => 'root',				
-				'name' => 'test',				
-				'charset' => 'utf8',				
-				'tablepre' => 'bbs_',				
+			'slaves' => array()
+		),		
+		'pdo_mysql' => array(
+			'master' => array(
+				'host' => 'localhost',
+				'user' => 'root',
+				'password' => 'root',
+				'name' => 'test',
+				'charset' => 'utf8',
+				'tablepre' => 'bbs_',
 				'engine'=>'MyISAM',
-			),			
-			'slaves' => array ()
+			),
+			'slaves' => array()
 		),
 		'mongodb' => array(
-			'master' => array (
+			'master' => array(
 				'host' => '10.0.0.253:27017',
 				'user' => '',
 				'password' => '',
@@ -59,11 +59,11 @@ return array (
 		),
 	),
 	
-	// 缓存服务器的配置，支持: memcache|ea|apc|redis
+	// 缓存服务器的配置，支持: memcache|ea|apc|redis，
 	// 分布式部署我们建议采用以下两种方案，用来简化程序
 	// 1. 局域网内多台 cache server, 本机(127.0.0.1)，写操作通过UDP同步来保持一致性（Memcached UDP组播服务，可能存在安全性问题）。
 	// 2. 单台 proxy 管理多台 worker。
-	'cache' => array (
+	'cache' => array(
 		'enable'=>0,
 		'type'=>'memcache',
 		'memcache'=>array (
@@ -77,10 +77,10 @@ return array (
 	'app_id' => 'bbs',
 	
 	// 应用的绝对路径： 如: http://www.domain.com/bbs/
-	'app_url' => 'http://1.axiuno.sinaapp.com/',
+	'app_url' => 'http://xiuno.net/',
 	
 	// CDN 缓存的静态域名，如 http://static.domain.com/
-	'static_url' => 'http://1.axiuno.sinaapp.com/',
+	'static_url' => 'http://xiuno.net/',
 	
 	// 模板使用的目录，按照顺序搜索，这样可以支持风格切换,结果缓存在 tmp/bbs_xxx.htm.php
 	'view_path' => array(BBS_PATH.'view/'), 
@@ -100,10 +100,10 @@ return array (
 	'tmp_path' => BBS_PATH.'tmp/',
 
 	// 上传目录，需要可写，保存用户上传数据的目录，支持 fseek(), SAE: saestor://upload/ (建立 upload 域)
-	'upload_path' => 'saestor://upload/',
+	'upload_path' => BBS_PATH.'upload/',
 	
 	// 模板的URL，用作CDN时请填写绝对路径，需要时，填写绝对路径： 如: http://www.domain.com/bbs/upload/, SAE: http://xxx-upload.stor.sinaapp.com/1.txt  (建立 upload 域，安装的时候需要设置)
-	'upload_url' => 'http://axiuno-upload.stor.sinaapp.com/',
+	'upload_url' => 'http://xiuno.net/upload/',
 	
 	// 日志目录，需要可写
 	'log_path' => BBS_PATH.'log/',
@@ -112,25 +112,25 @@ return array (
 	'plugin_path' => BBS_PATH.'plugin/',
 	
 	// 插件目录对应的URL
-	'plugin_url' => 'http://1.axiuno.sinaapp.com/plugin/',
+	'plugin_url' => 'http://xiuno.net/plugin/',
 	
 	// 服务器所在的时区
 	'timeoffset' => '+8',
 	
 	'disable_plugin'=>0,			// 禁止掉所有插件
 	
-	'urlrewrite' => 0,			// 手工开启 URL-Rewrite 后，需要清空下 tmp 目录！
+	'urlrewrite' => 1,			// 手工开启 URL-Rewrite 后，需要清空下 tmp 目录！
 	
 	// ------------------> 以下为 BBS 相关:
 	
 	// 点击服务器
-	'click_server' => 'http://1.axiuno.sinaapp.com/service/clickd/',	// 记录主题点击数，论坛点击数
+	'click_server' => 'http://xiuno.net/service/clickd/',	// 记录主题点击数，论坛点击数
 	
 	// 加密KEY，
-	'auth_key' => '90802502b9af7fd885f59021a97873a6',
+	'auth_key' => 'ee96bc01c90aab79c2a7f768ef0fe3cf',
 	
 	// 站点的ID，用来和官方通信，下载，安装插件。
-	'siteid' => '257b094045ee85f7330f25f96647eb34',
+	'siteid' => 'f1b7ab5a1d1bf83f90eb70545d7c8fc5',
 	
 	'cookie_pre' => 'bbs_',
 	'cookie_domain' => '',
@@ -149,6 +149,6 @@ return array (
 	'upload_image_max_width' => 1210,	// 上传图片最大宽度
 	
 	'version' => '2.0.0 Release',		// 版本号
-	'installed' => 1,			// 是否安装的标志位
+	'installed' => 0,			// 是否安装的标志位
 );
 ?>

@@ -1239,9 +1239,9 @@ function upgrade_forum2() {
 		$forum['posts'] = $posts;
 		$forum['modids'] = $modids;
 		$forum['modnames'] = $modnames;
-		$db->update("forum-fid-$id", $forum);
+		$db->update("forum-fid-$fid", $forum);
 	}
-	message('升级 upgrade_postpage 完成，接下来升级 laststep ...', '?step=laststep&start=0');
+	message('更新 forum 完成，接下来升级 laststep ...', '?step=laststep&start=0');
 }
 
 function laststep() {

@@ -5,7 +5,7 @@
  */
 
 // 调试模式: 1 打开，0 关闭
-define('DEBUG', 2);
+define('DEBUG', 0);
 
 // 站点根目录
 define('BBS_PATH', str_replace('\\', '/', substr(dirname(__FILE__), 0, -7)));
@@ -23,15 +23,18 @@ if(version_compare(PHP_VERSION, '5.0.0') == -1) {
 	message('<h3>非常抱歉，您的PHP版本太低 ('.PHP_VERSION.')，达不到最低安装要求 (5.0.0)</h3>');
 }
 
-if(!DEBUG && is_file($conf['upload_path'].'install.lock')) {
-	message('已经安装过，如果需要重新安装，请删除 upload/install.lock 文件。');
-}
-
 define('FRAMEWORK_PATH', BBS_PATH.'xiunophp/');
 define('FRAMEWORK_TMP_PATH', $conf['tmp_path']);
 define('FRAMEWORK_LOG_PATH', $conf['log_path']);
 include FRAMEWORK_PATH.'core.php';
 core::init();
+
+IN_SAE && $conf['upload_path'] = 'saestor://upload/';
+
+if(!DEBUG && is_file($conf['upload_path'].'install.lock')) {
+	message('已经安装过，如果需要重新安装，请删除 upload/install.lock 文件。');
+}
+
 
 include BBS_PATH.'model/user.class.php';
 include BBS_PATH.'model/forum.class.php';
