@@ -333,8 +333,8 @@ class attach_control extends common_control {
 
 	// 更新一个文件，文件名不变！
 	public function on_updatefile() {
-		$fid = core::gpc('fid');
-		$aid = core::gpc('aid');
+		$fid = intval(core::gpc('fid'));
+		$aid = intval(core::gpc('aid'));
 		$uid = $this->_user['uid'];
 		$attach = $this->attach->read($fid, $aid);
 		if($attach['uid'] != $this->_user['uid']) {

@@ -152,7 +152,6 @@ alter table bbs_forum
 	change lasttid lasttid int(11) NOT NULL  DEFAULT '0' after todayposts, 
 	change brief brief text NOT NULL  after lasttid, 
 	change accesson accesson tinyint(1) NOT NULL  DEFAULT '0' after brief, 
-	add column typecates char(26) NOT NULL  after modnames, 
 	change toptids toptids char(240) NOT NULL  after typecates, 
 	change orderby orderby tinyint(11) NOT NULL  DEFAULT '0' after toptids, 
 	change seo_title seo_title char(64) NOT NULL  after orderby, 

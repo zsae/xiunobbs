@@ -105,16 +105,15 @@ CREATE TABLE bbs_forum (				# 字段中文名			# 控件属性					# 字段描�
   accesson tinyint(1) NOT NULL default '0',		# 是否启用访问规则
   modids char(73) NOT NULL default '',			# 版主 uid，最多6个，逗号隔开
   modnames char(103) NOT NULL default '',		# 版主 username，最多6个，逗号隔开
-  typecates char(26) NOT NULL default '',		# 最多3个，大分类的名字，逗号隔开
   toptids char(240) NOT NULL default '',		# 置顶主题，分区可以置顶，板块可以置顶，格式：2-5 2-10 ，全局置顶放在 tmp/top_3.txt 
   orderby tinyint(11) NOT NULL default '0',		# 默认列表排序，0: 顶贴时间 floortime， 1: 发帖时间 dateline
   seo_title char(64) NOT NULL default '',		# SEO 标题，如果设置会代替版块名称
   seo_keywords char(64) NOT NULL default '',		# SEO keyword
   PRIMARY KEY (fid)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-INSERT INTO bbs_forum SET fid='1', name='默认版块1', rank='0', threads='0', posts='0', digests='0', todayposts='0', lasttid='0', brief='默认版块1', accesson='0', modids='', modnames='', typecates='', toptids='', orderby='0', seo_title='', seo_keywords='';
-INSERT INTO bbs_forum SET fid='2', name='默认版块2', rank='0', threads='0', posts='0', digests='0', todayposts='0', lasttid='0', brief='默认版块2', accesson='0', modids='', modnames='', typecates='', toptids='', orderby='0', seo_title='', seo_keywords='';
-INSERT INTO bbs_forum SET fid='3', name='默认版块3', rank='0', threads='0', posts='0', digests='0', todayposts='0', lasttid='0', brief='默认版块3', accesson='0', modids='', modnames='', typecates='', toptids='', orderby='0', seo_title='', seo_keywords='';
+INSERT INTO bbs_forum SET fid='1', name='默认版块1', rank='0', threads='0', posts='0', digests='0', todayposts='0', lasttid='0', brief='默认版块1', accesson='0', modids='', modnames='', toptids='', orderby='0', seo_title='', seo_keywords='';
+INSERT INTO bbs_forum SET fid='2', name='默认版块2', rank='0', threads='0', posts='0', digests='0', todayposts='0', lasttid='0', brief='默认版块2', accesson='0', modids='', modnames='', toptids='', orderby='0', seo_title='', seo_keywords='';
+INSERT INTO bbs_forum SET fid='3', name='默认版块3', rank='0', threads='0', posts='0', digests='0', todayposts='0', lasttid='0', brief='默认版块3', accesson='0', modids='', modnames='', toptids='', orderby='0', seo_title='', seo_keywords='';
 
 # 版块访问规则 fid * groupid
 DROP TABLE IF EXISTS bbs_forum_access;

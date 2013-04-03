@@ -44,6 +44,7 @@ class thread extends base_model {
 		if(empty($subject)) {
 			return '标题不能为空。';
 		}
+		// hook thread_model_check_subject_end.php
 		return '';
 	}
 	
