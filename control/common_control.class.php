@@ -255,7 +255,7 @@ class common_control extends base_control {
 		// 兼容 iis
 		$pos = strrpos($_SERVER['REQUEST_URI'], '/');
 		if(substr($_SERVER['REQUEST_URI'], $pos + 1, 9) == 'index.php') {
-			$_SERVER['REQUEST_URI'] = substr_replace($_SERVER['REQUEST_URI'], '', $pos + 1, 9);
+			$_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_REWRITE_URL'] = substr_replace($_SERVER['REQUEST_URI'], '', $pos + 1, 9);
 		}
 		
 		// 判断是否开启了 urlrewrite
@@ -263,7 +263,7 @@ class common_control extends base_control {
 			// 查找最后一个 /
 			if(substr($_SERVER['REQUEST_URI'], $pos + 1, 1) == '?') {
 				// 去掉 ?
-				$_SERVER['REQUEST_URI'] = substr($_SERVER['REQUEST_URI'], 0, $pos + 1).substr($_SERVER['REQUEST_URI'], $pos + 2);
+				$_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_REWRITE_URL'] = substr($_SERVER['REQUEST_URI'], 0, $pos + 1).substr($_SERVER['REQUEST_URI'], $pos + 2);
 				$newurl = misc::get_script_uri();
 				header("Location: $newurl");
 				exit;
@@ -271,7 +271,7 @@ class common_control extends base_control {
 		} else {
 			if($pos + 1 != strlen($_SERVER['REQUEST_URI']) && substr($_SERVER['REQUEST_URI'], $pos + 1, 1) != '?') {
 				// 加上 ?
-				$_SERVER['REQUEST_URI'] = substr($_SERVER['REQUEST_URI'], 0, $pos + 1).'?'.substr($_SERVER['REQUEST_URI'], $pos + 1);
+				$_SERVER['REQUEST_URI'] = $_SERVER['HTTP_X_REWRITE_URL'] = substr($_SERVER['REQUEST_URI'], 0, $pos + 1).'?'.substr($_SERVER['REQUEST_URI'], $pos + 1);
 				$newurl = misc::get_script_uri();
 				header("Location: $newurl");
 				exit;
