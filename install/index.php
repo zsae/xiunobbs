@@ -373,7 +373,7 @@ if(empty($step) || $step == 'checklicense') {
 				'cookie_keeptime' => 86400,
 				'site_pv' => 100000,			// PV越高CACHE更新的越慢，该值会影响系统的负载能力
 				'site_runlevel' => 0,			// 0:所有人均可访问; 1: 仅会员访问; 2:仅版主可访问; 3: 仅管理员
-				'threadlist_hotviews' => 2,		// 热门主题的阀值，浏览数
+				'threadlist_hotviews' => 200,		// 热门主题的阀值，浏览数
 				'seo_title' => 'Xiuno BBS',		// 论坛首页的 title，如果不设置则为论坛名称
 				'seo_keywords' => 'Xiuno BBS',		// 论坛首页的 keyword
 				'seo_description' => 'Xiuno BBS',	// 论坛首页的 description

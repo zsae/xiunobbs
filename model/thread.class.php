@@ -56,7 +56,7 @@ class thread extends base_model {
 		$thread['isnew'] = ($this->conf['site_pv'] <= 1000000 ? $_SERVER['time'] - 86400 * 7 : $_SERVER['time_today']) < max($thread['dateline'], $thread['lastpost']);	// 最新贴定义：如果是 pv > 100w 的站点，为今日，否则为7天内的，否则先的太“冷清”了。
 		$thread['dateline_fmt'] = misc::humandate($thread['dateline']);
 		$thread['posts_fmt'] = max(0, $thread['posts'] - 1);	// 用来前端显示
-		$thread['lastpost_fmt'] = misc::minidate($thread['lastpost']);
+		$thread['lastpost_fmt'] = misc::humandate($thread['lastpost']);
 		empty($thread['lastpost']) && $thread['lastpost'] = $thread['dateline'];
 		if($forum) {
 			$thread['typename1'] = $thread['typeid1'] && isset($forum['types'][1][$thread['typeid1']]) ? $forum['types'][1][$thread['typeid1']] : '';
