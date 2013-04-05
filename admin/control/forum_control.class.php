@@ -106,7 +106,6 @@ class forum_control extends admin_control {
 		
 		$fid1 = intval(core::gpc('fid1', 'R')); // 保留
 		$fid2 = intval(core::gpc('fid2', 'R')); // 删除
-		$asthreadtype = intval(core::gpc('asthreadtype', 'R')); // 删除
 
 		$forumoptions = $this->forum->get_options($this->_user['uid'], $this->_user['groupid'], $fid1, $defaultfid);
 		$this->view->assign('forumoptions', $forumoptions);
@@ -124,9 +123,6 @@ class forum_control extends admin_control {
 			$this->post->index_update(array('fid'=>$fid2), array('fid'=>$fid1), TRUE);
 			$this->attach->index_update(array('fid'=>$fid2), array('fid'=>$fid1), TRUE);
 			$this->mypost->index_update(array('fid'=>$fid2), array('fid'=>$fid1), TRUE);
-			
-			// todo: 统计数
-			// $this->thread_type_data->create();
 			
 			// 删除原来板块的数据
 			$this->forum_access->delete_by_fid($fid2);
