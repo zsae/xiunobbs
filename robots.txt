@@ -12,8 +12,11 @@ Disallow: /upgrade/
 Disallow: /tool/
 Disallow: /xiunophp/
 Disallow: /user*
+Disallow: /?user*
 Disallow: /my*
+Disallow: /?my*
 Disallow: /you*
+Disallow: /?you*
 Allow: .htm$
 Allow: .html$
 Allow: .php$

@@ -142,6 +142,9 @@ class forum_control extends admin_control {
 			$this->attach->index_update(array('fid'=>$fid2), array('fid'=>$fid1), TRUE);
 			$this->mypost->index_update(array('fid'=>$fid2), array('fid'=>$fid1), TRUE);
 			
+			// todo: 统计数
+			// $this->thread_type_data->create();
+			
 			// 删除原来板块的数据
 			$this->forum_access->delete_by_fid($fid2);
 			$this->thread_type->delete_by_fid($fid2);
