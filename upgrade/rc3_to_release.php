@@ -137,7 +137,7 @@ function alter_table() {
 	
 alter table bbs_attach add unique fid (fid, aid);
 alter table bbs_attach drop PRIMARY key;
-alter table bbs_attach;
+alter table bbs_attach
 	add column tid int(11) NOT NULL  DEFAULT '0' after aid, 
 	change pid pid int(11) NOT NULL  DEFAULT '0' after tid, 
 	add KEY fidtid (fid,tid), COMMENT='';
