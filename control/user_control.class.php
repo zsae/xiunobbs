@@ -116,7 +116,6 @@ class user_control extends common_control {
 		if(!$this->conf['reg_on']) {
 			$this->message('当前注册功能已经关闭。');
 		}
-		sleep(1);
 		// hook user_create_start.php
 		if(!$this->form_submit()) {
 			

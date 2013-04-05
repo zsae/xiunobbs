@@ -219,8 +219,10 @@ alter table bbs_thread
 	drop column brief, 
 	drop key fid, add KEY fid (fid,lastpost), 
 	add KEY fid_2 (fid,digest,tid);
+	
 		alter table bbs_thread drop key typeid;
 		alter table bbs_thread drop key typeid_2;
+		
 		DROP TABLE IF EXISTS bbs_thread_type_old;
 		CREATE TABLE bbs_thread_type_old (
 		  typeid int(11) unsigned NOT NULL auto_increment,	
