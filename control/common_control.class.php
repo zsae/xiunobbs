@@ -154,9 +154,7 @@ class common_control extends base_control {
 		}
 		
 		// 站点访问权限判断 0:所有人均可访问; 1: 仅会员访问; 2:仅版主可访问; 3: 仅管理员
-		$get0 = core::gpc(0);
-		$get1 = core::gpc(1);
-		$skip_action = ($get0 == 'user' && ($get1 == 'login' || $get1 == 'create' || $get1 == 'logout' || $get1 == 'checkname' || $get1 == 'checkemail'));
+		$skip_action = core::gpc(0) == 'user';
 		if($this->conf['site_runlevel'] == 1 && $this->_user['groupid'] == 0 && !$skip_action) {
 			$infoadd = $this->conf['reg_on'] ? '，您可以注册会员。' : '，当前注册已关闭。';
 			$this->message('站点当前设置：只有会员能访问'.$infoadd, 0);
