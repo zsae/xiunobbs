@@ -106,6 +106,7 @@ class forum_control extends admin_control {
 		
 		$fid1 = intval(core::gpc('fid1', 'R')); // 保留
 		$fid2 = intval(core::gpc('fid2', 'R')); // 删除
+		$asthreadtype = intval(core::gpc('asthreadtype', 'R')); // 删除
 
 		$forumoptions = $this->forum->get_options($this->_user['uid'], $this->_user['groupid'], $fid1, $defaultfid);
 		$this->view->assign('forumoptions', $forumoptions);
@@ -117,9 +118,26 @@ class forum_control extends admin_control {
 			$forum2 = $this->forum->read($fid2);
 			$this->check_forum_exists($forum1);
 			$this->check_forum_exists($forum2);
-				
+			
+			$typeid1 = 0;
+			if($asthreadtype) {
+				// 生成主题分类，增加到第一维度，判断是否达到40个，否则提示错误
+				$cache1 = $this->mcache->read('forum', $fid1);
+				if(empty($cache1['typecates'][1])) {
+					$this->thread_type_cate->create(array('fid'=>$fid1, 'cateid'=>1, 'catename'=>'分类', 'rank'=>1, 'enable'=>1));
+					$typeid1 = 1;
+				} else {
+					if(count($cache1['types'][1]) >= 40) {
+						$this->message('第一维主题分类下子分类数超出了40个，不能再添加分类。');
+					} else {
+						$typeid1 = max(array_keys($arr)) + 1;
+						$this->thread_type->create(array('typeid'=>$typeid1, 'rank'=>$typeid1, 'enable'=>1, 'typename'=>$forum2['name']));
+					}
+				}
+			}
+			
 			// 修改fid 所有涉及到 fid 的表！
-			$this->thread->index_update(array('fid'=>$fid2), array('fid'=>$fid1, 'top'=>0, 'typeid1'=>0, 'typeid2'=>0, 'typeid3'=>0, 'typeid4'=>0, 'modnum'=>0), TRUE);
+			$this->thread->index_update(array('fid'=>$fid2), array('fid'=>$fid1, 'top'=>0, 'typeid1'=>$typeid1, 'typeid2'=>0, 'typeid3'=>0, 'typeid4'=>0, 'modnum'=>0), TRUE);
 			$this->post->index_update(array('fid'=>$fid2), array('fid'=>$fid1), TRUE);
 			$this->attach->index_update(array('fid'=>$fid2), array('fid'=>$fid1), TRUE);
 			$this->mypost->index_update(array('fid'=>$fid2), array('fid'=>$fid1), TRUE);

@@ -39,6 +39,7 @@ class forum_control extends common_control {
 		$this->check_forum_exists($forum);
 		$this->check_access($forum, 'read');
 		
+		print_r($forum);exit;
 		// digest
 		$digest = misc::mid(intval(core::gpc('digest')), 0, 3);
 		

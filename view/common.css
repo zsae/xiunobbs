@@ -280,6 +280,7 @@ span.nopic {width: 54px; height: 54px; background: url(image/nopic.gif) no-repea
 #threadtype a.checked{font-weight: 100; color: #00BA53;}
 
 /* 帖子详情页 */
+.post {word-break: break-all;}
 .post table {border-left: 1px solid #D9D9D9; border-top: 1px solid #D9D9D9; border-collapse: collapse;}
 .post table td{border-right: 1px solid #D9D9D9; border-bottom: 1px solid #D9D9D9;}
 .post .mod {text-align: right; opacity: 0.0; filter:Alpha(Opacity=0); }
