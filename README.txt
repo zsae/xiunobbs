@@ -71,7 +71,7 @@ Xiuno BBS 2.0 是经过实际高负载论坛考验过的，除了个别第三方
 【如何修改风格？】
 1. view 目录下存放着风格相关的文件, .htm .css .js，如果您不考虑到升级和发布，可以直接修改它们。
 2. 风格是插件的一种，您可以在官方论坛下载网友做好的风格插件，也可以根据文档制作，过程非常简单，一个插件一个目录，存放在 ./plugin 下。
-3. 更多风格相关信息，请访问：http://www.xiuno.com/thread-index-fid-34-tid-9.htm
+3. 更多风格相关信息，请访问：http://www.xiuno.com/
 
 
 【如何二次开发？】
@@ -82,7 +82,7 @@ Xiuno BBS 2.0 是经过实际高负载论坛考验过的，除了个别第三方
 【如何优化Xiuno？】
 1. Xiuno BBS 可以使用 Memcached, MongoDB, /dev/shm, clickd, Sphinx, 等来加速您的论坛，默认是关闭状态，您可以通过后台和配置文件来开启这些功能。
 2. 配置文件 conf/conf.php 可能是是您进一步优化需要了解的文件。
-3. 详情参见：http://www.xiuno.com/thread-index-fid-3-tid-11.htm
+3. 详情参见：http://www.xiuno.com/
 
 
 【关于分布式WEB服务器部署】
