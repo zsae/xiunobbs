@@ -108,6 +108,7 @@ class mod_control extends common_control {
 					'subject'=>$thread['subject'],
 					'credits'=>0,
 					'golds'=>0,
+					'dateline'=>$_SERVER['time'],
 					'action'=>$rank == 0 ? 'untop' : 'top',
 					'comment'=>$comment,
 				));
@@ -326,6 +327,7 @@ class mod_control extends common_control {
 					'subject'=>$thread['subject'],
 					'credits'=>0,
 					'golds'=>0,
+					'dateline'=>$_SERVER['time'],
 					'action'=>'type',
 					'comment'=>$comment,
 				));
@@ -436,6 +438,7 @@ class mod_control extends common_control {
 					'subject'=>$thread['subject'],
 					'credits'=>0,
 					'golds'=>0,
+					'dateline'=>$_SERVER['time'],
 					'action'=>'move',
 					'comment'=>$comment,
 				));
@@ -652,6 +655,7 @@ class mod_control extends common_control {
 					'subject'=>$thread['subject'],
 					'credits'=>0,
 					'golds'=>0,
+					'dateline'=>$_SERVER['time'],
 					'action'=>'delete',
 					'comment'=>$comment,
 				));
