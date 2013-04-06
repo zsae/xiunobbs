@@ -118,7 +118,7 @@ class mod_control extends common_control {
 				// 发送系统消息：
 				if($systempm) {
 					$pmsubject = utf8::substr($thread['subject'], 0, 32);
-					$pmmessage = "您的主题<a href=\"?thread-index-fid-$fid-tid-$tid.htm\" target=\"_blank\">【{$pmsubject}】</a>被版主【{$this->_user['username']}】".($rank > 0 ? '置顶' : '取消置顶')."。";
+					$pmmessage = "您的主题<a href=\"?thread-index-fid-$fid-tid-$tid.htm\" target=\"_blank\">【{$pmsubject}】</a>被【{$this->_user['username']}】".($rank > 0 ? '置顶' : '取消置顶')."。";
 					$this->pm->system_send($thread['uid'], $thread['username'], $pmmessage);
 				}
 			}
@@ -230,7 +230,7 @@ class mod_control extends common_control {
 				// 发送系统消息：
 				if($systempm) {
 					$pmsubject = utf8::substr($thread['subject'], 0, 32);
-					$pmmessage = "您的主题<a href=\"?thread-index-fid-$fid-tid-$tid.htm\" target=\"_blank\">【{$pmsubject}】</a>被版主【{$this->_user['username']}】".($rank > 0 ? '设置精华' : '取消精华')."。";
+					$pmmessage = "您的主题<a href=\"?thread-index-fid-$fid-tid-$tid.htm\" target=\"_blank\">【{$pmsubject}】</a>被【{$this->_user['username']}】".($rank > 0 ? '设置精华' : '取消精华')."。";
 					$this->pm->system_send($thread['uid'], $thread['username'], $pmmessage);
 				}
 				
@@ -337,7 +337,7 @@ class mod_control extends common_control {
 				// 发送系统消息：
 				if($systempm) {
 					$pmsubject = utf8::substr($thread['subject'], 0, 32);
-					$pmmessage = "您的主题<a href=\"?thread-index-fid-$fid-tid-$tid.htm\" target=\"_blank\">【{$pmsubject}】</a>被版主【{$this->_user['username']}】".($typeid1 > 0 ? "设置主题分类" : "取消主题分类")."。";
+					$pmmessage = "您的主题<a href=\"?thread-index-fid-$fid-tid-$tid.htm\" target=\"_blank\">【{$pmsubject}】</a>被【{$this->_user['username']}】".($typeid1 > 0 ? "设置主题分类" : "取消主题分类")."。";
 					$this->pm->system_send($thread['uid'], $thread['username'], $pmmessage);
 				}
 			}
@@ -448,7 +448,7 @@ class mod_control extends common_control {
 				// 发送系统消息：
 				if($systempm) {
 					$pmsubject = utf8::substr($thread['subject'], 0, 32);
-					$pmmessage = "您的主题<a href=\"?thread-index-fid-$fid2-tid-$tid.htm\" target=\"_blank\">【{$pmsubject}】</a>被版主【{$this->_user['username']}】移动到了【{$forum2['name']}】。";
+					$pmmessage = "您的主题<a href=\"?thread-index-fid-$fid2-tid-$tid.htm\" target=\"_blank\">【{$pmsubject}】</a>被【{$this->_user['username']}】移动到了【{$forum2['name']}】。";
 					$this->pm->system_send($thread['uid'], $thread['username'], $pmmessage);
 				}
 				
@@ -532,7 +532,7 @@ class mod_control extends common_control {
 					$pmsubject = utf8::substr($thread['subject'], 0, 32);
 					$credits_html = $rate['credits'] > 0 ? '-'.$rate['credits'] : -$rate['credits'];
 					$golds_html = $rate['golds'] > 0 ? '-'.$rate['golds'] : -$rate['golds'];
-					$pmmessage = "您的帖子<a href=\"?thread-index-fid-$fid-tid-$tid-page-$post[page].htm\" target=\"_blank\">【{$pmsubject}】</a>被版主【{$this->_user['username']}】取消了评分，积分：{$credits_html}，金币{$golds_html}。";
+					$pmmessage = "您的帖子<a href=\"?thread-index-fid-$fid-tid-$tid-page-$post[page].htm\" target=\"_blank\">【{$pmsubject}】</a>被【{$this->_user['username']}】取消了评分，积分：{$credits_html}，金币{$golds_html}。";
 					$this->pm->system_send($post['uid'], $post['username'], $pmmessage);
 				}
 				$this->message('取消评分完毕。');
@@ -606,7 +606,7 @@ class mod_control extends common_control {
 			$pmsubject = utf8::substr($thread['subject'], 0, 32);
 			$credits_html = $credits > 0 ? '+'.$credits : $credits;
 			$golds_html = $golds > 0 ? '+'.$golds : $golds;
-			$pmmessage = "您的帖子<a href=\"?thread-index-fid-$fid-tid-$post[tid]-page-$post[page].htm\" target=\"_blank\">【{$pmsubject}】</a>被版主【{$this->_user['username']}】评分，积分：{$credits_html}，金币{$golds_html}。";
+			$pmmessage = "您的帖子<a href=\"?thread-index-fid-$fid-tid-$post[tid]-page-$post[page].htm\" target=\"_blank\">【{$pmsubject}】</a>被【{$this->_user['username']}】评分，积分：{$credits_html}，金币{$golds_html}。";
 			$this->pm->system_send($post['uid'], $post['username'], $pmmessage);
 			
 			$this->message('操作成功！', 1);
@@ -665,7 +665,7 @@ class mod_control extends common_control {
 				// 发送系统消息：
 				if($systempm) {
 					$pmsubject = utf8::substr($thread['subject'], 0, 32);
-					$pmmessage = "您的帖子【{$pmsubject}】被版主【{$this->_user['username']}】删除。";
+					$pmmessage = "您的帖子【{$pmsubject}】被【{$this->_user['username']}】删除。";
 					$this->pm->system_send($thread['uid'], $thread['username'], $pmmessage);
 				}
 				
