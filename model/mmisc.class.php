@@ -118,11 +118,11 @@ class mmisc extends base_model {
 				break;
 			case 'wo.com.cn':
 				$email['url'] = 'http://mail.wo.com.cn/';
-				$email['name'] = 'wo';
+				$email['name'] = 'mail.wo.com.cn';
 				break;	
 			default: 
-				$email['url'] = '';
-				$email['name'] = '';
+				$email['url'] = "http://www.".$str;
+				$email['name'] = $str;
 				break;											
 		}
 		return $email;

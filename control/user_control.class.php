@@ -228,7 +228,7 @@ class user_control extends common_control {
 				$this->user->update($user);
 			} catch(Exception $e) {
 				
-				log::write('发送激活码失败:'.$user['email'], 'login.php');
+				log::write('发送激活码失败:'.$user['email'].', error:'.$e->getMessage(), 'login.php');
 				
 				$this->message('可能服务器繁忙，发送邮件失败，请您明天再来尝试获取激活码！');
 			}

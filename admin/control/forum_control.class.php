@@ -155,12 +155,6 @@ class forum_control extends admin_control {
 		$this->view->display('forum_merge.htm');
 	}
 	
-	// 合并
-	public function on_merge2() {
-	
-	}
-	
-	
 	// 修改
 	public function on_update() {
 		$this->_title[] = '修改板块';
