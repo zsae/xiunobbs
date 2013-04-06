@@ -94,10 +94,10 @@ class runtime extends base_model {
 			$forumaccesson = $this->forum_access->get_accesson($forumarr);
 			$this->xset('forumarr', $forumarr);
 			$this->xset('forumaccesson', $forumaccesson);
-		} elseif($k == 'groupname') {
+		} elseif($k == 'grouparr') {
 			$grouplist = $this->group->get_list();
-			$grouparr = misc::arrlist_key_values($grouplist, 'fid', 'name');
-			$this-->xset('grouparr', $grouparr);
+			$grouparr = misc::arrlist_key_values($grouplist, 'groupid', 'name');
+			$this->xset('grouparr', $grouparr);
 		}
 	}
 	
