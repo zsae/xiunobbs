@@ -5,7 +5,7 @@
  */
 
 // 调试模式: 1 打开，0 关闭, SAE 环境，必须为 2，否则会去加载 tmp/_runtime.php
-define('DEBUG', 2);
+define('DEBUG', class_exists('SaeKV') ? 2 : 0);
 
 // 站点根目录
 define('BBS_PATH', str_replace('\\', '/', substr(dirname(__FILE__), 0, -7)));
