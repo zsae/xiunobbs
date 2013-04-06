@@ -387,7 +387,8 @@ class attach_control extends common_control {
 			}
 		}
 		
-		// 下载（购买）历史，如果最后一次购买的时间在24小时以内，附件不能被删除。保护购买人的权利，否则还没来得及下载，已经被删除。
+		// todo: 下载（购买）历史，如果最后一次购买的时间在24小时以内，附件不能被删除。保护购买人的权利，否则还没来得及下载，已经被删除。
+		$this->attach->unlink($attach);
 		$this->attach->delete($fid, $aid);
 		
 		// hook attach_deletefile_after.php
