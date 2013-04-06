@@ -161,7 +161,7 @@
 					
 					<!--{hook thread_index_attachlist_after.htm}-->
 					
-					<div class="grey mod" pid="$post[pid]">
+					<div class="grey mod" pid="$post[pid]" style="zoom: 1;">
 						<!--{if $thread[firstpid] != $post[pid]}-->
 						<span style="width: 150px; float: left; text-align: left;" class="small">$post[dateline_fmt]</span>
 						<!--{/if}-->
@@ -460,19 +460,9 @@ $(function() {
 // 快捷键翻页
 bind_document_keyup_page();
 
-// 语法高亮
-if($('pre').length > 0) {
-	xiuno_load_css('view/js/syntaxlighter/syntax.css');
-	$.xload('view/js/syntaxlighter/syntax.js', function() {
-		SyntaxHighlighter.all();
-	});
-}
-
-// 每层附加栏
-$('.post').hover(function() {
-	$('div.mod', this).stop(true, false).fadeTo(600, 1.0);
-	}, function() {
-	$('div.mod', this).delay(500).fadeTo(600, 0.0);
+$('.post').bind( {
+	'mouseover':function() {$('div.mod', this).stop(true, false).css({background: '#FFFFFF'}).fadeTo(600, 1);}, 
+	'mouseout':function() {$('div.mod', this).stop(true, false).delay(500).fadeTo(600, 0);}
 });
 
 </script>
