@@ -80,14 +80,14 @@ class mod_control extends admin_control {
 		$oldfid = $fid;
 		$forumoptions = $this->forum->get_options($this->_user['uid'], $this->_user['groupid'], $fid, $defaultfid);
 		$this->view->assign('forumoptions', $forumoptions);
-		$this->view->assign('fid', $fid);
+		$this->view->assign('fid', $defaultfid);
 		
 		if(empty($forumoptions)) {
 			$this->message('您没有可管理的板块。');
 		}
 		
 		// 检查权限
-		$forum = $this->forum->read($fid);
+		$forum = $this->forum->read($defaultfid);
 		if(!$this->is_mod($forum, $this->_user)) {
 			$this->message('您没有权限管理此版块。');
 		}
@@ -116,14 +116,14 @@ class mod_control extends admin_control {
 		$oldfid = $fid;
 		$forumoptions = $this->forum->get_options($this->_user['uid'], $this->_user['groupid'], $fid, $defaultfid);
 		$this->view->assign('forumoptions', $forumoptions);
-		$this->view->assign('fid', $fid);
+		$this->view->assign('fid', $defaultfid);
 		
 		if(empty($forumoptions)) {
 			$this->message('您没有可管理的板块。');
 		}
 		
 		// 检查权限
-		$forum = $this->forum->read($fid);
+		$forum = $this->forum->read($defaultfid);
 		if(!$this->is_mod($forum, $this->_user)) {
 			$this->message('您没有权限管理此版块。');
 		}
