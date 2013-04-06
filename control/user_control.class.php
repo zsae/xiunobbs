@@ -481,7 +481,7 @@ class user_control extends common_control {
 	
 	// 检测 email 是否已经被注册
 	public function on_checkemail() {
-		$email = core::gpc('email');
+		$email = core::urldecode(core::gpc('email'));
 		$emailerror = $this->user->check_email($email);
 		if($emailerror) {
 			$this->message($emailerror, 0);

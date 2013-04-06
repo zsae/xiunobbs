@@ -34,7 +34,8 @@ function check_username(username) {
 	if(!username) {
 		return false;
 	}
-	$.get('?user-checkname-username-'+urlencode(username)+'-ajax-1.htm', function(s) {
+	var username_url = urlencode(username);
+	$.get('?user-checkname-username-'+username_url+'-ajax-1.htm', function(s) {
 		var json = json_decode(s);
 		if(error = json_error(json)) {alert(error); return false;}
 		if(json.status <= 0) {
@@ -50,7 +51,10 @@ function check_email(email) {
 	if(!email) {
 		return false;
 	}
-	$.get('?user-checkemail-email-'+urlencode(email)+'-ajax-1.htm', function(s) {
+	var email_url = urlencode(email);
+	$.get('?user-checkemail-email-'+email_url+'-ajax-1.htm', function(s) {
+		var json = json_decode(s);
+		if(error = json_error(json)) {alert(error); return false;}
 		if(json.status <= 0) {
 			$('#create_check_email').html('<span class="red">'+json.message+'<span>');
 			return false;

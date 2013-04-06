@@ -530,7 +530,7 @@ class mod_control extends common_control {
 					$credits_html = $rate['credits'] > 0 ? '-'.$rate['credits'] : -$rate['credits'];
 					$golds_html = $rate['golds'] > 0 ? '-'.$rate['golds'] : -$rate['golds'];
 					$pmmessage = "您的帖子<a href=\"?thread-index-fid-$fid-tid-$tid-page-$post[page].htm\" target=\"_blank\">【{$pmsubject}】</a>被版主【{$this->_user['username']}】取消了评分，积分：{$credits_html}，金币{$golds_html}。";
-					$this->pm->system_send($thread['uid'], $thread['username'], $pmmessage);
+					$this->pm->system_send($post['uid'], $post['username'], $pmmessage);
 				}
 				$this->message('取消评分完毕。');
 			}
@@ -582,6 +582,7 @@ class mod_control extends common_control {
 					'tid'=>$post['tid'],
 					'pid'=>$pid,
 					'credits'=>$credits,
+					'golds'=>$golds,
 					'dateline'=>$_SERVER['time'],
 					'ymd'=>date('Ymd', $_SERVER['time']),
 					'comment'=>$comment,
@@ -603,7 +604,7 @@ class mod_control extends common_control {
 			$credits_html = $credits > 0 ? '+'.$credits : $credits;
 			$golds_html = $golds > 0 ? '+'.$golds : $golds;
 			$pmmessage = "您的帖子<a href=\"?thread-index-fid-$fid-tid-$post[tid]-page-$post[page].htm\" target=\"_blank\">【{$pmsubject}】</a>被版主【{$this->_user['username']}】评分，积分：{$credits_html}，金币{$golds_html}。";
-			$this->pm->system_send($thread['uid'], $thread['username'], $pmmessage);
+			$this->pm->system_send($post['uid'], $post['username'], $pmmessage);
 			
 			$this->message('操作成功！', 1);
 		}
