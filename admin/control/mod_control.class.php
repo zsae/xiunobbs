@@ -55,6 +55,9 @@ class mod_control extends admin_control {
 		$this->view->assign('error', $error);
 		
 		$forumoptions = $this->forum->get_options($this->_user['uid'], $this->_user['groupid'], $fid, $defaultfid);
+		if(empty($defaultfid)) {
+			$this->message('没有可管理的版块。');
+		}
 		$fid = $defaultfid;
 		$forum = $this->forum->read($fid);
 		
@@ -79,12 +82,11 @@ class mod_control extends admin_control {
 		$fid = intval(core::gpc('fid'));
 		$oldfid = $fid;
 		$forumoptions = $this->forum->get_options($this->_user['uid'], $this->_user['groupid'], $fid, $defaultfid);
+		if(empty($defaultfid)) {
+			$this->message('没有可管理的版块。');
+		}
 		$this->view->assign('forumoptions', $forumoptions);
 		$this->view->assign('fid', $defaultfid);
-		
-		if(empty($forumoptions)) {
-			$this->message('您没有可管理的板块。');
-		}
 		
 		// 检查权限
 		$forum = $this->forum->read($defaultfid);
@@ -115,12 +117,11 @@ class mod_control extends admin_control {
 		
 		$oldfid = $fid;
 		$forumoptions = $this->forum->get_options($this->_user['uid'], $this->_user['groupid'], $fid, $defaultfid);
+		if(empty($defaultfid)) {
+			$this->message('没有可管理的版块。');
+		}
 		$this->view->assign('forumoptions', $forumoptions);
 		$this->view->assign('fid', $defaultfid);
-		
-		if(empty($forumoptions)) {
-			$this->message('您没有可管理的板块。');
-		}
 		
 		// 检查权限
 		$forum = $this->forum->read($defaultfid);
