@@ -49,7 +49,7 @@ class stat_control extends admin_control {
 			$i = 0;
 			$datelist = $statlist = array();
 			for($date = $starttime; $date < $endtime; $date += 86400) {
-				$s = misc::date('Y-n-j', $date);
+				$s = date('Y-n-j', $date);
 				list($y, $n, $j) = explode('-', $s);
 				$datelist[] = array('y'=>$y, 'm'=>$n, 'd'=>$j);
 				$statlist[] = $this->stat->read($y, $n, $j);
