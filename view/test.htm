@@ -35,7 +35,7 @@
 			</tr>
 		</table>
 		<br />
-		<p>DNNResearch是多伦多大学一家神经网络方面的初创公司，该公司的负责人是Geoffrey Hinton，作为机器深度学习方面的领军人物，他的研究有助于推动谷歌基于语音和图片领域搜索的发展。不难看出，Google在科技领域的超前思维和成果已经远超于苹果、Amazon、Facebook等众多竞争对手。</p>
+		<p id="p1">DNNResearch是多伦多大学一家神经网络方面的初创公司，该公司的负责人是Geoffrey Hinton，作为机器深度学习方面的领军人物，他的研究有助于推动谷歌基于语音和图片领域搜索的发展。不难看出，Google在科技领域的超前思维和成果已经远超于苹果、Amazon、Facebook等众多竞争对手。</p>
 	</div>
 	<br />
 	<div id="div2" contentEditable="true" designMode="on" style="border: 1px solid #0b0;">
@@ -74,7 +74,13 @@ if($.browser.msie) {
 
 $('#button1').click(function() {
 	var range = is_ie ? document.body.createTextRange() : document.createRange();
-	print_r(range);
+	/*range.startContainer = $('#p1').get(0);
+	range.startOffset = 1;
+	range.endContainer = $('#p1').get(0);
+	range.startOffset = 12;*/
+	var p1 = $('#p1').get(0);
+	range.selectNode(p1);
+	range.select();
 });
 // 聚焦
 

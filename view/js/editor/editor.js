@@ -194,7 +194,7 @@ $.editor = function(textarea, settings) {
 					</div>\
 					<div class="video" style="display: none">\
 						<table width="540"><tr><td width="60">视频网址：</td><td width="450"><input type="text" size="64" value="http://" class="url" /></td></tr>\
-						<tr><td align="right">宽度：</td><td><input type="text" size="4" class="w" value="610" />高度：<input type="text" size="4" class="h" value="498" /></td></tr>\
+						<tr><td align="right">宽度：</td><td><input type="text" size="4" class="w" value="876" />高度：<input type="text" size="4" class="h" value="454" /></td></tr>\
 						<tr><td></td><td><input type="button" value="插入" class="insert" style="margin-top: 8px; margin-left: 2px;" /><input type="button" value="关闭" class="close" style="margin-top: 8px; margin-left: 2px;" /><span class="grey">【提示】：请粘贴以 .swf 结尾的网址。</span></td></tr></table>\
 					</div>\
 					<div class="face" style="display: none">\
