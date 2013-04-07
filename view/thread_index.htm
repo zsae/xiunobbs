@@ -37,7 +37,7 @@
 						<span class="avatar_middle border bg1" {if $u[avatar_middle]}style="background-image: url($u[avatar_middle])"{/if}></span>
 					</a>
 				</div>
-				<div>$u[username]</div>
+				<div style="word-break:break-all;">$u[username]</div>
 				<!--{hook thread_index_userinfo.htm}-->
 			</td>
 			<td width="15"></td>
@@ -111,7 +111,7 @@
 								<td>
 									<a href_real="?you-index-uid-$mod[user][uid].htm" target="_blank" href="?you-profile-uid-$mod[user][uid]-ajax-1.htm" class="ajaxdialog" ajaxdialog="{position: 5, modal: false, timeout: 1000, showtitle: false}" onclick="return false;" style="display: block" rel="nofollow">
 										<span class="avatar_small bg1" {if $mod[user][avatar_small]}style="background-image: url($mod[user][avatar_small])"{/if}></span>
-										<span class="">$mod[user][username]</span>
+										<span>$mod[user][username]</span>
 									</a>
 								</td>
 								<td class="grey">$mod[action_fmt]</td>
@@ -211,7 +211,7 @@
 						<span class="avatar_middle border bg1" {if !empty($_user[avatar_middle])}style="background-image: url($_user[avatar_middle])"{/if}></span>
 					</a>
 				</div>
-				<div>$_user[username]</div>
+				<div style="word-break:break-all;">$_user[username]</div>
 				<div class="grey small">$_user[groupname]</div>
 			</td>
 			<td width="15"></td>
