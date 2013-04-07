@@ -108,7 +108,7 @@ class index_control extends common_control {
 		}
 		$this->view->assign('forumarr', $forumarr);
 		$this->view->assign('threadlists', $threadlists);
-		$this->view->display('forum_list.htm');
+		$this->view->display('index_list.htm');
 	}
 	
 	public function on_example() {
