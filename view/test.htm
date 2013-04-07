@@ -72,6 +72,10 @@ if($.browser.msie) {
 	$('#div1').get(0).designMode = 'On';
 }
 
+$('#button1').click(function() {
+	var range = is_ie ? document.body.createTextRange() : document.createRange();
+	print_r(range);
+});
 // 聚焦
 
 </script>

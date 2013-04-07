@@ -13,6 +13,9 @@ class index_control extends common_control {
 	function __construct(&$conf) {
 		parent::__construct($conf);
 		$this->_checked['bbs'] = ' class="checked"';
+		$this->_title[] = $this->conf['seo_title'] ? $this->conf['seo_title'] : $this->conf['app_name'];
+		$this->_seo_keywords = $this->conf['seo_keywords'];
+		$this->_seo_description = $this->conf['seo_description'];
 	}
 	
 	// 给插件预留个位置
@@ -27,9 +30,6 @@ class index_control extends common_control {
 		$this->_checked['index'] = ' class="checked"';
 		
 		// hook index_bbs_before.php
-		$this->_title[] = $this->conf['seo_title'] ? $this->conf['seo_title'] : $this->conf['app_name'];
-		$this->_seo_keywords = $this->conf['seo_keywords'];
-		$this->_seo_description = $this->conf['seo_description'];
 		
 		$pagesize = 30;
 		$toplist = array(); // only top 3
@@ -83,6 +83,7 @@ class index_control extends common_control {
 	
 	// 所有版块，考虑权限！
 	public function on_list() {
+		
 		$this->_checked['forum_list'] = ' class="checked"';
 		
 		$forumarr = $this->conf['forumarr'];

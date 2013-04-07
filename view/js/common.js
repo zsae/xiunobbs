@@ -53,8 +53,7 @@ function print_r(arrlist, level) {
 }
 
 function print_r_real(arrlist, level) {
-	if(!level) level = 1;
-	if(level > 3) {
+	if(level > 2) {
 		try {
 			arrlist += '';	// toString();
 			arrlist = arrlist.substr(0, 500); 
@@ -86,8 +85,10 @@ function print_r_real(arrlist, level) {
 		}
 		s += ')</div>';
 		return s;
+	} else if(type == 'function') {
+		return '<span class="grey2">function() {}</span>';
 	} else  {
-		return '';
+		return type;
 	}
 }
 
