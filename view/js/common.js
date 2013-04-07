@@ -60,7 +60,7 @@ function print_r_real(arrlist, level) {
 		} catch(e) {
 			arrlist = typeof arrlist;
 		}
-		return '<span class="grey2">'+htmlspecialchars(arrlist)+'</span>';
+		return '<span class="grey">'+htmlspecialchars(arrlist)+'</span>';
 	}
 	var padding = level * 16;
 	var s = '';
@@ -675,8 +675,8 @@ function tid_add_read(tid, time) {
 	var arr = json_decode($.pdata(cookie_pre + 'readtids'));
 	if(!arr || arr == 'null') arr = {};
 	for(var k in arr) {
-		// 删除3天以前的数据
-		if(time - arr[tid] > 259200) delete arr[k];
+		// 删除30天以前的数据
+		if(time - arr[tid] > 2592000) delete arr[k];
 	}
 	arr[tid] = time;
 	// 保存最后阅读的时间

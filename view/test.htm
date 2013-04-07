@@ -73,14 +73,33 @@ if($.browser.msie) {
 }
 
 $('#button1').click(function() {
-	var range = is_ie ? document.body.createTextRange() : document.createRange();
+	var sel;
+	if (window.getSelection) { //现代浏览器
+		sel = window.getSelection();
+	} else if (document.selection) { //IE浏览器 考虑到Opera，应该放在后面
+		sel = document.selection.createRange();
+	}
+	print_r(sel);
+	
+	var range = sel.getRangeAt(0);
+	print_r(range);
+	//var range = is_ie ? document.body.createTextRange() : document.createRange();
+
+	//var range = is_ie ? document.body.createTextRange() : document.createRange();
+	
 	/*range.startContainer = $('#p1').get(0);
 	range.startOffset = 1;
 	range.endContainer = $('#p1').get(0);
 	range.startOffset = 12;*/
-	var p1 = $('#p1').get(0);
-	range.selectNode(p1);
-	range.select();
+	//var p1 = $('#p1').get(0);
+	//range.setStart(p1, 1);
+	//range.setEnd(p1, 18);
+	//range.deleteContents();
+	//print_r(range);
+	
+	
+	// var q = range.createContextualFragment('<a href="#">333333333333333333</a>');//此方法根据给的html创建一个对象 
+	// range.insertNode(q);
 });
 // 聚焦
 
