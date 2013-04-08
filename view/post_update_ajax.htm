@@ -413,10 +413,10 @@ function delay_execute(dialog, recall) {
 					};
 					var swfu = new SWFUpload(swf_settings);
 				});
+				
+				// hook post_update_ajax_onhook_end.htm
 			},
 			baseurl: 'view/js/editor/'});
-		
-			
 		
 		$('#update_message_$pid')[0].editor._focus();
 		$('#update_submit_$pid').click(function() {
@@ -448,12 +448,14 @@ function delay_execute(dialog, recall) {
 	 		
 	 			// 更新 pdata 数据
 				$('#update_message_$pid')[0].editor.set('');
-				
 	 			// 销毁编辑器
 	 			dialog.set_body('<div class="ok">编辑成功！</div>');
 		 		setTimeout(function() {dialog.close();}, 500);
 				
 			}, "json");
+			
+			// hook post_update_js_end.htm
+					 	
 			return false;
 		});
 		
@@ -461,50 +463,6 @@ function delay_execute(dialog, recall) {
 			dialog.close();
 		});
 	}); // end $.xload()
-	
-	
-	$('#update_submit_$pid').click(function() {
-		$('div.alert').remove();
-		$('#update_submit_$pid').disable();
-		var postdata = $("#update_form_$pid").serialize();
-		$.post($('#update_form_$pid').attr('action'), postdata,  function(s){
-			$('#update_submit_$pid').enable();
-			
-			var json = json_decode(s);
-			if(error = json_error(json)) {alert(error); return false;}
-			json = json.message;
-			if(json.subject) {
-				$('#update_subject_$pid').alert(json.subject).focus();
-				return false;
-			}
-			if(json.message) {
-				$('#update_message_$pid').parent().alert(json.message).focus();
-				return false;
-			}
-			
-			
-			 // hook post_update_submit_after_js
-			 
-			// 更新当前页面
-<!--{if $isfirst}-->	$('#subject_$tid').html($('#update_subject_$pid').val());	<!--{/if}-->
- 			$('#message_$pid').html($('#update_message_$pid').val());
- 		
- 			// 更新 pdata数据
-			//$('#update_message_$pid')[0].editor.set('');
-			
-			dialog.set_body('<div class="ok">编辑成功！</div>');
-			
- 			// 销毁编辑器
-	 		setTimeout(function() {dialog.close();}, 1500);
-			
-		  });
-		  
-		 // hook post_update_js_end.htm
-	});// end xload()
-	
-	$('#update_cancel_$pid').click(function() {
-		dialog.close();
-	});
 	
 	// hook common_form_hash_after_js.htm
 

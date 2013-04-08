@@ -105,7 +105,7 @@ class forum extends base_model {
 		}
 	}
 	
-	// 获取有权限的版块列表，默认第一个，如果有权限限制，则查询用户组权限
+	// 获取有权限管理的版块列表，默认第一个，如果有权限限制，则查询用户组权限，仅供斑竹列表使用
 	public function get_options($uid, $groupid, $checkedfid, &$defaultfid) {
 		$forumlist = $this->forum->get_list();
 		$s = '';
@@ -124,6 +124,24 @@ class forum extends base_model {
 				$checked = $checkedfid == $forum['fid'] ? ' selected="selected"' : '';
 				$s .= '<option value="'.$forum['fid'].'"'.$checked.' style="font-weight: 800;">'.$forum['name'].'</option>';
 			}
+		}
+		return $s;
+	}
+	
+	// 获取版块列表
+	public function get_public_options($checkfid = 0, $user = array()) {
+		$s = '';
+		$forumarr = $this->conf['forumarr'];
+		foreach($forumarr as $fid=>$name) {
+			if(!empty($forumarr[$fid])) {
+				$access = $this->forum_access->read($fid, $user['groupid']);
+				if(!empty($access) && !$access['allowread']) {
+					unset($forumarr[$fid]);
+					continue;
+				}
+			}
+			$checked = $checkfid == $fid ? ' selected="selected"' : '';
+			$s .= '<option value="'.$fid.'"'.$checked.'>'.$name.'</option>';
 		}
 		return $s;
 	}

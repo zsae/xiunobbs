@@ -285,11 +285,14 @@ class post_control extends common_control {
 			$post = $error = array();
 			$subject = htmlspecialchars(core::gpc('subject', 'P')); // 废弃
 			$message = core::gpc('message', 'P');
-			$message = $this->post->html_safe($message);
 			
 			// 快速发帖。
 			if($quickpost) {
 				$message = misc::html_space($message);
+				$message = pre_replace('#(https?://\S+)#', '<a href="\\1" target="_blank">\\1</a>', $message);
+				$message = $this->post->html_safe($message);
+			} else {
+				$message = $this->post->html_safe($message);
 			}
 			
 			// -----------> 添加到 post
@@ -521,9 +524,12 @@ class post_control extends common_control {
 					$attach['tid'] = $post['tid'];
 					if($attach['isimage'] == 1) {
 						$imagenum++;
+						log::trace('imagenum++:'.$imagenum);
 					} else {
 						$attachnum++;
+						log::trace('attachnum++:'.$attachnum);
 					}
+					// 修改主键
 					$this->attach->db_cache_update("attach-fid-$fid-aid-$aid", $attach);
 				}
 				$this->attach->clear_aid_from_tmp($uid);
@@ -538,12 +544,18 @@ class post_control extends common_control {
 						$this->attach->unlink($attach);
 						$this->attach->delete($attach['fid'], $attach['aid']);
 						$imagenum--;
+						log::trace('imagenum--:'.$imagenum);
+						//var_dump('deleted: '.$attach['filename'].', imagenum:'.$imagenum);
+					} else {
+						//var_dump($attach['filename']);
 					}
 				}
 				
+				//var_dump($post['imagenum'].'-'.$imagenum);
 				$post['imagenum'] += $imagenum;
 				$post['attachnum'] += $attachnum;
-				
+				log::trace('$post:'.print_r($post, 1));
+
 				// 如果为主题帖，则更新附件个数
 				if($isfirst) {
 					$thread['imagenum'] += $imagenum;

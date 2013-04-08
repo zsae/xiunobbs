@@ -362,7 +362,7 @@ class mod_control extends common_control {
 		
 		if(!$this->form_submit()) {
 			
-			$forumoptions = $this->forum->get_options($this->_user['uid'], $this->_user['groupid'], $fid, $defaultfid);
+			$forumoptions = $this->forum->get_public_options($fid, $this->_user);
 			$this->view->assign('forumoptions', $forumoptions);
 			
 			$this->view->assign('forum', $forum);

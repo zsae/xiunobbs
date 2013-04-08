@@ -59,14 +59,14 @@ class attach extends base_model {
 		return implode(' ', $arr);
 	}
 	
-	public function get_list_by_fid_pid($fid, $pid, $isimage = FALSE) {
+	public function get_list_by_fid_pid($fid, $pid, $isimage = 0) {
 		$attachlist = $this->index_fetch(array('fid'=>$fid, 'pid'=>$pid), array(), 0, 1000);
 		foreach($attachlist as $k=>$attach) {
-			if($isimage === 1 && $attach['isimage'] == 0) {
+			if($isimage == 1 && $attach['isimage'] == 0) {
 				unset($attachlist[$k]);
 				continue;
 			}
-			if($isimage === 0 && $attach['isimage'] == 1) {
+			if($isimage == 0 && $attach['isimage'] == 1) {
 				unset($attachlist[$k]);
 				continue;
 			} 

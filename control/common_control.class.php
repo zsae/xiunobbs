@@ -60,10 +60,7 @@ class common_control extends base_control {
 		if(DEBUG > 1 && !empty($_SERVER['trace'])) {
 			//restore_exception_handler();
 			//restore_error_handler();
-			$s = "\r\n\r\n\r\n---------------------------------------------------------------------------------\r\n<?php exit;?>\r\n---------------------------------------------------------------------------------\r\n$_SERVER[REQUEST_URI]:\r\nPOST: ".print_r($_POST, 1)."\r\nSQL:".print_r($_SERVER['sqls'], 1)."\r\n";
-			$s .= $_SERVER['trace'];
-			!is_file($this->conf['log_path'].'trace.php') && file_put_contents($this->conf['log_path'].'trace.php', '');
-			log::write($s, 'trace.php');
+			log::trace_save();
 		}
 	}
 	
@@ -478,10 +475,10 @@ class common_control extends base_control {
 			}
 		} else {
 			if(!$this->check_group_access($group, $action, $message)) {
-				$this->message("对不起，您所在的用户组($group[name])没有在版块($forum[name])的($action)权限。", 0);
+				$this->message("对不起，($group[name])没有在($forum[name])的({$adminaction[$action]})权限。", 0);
 			}
 			if(!$this->is_mod($forum, $user)) {
-				$this->message("对不起，您所在的用户组($group[name])没有权限管理此版块($forum[name])。", 0);
+				$this->message("对不起，($group[name])没有权限管理($forum[name])。", 0);
 			}
 		}
 	}

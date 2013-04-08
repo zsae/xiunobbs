@@ -103,7 +103,7 @@ class thread extends base_model {
 				!isset($ruser[$post['uid']]) && $ruser[$post['uid']] = $default_user;
 				
 				// 删除 attach
-				$post['attachnum'] && $this->attach->xdelete($post['fid'], $post['pid']);
+				($post['attachnum'] || $post['imagenum']) && $this->attach->xdelete($post['fid'], $post['pid']);
 				
 				// 删除 mypost，删除主题一定不会空删除
 				$this->mypost->delete($post['uid'], $post['fid'], $post['pid']);

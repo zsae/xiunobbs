@@ -88,11 +88,13 @@ a.icon:hover {background-image: url(image/icon-hover.gif)}
 .icon-digest-3 {background-position: -80px -16px;}
 
 /* 第三行 */
+/*
 .icon-user-guest { background-position: -0px -32px; }
 .icon-user-user { background-position: -16px -32px; }
 .icon-user-mod { background-position: -32px -32px; }
 .icon-user-admin { background-position: -48px -32px; }
 .icon-user-group { background-position: -112px -32px; }
+*/
 
 /* 第四行 */
 .icon-orderby-0 { background-position: -32px -48px; }
