@@ -52,11 +52,11 @@ function alter_table() {
 	global $conf;
 	// 2. 修改表结构
 	$sql = "
+alter table bbs_attach_download add column fid int(10) unsigned NOT NULL default '0';
 alter table bbs_attach_download drop key aid;
 alter table bbs_attach_download add key fid,aid;
-alter table bbs_attach_download add column fid int(10) unsigned NOT NULL default '0';
 ";
-	
+
 	$db = new db_mysql($conf['db']['mysql']);
 	$s = $sql;
 	$s = str_replace("\r\n", "\n", $s);
@@ -98,15 +98,15 @@ function upgrade_attach_download() {
 		$count = $db->index_count('attach_download');
 	}
 	$mattachdown = new attach_download($conf);
-	$mattach = new attach_download($conf);
+	$mattach = new attach($conf);
 	if($start < $count) {
 		$limit = DEBUG ? 20 : 2000;
-		$arrlist = $db->index_fetch('attach_download', array('fid', 'aid'), array(), array(), $start, $limit);
+		$arrlist = $mattachdown->index_fetch(array(), array(), $start, $limit);
 		foreach($arrlist as $attachdown) {
-			$attach = $mattach->index_fetch(array('aid'=>$attachdown['aid']), array(), 0, 1);
-			if($attach) $attach = array_pop($attach);
-			$attachdown['fid'] = $attach['fid'];
-			$db->set("attach-fid-0-aid-$attachdown[aid]", $attachdown);
+			$attachlist = $mattach->index_fetch(array('aid'=>$attachdown['aid']), array(), 0, 1);
+			$attach = empty($attachlist) ? array() : array_pop($attachlist);
+			$attachdown['fid'] = empty($attach) ? 0 : $attach['fid'];
+			$db->update("attach_download-uid-$attach[uid]-fid-0-aid-$attach[aid]-", $attachdown);
 		}
 		$start += $limit;
 		message("正在升级 upgrade_attach_download, 一共: $count, 当前: $start...", "?step=upgrade_attach_download&start=$start&count=$count", 0);
