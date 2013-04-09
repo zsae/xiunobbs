@@ -613,8 +613,7 @@ function upgrade_thread() {
 			if(empty($old)) continue;
 			$fid = $old['fid'];
 			//if($old['status'] == 0) continue;
-			if($old['displayorder'] == -1) continue;
-			if($old['displayorder'] == -2) continue;
+			if($old['displayorder'] < 0) continue;
 			if($old['displayorder'] == 2) $old['displayorder'] = 1;
 			if(!isset($policy['fuparr'][$fid]) ) continue; // 版块不存在，则不升级
 			$fup = $policy['fuparr'][$fid];			// 大区也不升级

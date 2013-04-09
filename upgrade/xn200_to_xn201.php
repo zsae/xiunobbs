@@ -44,6 +44,8 @@ if($step == 'alter_table') {
 	alter_table();
 } elseif($step == 'upgrade_attach_download') {
 	upgrade_attach_download();
+} elseif($step == 'complete') {
+	complete();
 }
 
 function alter_table() {
@@ -109,8 +111,12 @@ function upgrade_attach_download() {
 		$start += $limit;
 		message("正在升级 upgrade_attach_download, 一共: $count, 当前: $start...", "?step=upgrade_attach_download&start=$start&count=$count", 0);
 	} else {
-		message('升级 upgrade_attach_download 完成，接下来升级 upgrade_thread_views...', '?step=upgrade_thread_views');
+		message('升级 upgrade_attach_download 完成', '?step=complete');
 	}
+}
+
+function complete() {
+	message('升级完毕。', './');
 }
 
 function message($s, $url = '', $timeout = 2) {
