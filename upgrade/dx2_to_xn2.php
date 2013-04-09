@@ -603,6 +603,9 @@ function upgrade_thread() {
 	
 	$forum_types = array();
 	$thread_type_data = new thread_type_data($conf);
+	$mkv = new kv($conf);
+	$mforum = new forum($conf);
+	
 	if($start < $count) {
 		$limit = DEBUG ? 10 : 1000;	// 每次升级 100
 		$arrlist = $dx2->index_fetch_id('forum_thread', 'tid', array('tid'=>array('>'=>$maxtid)), array('tid'=>1), $start, $limit);
@@ -653,6 +656,25 @@ function upgrade_thread() {
 			if(empty($pidkeylist)) continue;
 			list($_, $_, $firstpid) = explode('-', $pidkeylist[0]);
 			
+			// 置顶主题
+			if($old['displayorder'] > 0) {
+				if($old['displayorder'] == 3) {
+					$toptids = $mkv->get('toptids');
+					$toptids .= trim($toptids)." $newfid-$tid";
+					$mkv->set('toptids', $toptids);
+				} elseif($old['displayorder'] == 2 || $old['displayorder'] == 1) {
+					$forum = $mforum->read($newfid);
+					if(substr_count($forum['toptids'], ' ', 0) < 8) {
+						$forum['toptids'] = trim($forum['toptids'])." $newfid-$tid";
+						$mforum->update($forum);
+					} else {
+						$old['top'] = 0;
+					}
+				} else {
+					$old['top'] = 0;
+				}
+			}
+			
 			$arr = array (
 				'fid'=> $newfid,
 				'tid'=> $old['tid'],
@@ -680,23 +702,6 @@ function upgrade_thread() {
 			$db->set("thread-fid-$newfid-tid-$tid", $arr);
 			$db->set("thread_views-tid-$tid", array('tid'=>$tid, 'views'=>$old['views']));
 			
-			// 置顶主题
-			if($old['displayorder'] > 0) {
-				if($old['displayorder'] == 3) {
-					$mruntime = new runtime($conf);
-					$runtime = $mruntime->xget();
-					$runtime['toptids'] .= trim($runtime['toptids'])." $newfid-$tid";
-					$mruntime->xset('toptids', $runtime['toptids']);
-				} elseif($old['displayorder'] == 2 || $old['displayorder'] == 1) {
-					$mforum = new forum($conf);
-					$forum = $mforum->read($newfid);
-					if(substr_count($forum['toptids'], ' ', 0) < 8) {
-						$forum['toptids'] = trim($forum['toptids'])." $newfid-$tid";
-						$mforum->update($forum);
-					} else {
-					}
-				}
-			}
 			
 			// mypost
 			$arr = array (
