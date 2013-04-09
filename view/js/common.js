@@ -528,19 +528,18 @@ function ajaxdialog_request(url, recall, options) {
 	// 如果有cache 直接显示 cache 数据
 	var dialogid = escape(url).replace(/[%.]/ig, '_');	// 此处不过滤特殊字符在 jquery 下会有奇怪的bug, $('abc%.') 会让 jquery 彻底傻掉，1.4.3 通过，1.6未测试。
 	var dialogdiv = document.getElementById(dialogid);
-			
-	if($('body').data(url) && dialogdiv && (options == undefined || options.cache == undefined || options && options.cache)) {
-		var json = $('body').data(url);
+	if(!dialogdiv) {
+		var s = '<div class="dialog bg2 border shadow" title="正在加载..." id="'+dialogid+'" style="overflow: visible;">正在加载...<'+'/div>';
+		var dialogdiv = $(s).appendTo('body').get(0);
+	}
+	var jdialog = $(dialogdiv);
+		
+	if($(dialogdiv).data(url) && dialogdiv && (options == undefined || options.cache == undefined || options && options.cache)) {
+		var json = $(dialogdiv).data(url);
 		var dialogdiv = json.dialogdiv;
 		$(dialogdiv).dialog(options);
 	// 没有 cache, ajax 请求 url
 	} else {
-		if(!dialogdiv) {
-			var s = '<div class="dialog bg2 border shadow" title="正在加载..." id="'+dialogid+'" style="overflow: visible;">正在加载...<'+'/div>';
-			var dialogdiv = $(s).appendTo('body').get(0);
-		}
-		var jdialog = $(dialogdiv);
-		
 		// 弹出对话框
 		var optionsbefore = $.extend({width: 700, modal: true, open: true}, options);
 		jdialog.dialog(optionsbefore);
@@ -561,7 +560,7 @@ function ajaxdialog_request(url, recall, options) {
 			
 			// 缓存非错误数据到 body 节点
 			json.dialogdiv = dialogdiv;
-			$('body').data(url, json);
+			$(dialogdiv).data(url, json);
 			json = json.message;
 			json.title = json.title ? json.title : '提示信息：';
 			
