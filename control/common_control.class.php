@@ -150,15 +150,18 @@ class common_control extends base_control {
 			$this->message('尊敬的管理员，系统检测到您的IP发生变化，为了您的安全，请重新登录。<script>setTimeout("window.location.reload()", 2000);</script>', 0);
 		}
 		
-		// 站点访问权限判断 0:所有人均可访问; 1: 仅会员访问; 2:仅版主可访问; 3: 仅管理员
-		$skip_action = core::gpc(0) == 'user';
-		if($this->conf['site_runlevel'] == 1 && $this->_user['groupid'] == 0 && !$skip_action) {
+		// 站点访问权限判断 0:所有人均可访问; 1: 仅会员访问; 2:仅版主可访问; 3: 仅管理员可访问; 4: 全站只读
+		if($this->conf['site_runlevel'] == 1 && $this->_user['groupid'] == 0 && core::gpc(0) != 'user') {
 			$infoadd = $this->conf['reg_on'] ? '，您可以注册会员。' : '，当前注册已关闭。';
 			$this->message('站点当前设置：只有会员能访问'.$infoadd, 0);
-		} elseif($this->conf['site_runlevel'] == 2 && $this->_user['groupid'] >= 11 && !$skip_action) {
+		} elseif($this->conf['site_runlevel'] == 2 && $this->_user['groupid'] >= 11 && core::gpc(0) != 'user') {
 			$this->message('站点当前设置：版主以上权限才能访问，（'.$this->_user['groupname'].'）不允许。', 0);
-		} elseif($this->conf['site_runlevel'] == 3 && $this->_user['groupid'] != 1 && !$skip_action) {
+		} elseif($this->conf['site_runlevel'] == 3 && $this->_user['groupid'] != 1 && core::gpc(0) != 'user') {
 			$this->message('站点当前设置：只有管理员才能访问。', 0);
+		} elseif($this->conf['site_runlevel'] == 4) {
+			if(in_array(core::gpc(0), array('follow', 'mod', 'post')) || (core::gpc(0) == 'user' && !in_array(core::gpc(1), array('login', 'logout', 'checkname', 'checkemail')))) {
+				$this->message('站点当前设置：全站只读。', 0);	// 屏蔽所有的 bbs 业务逻辑的写入操作！一般升级或者调试的时候使用
+			}
 		}
 		
 		$this->_user['access'] = $this->_user['uid'] > 0 && !empty($this->_user['accesson']) ? $this->user_access->read($this->_user['uid']) : array();

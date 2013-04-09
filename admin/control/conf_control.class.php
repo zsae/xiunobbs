@@ -124,7 +124,7 @@ class conf_control extends admin_control {
 		$input['china_icp'] = form::get_text('china_icp', $kvconf['china_icp'], 150);
 		$input['footer_js'] = form::get_text('footer_js', htmlspecialchars($kvconf['footer_js']), 300);
 		$input['site_pv'] = form::get_text('site_pv', $kvconf['site_pv'], 70);
-		$input['site_runlevel'] = form::get_radio('site_runlevel', array(0=>'所有人可访问', 1=>'会员可访问', 2=>'版主可访问', 3=>'管理员可访问'), $kvconf['site_runlevel']);
+		$input['site_runlevel'] = form::get_radio('site_runlevel', array(0=>'所有人可访问', 1=>'会员可访问', 2=>'版主可访问', 3=>'管理员可访问', 4=>'全站只读'), $kvconf['site_runlevel']);
 		$input['forum_index_pagesize'] =  form::get_text('forum_index_pagesize', $kvconf['forum_index_pagesize'], 50);
 		
 		// hook admin_conf_base_input_after.php
