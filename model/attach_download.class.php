@@ -12,9 +12,9 @@ class attach_download extends base_model {
 		$this->primarykey = array('uid', 'fid', 'aid');
 	}
 
-	public function get_list_by_aid($aid, $page = 1, $pagesize = 20) {
+	public function get_list_by_fid_aid($fid, $aid, $page = 1, $pagesize = 20) {
 		$start = ($page -1) * $pagesize;
-		$downlist = $this->index_fetch(array('aid'=>$aid), array(), $start, $pagesize);
+		$downlist = $this->index_fetch(array('fid'=>$fid, 'aid'=>$aid), array(), $start, $pagesize);
 		foreach($downlist as &$down) {
 			$this->format($down);
 		}

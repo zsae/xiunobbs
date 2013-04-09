@@ -358,7 +358,7 @@ class my_control extends common_control {
 		
 		$page = misc::page();
 		$pagesize = 20;
-		$downlist = $this->attach_download->get_list_by_aid($aid, $page, $pagesize);
+		$downlist = $this->attach_download->get_list_by_aid($fid, $aid, $page, $pagesize);
 		$pages = misc::simple_pages("?my-downlog-fid-$fid-aid-$aid.htm", count($downlist), $page, $pagesize);
 		$this->view->assign('pages', $pages);
 		$this->view->assign('downlist', $downlist);
