@@ -48,7 +48,7 @@ $db_index = array(
 	'thread'=>array(array('tid'=>1), array('fid'=>1, 'lastpost'=>1), array('fid'=>1, 'digests'=>1, 'tid'=>-1)),
 	'post'=>array(array('fid'=>1, 'pid'=>1), array('fid'=>1, 'tid'=>1, 'page'=>1)),
 	'attach'=>array(array('aid'=>1), array('fid'=>1, 'tid'=>1), array('fid'=>1, 'pid'=>1), array('uid'=>1, 'isimage'=>1)),
-	'attach_download'=>array(array('uid'=>1, 'aid'=>1), array('aid'=>1), array('uploaduid'=>1, 'dateline'=>0)),
+	'attach_download'=>array(array('uid'=>1, 'fid'=>1, 'aid'=>1), array('fid'=>1, 'aid'=>1), array('uploaduid'=>1, 'dateline'=>0)),
 	'mypost'=>array(array('uid'=>1, 'fid'=>1, 'pid'=>1), array('uid'=>1, 'fid'=>1, 'tid'=>1), array('uid'=>1, 'pid'=>0)),
 	'online'=>array(array('sid'=>1), array('lastvisit'=>1), array('uid'=>1)),
 	'friendlink'=>array(array('linkid'=>1), array('type'=>1, 'rank'=>0)),

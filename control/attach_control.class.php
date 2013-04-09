@@ -75,7 +75,7 @@ class attach_control extends common_control {
 			if($attach['golds'] > 0) {
 				if($uid) {
 					$user = $this->user->read($uid);
-					$down = $this->attach_download->read($uid, $aid);
+					$down = $this->attach_download->read($uid, $fid, $aid);
 					// 如果没有下载过
 					if(empty($down)) {
 						if($user['golds'] < $attach['golds']) {
@@ -89,8 +89,9 @@ class attach_control extends common_control {
 						
 						// 如果购买过，可以一直有权下载, uid, aid 为唯一索引
 						$this->attach_download->create(array(
-							'aid' => $aid,
 							'uid' => $uid,
+							'fid' => $fid,
+							'aid' => $aid,
 							'uploaduid' => $attach['uid'],
 							'dateline' => $_SERVER['time'],
 							'golds' => $attach['golds'],

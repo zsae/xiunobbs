@@ -245,7 +245,6 @@ class conf_control extends admin_control {
 				'thread'=>'tid',
 				'post'=>'pid',
 				'attach'=>'aid',
-				'attach_download'=>'aid',
 				'pm'=>'pmid'
 			);
 			

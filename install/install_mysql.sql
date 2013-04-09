@@ -199,7 +199,7 @@ CREATE TABLE bbs_thread (
   lastuid int(11) unsigned NOT NULL default '0',	# 最近参与的 uid
   lastusername char(16) NOT NULL default '',		# 最近参与的 username
   PRIMARY KEY (fid, tid),				# 按照发帖时间排序
-  KEY (tid),						# 按照 tid 排序，首页需要。
+  KEY (tid),						# 按照 tid 排序，首页需要, sphinx 也需要。
   KEY (fid, lastpost),					# 按照顶贴时间排序
   KEY (fid, digest, tid)				# 精华排序
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -260,14 +260,15 @@ CREATE TABLE bbs_attach (
 # 收费附件的下载历史，用来查账，分页算法为上一页，下一页；此表如果大，可以考虑通过 aid 分区。
 DROP TABLE IF EXISTS bbs_attach_download;
 CREATE TABLE bbs_attach_download (
+  fid int(10) unsigned NOT NULL default '0',		# 下载的附件fid
   aid int(10) unsigned NOT NULL default '0',		# 下载的附件id
   uid int(10) NOT NULL default '0',			# 下载的用户id
   uploaduid int(10) NOT NULL default '0',		# 上传人的UID
   dateline int(10) unsigned NOT NULL default '0',	# 下载的时间   
   golds int(10) NOT NULL default '0',			# 下载时支付的金币
-  PRIMARY KEY (uid, aid),
+  PRIMARY KEY (uid, fid, aid),
   KEY (uploaduid, dateline),
-  KEY (aid)
+  KEY (fid, aid)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 # 我的发帖，每个主题不管回复多少次，只记录一次。根据pid查询page
