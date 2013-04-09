@@ -1,3 +1,4 @@
+User-agent: *
 Disallow: /service/
 Disallow: /log/
 Disallow: /tmp/
@@ -17,7 +18,3 @@ Disallow: /my*
 Disallow: /?my*
 Disallow: /you*
 Disallow: /?you*
-Allow: .htm$
-Allow: .html$
-Allow: .php$
-User-agent: *
