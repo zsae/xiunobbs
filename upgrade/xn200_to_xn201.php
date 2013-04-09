@@ -105,7 +105,8 @@ function upgrade_attach_download() {
 		foreach($arrlist as $attachdown) {
 			$attachlist = $mattach->index_fetch(array('aid'=>$attachdown['aid']), array(), 0, 1);
 			$attach = empty($attachlist) ? array() : array_pop($attachlist);
-			$attachdown['fid'] = empty($attach) ? 0 : $attach['fid'];
+			if(empty($attach)) continue;
+			$attachdown['fid'] = $attach['fid'];
 			$db->update("attach_download-uid-$attach[uid]-fid-0-aid-$attach[aid]-", $attachdown);
 		}
 		$start += $limit;
