@@ -842,7 +842,7 @@ function upgrade_post() {
 			list($table, $_, $pid) = explode('-', $key);
 			$old = $dx2->get("forum_post-pid-$pid");
 			
-			$start = $pid;
+			$pid > $start && $start = $pid;
 			
 			// 过滤掉关联错误的 post
 			if(empty($old)) continue;
@@ -894,11 +894,7 @@ function upgrade_post() {
 			
 		}
 		
-		if($start < 200000) {
-			message("正在升级 post, 一共: $count, 当前: $start...", "?step=upgrade_post&start=$start&maxpid=$maxpid&count=$count", 0);
-		} else {
-			message("正在升级 post, 一共: $count, 当前: $start...", "?step=upgrade_post&start=0", 0);
-		}
+		message("正在升级 post, maxpid: $maxpid, 当前: $start...", "?step=upgrade_post&start=$start&maxpid=$maxpid", 0);
 		
 	} else {	
 		message('升级 post，接下来升级 user...', '?step=upgrade_user&start=0', 5);
