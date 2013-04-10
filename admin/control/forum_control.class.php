@@ -123,6 +123,7 @@ class forum_control extends admin_control {
 			$this->post->index_update(array('fid'=>$fid2), array('fid'=>$fid1), TRUE);
 			$this->attach->index_update(array('fid'=>$fid2), array('fid'=>$fid1), TRUE);
 			$this->mypost->index_update(array('fid'=>$fid2), array('fid'=>$fid1), TRUE);
+			$this->thread_new->index_update(array('fid'=>$fid2), array('fid'=>$fid1), TRUE);
 			
 			// 删除原来板块的数据
 			$this->forum_access->delete_by_fid($fid2);

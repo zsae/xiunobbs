@@ -927,11 +927,11 @@ function upgrade_user() {
 		foreach($arrlist as $key) {
 			list($table, $col, $uid) = explode('-', $key);
 			
-			// todo: only bt, 不升级没发帖的用户
-			$old3 = $dx2->get("common_member_count-uid-$uid");
-			if($old3['posts'] == 0 && $old3['threads'] == 0) continue;
-			
 			$start = $uid;
+			
+			// todo: only bt, 不升级没发帖的用户，如果用户数大于3000000
+			$old3 = $dx2->get("common_member_count-uid-$uid");
+			if($maxuid > 3000000 && $old3['posts'] == 0 && $old3['threads'] == 0) continue;
 			
 			$user = $db->get("user-uid-$uid");
                         if($user) continue;

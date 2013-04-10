@@ -122,6 +122,7 @@ class post_control extends common_control {
 				// hook post_thread_create_after.php
 				
 				$this->thread_views->create(array('tid'=>$tid, 'views'=>0));
+				$this->thread_new->create(array('fid'=>$fid, 'tid'=>$tid, 'lastpost'=>$_SERVER['time']));
 				
 				// -----------> 添加到 post
 				
@@ -390,6 +391,9 @@ class post_control extends common_control {
 				$thread['lastpost'] = $_SERVER['time'];
 				$thread['lastusername'] = $username;
 				$this->thread->update($thread);
+				
+				// 更新最新主题
+				$this->thread_new->set($tid, array('fid'=>$fid, 'tid'=>$tid, 'lastpost'=>$_SERVER['time']));
 				
 				// 斑竹回复的话， 短消息通知楼主，有人回帖，每个主题前10名用户
 				if($this->_user['groupid'] <= 5 && $this->_user['uid'] != $thread['uid']) {

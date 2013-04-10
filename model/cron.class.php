@@ -80,6 +80,21 @@ class cron extends base_model {
 		
 			$this->kv->delete('resetpw');
 			
+			// 清理最新主题，超过100篇，则清理，保留2天内的数据，方便 sphinx 搜索引擎做增量索引
+			if($this->thread_new->count() > 100) {
+				// 查找两天内的数据是否足够100条，不足则不予处理
+				$n = $this->thread_new->index_count(array('lastpost' => array('>'=>$_SERVER['time'] - 86400 * 2)));
+				if($n > 100) {
+					$this->thread_new->index_delete(array('lastpost' => array('<'=>$_SERVER['time'] - 86400 * 2)));
+				}
+				/* 考虑到 sphinx 增量索引， thread_new 保存至少需要2天的数据
+				$newlist = $this->thread_new->index_fetch(array(), array('tid'=>-1), 0, 100);
+				$this->thread_new->truncate();
+				foreach($newlist as $new) {
+					$this->thread_new->create(array('fid'=>$new['fid'], 'tid'=>$new['tid'], 'lastpost'=>$new['lastpost']));
+				}*/
+			}
+			
 			// 清空
 			$this->runtime->xset('todayposts', 0);
 			$this->runtime->xset('todaythreads', 0);

@@ -34,7 +34,7 @@ class index_control extends common_control {
 		$toplist = array(); // only top 3
 		$readtids = '';
 		$page = misc::page();
-		$threadlist = $this->thread->get_list($page, $pagesize);
+		$threadlist = $this->thread->get_newlist($page, $pagesize);
 		foreach($threadlist as $k=>&$thread) {
 			$this->thread->format($thread);
 			

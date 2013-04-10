@@ -219,6 +219,8 @@ class conf_control extends admin_control {
 		
 		$tmp = core::gpc('tmp', 'P');
 		$runtime = core::gpc('runtime', 'P');
+		$forum = core::gpc('forum', 'P');
+		$thread_new = core::gpc('thread_new', 'P');
 		$count_maxid = core::gpc('count_maxid', 'P');
 		
 		// tmp
@@ -229,6 +231,40 @@ class conf_control extends admin_control {
 		// 清空 runtime
 		if($runtime) {
 			$this->runtime->truncate();
+		}
+		
+		// 清空版块缓存
+		if($forum) {
+			$forumarr = $this->conf['forumarr'];
+			foreach($forumarr as $fid=>$name) {
+				$this->mcache->clear('forum', $fid);	
+			}
+			$this->runtime->xupdate('forumarr');
+		}
+		
+		// 最新发帖
+		if($thread_new) {
+			// 从 thread 表中获取最新数据，取两天内的主题，可能会超时？内存不够？
+			// 估算内存：每日发帖 10w * 0.5k = 50000k = 50M * 2 = 100M， 所以最多只能取 10000 行，影响为 sphinx 漏掉部分数据的索引（可以采取重新索引来弥补）
+			// 非常用操作，暂时这么处理
+			$newlist = $this->thread->index_fetch(array('lastpost' => array('>'=>$_SERVER['time'] - 86400 * 2)), array(), 0, 10000);
+			foreach($newlist as $new) {
+				$this->thread_new->create(array('fid'=>$new['fid'], 'tid'=>$new['tid'], 'lastpost'=>$new['lastpost']));
+			}
+			unset($newlist);
+			
+			/* 考虑到 sphinx 索引，不能这么做
+			$forumarr = $this->conf['forumarr'];
+			$newlist = array();
+			foreach($forumarr as $fid=>$name) {
+				if(count($newlist) > 300) break; 
+				$newlist = array_merge($threadlist, $this->thread->index_fetch(array('fid'=>$fid), array('lastpost'=>-1), 0, 20));
+			}
+			count($newlist) > 100 && $newlist = array_slice($newlist, 0, 100);
+			$this->thread_new->truncate();
+			foreach($newlist as $new) {
+				$this->thread_new->create(array('fid'=>$new['fid'], 'tid'=>$new['tid'], 'lastpost'=>$new['lastpost']));
+			}*/
 		}
 		
 		// 校对 framework 的 count, maxid
@@ -243,6 +279,7 @@ class conf_control extends admin_control {
 				'forum_access'=>'fid',
 				'thread_type'=>'typeid',
 				'thread'=>'tid',
+				'thread_new'=>'tid',
 				'post'=>'pid',
 				'attach'=>'aid',
 				'pm'=>'pmid'

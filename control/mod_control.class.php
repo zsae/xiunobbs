@@ -423,6 +423,7 @@ class mod_control extends common_control {
 				$this->attach->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2), TRUE);
 				$this->mypost->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2), TRUE);
 				$this->modlog->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2), TRUE);
+				$this->thread_new->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2), TRUE);
 				
 				// ----------->更新相关数据的 fid end
 				

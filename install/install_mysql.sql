@@ -181,7 +181,6 @@ CREATE TABLE bbs_thread (
   subject char(80) NOT NULL default '',			# 主题
   dateline int(10) unsigned NOT NULL default '0',	# 发帖时间
   lastpost int(10) unsigned NOT NULL default '0',	# 最后回复时间
-  floortime int(10) unsigned NOT NULL default '0',	# 被顶起来的时间戳，默认等于 lastpost  
   views int(10) unsigned NOT NULL default '0',		# 查看次数, 剥离出去，单独的服务，避免 cache 失效
   posts int(11) unsigned NOT NULL default '0',		# 回帖数
   top tinyint(1) NOT NULL default '0',			# 置顶级别: 0: 普通主题, 1-3 置顶的顺序
@@ -199,9 +198,21 @@ CREATE TABLE bbs_thread (
   lastuid int(11) unsigned NOT NULL default '0',	# 最近参与的 uid
   lastusername char(16) NOT NULL default '',		# 最近参与的 username
   PRIMARY KEY (fid, tid),				# 按照发帖时间排序
-  KEY (tid),						# 按照 tid 排序，首页需要, sphinx 也需要。
   KEY (fid, lastpost),					# 按照顶贴时间排序
   KEY (fid, digest, tid)				# 精华排序
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+# 最新主题 v2.0.2 增加，用来取代 bbs_thread.tid 大索引，在数据量特别大的情况下，会有很好的效果，结合sphinx 可以做到分词。
+# 如果此表的总行数超过100条，则只保存3天内的数据。计划任务每天凌晨检查总行数，来决定是否清理此表。Sphinx 则采用增量的方式扫描此表。
+# 发主题，删除主题，移动主题，合并版块，删除版块，需要操作此表
+DROP TABLE IF EXISTS bbs_thread_new;
+CREATE TABLE bbs_thread_new (
+  fid smallint(6) NOT NULL default '0',			# 版块id
+  tid int(11) unsigned NOT NULL auto_increment,		# 主题id
+  lastpost int(10) unsigned NOT NULL default '0',	# 最后回复时间
+  PRIMARY KEY (tid),					# 
+  UNIQUE KEY (fid, tid),				# 
+  KEY (lastpost)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 # 主题数，单独一个表。用来分离 thread 表的写压力

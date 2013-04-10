@@ -25,10 +25,15 @@ class thread extends base_model {
 		return $threadlist;
 	}
 	
-	// 按照 tid 倒序
-	public function get_list($page = 1, $pagesize = 30) {
+	// 按照 tid 倒序，获取最新的列表
+	public function get_newlist($page = 1, $pagesize = 30) {
 		$start = ($page - 1) * $pagesize;
-		$threadlist = $this->index_fetch(array(), array('tid'=>-1), $start, $pagesize);
+		$newlist = $threadlist = array();
+		$newlist = $this->thread_new->index_fetch(array(), array('lastpost'=>-1), $start, $pagesize);
+		foreach($newlist as $new) {
+			$thread = $this->read($new['fid'], $new['tid']);
+			$threadlist[] = $thread;
+		}
 		return $threadlist;
 	}
 	
@@ -138,6 +143,9 @@ class thread extends base_model {
 		
 		// 删除主题
 		$this->thread->delete($fid, $tid);
+		
+		// 删除最新主题，lastpost 为三天内
+		$this->thread_new->delete($tid);
 		
 		// 同时删除 thread_view, 这里为强关联
 		$this->thread_views->delete($tid);
