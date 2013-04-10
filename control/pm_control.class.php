@@ -68,11 +68,17 @@ class pm_control extends common_control {
 		$uid2 = $this->_user['uid'];
 		
 		$touser = $this->user->read($uid1);
+		if($uid1 > $uid2) {
+			$t = $uid1;
+			$uid1 = $uid2;
+			$uid2 = $t;
+		}
+		
 		$this->check_user_exists($touser);
 		$this->user->format($touser);
 		
 		// hook pm_list_before.php
-		$pmcount = $this->pmcount->read(min($uid1, $uid2), max($uid1, $uid2));
+		$pmcount = $this->pmcount->read($uid1, $uid2);
 		$count = $pmcount['count'];
 		$pagesize = 20;
 		$totalpage = max(1, ceil($count / $pagesize));
@@ -97,16 +103,23 @@ class pm_control extends common_control {
 		
 		$uid1 = intval(core::gpc('uid'));
 		$uid2 = $this->_user['uid'];
+		print_r($_SERVER['REQUEST_URI']);
+		if($uid1 > $uid2) {
+			$t = $uid1;
+			$uid1 = $uid2;
+			$uid2 = $t;
+		}
 		
 		// hook pm_body_before.php
-		if(core::gpc('page')) {
-			$page = misc::page();
-		} else {
-			// 默认读取最后一页，newpm.count 标记为0, markread
-			$pmcount = $this->pmcount->read($uid1, $uid2);
-			$count = $pmcount['count'];
-			$pagesize = 20;
-			$totalpage = max(1, ceil($count / $pagesize));
+		
+		$page = misc::page();
+		$pmcount = $this->pmcount->read($uid1, $uid2);
+		$count = $pmcount['count'];
+		$pagesize = 20;
+		$totalpage = max(1, ceil($count / $pagesize));
+		
+		// 默认读取最后一页，newpm.count 标记为0, markread
+		if(!core::gpc('page')) {
 			$page = $totalpage;
 			$this->pm->markread($uid1, $uid2);	// senduid, recvuid, 会清空 recvuid 的 newpms
 		}
