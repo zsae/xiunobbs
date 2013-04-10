@@ -90,7 +90,8 @@ return array(
 	
 	// 自动加载 model 的配置， 在 model_path 中未找到 modelname 的时候尝试扫描此项, modelname=>array(tablename, primarykey, maxcol)
 	'model_map' => array(
-		'thread_views'=>array('thread_views', 'tid', 'tid')
+		'thread_views'=>array('thread_views', 'tid', 'tid'),
+		'thread_new'=>array('thread_new', 'tid')
 	),
 	
 	// 业务控制层的路径，按照数组顺序搜索目录，结果缓存在 tmp/bbs_xxx_control.class.php
