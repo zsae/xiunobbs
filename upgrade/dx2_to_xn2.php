@@ -141,39 +141,46 @@ function upgrade_prepare() {
 	global $conf;
 	
 	$db = get_db();
-	//$db->index_create('thread', array('tid'=>1));
-	$db->query("CREATE TABLE IF NOT EXISTS {$db->tablepre}user_ext (
-		  uid int(11) unsigned NOT NULL default '0',	
-		  gender tinyint(11) unsigned NOT NULL default '0',	
-		  birthyear int(11) unsigned NOT NULL default '0',	
-		  birthmonth int(11) unsigned NOT NULL default '0',	
-		  birthday int(11) unsigned NOT NULL default '0',	
-		  province char(16) NOT NULL default '',
-		  city char(16) NOT NULL default '',
-		  county char(16) NOT NULL default '',
-		  KEY (birthyear, birthmonth),
-		  KEY (province),
-		  KEY (city),
-		  KEY (county),
-		  PRIMARY KEY (uid));");
-	$db->query("CREATE TABLE {$db->tablepre}friendlink(
-		  linkid int(10) unsigned NOT NULL auto_increment,
-		  type tinyint(1) NOT NULL default '0',
-		  rank tinyint(1) unsigned NOT NULL default '0',
-		  sitename char(16) NOT NULL default '',
-		  url char(64) NOT NULL default '',
-		  logo char(64) NOT NULL default '',
-		  PRIMARY KEY (linkid),
-		  KEY type (type, rank)
-		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
-	$db->query("ALTER TABLE {$db->tablepre}forum ADD COLUMN fup int not null default '0';");
-	$db->query("ALTER TABLE {$db->tablepre}thread_type ADD column oldtypeid int(11) NOT NULL default '0';");
-	$db->query("ALTER TABLE {$db->tablepre}thread_type ADD column oldfid int(11) NOT NULL default '0';");
-	$db->index_create('thread_type', array('oldtypeid'=>1));
-	$db->index_create('thread_type', array('oldfid'=>1));
-	$db->index_create('attach', array('aid'=>1));
-	$db->index_create('post', array('pid'=>1));
-	$dx2->index_create('post', array('tid'=>1, 'pid'=>1));
+	
+	try {
+		//$db->index_create('thread', array('tid'=>1));
+		$db->query("CREATE TABLE IF NOT EXISTS {$db->tablepre}user_ext (
+			  uid int(11) unsigned NOT NULL default '0',	
+			  gender tinyint(11) unsigned NOT NULL default '0',	
+			  birthyear int(11) unsigned NOT NULL default '0',	
+			  birthmonth int(11) unsigned NOT NULL default '0',	
+			  birthday int(11) unsigned NOT NULL default '0',	
+			  province char(16) NOT NULL default '',
+			  city char(16) NOT NULL default '',
+			  county char(16) NOT NULL default '',
+			  KEY (birthyear, birthmonth),
+			  KEY (province),
+			  KEY (city),
+			  KEY (county),
+			  PRIMARY KEY (uid));", NULL);
+	} catch (Exception $e){}
+	try {
+		$db->query("CREATE TABLE {$db->tablepre}friendlink(
+			  linkid int(10) unsigned NOT NULL auto_increment,
+			  type tinyint(1) NOT NULL default '0',
+			  rank tinyint(1) unsigned NOT NULL default '0',
+			  sitename char(16) NOT NULL default '',
+			  url char(64) NOT NULL default '',
+			  logo char(64) NOT NULL default '',
+			  PRIMARY KEY (linkid),
+			  KEY type (type, rank)
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
+	} catch (Exception $e){}
+	try { $db->query("ALTER TABLE {$db->tablepre}forum ADD COLUMN fup int not null default '0';"); } catch (Exception $e){}
+	try { $db->query("ALTER TABLE {$db->tablepre}thread_type ADD column oldtypeid int(11) NOT NULL default '0';"); } catch (Exception $e){}
+	try { $db->query("ALTER TABLE {$db->tablepre}thread_type ADD column oldfid int(11) NOT NULL default '0';"); } catch (Exception $e){}
+	try { $db->index_create('thread_type', array('oldtypeid'=>1)); } catch (Exception $e){}
+	try { $db->index_create('thread_type', array('oldfid'=>1)); } catch (Exception $e){}
+	try { $db->index_create('attach', array('aid'=>1)); } catch (Exception $e){}
+	try { $db->index_create('post', array('pid'=>1)); } catch (Exception $e){}
+	try { $dx2->index_create('post', array('tid'=>1, 'pid'=>1)); } catch (Exception $e){}
+	
+	//die($e->getMessage());
 	
 	message('准备完毕，接下来设置升级策略...', '?step=upgrade_forum_policy');
 }
@@ -191,7 +198,7 @@ function upgrade_forum_policy() {
 		$policy['keepfup'] =  core::gpc('keepfup', 'P');
 		$policy['fidto'] =  core::gpc('fidto', 'P');
 		$policy['threadtypefid'] =  core::gpc('threadtypefid', 'P');
-		$policyfile = $conf['tmp_path'].'upgrade_policy.txt';
+		$policyfile = $conf['upload_path'].'upgrade_policy.txt';
 		file_put_contents($policyfile, core::json_encode($policy));
 		message('升级策略已经保存，下一步开始升级版块！', '?step=upgrade_forum&start=0');
 	}
@@ -305,7 +312,7 @@ function load_upgrade_policy() {
 	$dx2 = get_dx2();
 	
 	// 策略文件。
-	$policyfile = $conf['tmp_path'].'upgrade_policy.txt';
+	$policyfile = $conf['upload_path'].'upgrade_policy.txt';
 	if(!is_file($policyfile)) {
 		return init_policy();
 	}
@@ -323,9 +330,9 @@ function init_policy() {
 	global $conf;
 	$dx2 = get_dx2();
 	
-	$policyfile = $conf['tmp_path'].'upgrade_policy.txt';
+	$policyfile = $conf['upload_path'].'upgrade_policy.txt';
 	if(is_file($policyfile)) {
-		throw new Exception('tmp/upgrade_policy.txt 已经存在！');
+		throw new Exception('upload/upgrade_policy.txt 已经存在！');
 	}
 	$forumlist = $dx2->index_fetch('forum_forum', 'fid', array(), array(), 0, 4000);
 	$fuparr = array();
@@ -335,7 +342,7 @@ function init_policy() {
 		$policy['threadtypefid'][$forum['fid']] = 0;
 		$policy['fuparr'][$forum['fid']] = $forum['fup'];
 	}
-	$policyfile = $conf['tmp_path'].'upgrade_policy.txt';
+	$policyfile = $conf['upload_path'].'upgrade_policy.txt';
 	file_put_contents($policyfile, core::json_encode($policy));
 	return $policy;
 }
@@ -617,6 +624,8 @@ function upgrade_thread() {
 			list($table, $_, $tid) = explode('-', $key);
 			$old = $dx2->get("forum_thread-tid-$tid");
 			
+			$start = $tid;
+			
 			if(empty($old)) continue;
 			$fid = $old['fid'];
 			//if($old['status'] == 0) continue;
@@ -672,10 +681,10 @@ function upgrade_thread() {
 						$forum['toptids'] = trim($forum['toptids'])." $newfid-$tid";
 						$mforum->update($forum);
 					} else {
-						$old['top'] = 0;
+						$old['displayorder'] = 0;
 					}
 				} else {
-					$old['top'] = 0;
+					$old['displayorder'] = 0;
 				}
 			}
 			
@@ -706,8 +715,6 @@ function upgrade_thread() {
 			$db->set("thread-fid-$newfid-tid-$tid", $arr);
 			$db->set("thread_views-tid-$tid", array('tid'=>$tid, 'views'=>$old['views']));
 			
-			$start = $tid;
-			
 			// mypost
 			$arr = array (
 				'uid'=>$old['authorid'],
@@ -724,7 +731,7 @@ function upgrade_thread() {
 		
 		message("正在升级 thread, maxtid: $maxtid, 当前: $start...", "?step=upgrade_thread&start=$start&maxtid=$maxtid", 0);
 	} else {	
-		message('升级 thread 完成，接下来升级 upgrade_attach...', '?step=upgrade_attach&start=0');
+		message('升级 thread 完成，接下来升级 upgrade_attach...', '?step=upgrade_attach&start=0', 5);
 	}
 }
 
@@ -746,6 +753,8 @@ function upgrade_attach() {
 			list($table, $keyname, $aid) = explode('-', $key);
 			$attach = $dx2->get("forum_attachment-aid-$aid");
 			$tableid = $attach['tableid'];
+			
+			$start = $aid;
 			
 			// fix: dx2 的附件存储到错误的表(127), bug
 			try {
@@ -807,12 +816,11 @@ function upgrade_attach() {
 			);
 			$db->set("attach-fid-$newfid-aid-$aid", $arr);
 			
-			$start = $aid;
 		}
 		
 		message("正在升级 attach, maxaid: $maxaid, 当前: $start...", "?step=upgrade_attach&start=$start&maxaid=$maxaid", 0);
 	} else {	
-		message('升级 attach 完成，接下来升级 post ...', '?step=upgrade_post&start=0');
+		message('升级 attach 完成，接下来升级 post ...', '?step=upgrade_post&start=0', 5);
 	}
 }
 
@@ -833,6 +841,8 @@ function upgrade_post() {
 		foreach($arrlist as $key) {
 			list($table, $_, $pid) = explode('-', $key);
 			$old = $dx2->get("forum_post-pid-$pid");
+			
+			$start = $pid;
 			
 			// 过滤掉关联错误的 post
 			if(empty($old)) continue;
@@ -882,7 +892,6 @@ function upgrade_post() {
 			
 			$db->set("post-fid-$newfid-pid-$pid", $arr);
 			
-			$start = $pid;
 		}
 		
 		if($start < 200000) {
@@ -892,7 +901,7 @@ function upgrade_post() {
 		}
 		
 	} else {	
-		message('升级 post，接下来升级 user...', '?step=upgrade_user&start=0');
+		message('升级 post，接下来升级 user...', '?step=upgrade_user&start=0', 5);
 	}
 }
 
@@ -925,6 +934,8 @@ function upgrade_user() {
 			// todo: only bt, 不升级没发帖的用户
 			$old3 = $dx2->get("common_member_count-uid-$uid");
 			if($old3['posts'] == 0 && $old3['threads'] == 0) continue;
+			
+			$start = $uid;
 			
 			$user = $db->get("user-uid-$uid");
                         if($user) continue;
@@ -1006,16 +1017,9 @@ function upgrade_user() {
 			);
 			$db->set("user_ext-uid-$uid", $arr);
 		
-			$start = $uid;
 		}
 		
-		$processtime = intval(microtime(1) - $start_time);
-		$remaintime = intval($processtime * (($count - $start) / $limit));
-		$remain_hour = intval($remaintime / 3500);
-		$remain_min = intval(($remaintime % 3600) / 60);
-		$remain_sec = intval(($remaintime % 3600) % 60);
-		
-		message("正在升级 user, maxuid: $maxuid, 当前: $start... （本次耗时：$processtime 秒，大约还需要 $remain_hour 小时 $remain_min 分钟 $remain_sec 秒 ）", "?step=upgrade_user&start=$start&maxuid=$maxuid", 0);
+		message("正在升级 user, maxuid: $maxuid, 当前: $start... ", "?step=upgrade_user&start=$start&maxuid=$maxuid", 0);
 		
 	} else {
 		// 生成系统用户，系统用户名：系统，如果发现重名，则改名。
@@ -1054,7 +1058,7 @@ function upgrade_user() {
 		$kv->xset('system_username', '系统');
 		$kv->xsave();
 		
-		message('升级 user 完成，接下来升级 pm ...', '?step=upgrade_pm&start=0');
+		message('升级 user 完成，接下来升级 pm ...', '?step=upgrade_pm&start=0', 5);
 	}
 }
 
@@ -1207,11 +1211,13 @@ function upgrade_postpage() {
 
 // 第二次升级 forum
 function upgrade_forum2() {
+	global $conf;
 	// 放到最后一步。
 	$dx2 = get_dx2();
 	$db = get_db();	
 
 	$forumlist = $db->index_fetch('forum', 'fid', array(), array(), 0, 500);
+	$mkv = new kv($conf);
 	foreach($forumlist as $forum) {
 		
 		$fid = $forum['fid'];
@@ -1232,6 +1238,8 @@ function upgrade_forum2() {
 		$forum['modids'] = $modids;
 		$forum['modnames'] = $modnames;
 		$db->update("forum-fid-$fid", $forum);
+		
+		$mkv->delete("cache_forum_$fid");
 	}
 	message('更新 forum 完成，接下来升级 laststep ...', '?step=laststep&start=0');
 }
@@ -1254,7 +1262,6 @@ function laststep() {
 		'thread'=>'tid',
 		'post'=>'pid',
 		'attach'=>'aid',
-		'attach_download'=>'aid',
 		'friendlink'=>'linkid',
 		'pm'=>'pmid',
 	);
