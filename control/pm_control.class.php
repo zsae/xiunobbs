@@ -103,7 +103,6 @@ class pm_control extends common_control {
 		
 		$uid1 = intval(core::gpc('uid'));
 		$uid2 = $this->_user['uid'];
-		print_r($_SERVER['REQUEST_URI']);
 		if($uid1 > $uid2) {
 			$t = $uid1;
 			$uid1 = $uid2;
