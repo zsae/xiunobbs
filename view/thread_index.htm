@@ -333,26 +333,25 @@ $('#mod_move').click(function() {
 
 <script type="text/javascript">
 
-// 数据格式： {tids:{"2012-1-12":[1 2 3 4],"2012-1-13":[5 6 7 8]},fids:{1:1234567890,2:1234567890}}
 tid_add_read($tid, $_SERVER[time]);
-//fid_update_lasttime($fid, $_SERVER[time]);
-//$.pdata(cookie_pre + 'readtids', '');
-//alert($.pdata(cookie_pre + 'readfids'));
-//alert($.pdata(cookie_pre + 'readtids'));
 
 // 登陆后才能回帖
-{if $_user[uid] == 0}
+var g_uid = $_user[uid];
+
 $('#create_post').click(function() {
-	ajaxdialog_request('?user-login-ajax-1.htm', function() {
-		$('#create_post').unbind('click');
-		ajaxdialog_request($('#create_post').attr('href'));
-		$('#create_post').click(function() {
+	if(g_uid == 0) {
+		ajaxdialog_request('?user-login-ajax-1.htm', function() {
+			$('#create_post').unbind('click');
 			ajaxdialog_request($('#create_post').attr('href'));
+			$('#create_post').click(function() {
+				ajaxdialog_request($('#create_post').attr('href'));
+			});
 		});
-	});
-	return false;
+		return false;
+	} else {
+		return true;
+	}
 });
-{/if}
 
 // 点击数服务器
 $.getScript('$click_server&'+Math.random(), function() {
@@ -378,42 +377,44 @@ $('#quick_message').keyup(function(e) {
 });
 
 // 快速回复
+
 $('#quick_post_submit').click(function() {
 	if(!$('#quick_message').val()) {
 		$('#quick_message').alert('请填写内容！', {width: 150, delay: 3000}).focus();
 		return false;
 	}
-	
 	$('#quick_post_submit').disable();
 	
-{if $_user[uid] == 0}
-	ajaxdialog_request('?user-login-ajax-1.htm', function() {
-{/if}
-	
-	var postdata = $("#quick_post_form").serialize();
-	$.post($('#quick_post_form').attr('action'), postdata,  function(s){
-		var json = json_decode(s);
-		if(error = json_error(json)) {alert(error); return false;}
-		if(json.status <= 0) {
-			alert(json.message);
-			return false;
-		} else {
-			json = json.message;
-			if(json.message) {
-				$('#quick_message').alert(json.message, {width:250, delay: 3000}).focus();
+	function quick_post_submit_func() {
+		var postdata = $("#quick_post_form").serialize();
+		$.post($('#quick_post_form').attr('action'), postdata,  function(s){
+			var json = json_decode(s);
+			if(error = json_error(json)) {alert(error); return false;}
+			if(json.status <= 0) {
+				alert(json.message);
 				return false;
+			} else {
+				json = json.message;
+				if(json.message) {
+					$('#quick_message').alert(json.message, {width:250, delay: 3000}).focus();
+					return false;
+				}
+				// hook thread_index_post_succeed_js.htm
+				var page = Math.max(1, intval(json.page));
+				window.location= '?thread-index-fid-$fid-tid-$tid-page-'+page+'-scrollbottom-1.htm';
 			}
-			// hook thread_index_post_succeed_js.htm
-			var page = Math.max(1, intval(json.page));
-			window.location= '?thread-index-fid-$fid-tid-$tid-page-'+page+'-scrollbottom-1.htm';
-		}
-	});
-	return false;
-	
-{if $_user[uid] == 0}
-	});
-{/if}
+		});
+	}
 
+	if(g_uid == 0) {
+		ajaxdialog_request('?user-login-ajax-1.htm', function() {
+			quick_post_submit_func();
+			return false;
+		});
+	} else {
+		quick_post_submit_func();
+		return false;
+	}
 });
 
 // 滚动回复的到最底部

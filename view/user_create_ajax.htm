@@ -131,6 +131,7 @@ function delay_execute(dialog, recall) {
 		 
 			 // hook user_create_success_js.htm
 		 
+			g_uid = user.uid;
 	 		$('#user').html('<a href="?my-profile.htm">' + user.username + '</a>，您好!');
 	 		dialog.set_body('<div class="ok">注册完毕，自动登录成功。!</div>');
 	 		if(recall) {

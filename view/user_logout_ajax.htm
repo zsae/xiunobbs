@@ -38,8 +38,8 @@ function delay_execute(dialog, recall) {
 			json = json.message;
 			
 			// hook user_logout_success_js.htm
-			
-			$('#user').html('<a href="?user-login.htm" class="ajaxdialog" onclick="return false">登录</a> <a href="?user-create.htm" class="ajaxdialog" onclick="return false">注册</a>');
+			g_uid = 0;
+			$('#user').html('<a href="?user-login-ajax-1.htm" class="ajaxdialog" onclick="return false">登录</a> <a href="?user-create-ajax-1.htm" class="ajaxdialog" onclick="return false">注册</a>');
 			dialog.set_body('<div class="ok">退出成功。</div>');
 			if(recall) {
 	 			dialog.close();

@@ -66,6 +66,7 @@ function delay_execute(dialog, recall) {
 				return false;
 			} else {
 				var user = json.user;
+				g_uid = user.uid;
 				
 				// 服务端已经设置了 xn_auth, js 不用再管
 				
@@ -77,6 +78,7 @@ function delay_execute(dialog, recall) {
 		 		
 				$('#login_email, #login_password').val('');
 				dialog.set_body('<div class="ok">登录成功!</div>');
+				
 		 		if(recall) {
 		 			dialog.close();
 					recall();

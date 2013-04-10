@@ -1388,7 +1388,7 @@ function show_header() {
 	<body>
 	<div id="header" style="overflow: hidden;">
 		<h3 style="color: #FFFFFF; line-height: 26px;margin-left: 16px;">Discuz! 2.0 转 Xiuno BBS 2.0.0 Release 程序</h3>
-		<p style="color: #BBBBBB; margin-left: 16px;">本程序会记录上次升级的进度，如果需要重头转换，请删除进度记录文件'.$conf['tmp_path'].'upgrade_process.txt'.'</p>
+		<p style="color: #BBBBBB; margin-left: 16px;">本程序会记录上次升级的进度，如果需要重头转换，请删除进度记录文件'.$conf['upload_path'].'upgrade_process.txt'.'</p>
 	</div>
 	<div id="body" style="padding: 16px;">';
 }
