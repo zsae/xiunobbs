@@ -34,7 +34,6 @@ class index_control extends common_control {
 		$toplist = array(); // only top 3
 		$readtids = '';
 		$page = misc::page();
-		$newthreads = $this->thread_new->count();
 		$threadlist = $this->thread->get_newlist($page, $pagesize);
 		foreach($threadlist as $k=>&$thread) {
 			$this->thread->format($thread);
@@ -64,7 +63,7 @@ class index_control extends common_control {
 		$readtids = substr($readtids, 1); 
 		$click_server = $this->conf['click_server']."?db=tid&r=$readtids";
 		
-		$pages = misc::pages('?index-index.htm', $newthreads, $page, $pagesize);
+		$pages = misc::simple_pages('?index-index.htm', count($threadlist), $page, $pagesize);
 
 		// 在线会员
 		$ismod = ($this->_user['groupid'] > 0 && $this->_user['groupid'] <= 4);
