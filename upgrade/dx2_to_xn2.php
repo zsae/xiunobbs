@@ -596,19 +596,23 @@ function upgrade_thread() {
 	$policy = load_upgrade_policy();
 	
 	$maxtid = intval(core::gpc('maxtid'));
-	!isset($_GET['maxtid']) && $maxtid = $db->index_maxid('thread-tid');
-	
-	$count = intval(core::gpc('count'));
-	!isset($_GET['count']) && $count = $dx2->index_count('forum_thread', array('tid'=>array('>'=>$maxtid)));
+	!isset($_GET['maxtid']) && $maxtid = $dx2->index_maxid('forum_thread-tid');
 	
 	$forum_types = array();
 	$thread_type_data = new thread_type_data($conf);
+	$thread_type_count = new thread_type_count($conf);
 	$mkv = new kv($conf);
 	$mforum = new forum($conf);
 	
-	if($start < $count) {
+	// 清空主题分类
+	if($start == 0) {
+		$thread_type_data->truncate();
+		$thread_type_count->truncate();
+	}
+	
+	if($start < $maxtid) {
 		$limit = DEBUG ? 10 : 1000;	// 每次升级 100
-		$arrlist = $dx2->index_fetch_id('forum_thread', 'tid', array('tid'=>array('>'=>$maxtid)), array('tid'=>1), $start, $limit);
+		$arrlist = $dx2->index_fetch_id('forum_thread', 'tid', array('tid'=>array('>'=>$start)), array('tid'=>1), 0, $limit);
 		foreach($arrlist as $key) {
 			list($table, $_, $tid) = explode('-', $key);
 			$old = $dx2->get("forum_thread-tid-$tid");
@@ -702,6 +706,7 @@ function upgrade_thread() {
 			$db->set("thread-fid-$newfid-tid-$tid", $arr);
 			$db->set("thread_views-tid-$tid", array('tid'=>$tid, 'views'=>$old['views']));
 			
+			$start = $tid;
 			
 			// mypost
 			$arr = array (
@@ -717,12 +722,7 @@ function upgrade_thread() {
 			}
 		}
 		
-		$start += $limit;
-		if($start < 200000) {
-			message("正在升级 thread, 一共: $count, 当前: $start...", "?step=upgrade_thread&start=$start&maxtid=$maxtid&count=$count", 0);
-		} else {
-			message("正在升级 thread, 一共: $count, 当前: $start...", "?step=upgrade_thread&start=0", 0);
-		}
+		message("正在升级 thread, maxtid: $maxtid, 当前: $start...", "?step=upgrade_thread&start=$start&maxtid=$maxtid", 0);
 	} else {	
 		message('升级 thread 完成，接下来升级 upgrade_attach...', '?step=upgrade_attach&start=0');
 	}
@@ -737,13 +737,11 @@ function upgrade_attach() {
 	$policy = load_upgrade_policy();
 	
 	$maxaid = intval(core::gpc('maxaid'));
-	$count = intval(core::gpc('count'));
-	!isset($_GET['maxaid']) && $maxaid = $db->index_maxid('attach-aid');
-	!isset($_GET['count']) && $count = $dx2->index_count('forum_attachment', array('aid'=>array('>'=>$maxaid)));
+	!isset($_GET['maxaid']) && $maxaid = $dx2->index_maxid('forum_attachment-aid');
 	
-	if($start < $count) {
+	if($start < $maxaid) {
 		$limit = DEBUG ? 20 : 500;
-		$arrlist = $dx2->index_fetch_id('forum_attachment', 'aid', array('aid'=>array('>'=>$maxaid)), array('aid'=>1), $start, $limit);
+		$arrlist = $dx2->index_fetch_id('forum_attachment', 'aid', array('aid'=>array('>'=>$start)), array('aid'=>1), 0, $limit);
 		foreach($arrlist as $key) {
 			list($table, $keyname, $aid) = explode('-', $key);
 			$attach = $dx2->get("forum_attachment-aid-$aid");
@@ -808,14 +806,11 @@ function upgrade_attach() {
 				'golds'=> 0,
 			);
 			$db->set("attach-fid-$newfid-aid-$aid", $arr);
+			
+			$start = $aid;
 		}
 		
-		$start += $limit;
-		if($start < 200000) {
-			message("正在升级 attach, 一共: $count, 当前: $start...", "?step=upgrade_attach&start=$start&maxaid=$maxaid&count=$count", 0);
-		} else{
-			message("正在升级 attach, 一共: $count, 当前: $start...", "?step=upgrade_attach&start=0", 0);
-		}
+		message("正在升级 attach, maxaid: $maxaid, 当前: $start...", "?step=upgrade_attach&start=$start&maxaid=$maxaid", 0);
 	} else {	
 		message('升级 attach 完成，接下来升级 post ...', '?step=upgrade_post&start=0');
 	}
@@ -830,13 +825,11 @@ function upgrade_post() {
 	$policy = load_upgrade_policy();
 	
 	$maxpid = intval(core::gpc('maxpid'));
-	$count = intval(core::gpc('count'));
-	!isset($_GET['maxpid']) && $maxpid = $db->index_maxid('post-pid');
-	!isset($_GET['count']) && $count = $dx2->index_count('forum_post', array('pid'=>array('>'=>$maxpid)));
+	!isset($_GET['maxpid']) && $maxpid = $dx2->index_maxid('forum_post-pid');
 	
-	if($start < $count) {
+	if($start < $maxpid) {
 		$limit = DEBUG ? 20 : 500;	// 每次升级 100
-		$arrlist = $dx2->index_fetch_id('forum_post', 'pid', array('pid'=>array('>'=>$maxpid)), array('pid'=>1), $start, $limit);
+		$arrlist = $dx2->index_fetch_id('forum_post', 'pid', array('pid'=>array('>'=>$start)), array('pid'=>1), 0, $limit);
 		foreach($arrlist as $key) {
 			list($table, $_, $pid) = explode('-', $key);
 			$old = $dx2->get("forum_post-pid-$pid");
@@ -888,9 +881,10 @@ function upgrade_post() {
 			);
 			
 			$db->set("post-fid-$newfid-pid-$pid", $arr);
+			
+			$start = $pid;
 		}
 		
-		$start += $limit;
 		if($start < 200000) {
 			message("正在升级 post, 一共: $count, 当前: $start...", "?step=upgrade_post&start=$start&maxpid=$maxpid&count=$count", 0);
 		} else {
@@ -919,12 +913,11 @@ function upgrade_user() {
 	$start_time = microtime(1);
 	
 	$maxuid = intval(core::gpc('maxuid'));
-	empty($maxuid) && $maxuid = $db->index_maxid('user-uid');
-	$count = isset($_GET['count']) ? intval($_GET['count']) : $uc->index_count('members', array('uid'=>array('>'=>$maxuid)));
+	empty($maxuid) && $maxuid = $uc->index_maxid('members-uid');
 	
-	if($start < $count) {
+	if($start < $maxuid) {
 		$limit = DEBUG ? 20 : 500;	// 每次升级 100
-		$arrlist = $uc->index_fetch_id('members', 'uid', array('uid'=>array('>'=>$maxuid)), array('uid'=>1), $start, $limit);
+		$arrlist = $uc->index_fetch_id('members', 'uid', array('uid'=>array('>'=>$start)), array('uid'=>1), 0, $limit);
 		
 		foreach($arrlist as $key) {
 			list($table, $col, $uid) = explode('-', $key);
@@ -1013,9 +1006,8 @@ function upgrade_user() {
 			);
 			$db->set("user_ext-uid-$uid", $arr);
 		
+			$start = $uid;
 		}
-		
-		$start += $limit;
 		
 		$processtime = intval(microtime(1) - $start_time);
 		$remaintime = intval($processtime * (($count - $start) / $limit));
@@ -1023,11 +1015,7 @@ function upgrade_user() {
 		$remain_min = intval(($remaintime % 3600) / 60);
 		$remain_sec = intval(($remaintime % 3600) % 60);
 		
-		if($start < 200000) {
-			message("正在升级 user, 一共: $count, 当前: $start... （本次耗时：$processtime 秒，大约还需要 $remain_hour 小时 $remain_min 分钟 $remain_sec 秒 ）", "?step=upgrade_user&start=$start&count=$count&maxuid=$maxuid", 0);
-		} else {
-			message("正在升级 user, 一共: $count, 当前: $start... （本次耗时：$processtime 秒，大约还需要 $remain_hour 小时 $remain_min 分钟 $remain_sec 秒 ）", "?step=upgrade_user&start=0", 0);
-		}
+		message("正在升级 user, maxuid: $maxuid, 当前: $start... （本次耗时：$processtime 秒，大约还需要 $remain_hour 小时 $remain_min 分钟 $remain_sec 秒 ）", "?step=upgrade_user&start=$start&maxuid=$maxuid", 0);
 		
 	} else {
 		// 生成系统用户，系统用户名：系统，如果发现重名，则改名。
@@ -1113,13 +1101,13 @@ function upgrade_postpage() {
 	
 	$policy = load_upgrade_policy();
 	
-	$maxtid = intval(core::gpc('maxtid'));
-	$maxpid = intval(core::gpc('maxpid'));
+	$starttid = intval(core::gpc('starttid'));
+	$startpid = intval(core::gpc('startpid'));
 	$floor = intval(core::gpc('floor'));
 	$limit = DEBUG ? 10 : 500;	// 每次升级 100
 	$limit2 = DEBUG ? 20 : 500;
 	$floorlimit = DEBUG ? 20 : 500; // 每次升级的楼层数， 
-	$tidkeys = $dx2->index_fetch_id('forum_thread', array('tid'), array('tid'=>array('>'=>$maxtid)), array('tid'=>1), 0, $limit);
+	$tidkeys = $dx2->index_fetch_id('forum_thread', array('tid'), array('tid'=>array('>'=>$starttid)), array('tid'=>1), 0, $limit);
 	// 结束循环
 	if(empty($tidkeys)) {
 		message('升级 upgrade_postpage 完成，接下来升级 upgrade_forum2 ...', '?step=upgrade_forum2&start=0');
@@ -1132,48 +1120,48 @@ function upgrade_postpage() {
 		// 过滤掉关联错误的 post
 		if(empty($thread)) {
 			$floor = 0;
-			$maxpid = 0;
-			$maxtid = $thread['tid'];
+			$startpid = 0;
+			$starttid = $thread['tid'];
 			continue;
 		}
 		if(!isset($policy['fuparr'][$fid]) ) {
 			$floor = 0;
-			$maxpid = 0;
-			$maxtid = $thread['tid'];
+			$startpid = 0;
+			$starttid = $thread['tid'];
 			continue;
 		}
 		$fup = $policy['fuparr'][$fid];
 		if($fup == 0) {
 			$floor = 0;
-			$maxpid = 0;
-			$maxtid = $thread['tid'];
+			$startpid = 0;
+			$starttid = $thread['tid'];
 			continue;
 		}
 		$newfid = get_fid_by_policy($fid, $policy);
 		if(empty($newfid)) {
 			$floor = 0;
-			$maxpid = 0;
-			$maxtid = $thread['tid'];
+			$startpid = 0;
+			$starttid = $thread['tid'];
 			continue;
 		}
 		if(isset($policy['fuparr'][$fup]) && $policy['fuparr'][$fup] != 0) {
 			$floor = 0;
-			$maxpid = 0;
-			$maxtid = $thread['tid'];
+			$startpid = 0;
+			$starttid = $thread['tid'];
 			continue;
 		}
 		
 		//$count2 = $dx2->index_count('forum_post', array('tid'=>1));
 		
 		// 保证一次能取出 $limit2 个 post，$limit2 次用完，则进入下一轮跳转循环。
-		$pidkeys = $dx2->index_fetch_id('forum_post', array('pid'), array('tid'=>$tid, 'pid'=>array('>'=>$maxpid)), array('pid'=>1), 0, $limit2);
+		$pidkeys = $dx2->index_fetch_id('forum_post', array('pid'), array('tid'=>$tid, 'pid'=>array('>'=>$startpid)), array('pid'=>1), 0, $limit2);
 		$n = count($pidkeys);
 		
 		// 进入下一轮 tid 循环
 		if($n == 0) {
 			$floor = 0;
-			$maxpid = 0;
-			$maxtid = $thread['tid'];
+			$startpid = 0;
+			$starttid = $thread['tid'];
 			continue;
 		// 进入下一轮 pid 循环
 		} else {
@@ -1195,7 +1183,7 @@ function upgrade_postpage() {
 			}
 			
 			$floor += $n;
-			$maxpid = $pid;	   // 不停的增加 maxpid
+			$startpid = $pid;	   // 不停的增加 startpid
 			$floorlimit -= $n; // 多轮循环后 $floorlimit 将会 <= 0
 			
 			// $floorlimit 用完，中断 tid 大循环，进入下一轮跳转。
@@ -1203,18 +1191,18 @@ function upgrade_postpage() {
 				break;
 			// 如果 $floortime 没用完，但是已经取完了。
 			} else {
-				// 进入下一轮 tid 循环，并且将 floor, maxpid 重设
+				// 进入下一轮 tid 循环，并且将 floor, startpid 重设
 				if($n < $limit2) {
 					$floor = 0;
-					$maxpid = 0;
-					$maxtid = $thread['tid'];
+					$startpid = 0;
+					$starttid = $thread['tid'];
 					continue;
 				}
 			}
 		}
 	}
 
-	message("正在升级 post.page, 进度 maxtid: $maxtid, maxpid: $maxpid...", "?step=upgrade_postpage&maxpid=$maxpid&maxtid=$maxtid&floor=$floor", 0);
+	message("正在升级 post.page, 进度 starttid: $starttid, startpid: $startpid...", "?step=upgrade_postpage&startpid=$startpid&starttid=$starttid&floor=$floor", 0);
 }
 
 // 第二次升级 forum
