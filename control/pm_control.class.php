@@ -72,7 +72,7 @@ class pm_control extends common_control {
 		$this->user->format($touser);
 		
 		// hook pm_list_before.php
-		$pmcount = $this->pmcount->read($uid1, $uid2);
+		$pmcount = $this->pmcount->read(min($uid1, $uid2), max($uid1, $uid2));
 		$count = $pmcount['count'];
 		$pagesize = 20;
 		$totalpage = max(1, ceil($count / $pagesize));
