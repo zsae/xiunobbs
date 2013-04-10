@@ -68,11 +68,6 @@ class pm_control extends common_control {
 		$uid2 = $this->_user['uid'];
 		
 		$touser = $this->user->read($uid1);
-		if($uid1 > $uid2) {
-			$t = $uid1;
-			$uid1 = $uid2;
-			$uid2 = $t;
-		}
 		
 		$this->check_user_exists($touser);
 		$this->user->format($touser);
@@ -103,11 +98,7 @@ class pm_control extends common_control {
 		
 		$uid1 = intval(core::gpc('uid'));
 		$uid2 = $this->_user['uid'];
-		if($uid1 > $uid2) {
-			$t = $uid1;
-			$uid1 = $uid2;
-			$uid2 = $t;
-		}
+		if($uid1 > $uid2) { $t = $uid1; $uid1 = $uid2; $uid2 = $t; }
 		
 		// hook pm_body_before.php
 		
