@@ -22,7 +22,7 @@ class thread extends base_model {
 		} else {
 			$cond = array('fid'=>$fid);
 			// 优化大数据翻页，倒排
-			if($start > 5000 && $total > 10000 && $start > $total / 2) {
+			if($start > 1000 && $total > 2000 && $start > $total / 2) {
 				$start = $total - $start;
 				$orderby = $orderby == 0 ? array('lastpost'=>1) : array('tid'=>1);
 				$threadlist = $this->index_fetch($cond, $orderby, max(0, $start - $limit), $limit);

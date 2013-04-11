@@ -11,7 +11,7 @@
 		2. 将 upgrade/xn200_to_xn201.php 放置于根目录
 		3. 访问 http://www.domain.com/xn200_to_xn201.php
 		4. 清空 tmp
-		5. 删除升级程序 rc3_release.php
+		5. 删除文件 xn200_to_xn201.php
 */
 
 @set_time_limit(0);

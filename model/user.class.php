@@ -39,6 +39,25 @@ class user extends base_model{
 		return $this->create($arr);
 	}
 	
+	public function get_list($cond = array(), $start = 0, $limit = 20, $total = 0) {
+		
+		// 优化大数据翻页，倒排
+		if($cond) {
+			$arrlist = $this->index_fetch($cond, array('uid'=>-1), $start, $limit);
+			return $arrlist;
+		} else {
+			if($start > 1000 && $total > 2000 && $start > $total / 2) {
+				$start = $total - $start;
+				$arrlist = $this->index_fetch(array(), array('uid'=>1), max(0, $start - $limit), $limit);
+				$arrlist = array_reverse($arrlist, TRUE);
+				return $arrlist;
+			} else {
+				$arrlist = $this->index_fetch(array(), array('uid'=>-1), $start, $limit);
+				return $arrlist;
+			}
+		}
+	}
+	
 	public function update_password($uid, $newpw) {
 		$user = $this->read($uid);
 		$user['password'] = $this->md5_md5($newpw, $user['salt']);

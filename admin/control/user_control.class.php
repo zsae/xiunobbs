@@ -37,8 +37,10 @@ class user_control extends admin_control {
 		}
 		
 		$page = misc::page();
+		$start = ($page - 1) * $this->conf['pagesize'];
+		$limit = $this->conf['pagesize'];
 		$users = $cond ? 1 : $this->user->count();
-		$userlist = $this->user->index_fetch($cond, array(), ($page - 1) * $this->conf['pagesize'], $this->conf['pagesize']);
+		$userlist = $this->user->get_list($cond, $start, $limit, $users);
 		foreach($userlist as &$user) {
 			$this->user->format($user);
 			$user['groupname'] = $this->group->groupid_to_name($user['groupid']);
