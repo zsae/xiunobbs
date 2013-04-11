@@ -607,7 +607,7 @@ function upgrade_thread() {
 	$mforum = new forum($conf);
 	
 	// 清空主题分类
-	if($start == 0) {
+	if($maxtid == 0) {
 		$thread_type_data->truncate();
 		$thread_type_count->truncate();
 	}
