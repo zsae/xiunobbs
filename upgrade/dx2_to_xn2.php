@@ -126,11 +126,6 @@ function upgrade_conf() {
 	$settinglist = $dx2->index_fetch('common_setting', 'skey', array(), array(), 0, 1000);
 	$old = misc::arrlist_key_values($settinglist, 'skey', 'svalue');
 	
-	// 写入配置文件，仅支持mysql
-	$kv = core::model($conf, 'kv');
-	$kv->xset('app_name', $old['bbname']);
-	$kv->xsave();
-	
 	$sql = "ALTER TABLE {$dx2->tablepre}forum_post ADD INDEX tidpid(tid, pid);";
 	message('修改配置文件成功，接下来一些准备工作... 为了加快您的升级速度，如果您的数据量很大，超出 100w 帖子，请您手工执行如下SQL: <br /><br />'.$sql, '?step=upgrade_prepare');
 }
@@ -691,13 +686,13 @@ function upgrade_thread() {
 			$arr = array (
 				'fid'=> $newfid,
 				'tid'=> $old['tid'],
-				'username'=> rename_system_user($old['author']),
+				'username'=> $old['author'],
 				'uid'=> $old['authorid'],
 				'subject'=> $old['subject'],
 				'dateline'=> $old['dateline'],
 				'lastpost'=> $old['lastpost'],
 				'lastuid'=> $lastuid,
-				'lastusername'=> rename_system_user($old['lastposter']),
+				'lastusername'=> $old['lastposter'],
 				'views'=> $old['views'],
 				'posts'=> ($old['replies'] + 1),
 				'top'=> $old['displayorder'],
@@ -885,7 +880,7 @@ function upgrade_post() {
 				'attachnum'=> intval($old['attachment']),
 				'imagenum'=> 0,
 				'page'=> 1,
-				'username'=> rename_system_user($old['author']),
+				'username'=> $old['author'],
 				'subject'=> $old['subject'],
 				'message'=> $old['message'],
 			);
@@ -903,7 +898,7 @@ function upgrade_post() {
 
 // 升级头像，一次1000，跳转升级。一百万用户需要跳转1000次。一次大概5秒。5000秒。大概2小时。
 function upgrade_user() {
-	global $start;
+	global $conf, $start;
 	$uc_avatar_path = DX2_AVATAR_PATH;
 	$conf = include BBS_PATH.'conf/conf.php';
 	
@@ -979,7 +974,7 @@ function upgrade_user() {
 				'uid'=> intval($uid),
 				'regip'=> ip2long($old4['regip']),
 				'regdate'=> intval($old1['regdate']),
-				'username'=> rename_system_user($old1['username']),
+				'username'=> $old1['username'],
 				'password'=> $old1['password'],
 				'salt'=> $old1['salt'],
 				'email'=> $old1['email'],
@@ -1618,8 +1613,4 @@ function dx2_unserialize($s, $dbcharset) {
 	return $arr;
 }
 
-// 重命名系统用户名为 系统
-function rename_system_user($username) {
-	return $username == '系统' ? '__系统__' : $username;
-}
 ?>
