@@ -293,11 +293,11 @@ if(empty($step) || $step == 'checklicense') {
 			$replacearr = array('user'=>$user, 'host'=>$host, 'password'=>$pass, 'name'=>$name, 'tablepre'=>$tablepre);
 			$s = file_get_contents($configfile);
 			if($type == 'mysql') {
-				$s = str_line_replace($s, 27, 34, $replacearr);
+				$s = str_line_replace($s, 22, 30, $replacearr);
 			} elseif($type == 'pdo_mysql') {
-				$s = str_line_replace($s, 40, 47, $replacearr);
+				$s = str_line_replace($s, 34, 42, $replacearr);
 			} elseif($type == 'mongodb') {
-				$s = str_line_replace($s, 53, 58, $replacearr);
+				$s = str_line_replace($s, 46, 52, $replacearr);
 			}
 			$typearr = array('type'=>$type);
 			$s = str_line_replace($s, 24, 25, $typearr);
