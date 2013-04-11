@@ -119,6 +119,8 @@ class log_control extends admin_control {
 		foreach($arr as $v) {
 			$arr2 = explode("\t", $v);
 			if(isset($arr2[4])) {
+				$arr2[3] = htmlspecialchars($arr2[3]);
+				$arr2[4] = htmlspecialchars($arr2[4]);
 				$return[] = $arr2;
 			}
 		}
