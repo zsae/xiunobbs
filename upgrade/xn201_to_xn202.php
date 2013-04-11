@@ -65,7 +65,7 @@ function alter_table() {
 	$sql = "
 alter table bbs_attach_download add column fid int(10) unsigned NOT NULL default '0';
 alter table bbs_attach_download drop key aid;
-alter table bbs_attach_download add key fid,aid;
+alter table bbs_attach_download add key fidaid(fid,aid);
 alter table bbs_thread drop key tid;
 DROP TABLE IF EXISTS bbs_thread_new;
 CREATE TABLE bbs_thread_new (
