@@ -668,8 +668,10 @@ function upgrade_thread() {
 			if($old['displayorder'] > 0) {
 				if($old['displayorder'] == 3) {
 					$toptids = $mkv->get('toptids');
-					$toptids .= trim($toptids)." $newfid-$tid";
-					$mkv->set('toptids', $toptids);
+					if(substr_count($toptids, ' ', 0) < 10) {
+						$toptids .= trim($toptids)." $newfid-$tid";
+						$mkv->set('toptids', $toptids);
+					}
 				} elseif($old['displayorder'] == 2 || $old['displayorder'] == 1) {
 					$forum = $mforum->read($newfid);
 					if(substr_count($forum['toptids'], ' ', 0) < 8) {
@@ -1044,10 +1046,10 @@ function upgrade_user() {
 		$db->set("user-uid-$maxuid", $arr);
 		
 		// 写入配置
-		$kv = new kv($conf);
-		$kv->xset('system_uid', $maxuid);
-		$kv->xset('system_username', '系统');
-		$kv->xsave();
+		$mkv = new kv($conf);
+		$mkv->xset('system_uid', $maxuid);
+		$mkv->xset('system_username', '系统');
+		$mkv->xsave();
 		
 		message('升级 user 完成，接下来升级 pm ...', '?step=upgrade_pm&start=0', 5);
 	}
