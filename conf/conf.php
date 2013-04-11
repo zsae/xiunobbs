@@ -123,16 +123,16 @@ return array(
 	'click_server' => 'http://x.net/service/clickd/',	// 记录主题点击数，论坛点击数
 	
 	// 加密KEY，
-	'auth_key' => 'e52edb65ee7899be053c0a5d262d65e5',
+	'auth_key' => '0c5fb21b42c4270fedfcb0f2be3cf231',
 	
 	// 站点的ID，用来和官方通信，下载，安装插件。
-	'siteid' => 'be4e5ea0bd36abdef15648ae36d30c16',
+	'siteid' => 'd043b8c18aa8dd39d600e6feee1c58a4',
 	
 	'cookie_pre' => 'bbs_',
 	'cookie_domain' => '',
 	'cookie_path' => '/',
 	
-	'pagesize' => 2,			// 帖子详情页的每页回复数，一旦定下来，不能修改！
+	'pagesize' => 20,			// 帖子详情页的每页回复数，一旦定下来，不能修改！
 	
 	'system_uid' => 2,			// 系统uid，用来发送短消息
 	'system_username' => '系统',		// 系统用户名，用来发送短消息

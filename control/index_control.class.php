@@ -110,10 +110,6 @@ class index_control extends common_control {
 		$this->view->display('index_list.htm');
 	}
 	
-	public function on_example() {
-		$this->view->display('example2.htm');
-	}
-	
 	private function get_toplist($forum = array()) {
 		$fidtids = array();
 		// 3 级置顶
