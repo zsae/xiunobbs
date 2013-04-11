@@ -96,7 +96,7 @@ class index_control extends common_control {
 						continue;
 					}
 				}
-				$threadlist = $this->thread->get_threadlist_by_fid($fid, 0, 0, 0, 10);
+				$threadlist = $this->thread->get_threadlist_by_fid($fid, 0, 0, 0, 10, 0);
 				foreach($threadlist as &$thread) {
 					$thread['dateline_fmt'] = misc::minidate($thread['dateline']);
 					$thread['subject_fmt'] = utf8::substr($thread['subject'], 0, 24);

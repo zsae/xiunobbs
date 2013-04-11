@@ -132,7 +132,7 @@ return array(
 	'cookie_domain' => '',
 	'cookie_path' => '/',
 	
-	'pagesize' => 20,			// 帖子详情页的每页回复数，一旦定下来，不能修改！
+	'pagesize' => 2,			// 帖子详情页的每页回复数，一旦定下来，不能修改！
 	
 	'system_uid' => 2,			// 系统uid，用来发送短消息
 	'system_username' => '系统',		// 系统用户名，用来发送短消息

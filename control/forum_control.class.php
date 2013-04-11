@@ -65,7 +65,7 @@ class forum_control extends common_control {
 			$threadlist = $this->thread_type_data->get_threadlist_by_fid($fid, $typeidsum, $start, $limit);
 		} else {
 			$threads = $forum['threads'];
-			$threadlist = $this->thread->get_threadlist_by_fid($fid, $digest, $orderby, $start, $limit);
+			$threadlist = $this->thread->get_threadlist_by_fid($fid, $digest, $orderby, $start, $limit, $forum['threads']);
 		}
 		
 		$toplist = $page == 1 && empty($typeidsum) ? $this->get_toplist($forum) : array();

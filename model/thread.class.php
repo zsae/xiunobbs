@@ -13,16 +13,27 @@ class thread extends base_model {
 		$this->maxcol = 'tid';
 	}
 	
-	public function get_threadlist_by_fid($fid, $digest, $orderby, $start, $limit) {
+	public function get_threadlist_by_fid($fid, $digest, $orderby, $start, $limit, $total = 0) {
 		if($digest) {
 			$cond = array('fid'=>$fid, 'digest'=>array('>'=>0));
 			$orderby = array('tid'=>-1);
+			$threadlist = $this->index_fetch($cond, $orderby, $start, $limit);
+			return $threadlist;
 		} else {
 			$cond = array('fid'=>$fid);
-			$orderby = $orderby == 0 ? array('lastpost'=>-1) : array('tid'=>-1);
+			// 优化大数据翻页，倒排
+			if($start > 5000 && $total > 10000 && $start > $total / 2) {
+				$start = $total - $start;
+				$orderby = $orderby == 0 ? array('lastpost'=>1) : array('tid'=>1);
+				$threadlist = $this->index_fetch($cond, $orderby, max(0, $start - $limit), $limit);
+				$threadlist = array_reverse($threadlist, TRUE);
+				return $threadlist;
+			} else {
+				$orderby = $orderby == 0 ? array('lastpost'=>-1) : array('tid'=>-1);
+				$threadlist = $this->index_fetch($cond, $orderby, $start, $limit);
+				return $threadlist;
+			}
 		}
-		$threadlist = $this->index_fetch($cond, $orderby, $start, $limit);
-		return $threadlist;
 	}
 	
 	// 按照 tid 倒序，获取最新的列表
