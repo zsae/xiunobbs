@@ -1172,6 +1172,10 @@ function upgrade_postpage() {
 				$i++;
 				list($table, $_, $pid) = explode('-', $key2);
 				$post = $db->get("post-fid-$newfid-pid-$pid");
+				/* 提高一点点速度
+				$post = $db->fetch_first("SELECT fid,pid,page FROM bbs_post WHERE fid='$newfid' AND pid='$pid'");
+				if(empty($post)) continue;
+				*/
 				$page = max(1, ceil(($floor + $i) / 20));
 				$post['page'] = $page;
 				if($conf['db']['type'] == 'mysql') {
