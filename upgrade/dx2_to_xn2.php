@@ -136,7 +136,7 @@ function upgrade_prepare() {
 	global $conf;
 	
 	$db = get_db();
-	
+	$dx2 = get_dx2();
 	try {
 		//$db->index_create('thread', array('tid'=>1));
 		$db->query("CREATE TABLE IF NOT EXISTS {$db->tablepre}user_ext (
@@ -173,7 +173,7 @@ function upgrade_prepare() {
 	try { $db->index_create('thread_type', array('oldfid'=>1)); } catch (Exception $e){}
 	try { $db->index_create('attach', array('aid'=>1)); } catch (Exception $e){}
 	try { $db->index_create('post', array('pid'=>1)); } catch (Exception $e){}
-	try { $dx2->index_create('post', array('tid'=>1, 'pid'=>1)); } catch (Exception $e){}
+	try { $dx2->index_create('forum_post', array('tid'=>1, 'pid'=>1)); } catch (Exception $e){}
 	
 	//die($e->getMessage());
 	
