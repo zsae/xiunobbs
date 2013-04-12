@@ -17,17 +17,6 @@ class online extends base_model {
 		return $this->index_count();
 	}
 	
-	public function xcreate($arr) {
-		$sid = $arr['sid'];
-		$online = $this->read($sid);
-		if(empty($online)) {
-			$this->runtime->xset('onlines', '+1');
-			// $this->runtime->xsave();
-		}
-		return $this->create($arr);
-	}
-
-	
 	// 最多400个会员，再多没啥意义了，耗费带宽
 	public function get_onlinelist($limit = 400) {
 		$onlinelist = $this->index_fetch(array('uid'=>array('>'=>0)), array(), 0, $limit);

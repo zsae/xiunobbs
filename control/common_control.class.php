@@ -146,20 +146,20 @@ class common_control extends base_control {
 		// 如果管理员超出一天，IP地址发生变化，则提示重新登录，每天必须强行登陆一次。
 		if($this->_user['groupid'] == 1 && $_SERVER['time'] - $this->_user['cookietime'] > 86400 && !$this->_user['ip_right']) {
 			misc::setcookie($this->conf['cookie_pre'].'auth', '', 0, $this->conf['cookie_path'], $this->conf['cookie_domain']);
-			$auth = '';
 			$this->message('尊敬的管理员，系统检测到您的IP发生变化，为了您的安全，请重新登录。<script>setTimeout("window.location.reload()", 2000);</script>', 0);
 		}
 		
+		$bbs_user_control = $this->conf['app_id'] == 'bbs' && core::gpc(0) == 'user';
 		// 站点访问权限判断 0:所有人均可访问; 1: 仅会员访问; 2:仅版主可访问; 3: 仅管理员可访问; 4: 全站只读
-		if($this->conf['site_runlevel'] == 1 && $this->_user['groupid'] == 0 && core::gpc(0) != 'user') {
+		if($this->conf['site_runlevel'] == 1 && $this->_user['groupid'] == 0 && !$bbs_user_control) {
 			$infoadd = $this->conf['reg_on'] ? '，您可以注册会员。' : '，当前注册已关闭。';
 			$this->message('站点当前设置：只有会员能访问'.$infoadd, 0);
-		} elseif($this->conf['site_runlevel'] == 2 && $this->_user['groupid'] >= 11 && core::gpc(0) != 'user') {
+		} elseif($this->conf['site_runlevel'] == 2 && $this->_user['groupid'] >= 11 && !$bbs_user_control) {
 			$this->message('站点当前设置：版主以上权限才能访问，（'.$this->_user['groupname'].'）不允许。', 0);
-		} elseif($this->conf['site_runlevel'] == 3 && $this->_user['groupid'] != 1 && core::gpc(0) != 'user') {
+		} elseif($this->conf['site_runlevel'] == 3 && $this->_user['groupid'] != 1 && !$bbs_user_control) {
 			$this->message('站点当前设置：只有管理员才能访问。', 0);
 		} elseif($this->conf['site_runlevel'] == 4) {
-			if($this->conf['app_id'] == 'bbs' && in_array(core::gpc(0), array('follow', 'mod', 'post')) || (core::gpc(0) == 'user' && !in_array(core::gpc(1), array('login', 'logout', 'checkname', 'checkemail')))) {
+			if((in_array(core::gpc(0), array('follow', 'mod', 'post')) || ($bbs_user_control && !in_array(core::gpc(1), array('login', 'logout', 'checkname', 'checkemail'))))) {
 				$this->message('站点当前设置：全站只读。', 0);	// 屏蔽所有的 bbs 业务逻辑的写入操作！一般升级或者调试的时候使用
 			}
 		}
@@ -319,17 +319,23 @@ class common_control extends base_control {
 		static $updated = 0;
 		if($updated) return;
 		
-		$online = array(
-			'sid'=>$this->_sid,
-			'uid'=>$this->_user['uid'],
-			'username'=>$this->_user['username'],
-			'groupid'=>$this->_user['groupid'],
-			'ip'=>ip2long($_SERVER['REMOTE_ADDR']),
-			'url'=>$_SERVER['REQUEST_URI'],
-			'lastvisit'=>$_SERVER['time'],
-		);
-		$this->online->xcreate($online);
-		
+		$sid = $this->_sid;
+		$online = $this->online->read($sid);
+		if(empty($online)) {
+			$online = array(
+				'sid'=>$sid,
+				'uid'=>$this->_user['uid'],
+				'username'=>$this->_user['username'],
+				'groupid'=>$this->_user['groupid'],
+				'ip'=>ip2long($_SERVER['REMOTE_ADDR']),
+				'url'=>$_SERVER['REQUEST_URI'],
+				'lastvisit'=>$_SERVER['time'],
+			);
+			$this->online->create($online);
+		} else {
+			$online['lastvisit'] = $_SERVER['time'];
+			$this->online->update($online);
+		}
 		$updated = 1;
 	}
 	
