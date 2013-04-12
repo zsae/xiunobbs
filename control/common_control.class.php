@@ -159,7 +159,7 @@ class common_control extends base_control {
 		} elseif($this->conf['site_runlevel'] == 3 && $this->_user['groupid'] != 1 && core::gpc(0) != 'user') {
 			$this->message('站点当前设置：只有管理员才能访问。', 0);
 		} elseif($this->conf['site_runlevel'] == 4) {
-			if(in_array(core::gpc(0), array('follow', 'mod', 'post')) || (core::gpc(0) == 'user' && !in_array(core::gpc(1), array('login', 'logout', 'checkname', 'checkemail')))) {
+			if($this->conf['app_id'] == 'bbs' && in_array(core::gpc(0), array('follow', 'mod', 'post')) || (core::gpc(0) == 'user' && !in_array(core::gpc(1), array('login', 'logout', 'checkname', 'checkemail')))) {
 				$this->message('站点当前设置：全站只读。', 0);	// 屏蔽所有的 bbs 业务逻辑的写入操作！一般升级或者调试的时候使用
 			}
 		}
