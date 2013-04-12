@@ -797,7 +797,7 @@ $.editor = function(textarea, settings) {
 	this.add_video = function(url, width, height) {
 		width = intval(width);
 		height = intval(height);
-		var s = "<embed wmode=\"transparent\" src=\""+url+"\" style=\"z-index:0;\" width=\""+width+"\" height=\""+height+"\" type=\"application/x-shockwave-flash\" class=\"border\" />";
+		var s = "<embed wmode=\"transparent\" src=\""+url+"\" style=\"z-index:0;\" width=\""+width+"\" height=\""+height+"\" type=\"application/x-shockwave-flash\" allowFullscreen=\"true\" class=\"border\" />";
 		_this.paste(s);
 		$('div.video', _this.menu).hide();
 	};
