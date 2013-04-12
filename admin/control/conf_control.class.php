@@ -269,36 +269,35 @@ class conf_control extends admin_control {
 		
 		// 校对 framework 的 count, maxid
 		if($count_maxid) {
-			
-			// copy  from install_mongodb		
-			$maxs = array(
-				'group'=>'groupid',
-				'user'=>'uid',
-				'user_access'=>'uid',
-				'forum'=>'fid',
-				'forum_access'=>'fid',
-				'thread_type'=>'typeid',
-				'thread'=>'tid',
-				'thread_new'=>'tid',
-				'post'=>'pid',
-				'attach'=>'aid',
-				'pm'=>'pmid'
-			);
-			
-			foreach($maxs as $table=>$maxcol) {
-				if(isset($this->$table->maxid)) {
-					$m = $this->$table->index_maxid();
-					$this->$table->maxid($m);
-				}
-				
-				$n = $this->$table->index_count();
-				$this->$table->count($n);
-			}
-			
-			// online 比较特殊
-			$n = $this->online->count();
-			$this->runtime->xset('onlines', $n);
-		}
+
+                        // copy  from install_mongodb           
+                        $maxs = array(
+                                'group'=>'groupid',
+                                'user'=>'uid',
+                                'user_access'=>'uid',
+                                'forum'=>'fid',
+                                'forum_access'=>'fid',
+                                'thread'=>'tid',
+                                'post'=>'pid',
+                                'attach'=>'aid',
+                                'pm'=>'pmid'
+                        );
+
+                        foreach($maxs as $table=>$maxcol) {
+                                if(isset($this->$table->maxcol)) {
+                                        $m = $this->$table->index_maxid();
+                                        $this->$table->maxid($m);
+                                }
+                                
+                                $n = $this->$table->index_count();
+                                $this->$table->count($n);
+                        }
+                        
+                        // online 比较特殊
+                        $n = $this->online->count();
+                        $this->runtime->xset('onlines', $n);
+                }
+                
 		// hook admin_conf_cache_view_before.php
 		
 		$this->view->display('conf_cache.htm');
