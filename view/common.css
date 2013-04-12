@@ -232,7 +232,7 @@ span.nopic {width: 54px; height: 54px; background: url(image/nopic.gif) no-repea
 
 /* 页面架构, 从上到下，几大块： #header, #menu, #body, #footer */
 #menu {width: 100%; height: 35px; background: url(image/menu_bg.gif); overflow: hidden;}
-	#menu #logo {display: block; width: 88x; height: 35px; background: url(image/logo.gif) no-repeat; margin-right: 8px;}
+	#logo {display: block; width: 88px; height: 35px; background: url(image/logo.gif) no-repeat; margin-right: 8px;}
 	#menu td.left {width: 88px}
 	#menu td.center a{height: 35px; line-height: 35px; padding-left: 12px; padding-right: 12px; overflow: hidden; background: url(image/menu_bg.gif) repeat-x; float: left;  font-size: 12px; font-weight: 800; color: #AEB2BE; text-shadow: 1px 1px 0 #000000; }
 	#menu td.center a:hover{background-position: 0px -50px; text-decoration: none;}
@@ -242,10 +242,10 @@ span.nopic {width: 54px; height: 54px; background: url(image/nopic.gif) no-repea
 	#user {color: #AEB2BE; font-size: 12px; *margin-top: 8px;}
 	#user a {color: #AAAAAA;}
 	#pm {}
-	#user #pm_userlist {text-align: left;}
-	#user #pm_userlist a {color: #454545; display: block; float: left; width: 100%; padding: 4px 0px; text-indent: 4px; text-decoration: none;}
-	#user #pm_userlist a:hover {background: #BB0000; color: #FFFFFF;}
-	#user #pm_userlist a:hover b{background: #BB0000; color: #FFFFFF;}
+	#pm_userlist {text-align: left;}
+	#pm_userlist a {color: #454545; display: block; float: left; width: 100%; padding: 4px 0px; text-indent: 4px; text-decoration: none;}
+	#pm_userlist a:hover {background: #BB0000; color: #FFFFFF;}
+	#pm_userlist a:hover b{background: #BB0000; color: #FFFFFF;}
 #body {width: 100%; margin: auto; background: #EFEFEF; overflow: hidden; padding-top: 8px; padding-bottom: 8px;}
 	#nav {width: 100%; margin: auto; height: 18px; text-shadow: 1px 1px 0 #FFFFFF; }
 	#nav td{}
