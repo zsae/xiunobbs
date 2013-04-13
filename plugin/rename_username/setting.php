@@ -30,17 +30,17 @@ if(!$this->form_submit()) {
 	
 	$username = $user['username'];
 	
-	$this->user->index_update(array('username'=>$username), array('username'=>$newusername));
-	$this->online->index_update(array('username'=>$username), array('username'=>$newusername));
-	$this->modlog->index_update(array('username'=>$username), array('username'=>$newusername));
-	$this->rate->index_update(array('username'=>$username), array('username'=>$newusername));
-	$this->pm->index_update(array('username1'=>$username), array('username1'=>$newusername));
-	$this->pm->index_update(array('username2'=>$username), array('username2'=>$newusername));
+	$this->user->index_update(array('username'=>$username), array('username'=>$newusername), TRUE);
+	$this->online->index_update(array('username'=>$username), array('username'=>$newusername), TRUE);
+	$this->modlog->index_update(array('username'=>$username), array('username'=>$newusername), TRUE);
+	$this->rate->index_update(array('username'=>$username), array('username'=>$newusername), TRUE);
+	$this->pm->index_update(array('username1'=>$username), array('username1'=>$newusername), TRUE);
+	$this->pm->index_update(array('username2'=>$username), array('username2'=>$newusername), TRUE);
 	if($user['posts'] > 0) {
-		$this->post->index_update(array('username'=>$username), array('username'=>$newusername));
+		$this->post->index_update(array('username'=>$username), array('username'=>$newusername), TRUE);
 	}
 	if($user['threads'] > 0) {
-		$this->thread->index_update(array('username'=>$username, 'lastuid'=>0, 'lastusername'=>''), array('username'=>$newusername));
+		$this->thread->index_update(array('username'=>$username, 'lastuid'=>0, 'lastusername'=>''), array('username'=>$newusername), TRUE);
 	}
 	
 	$this->message('恭喜，修改成功。', 1, "?plugin-setting-dir-$dir.htm");

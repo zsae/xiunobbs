@@ -37,7 +37,11 @@
 
 <script type="text/javascript">
 $('#srchsubmit').click(function() {
+	{if $searchtype == 'sphinx' || $searchtype == 'title'}
 	window.location = '?search-index-keyword-'+encodeURIComponent($('#srchkeyword').val())+'.htm';
+	{else}
+	window.open('?search-index-keyword-'+encodeURIComponent($('#srchkeyword').val())+'.htm');
+	{/if}
 });
 $('#srchkeyword').keyup(function(e) {
 	if(e.which == 13 || e.which == 10) {

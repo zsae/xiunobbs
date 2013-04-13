@@ -34,6 +34,10 @@ class search_control extends common_control {
 		if(empty($searchtype)) {
 			$this->message('搜索功能未开启!');
 		}
+		if($searchtype == 'sphinx' && !function_exists('fsockopen')) {
+			$this->message('Sphinx 依赖的 fsockopen() 函数被禁用！请联系系统管理员，配置 php.ini。');
+		}
+		
 		$pagesize = 30; // 搜索结果大小
 		$nextpage = 0;
 		$page = misc::page();
@@ -77,6 +81,7 @@ class search_control extends common_control {
 		$this->view->assign('keyword', $keyword);
 		$this->view->assign('keyword_url', $keyword_url);
 		
+		$this->view->assign('searchtype', $searchtype);
 		$this->view->assign('ismod', $ismod);
 		$this->view->assign('fid', $fid);
 		$this->view->assign('threadlist', $threadlist);
@@ -107,7 +112,8 @@ class search_control extends common_control {
                 $cl->SetArrayResult(TRUE);
                 $cl->SetWeights(array(100, 10, 1));     	// 标题权重100，内容权重1，作者权重10
                 $cl->SetMatchMode(SPH_MATCH_ALL);
-                $cl->SetSortMode (SPH_SORT_ATTR_DESC, 'tid');	// 如果不设置，默认按照权重排序！但是TMD是正序！
+                $cl->SetSortMode (SPH_SORT_RELEVANCE);	// 如果不设置，默认按照权重排序！但是TMD是正序！
+                //$cl->SetSortMode (SPH_SORT_ATTR_DESC, 'tid');	// 如果不设置，默认按照权重排序！但是TMD是正序！
                 
 		/*
 		$cl->SetMatchMode ( SPH_MATCH_EXTENDED );	//设置模式
@@ -142,13 +148,14 @@ class search_control extends common_control {
                 if(empty($res) || empty($res['total'])) {
                        $res['matches'] = $deltamarch;
                 } else {
-                	// 合并两次搜索的结果。
-                	$res['matches'] = array_merge($deltamarch, $res['matches']);
+                	// 合并两次搜索的结果，增量的放在后面。一般最佳结果不出现在增量里面。
+                	$res['matches'] += $deltamarch;
                 }
 
                 $threadlist = array();
                 foreach($res['matches'] as $v) {
                         if(!$v['attrs']) continue;
+                        if(empty($v['attrs']['fid'])) continue;
                         $thread = $this->thread->read($v['attrs']['fid'], $v['attrs']['tid']);
                         if(empty($thread)) continue;
                         $forum = $this->mcache->read('forum', $fid);
