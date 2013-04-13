@@ -40,7 +40,7 @@ class thread extends base_model {
 	public function get_newlist($page = 1, $pagesize = 30) {
 		$start = ($page - 1) * $pagesize;
 		$newlist = $threadlist = array();
-		$newlist = $this->thread_new->index_fetch(array(), array('lastpost'=>-1), $start, $pagesize);
+		$newlist = $this->thread_new->index_fetch(array(), array('tid'=>-1), $start, $pagesize);
 		foreach($newlist as $new) {
 			$thread = $this->read($new['fid'], $new['tid']);
 			$threadlist[] = $thread;
