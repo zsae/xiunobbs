@@ -1,0 +1,45 @@
+<!--{include header.htm}-->
+
+<div class="width">
+	<form action="?plugin-setting-dir-$dir.htm" method="post" id="conf_form">
+		<input type="hidden" name="FORM_HASH" value="{FORM_HASH}" />
+		<div class="div" style="width: 700px;">
+			<div class="header">修改用户名</div>
+			<div class="body">
+				<dl>
+					<dt><label for="username">用户名：</label></dt>
+					<dd><input type="text" name="username" id="username" size="32" /></dd>
+				
+					<dt><label for="newusername">修改为：</label></dt>
+					<dd><input type="text" name="newusername" id="newusername" size="32" /></dd>
+					
+					<dt></dt>
+					<dd>
+						<input type="submit" class="button bigblue" id="conf_submit" value="确定" />
+						<input type="button" class="button biggrey" value="返回" onclick="window.location='?plugin-list.htm'" />
+						<div id="notice" class="notice" style="display: none;"></div>
+					</dd>
+					
+					<dt></dt>
+					<dd>
+						<p>因为用户名与很多表有关联，所以最好被修改的用户发帖量不要太大，否则可能会超时。</p>
+					</dd>
+				</dl>
+			</div>
+		</div>
+	</form>
+</div>
+
+<!--{include footer.htm}-->
+
+<script type="text/javascript">
+$('#conf_submit').click(function() {
+	$('#conf_form').submit();
+	return false;
+});
+
+$('#username').focus();
+
+</script>
+</body>
+</html>

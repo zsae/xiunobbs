@@ -37,16 +37,15 @@ class online extends base_model {
 		$n = $this->index_delete(array('lastvisit'=>array('<'=>$expiry)));
 		
 		// 搜索引擎等无cookie浏览者会导致这种情况，需要处理，否则在线人数会变成负数。
-		if($n < $this->conf['onlines']) {
-			$this->conf['onlines'] -= $n;
-			$this->runtime->xset('onlines', $this->conf['onlines']);
-		}
+		$this->conf['onlines'] -= $n;
 		
 		// 修正非法数据：意外
 		if($this->conf['onlines'] < 1) {
-			$n = $this->online->count();
+			$n = $this->online->index_count();
 			$this->runtime->xset('onlines', $n);
 		}
+		
+		$this->runtime->xset('onlines', $this->conf['onlines']);
 	}
 }
 ?>

@@ -20,7 +20,9 @@ class index_control extends common_control {
 	
 	// 给插件预留个位置
 	public function on_index() {
+		
 		// hook index_index_before.php
+		
 		$this->on_bbs();
 	}
 	
