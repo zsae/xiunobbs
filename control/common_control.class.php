@@ -332,6 +332,7 @@ class common_control extends base_control {
 				'lastvisit'=>$_SERVER['time'],
 			);
 			$this->online->create($online);
+			$this->runtime->xset('onlines', '+1');
 		} else {
 			$online['lastvisit'] = $_SERVER['time'];
 			$this->online->update($online);
