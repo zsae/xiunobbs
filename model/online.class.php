@@ -34,7 +34,10 @@ class online extends base_model {
 		$expiry = $_SERVER['time'] - $this->conf['online_hold_time'];
 		
 		// 采用暴力的 index_delete() 节省代码。
-		$n = $this->index_delete(array('lastvisit'=>array('<'=>$expiry)));
+		$n = $this->index_count(array('lastvisit'=>array('<'=>$expiry)));
+		if(!$n) return;
+		
+		$this->index_delete(array('lastvisit'=>array('<'=>$expiry)), TRUE);
 		
 		// 搜索引擎等无cookie浏览者会导致这种情况，需要处理，否则在线人数会变成负数。
 		$this->conf['onlines'] -= $n;
