@@ -156,6 +156,8 @@ class search_control extends common_control {
                 foreach($res['matches'] as $v) {
                         if(!$v['attrs']) continue;
                         if(empty($v['attrs']['fid'])) continue;
+                        $fid = $v['attrs']['fid'];
+                        
                         $thread = $this->thread->read($v['attrs']['fid'], $v['attrs']['tid']);
                         if(empty($thread)) continue;
                         $forum = $this->mcache->read('forum', $fid);
