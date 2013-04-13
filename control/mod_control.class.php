@@ -745,7 +745,7 @@ class mod_control extends common_control {
 	}
 	
 	// copy from post_control.class.php
-	private function init_type_select($forum, $typeid1 = 0, $typeid2 = 0, $typeid3 = 0) {
+	private function init_type_select($forum, $typeid1 = 0, $typeid2 = 0, $typeid3 = 0, $typeid4 = 0) {
 		$typearr1 = empty($forum['types'][1]) ? array() : array('0'=>'&gt;'.$forum['typecates'][1]) + (array)$forum['types'][1];
 		$typearr2 = empty($forum['types'][2]) ? array() : array('0'=>'&gt;'.$forum['typecates'][2]) + (array)$forum['types'][2];
 		$typearr3 = empty($forum['types'][3]) ? array() : array('0'=>'&gt;'.$forum['typecates'][3]) + (array)$forum['types'][3];
