@@ -255,7 +255,7 @@ CREATE TABLE bbs_attach (
   width mediumint(8) unsigned NOT NULL default '0',	# width
   height mediumint(8) unsigned NOT NULL default '0',	# height
   filename char(120) NOT NULL default '',		# 文件名称，会过滤，并且截断，保存后的文件名，不包含URL前缀 upload_url
-  orgfilename char(60) NOT NULL default '',		# 上传的原文件名
+  orgfilename char(120) NOT NULL default '',		# 上传的原文件名
   filetype char(7) NOT NULL default '',			# 文件类型: image/txt/zip，小图标显示
   dateline int(10) unsigned NOT NULL default '0',	# 文件上传时间 UNIX时间戳
   comment char(100) NOT NULL default '',		# 文件注释 方便于搜索
