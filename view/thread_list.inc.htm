@@ -60,7 +60,7 @@
 <div style="text-align: center; margin-top: 8px;">
 	<input type="checkbox" name="checkall" id="mod_checkall" /><label for="mod_checkall">全选</label>
 	<input type="button" class="button smallblue" id="mod_top"  value="置顶" />
-	<!--{if $forum[typecates]}-->
+	<!--{if !empty($forum[typecates])}-->
 	<input type="button" class="button smallblue" id="mod_type"  value="主题分类" />
 	<!--{/if}-->
 	<input type="button" class="button smallblue" id="mod_digest"  value="精华" />

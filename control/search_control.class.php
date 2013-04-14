@@ -24,8 +24,17 @@ class search_control extends common_control {
 		// hook search_index_before.php
 		
 		$keyword = urldecode(core::gpc('keyword', 'R'));
+		$orderby = core::gpc('orderby');
+		!in_array($orderby, array('match', 'timeasc', 'timedesc')) && $orderby = 'match';
+		$fid = intval(core::gpc('fid'));
+		$daterange = intval(core::gpc('daterange'));
+		$daterange = misc::mid($daterange, 0, 1095);
 		$keyword = misc::safe_str($keyword);
 		$keyword_url = urlencode($keyword);
+		
+		$this->_checked["fid_$fid"] = ' class="checked"';
+		$this->_checked["orderby_$orderby"] = ' class="checked"';
+		$this->_checked["daterange_$daterange"] = ' class="checked"';
 		
 		preg_match('#(?:http|https)://(.*?)/.*?#', $this->conf['app_url'], $m);
 		$site = empty($m[1]) ? '' : $m[1];
@@ -36,6 +45,13 @@ class search_control extends common_control {
 		}
 		if($searchtype == 'sphinx' && !function_exists('fsockopen')) {
 			$this->message('Sphinx 依赖的 fsockopen() 函数被禁用！请联系系统管理员，配置 php.ini。');
+		}
+		
+		$forum = array();
+		if($fid > 0) {
+			$forum = $this->mcache->read('forum', $fid);
+			$this->check_forum_exists($forum);
+			$this->check_access($forum, 'read');
 		}
 		
 		$pagesize = 30; // 搜索结果大小
@@ -50,11 +66,11 @@ class search_control extends common_control {
 				case 'bing':
 					header('Location:'.$this->get_url($keyword, $site, 'bing')); exit;
 				case 'title':
-					$threadlist = $this->get_list_by_title($keyword, $page, $pagesize);
+					$threadlist = $this->get_list_by_title($keyword, $fid, $daterange, $orderby, $page, $pagesize);
 					break;
 				case 'sphinx':
 					try {
-						$threadlist = $this->get_list_by_sphinx($keyword, $page, $pagesize);
+						$threadlist = $this->get_list_by_sphinx($keyword, $fid, $daterange, $orderby, $page, $pagesize);
 					} catch(Exception $e) {
 						$this->message($e->getMessage());
 					}
@@ -73,15 +89,18 @@ class search_control extends common_control {
 		}
 		
 		
+		//$fid = 0;
 		$ismod = ($this->_user['groupid'] > 0 && $this->_user['groupid'] <= 4);
-		$fid = 0;
 		$toplist = array();
-		$pages = misc::simple_pages("?search-index-keyword-$keyword_url-page-$page.htm", count($threadlist), $page, $pagesize);
+		$pages = misc::simple_pages("?search-index-fid-$fid-orderby-$orderby-daterage-$daterange-keyword-$keyword_url.htm", count($threadlist), $page, $pagesize);
 		$this->view->assign('pages', $pages);
 		$this->view->assign('keyword', $keyword);
 		$this->view->assign('keyword_url', $keyword_url);
-		
+		$this->view->assign('daterange', $daterange);
+		$this->view->assign('orderby', $orderby);
 		$this->view->assign('searchtype', $searchtype);
+		
+		$this->view->assign('forum', $forum);
 		$this->view->assign('ismod', $ismod);
 		$this->view->assign('fid', $fid);
 		$this->view->assign('threadlist', $threadlist);
@@ -92,8 +111,13 @@ class search_control extends common_control {
 		$this->view->display('search_list.htm');
 	}
 	
-	private function get_list_by_title($keyword, $page, $pagesize) {
-		$threadlist = $this->thread->index_fetch(array('subject'=>array('LIKE'=>$keyword)), array(), ($page - 1) * $pagesize, $pagesize);
+	private function get_list_by_title($keyword, $fid, $daterange, $orderby, $page, $pagesize) {
+		$cond = $fid ? array('fid'=>$fid) : array();
+		$daterange && $cond += array('lastpost'=>array('<'=>$_SERVER['time'] - $daterange * 86400));
+		$cond += array('subject'=>array('LIKE'=>$keyword));
+		
+		$order = $orderby ? ($orderby == 'timeasc' ? array('tid'=>1) : array('tid'=>-1)) : array();
+		$threadlist = $this->thread->index_fetch($cond, $order, ($page - 1) * $pagesize, $pagesize);
 		foreach($threadlist as &$thread) {
 			$forum = $this->mcache->read('forum', $thread['fid']);
 			$this->thread->format($thread, $forum);
@@ -103,7 +127,7 @@ class search_control extends common_control {
 		return $threadlist;
 	}
 	
-	private function get_list_by_sphinx($keyword, $page, $pagesize) {
+	private function get_list_by_sphinx($keyword, $fid, $daterange, $orderby, $page, $pagesize) {
                 include FRAMEWORK_PATH.'lib/sphinxapi.class.php';
                 
                 $cl = new SphinxClient();
@@ -111,8 +135,17 @@ class search_control extends common_control {
                 $cl->SetConnectTimeout(3);
                 $cl->SetArrayResult(TRUE);
                 $cl->SetWeights(array(100, 10, 1));     	// 标题权重100，内容权重1，作者权重10
+                $fid && $cl->SetFilter('fid', array($fid));
+                $daterange && $cl->setFilterRange('dateline', $_SERVER['time'] - $daterange * 86400, $_SERVER['time']);
                 $cl->SetMatchMode(SPH_MATCH_ALL);
-                $cl->SetSortMode (SPH_SORT_RELEVANCE);	// 如果不设置，默认按照权重排序！但是TMD是正序！
+                if($orderby == 'match') {
+                	  $cl->SetSortMode (SPH_SORT_RELEVANCE);	// 如果不设置，默认按照权重排序！但是TMD是正序！
+                } elseif($orderby == 'timeasc') {
+                	$cl->SetSortMode (SPH_SORT_ATTR_ASC, 'tid');
+                } elseif($orderby == 'timedesc') {
+                	$cl->SetSortMode (SPH_SORT_ATTR_DESC, 'tid');
+                }
+                
                 //$cl->SetSortMode (SPH_SORT_ATTR_DESC, 'tid');	// 如果不设置，默认按照权重排序！但是TMD是正序！
                 
 		/*
@@ -123,7 +156,7 @@ class search_control extends common_control {
 		*/
 		
 		// --------------> 优先搜索增量索引
-		$deltamarch = array();
+		$deltamatch = array();
 		if($page == 1) {
 			$pagesize = 100;
 			$cl->SetLimits(0, $pagesize, 1000);	// 最大结果集
@@ -132,7 +165,7 @@ class search_control extends common_control {
 	                       throw new Exception('Sphinx 错误：'.$cl->_error);
 	                }
 	                if(!empty($res) && !empty($res['total'])) {
-	                       $deltamarch = $res['matches'];
+	                       $deltamatch = $res['matches'];
 	                }
 		}
 		
@@ -146,10 +179,10 @@ class search_control extends common_control {
                        throw new Exception('Sphinx 错误：'.$cl->_error);
                 }
                 if(empty($res) || empty($res['total'])) {
-                       $res['matches'] = $deltamarch;
+                       $res['matches'] = $deltamatch;
                 } else {
                 	// 合并两次搜索的结果，增量的放在后面。一般最佳结果不出现在增量里面。
-                	$res['matches'] += $deltamarch;
+                	$res['matches'] += $deltamatch;
                 }
 
                 $threadlist = array();

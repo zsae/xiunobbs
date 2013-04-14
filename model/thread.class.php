@@ -83,6 +83,19 @@ class thread extends base_model {
 			$thread['typename1'] = $thread['typename2'] = $thread['typename3'] = $thread['typename4'] = '';
 		}
 		$thread['forumname'] = isset($this->conf['forumarr'][$thread['fid']]) ? $this->conf['forumarr'][$thread['fid']] : '';
+		
+		// 精华 火贴 新帖 老帖
+		if($thread['digest'] > 0) {
+			$thread['color'] = "thread-digest-$thread[digest]";
+		} elseif($thread['posts'] > $this->conf['threadlist_hotviews']) {
+			$thread['color'] = "thread-red";
+		// 24小时产生的帖子为新帖
+		} elseif($_SERVER['time'] - $thread['dateline'] < 86400) {
+			$thread['color'] = "thread-blue";
+		} else {
+			$thread['color'] = "thread-black";
+		}
+		
 		// hook thread_model_format_end.php
 	}
 	

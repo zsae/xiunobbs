@@ -56,6 +56,40 @@ p {margin-top: 4px;}
 .submit {margin-top: 4px;}
 .checked {font-weight: 800;}
 
+/* 帖子列表页的颜色 */
+/*
+优先级低：
+新帖未读： 蓝色，
+新帖已读： 淡蓝色，
+老帖未读：黑色
+老帖已读：灰色
+
+优先级中：
+未读火贴： 大红
+已读火贴：暗红
+
+优先级高：
+未读精华1：草绿色
+已读精华1：暗草绿色
+未读精华2：瓦蓝
+已读精华2：暗瓦蓝
+未读精华3：紫色
+已读精华3：暗紫色
+*/
+.thread-blue {color: #0024FF}
+.thread-blue.read {color: #BFC8FF}
+.thread-black {color: #000000}
+.thread-black.read {color: #D7D7D7}
+.thread-red {color: #FF0000;}
+.thread-red.read {color: #FFC5C5}
+.thread-digest-1 {color: #01CA5B; font-weight: 800;}
+.thread-digest-1.read {color: #67EA8C; font-weight: 800;}
+.thread-digest-2 {color: #008CD5; font-weight: 800;}
+.thread-digest-2.read {color: #BEC7FF; font-weight: 800;}
+.thread-digest-3 {color: #CC00A8; font-weight: 800;}
+.thread-digest-3.read {color: #FFC6F5; font-weight: 800;}
+.subject_type.read {color: #D6D6D6}
+
 /* 表单结果提示，醒目，比较大 <div class="error"> */
 div.error {margin-top: 4px; padding: 4px; line-height: 32px; text-indent: 40px; word-break: break-all; border: 1px solid #8A0000; background: #FFF4D2 url(image/error.gif) no-repeat 4px 4px; font-size: 16px; color: #8A0000; font-weight: 800; -moz-border-radius: 4px; -khtml-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; }
 div.ok {margin-top: 4px; padding: 4px; line-height: 32px; text-indent: 40px; word-break: break-all; border: 1px solid #1E742E; background: #B6EAA6 url(image/right.gif) no-repeat 4px 4px; font-size: 16px; color: #1E742E; font-weight: 800; -moz-border-radius: 4px; -khtml-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; }

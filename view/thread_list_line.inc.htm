@@ -20,11 +20,11 @@
 			<!--{if $thread[digest]}--><span class="icon icon-digest-$thread[digest]" style="margin-right: 2px;" title="精华主题"></span><!--{/if}-->
 		
 		<!--{loop $forum[types] $cateid $types}-->
-			<!--{if $thread[typename$cateid]}--><a href="?forum-index-fid-$thread[fid]-typeid$cateid-$thread[typeid$cateid].htm" class="grey middle">[{$thread[typename$cateid]}]</a><!--{/if}-->
+			<!--{if $thread[typename$cateid]}--><a href="?forum-index-fid-$thread[fid]-typeid$cateid-$thread[typeid$cateid].htm" class="grey middle subject_type">[{$thread[typename$cateid]}]</a><!--{/if}-->
 	 	<!--{/loop}-->
 		 	
 			 <!--{hook thread_list_line_inc_subject_before.htm}-->
-			<a href="?thread-index-fid-$thread[fid]-tid-$thread[tid].htm" class="subject_link">$thread[subject]</a>
+			<a href="?thread-index-fid-$thread[fid]-tid-$thread[tid].htm" class="subject_link $thread[color]">$thread[subject]</a>
 			<!--{hook thread_list_line_inc_subject_after.htm}-->
 		</td>
 		<!--{hook thread_list_line_inc_subject_after.htm}-->

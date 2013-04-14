@@ -47,6 +47,7 @@ class conf_control extends admin_control {
 			$post['seo_keywords'] = core::gpc('seo_keywords', 'P');
 			$post['seo_description'] = core::gpc('seo_description', 'P');
 			$post['threadlist_hotviews'] = intval(core::gpc('threadlist_hotviews', 'P'));
+			$post['post_update_expiry'] = intval(core::gpc('post_update_expiry', 'P'));
 			$post['search_type'] = core::gpc('search_type', 'P');
 			$post['sphinx_host'] = core::gpc('sphinx_host', 'P');
 			$post['sphinx_port'] = core::gpc('sphinx_port', 'P');
@@ -69,7 +70,7 @@ class conf_control extends admin_control {
 				
 				// 全局的，加载合并到 runtime, 每次请求都从 runtime 加载。
 				foreach(array('app_name', 'app_copyright', 'seo_title', 'seo_keywords', 'seo_description', 
-					'threadlist_hotviews', 'china_icp', 'footer_js', 'site_pv', 'site_runlevel', 'forum_index_pagesize','reg_on', 'search_type'
+					'threadlist_hotviews', 'post_update_expiry', 'china_icp', 'footer_js', 'site_pv', 'site_runlevel', 'forum_index_pagesize','reg_on', 'search_type'
 					) as $k) {
 					$this->runtime->xset($k, $post[$k], 'runtime');
 					$this->kv->xset($k, $post[$k], 'conf');
@@ -116,6 +117,7 @@ class conf_control extends admin_control {
 		$input['seo_keywords'] = form::get_text('seo_keywords', $kvconf['seo_keywords'], 300);
 		$input['seo_description'] = form::get_text('seo_description', $kvconf['seo_description'], 300);
 		$input['threadlist_hotviews'] = form::get_text('threadlist_hotviews', $kvconf['threadlist_hotviews'], 50);
+		$input['post_update_expiry'] = form::get_text('post_update_expiry', $kvconf['post_update_expiry'], 50);
 		$input['search_type'] = form::get_radio('search_type', array(''=>'无', 'title'=>'标题', 'baidu'=>'百度', 'google'=>'谷歌', 'bing'=>'Bing', 'sphinx'=>'Sphinx'), $kvconf['search_type']);
 		$input['sphinx_host'] = form::get_text('sphinx_host', $kvconf['sphinx_host'], 150);
 		$input['sphinx_port'] = form::get_text('sphinx_port', $kvconf['sphinx_port'], 100);
