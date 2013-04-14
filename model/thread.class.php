@@ -88,12 +88,12 @@ class thread extends base_model {
 		if($thread['digest'] > 0) {
 			$thread['color'] = "thread-digest-$thread[digest]";
 		} elseif($thread['posts'] > $this->conf['threadlist_hotviews']) {
-			$thread['color'] = "thread-red";
+			$thread['color'] = "thread-hot";
 		// 24小时产生的帖子为新帖
 		} elseif($_SERVER['time'] - $thread['dateline'] < 86400) {
-			$thread['color'] = "thread-blue";
+			$thread['color'] = "thread-new";
 		} else {
-			$thread['color'] = "thread-black";
+			$thread['color'] = "thread-old";
 		}
 		
 		// hook thread_model_format_end.php

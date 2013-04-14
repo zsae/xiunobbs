@@ -76,12 +76,12 @@ p {margin-top: 4px;}
 未读精华3：紫色
 已读精华3：暗紫色
 */
-.thread-blue {color: #0024FF}
-.thread-blue.read {color: #BFC8FF}
-.thread-black {color: #000000}
-.thread-black.read {color: #D7D7D7}
-.thread-red {color: #FF0000;}
-.thread-red.read {color: #FFC5C5}
+.thread-new {color: #00BD50}
+.thread-new.read {color: #A8DCBE}
+.thread-old {color: #000000}
+.thread-old.read {color: #D7D7D7}
+.thread-hot {color: #FF5A00;}
+.thread-hot.read {color: #FFD1B8}
 .thread-digest-1 {color: #01CA5B; font-weight: 800;}
 .thread-digest-1.read {color: #67EA8C; font-weight: 800;}
 .thread-digest-2 {color: #008CD5; font-weight: 800;}
