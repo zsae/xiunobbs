@@ -429,7 +429,7 @@ class plugin_control extends admin_control {
 		} else {
 			$this->clear_tmp();
 			if($isview) {
-				$this->message('禁用该风格成功，已经还原为系统默认风格。');
+				$this->message('禁用该风格成功，已经还原为系统默认风格。', 1, $referer);
 			} else {
 				$this->message('禁用插件成功。', 1, $referer);
 			}
