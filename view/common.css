@@ -49,6 +49,8 @@ p {margin-top: 4px;}
 .green, .green a{color: #00BA53;}
 .red, .red a{color: #BB0000;}
 .blue, .blue a {color: #0044FF;}
+.new, .new a {color: #00903D;}
+.hot, .hot a {color: #BB0000;}
 .grey, .grey a{color: #888888;}
 .grey2, .grey2 a{color: #BBBBBB;}
 .xgrey {opacity: 0.5; filter:Alpha(Opacity=50); }/* filter:progid:DXImageTransform.Microsoft.BasicImage(grayscale=1); FILTER: gray;  */
@@ -56,30 +58,10 @@ p {margin-top: 4px;}
 .submit {margin-top: 4px;}
 .checked {font-weight: 800;}
 
-/* 帖子列表页的颜色 */
-/*
-优先级低：
-新帖未读： 蓝色，
-新帖已读： 淡蓝色，
-老帖未读：黑色
-老帖已读：灰色
-
-优先级中：
-未读火贴： 大红
-已读火贴：暗红
-
-优先级高：
-未读精华1：草绿色
-已读精华1：暗草绿色
-未读精华2：瓦蓝
-已读精华2：暗瓦蓝
-未读精华3：紫色
-已读精华3：暗紫色
-*/
-.thread-new {color: #00BD50}
+.thread-new {color: #00903D}
 .thread-new.read {color: #A8DCBE}
 .thread-old {color: #525252}
-.thread-old.read {color: #d6d6d6}
+.thread-old.read {color: #D6D6D6}
 .thread-hot {color: #FF5A00;}
 .thread-hot.read {color: #FFD1B8}
 .thread-digest-1 {color: #01CA5B; font-weight: 800;}
