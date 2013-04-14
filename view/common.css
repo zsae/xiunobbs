@@ -49,7 +49,7 @@ p {margin-top: 4px;}
 .green, .green a{color: #00BA53;}
 .red, .red a{color: #BB0000;}
 .blue, .blue a {color: #0044FF;}
-.new, .new a {color: #00903D;}
+.new, .new a {color: #216dca;}
 .hot, .hot a {color: #BB0000;}
 .grey, .grey a{color: #888888;}
 .grey2, .grey2 a{color: #BBBBBB;}
@@ -58,18 +58,18 @@ p {margin-top: 4px;}
 .submit {margin-top: 4px;}
 .checked {font-weight: 800;}
 
-.thread-new {color: #00903D}
-.thread-new.read {color: #A8DCBE}
-.thread-old {color: #525252}
-.thread-old.read {color: #D6D6D6}
-.thread-hot {color: #FF5A00;}
-.thread-hot.read {color: #FFD1B8}
-.thread-digest-1 {color: #01CA5B; font-weight: 800;}
-.thread-digest-1.read {color: #67EA8C; font-weight: 800;}
-.thread-digest-2 {color: #008CD5; font-weight: 800;}
-.thread-digest-2.read {color: #BEC7FF; font-weight: 800;}
-.thread-digest-3 {color: #CC00A8; font-weight: 800;}
-.thread-digest-3.read {color: #FFC6F5; font-weight: 800;}
+.thread-new, .thread-new:hover{color: #216DCA}
+.thread-new.read, .thread-new.read:hover {color: #CEDFF3}
+.thread-old, .thread-old:hover {color: #525252}
+.thread-old.read, .thread-old.read:hover {color: #D6D6D6}
+.thread-hot, .thread-hot:hover {color: #EF4E1D;}
+.thread-hot.read, .thread-hot.read:hover {color: #FBD8CD}
+.thread-digest-1, .thread-digest-1:hover {color: #B62AAB; font-weight: 800;}
+.thread-digest-1.read, .thread-digest-1.read:hover{color: #EFD0ED; font-weight: 800;}
+.thread-digest-2, .thread-digest-2:hover {color: #B62AAB; font-weight: 800;}
+.thread-digest-2.read, .thread-digest-2.read:hover {color: #EFD0ED; font-weight: 800;}
+.thread-digest-3, .thread-digest-3:hover {color: #B62AAB; font-weight: 800;}
+.thread-digest-3.read, .thread-digest-3.read:hover {color: #EFD0ED; font-weight: 800;}
 .subject_type.read {color: #D6D6D6}
 
 /* 表单结果提示，醒目，比较大 <div class="error"> */
