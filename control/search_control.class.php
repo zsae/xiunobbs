@@ -127,7 +127,7 @@ class search_control extends common_control {
 		if($page == 1) {
 			$pagesize = 100;
 			$cl->SetLimits(0, $pagesize, 1000);	// 最大结果集
-	                $res = $cl->Query($keyword, $this->conf['sphinx_deltasrc']);
+	                $res = $cl->Query($keyword, $this->conf['sphinx_deltasrc']); // * 为所有的索引
 	                if(!empty($cl->_error)) {
 	                       throw new Exception('Sphinx 错误：'.$cl->_error);
 	                }

@@ -192,6 +192,7 @@ class mod_control extends admin_control {
 					'allowdown'=>1,
 					'expiry'=>$_SERVER['time'] + 86400 * 365
 				);
+				$this->user_access->create($access);
 			}
 			
 			$input = $error = array();
