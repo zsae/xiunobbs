@@ -59,17 +59,17 @@ p {margin-top: 4px;}
 .checked {font-weight: 800;}
 
 .thread-new, .thread-new:hover{color: #216DCA}
-.thread-new.read, .thread-new.read:hover {color: #CEDFF3}
+.thread-new.read, .thread-new.read:hover {color: #97BBE4}
 .thread-old, .thread-old:hover {color: #525252}
-.thread-old.read, .thread-old.read:hover {color: #D6D6D6}
+.thread-old.read, .thread-old.read:hover {color: #AAAAAA}
 .thread-hot, .thread-hot:hover {color: #EF4E1D;}
-.thread-hot.read, .thread-hot.read:hover {color: #FBD8CD}
-.thread-digest-1, .thread-digest-1:hover {color: #B62AAB; font-weight: 800;}
-.thread-digest-1.read, .thread-digest-1.read:hover{color: #EFD0ED; font-weight: 800;}
-.thread-digest-2, .thread-digest-2:hover {color: #B62AAB; font-weight: 800;}
-.thread-digest-2.read, .thread-digest-2.read:hover {color: #EFD0ED; font-weight: 800;}
-.thread-digest-3, .thread-digest-3:hover {color: #B62AAB; font-weight: 800;}
-.thread-digest-3.read, .thread-digest-3.read:hover {color: #EFD0ED; font-weight: 800;}
+.thread-hot.read, .thread-hot.read:hover {color: #F0AA95}
+.thread-digest-1, .thread-digest-1:hover {color: #E03D7E; font-weight: 800;}
+.thread-digest-1.read, .thread-digest-1.read:hover{color: #F39BBE; font-weight: 800;}
+.thread-digest-2, .thread-digest-2:hover {color: #E03D7E; font-weight: 800;}
+.thread-digest-2.read, .thread-digest-2.read:hover {color: #F39BBE; font-weight: 800;}
+.thread-digest-3, .thread-digest-3:hover {color: #E03D7E; font-weight: 800;}
+.thread-digest-3.read, .thread-digest-3.read:hover {color: #F39BBE; font-weight: 800;}
 .subject_type.read {color: #D6D6D6}
 
 /* 表单结果提示，醒目，比较大 <div class="error"> */
