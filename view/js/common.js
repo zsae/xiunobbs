@@ -534,10 +534,10 @@ function ajaxdialog_request(url, recall, options) {
 	}
 	var jdialog = $(dialogdiv);
 		
-	if($(dialogdiv).data(url) && dialogdiv && (options == undefined || options.cache == undefined || options && options.cache)) {
-		var json = $(dialogdiv).data(url);
+	if(jdialog.data(url) && (options == undefined || options.cache == undefined || options && options.cache)) {
+		var json = jdialog.data(url);
 		var dialogdiv = json.dialogdiv;
-		$(dialogdiv).dialog(options);
+		jdialog.dialog(options);
 	// 没有 cache, ajax 请求 url
 	} else {
 		// 弹出对话框

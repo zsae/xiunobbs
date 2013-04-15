@@ -20,10 +20,10 @@ return array(
 		'type' => 'mysql',			
 		'mysql' => array(			
 			'master' => array(								
-				'host' => '61.55.142.30',								
-				'user' => 'remote',				
-				'password' => 'woiwoekjkddkk',				
-				'name' => 'ceshi_sphinx',				
+				'host' => 'localhost',								
+				'user' => 'root',				
+				'password' => 'root',				
+				'name' => 'test',				
 				'charset' => 'utf8',				
 				'tablepre' => 'bbs_',								
 				'engine'=>'MyISAM',

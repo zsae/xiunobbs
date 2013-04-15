@@ -26,7 +26,9 @@
 if(!$.fn.dialog) {
 		
 	$.fn.dialog = function(settings) {
-		if(settings == 'open') {
+		if(!settings) {
+			settings = {};
+		} else if(settings == 'open') {
 			settings = {open: true};
 		} else if(settings == 'close') {
 			settings = {open: false};
@@ -36,9 +38,9 @@ if(!$.fn.dialog) {
 		this.each(function() {
 			// 此处 this 为 <div> 元素
 			if(this.dialog) {
-				var oldbody = settings ? settings.body : undefined;
+				var oldbody = settings ? settings.body : '';
 				settings = $.extend(this.dialog.settings, settings);
-				if(oldbody == undefined) settings.body = undefined;
+				if(oldbody == '') settings.body = '';
 				this.dialog.set(settings);
 			} else {
 				settings = $.extend({
