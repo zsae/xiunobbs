@@ -522,22 +522,30 @@ function xiuno_load_css(filename) {
 	document.getElementsByTagName('head')[0].appendChild(link);
 }
 
+function url_to_id(url) {
+	var pos = url.indexOf('.htm');
+	if(pos != 1) url = url.substr(0, pos + 4);
+	return escape(url).replace(/[%.\/\-]/ig, '_');	// 此处不过滤特殊字符在 jquery 下会有奇怪的bug, $('abc%.') 会让 jquery 彻底傻掉，1.4.3 通过，1.6未测试。
+}
 
 // 检查 cache，如果存在，则先从CACHE中取
 function ajaxdialog_request(url, recall, options) {
 	// 如果有cache 直接显示 cache 数据
-	var dialogid = escape(url).replace(/[%.]/ig, '_');	// 此处不过滤特殊字符在 jquery 下会有奇怪的bug, $('abc%.') 会让 jquery 彻底傻掉，1.4.3 通过，1.6未测试。
+	var dialogid = url_to_id(url);
 	var dialogdiv = document.getElementById(dialogid);
 	if(!dialogdiv) {
 		var s = '<div class="dialog bg2 border shadow" title="正在加载..." id="'+dialogid+'" style="overflow: visible;">正在加载...<'+'/div>';
 		var dialogdiv = $(s).appendTo('body').get(0);
 	}
 	var jdialog = $(dialogdiv);
-		
+	
+	// 默认是开启缓存的，除非 options.cache=0，强制关闭 cache
 	if(jdialog.data(url) && (options == undefined || options.cache == undefined || options && options.cache)) {
 		var json = jdialog.data(url);
 		var dialogdiv = json.dialogdiv;
-		jdialog.dialog(options);
+		jdialog[0].dialog.open();
+		//jdialog.dialog('open');
+		//jdialog.dialog(options);
 	// 没有 cache, ajax 请求 url
 	} else {
 		// 弹出对话框
@@ -574,6 +582,7 @@ function ajaxdialog_request(url, recall, options) {
 			// 如果在不同的域，firefox 下需要 settimeout，同域则不需要。
 			// 可能含有脚本，晚执行，约定函数名字为 delay_execute()
 			// 兼容IE6： typeof delay_execute != 'undefined'
+			
 			if(typeof delay_execute != 'undefined') delay_execute(jdialog[0].dialog, recall);
 			
 		});

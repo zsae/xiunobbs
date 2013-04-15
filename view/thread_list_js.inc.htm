@@ -78,6 +78,7 @@ $('#mod_delete').click(function() {
 		alert('请选择主题！');
 		return false;
 	}
+	// 删除 dialog
 	ajaxdialog_request('?mod-delete-fid-$fid.htm'+sep+postdata, function() {
 		window.location.reload();
 	});

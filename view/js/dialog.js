@@ -203,7 +203,6 @@ if(!$.fn.dialog) {
 			} else {
 				//$(_div).fadeOut('fast');
 				$(_div).hide();
-				
 			}
 		};
 		
@@ -361,24 +360,4 @@ if(!$.fn.dialog) {
 		
 		return this;
 	};
-
-	// 查找某节点的 父 dialog，返回节点
-	/* jquery 提供了 closest(), $('#xxx').closest('div.dialog');
-	$.find_parent_dialog = function(obj) {
-		var dialognode = null;
-		var maxfind = 30;			// 防止没有BODY标签的时候死循环
-		parentnode = obj.parentNode;
-		while(maxfind-- > 0) {
-			if(parentnode.nodeName == 'DIV' && parentnode.className.indexOf('dialog') != -1) {
-				dialognode = parentnode;
-				break;
-			}
-			if(parentnode.nodeName == 'BODY') {
-				break;
-			}
-			parentnode = parentnode.parentNode;
-		}
-		return dialognode;
-	};
-	*/
 }

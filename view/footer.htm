@@ -1,6 +1,9 @@
 
 <!--{hook header_body_end.htm}-->
 
+
+<input type="button" id="button1" value="button1" />
+<input type="button" id="button2" value="button2" />
 </div>
 
 <!--{hook footer_start.htm}-->
@@ -32,6 +35,13 @@
 <script src="view/js/dialog.js" type="text/javascript"></script>
 
 <script type="text/javascript">
+
+$('#button1').click(function() {
+	$('#http_3A__x_net_mod_top_fid_1_htm_3F_26tidarr_5B_5D_3D1_2').show();
+});
+$('#button2').click(function() {
+	$('#http_3A__x_net_mod_top_fid_1_htm_3F_26tidarr_5B_5D_3D1_2').hide();
+});
 
 // 登陆后才能发帖
 $('#create_thread').click(function() {

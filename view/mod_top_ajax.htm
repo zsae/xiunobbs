@@ -29,12 +29,12 @@
 </form>
 
 <script type="text/javascript">
-var sep = $conf[urlrewrite] ? '?' : '&';
-var tidsurl = '$tidsurl';
-// 延迟执行的脚本，约定名字为：delay_execute()
 function delay_execute(dialog, recall) {
-	
-	$('#mod_top_submit').unbind('click').click(function() {
+	var sep = $conf[urlrewrite] ? '?' : '&';
+	var tidsurl = '$tidsurl';
+	// 延迟执行的脚本，约定名字为：delay_execute()
+
+	$('#mod_top_submit').click(function() {
 		$('#mod_top_submit').disable();
 		var postdata = $("#mod_top_form").serialize();
 		$.post($('#mod_top_form').attr('action') + sep + tidsurl, postdata,  function(s){
@@ -50,12 +50,13 @@ function delay_execute(dialog, recall) {
  				dialog.close();
 	 			if(recall) recall();
 	 		}, 1000);
-		  });
+		});
 		return false;
 	});
 	
-	$('#mod_top_cancel').unbind('click').click(function() {
+	$('#mod_top_cancel').click(function() {
 		dialog.close();
+		return false;
 	});
 	
 	$('#top_$thread[top]').attr('checked', 'checked');
