@@ -756,6 +756,8 @@ function upgrade_attach() {
 			// fix: dx2 的附件存储到错误的表(127), bug
 			try {
 				$old = $dx2->get("forum_attachment_$tableid-aid-$aid");
+				$old2 = $dx2->get("forum_attachment-aid-$aid");
+                                $old['downloads'] = $old2['downloads'];
 			} catch(Exception $e) {
 				continue;
 			}
@@ -807,7 +809,7 @@ function upgrade_attach() {
 				'filetype'=> $filetype,
 				'dateline'=> intval($old['dateline']),
 				'comment'=> $old['description'],
-				'downloads'=> 0,
+				'downloads'=> $old['downloads'],
 				'isimage'=> 0,
 				'golds'=> 0,
 			);
