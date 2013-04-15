@@ -523,8 +523,6 @@ function xiuno_load_css(filename) {
 }
 
 function url_to_id(url) {
-	var pos = url.indexOf('.htm');
-	if(pos != 1) url = url.substr(0, pos + 4);
 	return escape(url).replace(/[%.\/\-]/ig, '_');	// 此处不过滤特殊字符在 jquery 下会有奇怪的bug, $('abc%.') 会让 jquery 彻底傻掉，1.4.3 通过，1.6未测试。
 }
 

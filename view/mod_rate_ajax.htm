@@ -98,7 +98,7 @@ function delay_execute(dialog, recall) {
 			
 			dialog.set_body('<div class="ok">'+json.message+'！</div>');
 			setTimeout(function(){
- 				dialog.close();
+ 				dialog.close(true);
 	 			if(recall) recall();
 	 			window.location.reload();
 	 		}, 1000);
@@ -107,7 +107,7 @@ function delay_execute(dialog, recall) {
 	});
 	
 	$('#mod_rate_cancel_$pid').click(function() {
-		dialog.close();
+		dialog.close(true);
 	});
 	
 	$("#rate_credits_$pid option[value='{$rate[credits]}']").attr('selected', "selected");

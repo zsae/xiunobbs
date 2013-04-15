@@ -52,7 +52,7 @@ function delay_execute(dialog, recall) {
 			}
 			dialog.set_body('<div class="ok">'+json.message+'！</div>');
 			setTimeout(function(){
- 				dialog.close();
+ 				dialog.close(true);
 	 			if(recall) recall();
 	 		}, 1000);
 		  });
@@ -60,7 +60,7 @@ function delay_execute(dialog, recall) {
 	});
 	
 	$('#mod_digest_cancel').click(function() {
-		dialog.close();
+		dialog.close(true);
 	});
 	
 	$('#digest_$thread[digest]').attr('checked', 'checked');
