@@ -39,10 +39,10 @@ class post_control extends common_control {
 		
 		$forum = $this->mcache->read('forum', $fid);
 		
-		$typeid1 = intval(core::gpc('typeid1', 'P'));
-		$typeid2 = intval(core::gpc('typeid2', 'P'));
-		$typeid3 = intval(core::gpc('typeid3', 'P'));
-		$typeid4 = intval(core::gpc('typeid4', 'P'));
+		$typeid1 = intval(core::gpc('typeid1', 'R'));
+		$typeid2 = intval(core::gpc('typeid2', 'R'));
+		$typeid3 = intval(core::gpc('typeid3', 'R'));
+		$typeid4 = intval(core::gpc('typeid4', 'R'));
 		
 		$this->thread_type->check_typeid($typeid1, 1);
 		$this->thread_type->check_typeid($typeid2, 2);

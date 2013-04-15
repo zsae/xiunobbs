@@ -20,7 +20,7 @@ $('#mod_top').click(function() {
 	}
 	ajaxdialog_request('?mod-top-fid-$fid.htm'+postdata, function() {
 		window.location.reload();
-	}, {cache: false});
+	});
 	return false;
 });
 
@@ -36,7 +36,7 @@ $('#mod_digest').click(function() {
 	}
 	ajaxdialog_request('?mod-digest-fid-$fid.htm'+sep+postdata, function() {
 		window.location.reload();
-	}, {cache: false});
+	});
 	return false;
 });
 
@@ -64,7 +64,7 @@ $('#mod_type').click(function() {
 	}
 	ajaxdialog_request('?mod-type-fid-$fid.htm'+sep+postdata, function() {
 		window.location.reload();
-	}, {cache: false});
+	});
 	return false;
 });
 
@@ -81,7 +81,7 @@ $('#mod_delete').click(function() {
 	// 删除 dialog
 	ajaxdialog_request('?mod-delete-fid-$fid.htm'+sep+postdata, function() {
 		window.location.reload();
-	}, {cache: false});
+	});
 	return false;
 });
 
@@ -97,7 +97,7 @@ $('#mod_move').click(function() {
 	}
 	ajaxdialog_request('?mod-move-fid-$fid.htm'+sep+postdata, function() {
 		window.location.reload();
-	}, {cache: false});
+	});
 	return false;
 });
 

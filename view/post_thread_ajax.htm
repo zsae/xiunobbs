@@ -360,8 +360,13 @@ function delay_execute(dialog, recall) {
 		 		
 		 		dialog.set_body('<div class="ok">发表成功，页面将自动跳转到列表页！</div>');
 		 		setTimeout(function() {
+		 			if(thread.typeid1 || thread.typeid2 || thread.typeid3 || thread.typeid4) {
+		 				var typeidurl = '-typeid1-'+thread.typeid1+'-typeid2-'+thread.typeid2+'-typeid3-'+thread.typeid3+'-typeid4-'+thread.typeid4; 
+		 			} else {
+		 				var typeidurl = '';
+		 			}
+		 			window.location= '?forum-index-fid-'+thread.fid+'-tid-'+thread.tid+typeidurl+'.htm';
 		 			dialog.close();
-		 			window.location= '?forum-index-fid-'+thread.fid+'-tid-'+thread.tid+'.htm';
 		 		}, 500);
 			  });
 			  return false;
