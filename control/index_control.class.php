@@ -22,7 +22,7 @@ class index_control extends common_control {
 	public function on_index() {
 		
 		// hook index_index_before.php
-		
+
 		$this->on_bbs();
 	}
 	
