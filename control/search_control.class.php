@@ -158,7 +158,7 @@ class search_control extends common_control {
 		// --------------> 优先搜索增量索引
 		$deltamatch = array();
 		if($page == 1) {
-			$pagesize = 20;
+			$pagesize = 10;
 			$cl->SetLimits(0, $pagesize, 1000);	// 最大结果集
 	                $res = $cl->Query($keyword, $this->conf['sphinx_deltasrc']); // * 为所有的索引
 	                if(!empty($cl->_error)) {
@@ -185,7 +185,7 @@ class search_control extends common_control {
                 	
                 	 misc::arrlist_change_key($res['matches'], 'id');
                 	// 合并两次搜索的结果，增量的放在后面。一般最佳结果不出现在增量里面。
-                	$res['matches'] += $deltamatch;
+                	$res['matches'] = $deltamatch + $res['matches'];
                 }
 
                 $threadlist = array();
