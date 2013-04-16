@@ -7,6 +7,15 @@
 // 避免重复加载
 if(!$.editor) {
 
+//
+/*$.xrange = function() {
+	this.range = null;
+	this.bookmark = null;// 只存一个 range
+	this.create = function() {
+		
+	}
+}*/
+
 // function extended jquery
 $.fn.editor = function(settings) {
 	
@@ -53,7 +62,8 @@ $.editor = function(textarea, settings) {
 	//var upload_queue_error = 0;		// 上传错误标志位（标示每轮）
 	
 	var is_pasting = false;			// 是否正在粘贴，ie 会两次激活 beforepaste
-
+	var bookmark = {top: 0, range: null};
+	
 	this.init = function() {
 		var s = '<div class="editor">\
 				<div class="toolbar">\
@@ -299,8 +309,8 @@ $.editor = function(textarea, settings) {
 			var href = $('div.link input.href', menu).val();
 			var linktext = $('div.link input.text', menu).val();
 			var s = href ? '<a href="'+href+'" target="_blank">'+linktext+'</a>' : linktext;
-			_this.load_bookmark();
-			_this.paste(s);
+			var range = _this.load_bookmark();
+			_this.paste(s, range);
 		        _this.hide_menu();
 		        _this.save();
 		});
@@ -329,9 +339,9 @@ $.editor = function(textarea, settings) {
 				s = '<pre class="brush:'+type+'; tab-size:8">'+htmlspecialchars(s)+'</pre><br />';
 			}
 			//var s = href ? '<a href="'+href+'" target="_blank">'+linktext+'</a>' : linktext;
-			_this.load_bookmark();
+			var range = _this.load_bookmark();
 			_this.hide_menu();
-			_this.paste(s);
+			_this.paste(s, range);
 		        _this.save();
 		});
 		$('div.insertcode input.close', menu).click(function() {
@@ -379,9 +389,9 @@ $.editor = function(textarea, settings) {
 				$(this).xn_menu($('div.face', menu), 0, 1000);
 			});
 			$('div.face a', menu).click(function() {
-				_this.load_bookmark();
+				var range = _this.load_bookmark();
 				var s = $(this).html();
-				_this.paste(s);
+				_this.paste(s, range);
 				_this.hide_menu();
 				$('div.face', menu).hide();
 			});
@@ -575,29 +585,36 @@ $.editor = function(textarea, settings) {
 	}
 	
 	this.save_bookmark = function() {
-		_this._focus();
-		var rng = _this.get_range();
-		rng = rng.cloneRange ? rng.cloneRange() : rng;
-		window.xn_bookmark = {'top' : $(_body).scrollTop(), 'rng' : rng};
-		return window.xn_bookmark;
+		var top = $(_body).scrollTop();
+		if(_win.getSelection) {
+			var selection = _win.getSelection();
+			if(selection.rangeCount > 0) {
+				this.bookmark = {top: top, range: selection.getRangeAt(0)};
+			}
+		} else {
+			if(_doc.selection) {
+				var range = _doc.selection.createRange();
+				this.bookmark = {top: top, range: range.getBookmark()};
+			}
+		}
+		return this.bookmark.range;
 	}
 	
 	this.load_bookmark = function() {
-		_this._focus();
-		if(window.xn_bookmark) {
-			var rng = window.xn_bookmark.rng;
-			if(is_ie) {
-				rng.select();
-			} else {
-				var sel = _this.get_selection();
-				sel.removeAllRanges();
-				sel.addRange(rng);
+		if(_win.getSelection) {
+			_win.getSelection().removeAllRanges();
+			_win.getSelection().addRange(this.bookmark.range);
+		} else {
+			if(_doc.body.createTextRange) {
+				var orange = _doc.body.createTextRange();
+				orange.moveToBookmark(this.bookmark.range);
+				orange.select();
 			}
-			$(_body).scrollTop(window.xn_bookmark.top);
-			window.xn_bookmark =  null;
-			return rng;
 		}
-		return null;
+		$(_body).scrollTop(this.bookmark.top);
+		var range = this.bookmark.range;
+		this.bookmark.range = null;
+		return range;
 	}
 	
 	this.get_selection = function() {
@@ -605,6 +622,7 @@ $.editor = function(textarea, settings) {
 	}
 		
 	this.create_range = function() {
+		// ie, w3c
 		return _doc.body.createTextRange ? _doc.body.createTextRange() : _doc.createRange();
 	}
 	
@@ -694,6 +712,7 @@ $.editor = function(textarea, settings) {
 		_this.check_toolbar();
 	}
 	
+	// 定位到最后。
 	this._focus = function() {
 		_win.focus();
 	        setTimeout(_win.myfocus, 50);
@@ -709,16 +728,20 @@ $.editor = function(textarea, settings) {
 			}
 		}
 	}
-	
+
 	// select: 是否覆盖选中的区域
-	
-	this.paste = function(s, overwrite) {
+	this.paste = function(s, range, overwrite) {
 		//_this._focus();
-		var sel = _this.get_selection();
-		var range = _this.get_range();
-		if(is_ie) {
+		if(!range) {
+			range = this.get_range();
+		}
+		
+		if(!_win.getSelection) {
+			range.pasteHTML(s);
+			return;
 			range.select();
 			range.execCommand('Delete');
+			
 			try {
 				// 如果没有选中范围，则会产生异常, todo: 待解决
 				range.pasteHTML(s);
@@ -728,8 +751,9 @@ $.editor = function(textarea, settings) {
 				//alert('操作失败，请您尽量选中连续区域再试试。');
 			}
 		} else {
+			var sel = this.get_selection();
 			if(overwrite) {
-				var old = range.cloneRange();
+			/*	var old = range.cloneRange();
 				range.deleteContents();
 				var newnode = range.createContextualFragment(s + '<span id="range_start" width="1" height="1" style="overflow: hidden;" ></span>');
 				range.insertNode(newnode);
@@ -737,23 +761,34 @@ $.editor = function(textarea, settings) {
 				sel.removeAllRanges();
 				range.setStart(old.startContainer, old.startOffset); // 起始点向前移动到最初的点
 				sel.addRange(range);
-				$('#range_start', _doc).remove();
+				$('#range_start', _doc).remove();*/
 			} else {
+				
 				try {
-					var old = range.cloneRange();
+					_win.focus();
 					range.deleteContents();
-					var newnode = range.createContextualFragment(s + '<span id="range_start" width="1" height="1" style="overflow: hidden;" ></span>');
+					s += '<span id="range_start" width="1" height="1" style="overflow: hidden;" ></span>';
+					if(range.createContextualFragment) {
+						var newnode = range.createContextualFragment(s);
+					} else {
+						// ie9
+						var newnode = $(s, _doc).get(0).parentNode;
+					}
 					range.insertNode(newnode);
-					
-					range.selectNode($('#range_start', _doc)[0]);
+					//range.selectNode($('#range_start', _doc)[0]);
 					range.setStartBefore($('#range_start', _doc).get(0));
 					range.setEndAfter($('#range_start', _doc).get(0));
 					
-					sel.removeAllRanges();
-					sel.addRange(range);
+					if(sel.removeAllRanges) {
+						sel.removeAllRanges();
+						sel.addRange(range);
+					} else {
+						sel.clear();
+						sel.createRange(range);
+					}
 					$('#range_start', _doc).remove();
 				} catch(e) {
-					alert(e.message);
+					alert('paste error:' + e.message);
 				}
 				// 会转义 \n 到 <br/> 影响代码高亮插件！
 				//_doc.execCommand('InsertHtml' , '' , s);
@@ -785,7 +820,8 @@ $.editor = function(textarea, settings) {
 	}
 	
 	this.add_link = function(url) {
-		_this.paste('<a href="' + url + '" target="_blank">' + url + '</a>');
+		var range = _this.load_bookmark();
+		_this.paste('<a href="' + url + '" target="_blank">' + url + '</a>', range);
 		
 		// 初始化内容
 		$('.link input[type=text]', _this.menu).val('');
@@ -798,7 +834,8 @@ $.editor = function(textarea, settings) {
 		width = intval(width);
 		height = intval(height);
 		var s = "<embed wmode=\"transparent\" src=\""+url+"\" style=\"z-index:0;\" width=\""+width+"\" height=\""+height+"\" type=\"application/x-shockwave-flash\" allowFullscreen=\"true\" class=\"border\" />";
-		_this.paste(s);
+		var range = _this.load_bookmark();
+		_this.paste(s, range);
 		$('div.video', _this.menu).hide();
 	};
 	
