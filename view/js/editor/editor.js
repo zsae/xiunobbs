@@ -309,7 +309,7 @@ $.editor = function(textarea, settings) {
 			var href = $('div.link input.href', menu).val();
 			var linktext = $('div.link input.text', menu).val();
 			var s = href ? '<a href="'+href+'" target="_blank">'+linktext+'</a>' : linktext;
-			var range = _this.load_bookmark();
+			var range = _this.load_bookmark(true);
 			_this.paste(s, range);
 		        _this.hide_menu();
 		        _this.save();
@@ -339,7 +339,7 @@ $.editor = function(textarea, settings) {
 				s = '<pre class="brush:'+type+'; tab-size:8">'+htmlspecialchars(s)+'</pre><br />';
 			}
 			//var s = href ? '<a href="'+href+'" target="_blank">'+linktext+'</a>' : linktext;
-			var range = _this.load_bookmark();
+			var range = _this.load_bookmark(true);
 			_this.hide_menu();
 			_this.paste(s, range);
 		        _this.save();
@@ -365,7 +365,7 @@ $.editor = function(textarea, settings) {
 			}, 100);
 		});
 		$('.video input.insert', menu).click(function() {
-			_this.load_bookmark();
+			_this.load_bookmark(true);
 			var url = $('.video input.url', menu).val();
 			var width = $('.video input.w', menu).val();
 			var height = $('.video input.h', menu).val();
@@ -389,7 +389,7 @@ $.editor = function(textarea, settings) {
 				$(this).xn_menu($('div.face', menu), 0, 1000);
 			});
 			$('div.face a', menu).click(function() {
-				var range = _this.load_bookmark();
+				var range = _this.load_bookmark(true);
 				var s = $(this).html();
 				_this.paste(s, range);
 				_this.hide_menu();
@@ -593,13 +593,14 @@ $.editor = function(textarea, settings) {
 		} else {
 			if(_doc.selection) {
 				var range = _doc.selection.createRange();
+				trace('bookmark: ' + range.getBookmark());
 				this.bookmark = {top: top, range: range.getBookmark()};
 			}
 		}
 		return this.bookmark.range;
 	}
 	
-	this.load_bookmark = function() {
+	this.load_bookmark = function(clear) {
 		if(_win.getSelection) {
 			_win.getSelection().removeAllRanges();
 			_win.getSelection().addRange(this.bookmark.range);
@@ -608,12 +609,17 @@ $.editor = function(textarea, settings) {
 				var orange = _doc.body.createTextRange();
 				orange.moveToBookmark(this.bookmark.range);
 				orange.select();
+			} else {
+				var orange = null;
 			}
 		}
 		$(_body).scrollTop(this.bookmark.top);
 		var range = this.bookmark.range;
-		this.bookmark.range = null;
-		return range;
+		if(clear) {
+			this.bookmark.range = null;
+			this.bookmark.top = 0;
+		}
+		return _win.getSelection ? range : orange;
 	}
 	
 	this.get_selection = function() {
@@ -715,83 +721,95 @@ $.editor = function(textarea, settings) {
 	this._focus = function() {
 		_win.focus();
 	        setTimeout(_win.myfocus, 50);
-	        //_win.DOMwindow.myfocus();
-	        return;
-		if(_issource) {
-			textarea.focus();
-		} else {
-			if($.browser.msie) {
-				_doc.body.focus();
+	        // 光标移动到最后
+	        
+	        var sel = this.get_selection();
+        	range = this.get_range();
+        	
+	        if(_win.getSelection) {
+	        	
+	        	// copy from .paste()
+	        	range.deleteContents();
+			var s = '<span id="range_start" width="1" height="1" style="overflow: hidden;" ></span>';
+			if(range.createContextualFragment) {
+				var newnode = range.createContextualFragment(s);
 			} else {
-				_win.focus();
+				// ie9
+				var newnode = $(s, _doc).get(0).parentNode;
 			}
-		}
+			range.insertNode(newnode);
+			//range.selectNode($('#range_start', _doc)[0]);
+			range.setStartBefore($('#range_start', _doc).get(0));
+			range.setEndAfter($('#range_start', _doc).get(0));
+			
+			if(sel.removeAllRanges) {
+				sel.removeAllRanges();
+				sel.addRange(range);
+			} else {
+				sel.clear();
+				sel.createRange(range);
+			}
+			$('#range_start', _doc).remove();
+			// copy end.
+			
+	        } else {
+	        	var html = _this.get();
+	        	html += '<span id="range_start" width="1" height="1" style="overflow: hidden;" ></span>';
+	        	_this.set(html);
+	        	range.moveToElementText($('#range_start', _doc).get(0));
+	        	range.select();
+	        	range.collapse(false);
+	        	$('#range_start', _doc).remove();
+	        }
+	        return;
 	}
 
 	// select: 是否覆盖选中的区域
 	this.paste = function(s, range, overwrite) {
-		//_this._focus();
 		if(!range) {
 			range = this.get_range();
 		}
-		
 		if(!_win.getSelection) {
-			range.pasteHTML(s);
-			return;
-			range.select();
-			range.execCommand('Delete');
-			
 			try {
 				// 如果没有选中范围，则会产生异常, todo: 待解决
 				range.pasteHTML(s);
 			} catch(e) {
 				// 会有安全提示
+				range.execCommand('Delete');
 				_doc.execCommand('paste' , '' , s );
 				//alert('操作失败，请您尽量选中连续区域再试试。');
 			}
 		} else {
 			var sel = this.get_selection();
-			if(overwrite) {
-			/*	var old = range.cloneRange();
+			try {
+				_win.focus();
 				range.deleteContents();
-				var newnode = range.createContextualFragment(s + '<span id="range_start" width="1" height="1" style="overflow: hidden;" ></span>');
-				range.insertNode(newnode);
-				range.selectNode($('#range_start', _doc)[0]);
-				sel.removeAllRanges();
-				range.setStart(old.startContainer, old.startOffset); // 起始点向前移动到最初的点
-				sel.addRange(range);
-				$('#range_start', _doc).remove();*/
-			} else {
-				
-				try {
-					_win.focus();
-					range.deleteContents();
-					s += '<span id="range_start" width="1" height="1" style="overflow: hidden;" ></span>';
-					if(range.createContextualFragment) {
-						var newnode = range.createContextualFragment(s);
-					} else {
-						// ie9
-						var newnode = $(s, _doc).get(0).parentNode;
-					}
-					range.insertNode(newnode);
-					//range.selectNode($('#range_start', _doc)[0]);
-					range.setStartBefore($('#range_start', _doc).get(0));
-					range.setEndAfter($('#range_start', _doc).get(0));
-					
-					if(sel.removeAllRanges) {
-						sel.removeAllRanges();
-						sel.addRange(range);
-					} else {
-						sel.clear();
-						sel.createRange(range);
-					}
-					$('#range_start', _doc).remove();
-				} catch(e) {
-					alert('paste error:' + e.message);
+				s += '<span id="range_start" width="1" height="1" style="overflow: hidden;" ></span>';
+				if(range.createContextualFragment) {
+					var newnode = range.createContextualFragment(s);
+				} else {
+					// ie9
+					var newnode = $(s, _doc).get(0).parentNode;
 				}
-				// 会转义 \n 到 <br/> 影响代码高亮插件！
-				//_doc.execCommand('InsertHtml' , '' , s);
+				range.insertNode(newnode);
+				//range.selectNode($('#range_start', _doc)[0]);
+				range.setStartBefore($('#range_start', _doc).get(0));
+				range.setEndAfter($('#range_start', _doc).get(0));
+				
+				if(sel.removeAllRanges) {
+					sel.removeAllRanges();
+					sel.addRange(range);
+				} else {
+					sel.clear();
+					sel.createRange(range);
+				}
+				$('#range_start', _doc).remove();
+			} catch(e) {
+				alert('paste error:' + e.message);
 			}
+			// 会转义 \n 到 <br/> 影响代码高亮插件！
+			//_doc.execCommand('InsertHtml' , '' , s);
+			
 		}
 		
 		// 延迟保存?
@@ -801,7 +819,6 @@ $.editor = function(textarea, settings) {
 	this.set_fontcolor = function(color) {
 		
 		// 设置选中状态的字体颜色
-		_this.load_bookmark();
 		_this.exec_cmd('ForeColor', color);
 		
 		$('a.fontcolor', _this.toolbar).css('background-color', color);
@@ -819,7 +836,7 @@ $.editor = function(textarea, settings) {
 	}
 	
 	this.add_link = function(url) {
-		var range = _this.load_bookmark();
+		var range = _this.load_bookmark(true);
 		_this.paste('<a href="' + url + '" target="_blank">' + url + '</a>', range);
 		
 		// 初始化内容
@@ -833,7 +850,7 @@ $.editor = function(textarea, settings) {
 		width = intval(width);
 		height = intval(height);
 		var s = "<embed wmode=\"transparent\" src=\""+url+"\" style=\"z-index:0;\" width=\""+width+"\" height=\""+height+"\" type=\"application/x-shockwave-flash\" allowFullscreen=\"true\" class=\"border\" />";
-		var range = _this.load_bookmark();
+		var range = _this.load_bookmark(true);
 		_this.paste(s, range);
 		$('div.video', _this.menu).hide();
 	};
