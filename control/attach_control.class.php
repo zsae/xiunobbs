@@ -337,10 +337,19 @@ class attach_control extends common_control {
 		$fid = intval(core::gpc('fid'));
 		$aid = intval(core::gpc('aid'));
 		$uid = $this->_user['uid'];
+		
+		// 板块权限检查
+		$forum = $this->mcache->read('forum', $fid);
+		$this->check_forum_exists($forum);
+		$this->check_access($forum, 'attach');
+		
+		$ismod = $this->is_mod($forum, $this->_user);
 		$attach = $this->attach->read($fid, $aid);
+		if(empty($attach)) $this->message('附件不存在。');
 		if($attach['uid'] != $this->_user['uid']) {
-			$this->message('您不能更新别人的附件！');
+			$this->check_access($forum, 'update');
 		}
+		
 		if(isset($_FILES['Filedata']['tmp_name']) && is_file($_FILES['Filedata']['tmp_name'])) {
 			$file = $_FILES['Filedata'];
 			$attach['filesize'] = filesize($file['tmp_name']);
@@ -364,11 +373,16 @@ class attach_control extends common_control {
 		$fid = intval(core::gpc('fid'));
 		$aid = intval(core::gpc('aid'));
 		
-		// 权限判断
+		// 板块权限检查
+		$forum = $this->mcache->read('forum', $fid);
+		$this->check_forum_exists($forum);
+		$this->check_access($forum, 'attach');
+		
+		$ismod = $this->is_mod($forum, $this->_user);
 		$attach = $this->attach->read($fid, $aid);
 		if(empty($attach)) $this->message('附件不存在。');
 		if($attach['uid'] != $this->_user['uid']) {
-			$this->message('您不能删除别人的附件！');
+			$this->check_access($forum, 'delete');
 		}
 		
 		// 如果附件没有归属，那么可能存在于 kv.uid_aids.tmp 文件中

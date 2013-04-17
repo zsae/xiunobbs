@@ -52,7 +52,7 @@ class runtime extends base_model {
 				$grouparr = misc::arrlist_key_values($grouplist, 'groupid', 'name');
 				$forumaccesson = $this->forum_access->get_accesson($forumarr);
 				$this->data[$key] += array (
-					'onlines'=>$this->online->count(),
+					'onlines'=>$this->online->index_count(),
 					'posts'=>$this->post->count(),
 					'threads'=>$this->thread->count(),
 					'users'=>$this->user->count(),

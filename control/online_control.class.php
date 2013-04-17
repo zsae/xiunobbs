@@ -20,7 +20,7 @@ class online_control extends common_control {
 		// hook online_list_before.php
 		$onlinelist = $this->online->get_onlinelist();
 		$users = count($onlinelist);
-		$onlines = $this->online->count();
+		$onlines = $this->online->index_count();
 		
 		$this->view->assign('users', $users);
 		$this->view->assign('onlines', $onlines);

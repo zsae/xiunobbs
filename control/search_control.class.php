@@ -158,7 +158,7 @@ class search_control extends common_control {
 		// --------------> 优先搜索增量索引
 		$deltamatch = array();
 		if($page == 1) {
-			$pagesize = 100;
+			$pagesize = 10;
 			$cl->SetLimits(0, $pagesize, 1000);	// 最大结果集
 	                $res = $cl->Query($keyword, $this->conf['sphinx_deltasrc']); // * 为所有的索引
 	                if(!empty($cl->_error)) {
@@ -167,8 +167,9 @@ class search_control extends common_control {
 	                if(!empty($res) && !empty($res['total'])) {
 	                       $deltamatch = $res['matches'];
 	                }
+	                
+	                misc::arrlist_change_key($deltamatch, 'id');
 		}
-		
 		
 		// --------------> 再搜索主索引
                 
@@ -181,19 +182,23 @@ class search_control extends common_control {
                 if(empty($res) || empty($res['total'])) {
                        $res['matches'] = $deltamatch;
                 } else {
+                	
+                	 misc::arrlist_change_key($res['matches'], 'id');
                 	// 合并两次搜索的结果，增量的放在后面。一般最佳结果不出现在增量里面。
-                	$res['matches'] += $deltamatch;
+                	$res['matches'] = $deltamatch + $res['matches'];
                 }
 
                 $threadlist = array();
+                $forums = array();
                 foreach($res['matches'] as $v) {
-                        if(!$v['attrs']) continue;
+                        if(empty($v['attrs'])) continue;
                         if(empty($v['attrs']['fid'])) continue;
                         $fid = $v['attrs']['fid'];
                         
                         $thread = $this->thread->read($v['attrs']['fid'], $v['attrs']['tid']);
                         if(empty($thread)) continue;
-                        $forum = $this->mcache->read('forum', $fid);
+                        empty($forums[$fid]) && $forums[$fid] = $this->mcache->read('forum', $fid);
+                        $forum = $forums[$fid];
                         $this->thread->format($thread, $forum);
                         $thread['forumname'] = isset($this->conf['forumarr'][$thread['fid']]) ? $this->conf['forumarr'][$thread['fid']] : '';
                         $thread['subject'] = str_replace($keyword, '<span class="red">'.$keyword.'</span>', $thread['subject']);

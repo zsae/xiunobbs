@@ -99,6 +99,7 @@ class user_control extends common_control {
 			$sid = $this->_sid;
 			$online = $this->online->read($sid);
 			if($online) {
+				$online['groupid'] = 0;
 				$online['uid'] = 0;
 				$online['username'] = '';
 				$this->online->update($online);

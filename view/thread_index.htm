@@ -428,9 +428,6 @@ $('#quick_message').focus();
 var fid_page = $.parseJSON($.pdata(cookie_pre + 'fid_page'));
 var page = fid_page ? fid_page[''+$fid] : '';
 if(page && page > 1) {
-	var href = $('#pforum_link').attr('href').replace(/page-1/ig, "page-"+page);
-	$('#pforum_link').attr('href', href);
-	
 	var href = $('#forum_link').attr('href').replace(/page-1/ig, "page-"+page);
 	$('#forum_link').attr('href', href);
 }
