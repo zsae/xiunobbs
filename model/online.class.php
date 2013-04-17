@@ -42,9 +42,9 @@ class online extends base_model {
 			$n = $this->online->index_count();
 			$this->online->count($n);
 			$this->runtime->xset('onlines', $n);
+		} else {
+			$this->runtime->xset('onlines', $this->conf['onlines']);
 		}
-		
-		$this->runtime->xset('onlines', $this->conf['onlines']);
 	}
 }
 ?>

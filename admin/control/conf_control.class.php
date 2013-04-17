@@ -297,6 +297,7 @@ class conf_control extends admin_control {
                         
                         // online 比较特殊
                         $n = $this->online->index_count();
+                        $this->online->count($n);
                         $this->runtime->xset('onlines', $n);
                 }
                 
