@@ -391,6 +391,7 @@ $.editor = function(textarea, settings) {
 			$('div.face a', menu).click(function() {
 				var range = _this.load_bookmark(true);
 				var s = $(this).html();
+				alert('face range:' + range);
 				_this.paste(s, range);
 				_this.hide_menu();
 				$('div.face', menu).hide();
@@ -484,6 +485,7 @@ $.editor = function(textarea, settings) {
 	this.clear_paste = function(e) {
 		if(is_ie) {
 			var bookmark = _this.save_bookmark();
+			var range = _this.get_range();
 			
 			var __iframe = _doc.createElement('iframe');
 			__iframe.id = "__iframeid";
@@ -519,9 +521,8 @@ $.editor = function(textarea, settings) {
 			s = _this.fix_link(s);
 			s = _this.fix_officeword(s);
 			
-			var rng = bookmark.rng;
-			rng.select();
-			rng.pasteHTML(s);
+			range.select();
+			range.pasteHTML(s);
 			
 			if(e.preventDefault) e.preventDefault();
 			if(e.returnValue) e.returnValue = false;
@@ -529,9 +530,9 @@ $.editor = function(textarea, settings) {
 			_this.save();
 		} else {
 			
-			$('#__iframeid', _doc).remove();
+			$('#__divid', _doc).remove();
 			var __div = _doc.createElement('div');
-			__div.id = "__iframeid";
+			__div.id = "__divid";
 			__div.style.width = "1px";
 			__div.style.height = "1px";
 			__div.style.position = "absolute";
@@ -547,15 +548,14 @@ $.editor = function(textarea, settings) {
 			var newrng = _doc.createRange();	// 创建新的 Range 对象
 			
 			newrng.selectNodeContents(__div);
-			//newrng.setStart(__div.firstChild, 0);
-			//newrng.setEnd(__div.firstChild, 1);
 			oldsel.removeAllRanges();
 			oldsel.addRange(newrng);
 			
-			//alert(1);
+			var scrolltop = $(document).scrollTop();;
 			setTimeout(function() {
-				//alert(2);
-				var s = _doc.getElementById('__iframeid').innerHTML;
+				$(document).scrollTop(scrolltop); // chrome bug 会滚到页脚
+				var __div = _doc.getElementById('__divid');
+				var s = __div.innerHTML;
 				if (__div.innerHTML === '\uFEFF') {
 					var s = '';
 					_doc.body.removeChild(__div);
@@ -563,19 +563,15 @@ $.editor = function(textarea, settings) {
 				}
 				s = _this.fix_link(s);
 				s = _this.fix_officeword(s);
-				// resotre old range
-				oldsel.removeAllRanges();
-				oldsel.addRange(oldrng);
 			
 				// fix chrome
-				if(s.indexOf('id="__iframeid"') != -1) {
-					s = s.replace(/<div\s+id="__iframeid"[^>]*?>([\s\S]*?)<\/div>/ig, '<p>$1</p>');
+				if(s.indexOf('id="__divid"') != -1) {
+					s = s.replace(/<div\s+id="__divid"[^>]*?>([\s\S]*?)<\/div>/ig, '<p>$1</p>');
 				}
 				
-				__div.innerHTML = s;
-				
-				_doc.execCommand('inserthtml', false, s);
 				_doc.body.removeChild(__div);
+				
+				_this.paste(s, oldrng);
 				
 				_this.save();
 			}, 0);
@@ -588,14 +584,11 @@ $.editor = function(textarea, settings) {
 		if(_win.getSelection) {
 			var selection = _win.getSelection();
 			if(selection.rangeCount > 0) {
-				this.bookmark = {top: top, range: selection.getRangeAt(0)};
+				_this.bookmark = {top: top, range: selection.getRangeAt(0)};
 			}
 		} else {
-			if(_doc.selection) {
-				var range = _doc.selection.createRange();
-				trace('bookmark: ' + range.getBookmark());
-				this.bookmark = {top: top, range: range.getBookmark()};
-			}
+			var range = _doc.selection.createRange();
+			_this.bookmark = {top: top, range: range.getBookmark()};
 		}
 		return this.bookmark.range;
 	}
@@ -603,21 +596,21 @@ $.editor = function(textarea, settings) {
 	this.load_bookmark = function(clear) {
 		if(_win.getSelection) {
 			_win.getSelection().removeAllRanges();
-			_win.getSelection().addRange(this.bookmark.range);
+			_win.getSelection().addRange(_this.bookmark.range);
 		} else {
-			if(_doc.body.createTextRange) {
+			if(_this.bookmark.range) {
 				var orange = _doc.body.createTextRange();
-				orange.moveToBookmark(this.bookmark.range);
+				orange.moveToBookmark(_this.bookmark.range);
 				orange.select();
 			} else {
 				var orange = null;
 			}
 		}
-		$(_body).scrollTop(this.bookmark.top);
-		var range = this.bookmark.range;
+		$(_body).scrollTop(_this.bookmark.top);
+		var range = _this.bookmark.range;
 		if(clear) {
-			this.bookmark.range = null;
-			this.bookmark.top = 0;
+			_this.bookmark.range = null;
+			_this.bookmark.top = 0;
 		}
 		return _win.getSelection ? range : orange;
 	}
@@ -784,7 +777,8 @@ $.editor = function(textarea, settings) {
 			try {
 				_win.focus();
 				range.deleteContents();
-				s += '<span id="range_start" width="1" height="1" style="overflow: hidden;" ></span>';
+				var range_start_id = '____range_start____';
+				s += '<span id="'+range_start_id+'" width="1" height="1" ></span>';
 				if(range.createContextualFragment) {
 					var newnode = range.createContextualFragment(s);
 				} else {
@@ -793,8 +787,9 @@ $.editor = function(textarea, settings) {
 				}
 				range.insertNode(newnode);
 				//range.selectNode($('#range_start', _doc)[0]);
-				range.setStartBefore($('#range_start', _doc).get(0));
-				range.setEndAfter($('#range_start', _doc).get(0));
+				//var range_start_id = 'range_start_'+(Math.random().toString().substr(2,8));
+				range.setStartBefore($('#'+range_start_id, _doc).get(0));
+				range.setEndAfter($('#'+range_start_id, _doc).get(0));
 				
 				if(sel.removeAllRanges) {
 					sel.removeAllRanges();
@@ -803,7 +798,12 @@ $.editor = function(textarea, settings) {
 					sel.clear();
 					sel.createRange(range);
 				}
-				$('#range_start', _doc).remove();
+				// 此处不准确
+				//var offset = $('#'+range_start_id, _doc).offset();
+				//$(_doc.body, _doc).scrollTop(offset.top);
+				//$(_doc.body, _doc).scrollTop($('#'+range_start_id, _doc).get(0).offsetTop);
+				$('#'+range_start_id, _doc).remove();
+				
 			} catch(e) {
 				alert('paste error:' + e.message);
 			}
