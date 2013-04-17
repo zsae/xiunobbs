@@ -52,9 +52,9 @@ $.editor = function(textarea, settings) {
 	var _this = this;			// editor class, not textarea
 	var _iframe, _win, _doc, _body;		// 注意：这里的 _iframe 是 <iframe> ，不是<div class="iframe">
 	var editor, toolbar, footer, menu;	// jquery
-	var _textarea = textarea; 		// (非 jquery 对象)
-	this.settings = settings; 		// (非 jquery 对象)
-	var _issource = true;			// 是否为 source 模式，与 text 模式对应 , public
+	var _textarea = textarea; 		// (非 jquery 对象) 
+	this.settings = settings; 		// (非 jquery 对象) public
+	var _issource = true;			// 是否为 source 模式，与 text 模式对应 private
 	//var ie_selection;			// ie selection	, 保存IE的选中。
 	//var ie_bookmark;			// ie selection	, 保存IE的选中。 private
 	//this.bookmark = null;				// bookmark
@@ -581,38 +581,42 @@ $.editor = function(textarea, settings) {
 	
 	this.save_bookmark = function() {
 		var top = $(_body).scrollTop();
+		var range = null;
 		if(_win.getSelection) {
 			var selection = _win.getSelection();
 			if(selection.rangeCount > 0) {
-				_this.bookmark = {top: top, range: selection.getRangeAt(0)};
+				range = selection.getRangeAt(0);
+				_this.bookmark = {top: top, range: range};
 			}
 		} else {
 			var range = _doc.selection.createRange();
 			_this.bookmark = {top: top, range: range.getBookmark()};
 		}
-		return this.bookmark.range;
+		return range;
 	}
 	
 	this.load_bookmark = function(clear) {
 		if(_win.getSelection) {
 			_win.getSelection().removeAllRanges();
 			_win.getSelection().addRange(_this.bookmark.range);
+			var range = _this.bookmark.range;
 		} else {
+			var range = _doc.body.createTextRange();
 			if(_this.bookmark.range) {
-				var orange = _doc.body.createTextRange();
-				orange.moveToBookmark(_this.bookmark.range);
-				orange.select();
-			} else {
-				var orange = null;
+				try {
+				range.moveToBookmark(_this.bookmark.range);
+				} catch(e) {
+					alert(e.message);
+				}
+				range.select();
 			}
 		}
 		$(_body).scrollTop(_this.bookmark.top);
-		var range = _this.bookmark.range;
 		if(clear) {
 			_this.bookmark.range = null;
 			_this.bookmark.top = 0;
 		}
-		return _win.getSelection ? range : orange;
+		return range;
 	}
 	
 	this.get_selection = function() {
