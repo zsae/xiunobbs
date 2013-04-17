@@ -410,7 +410,6 @@ $.editor = function(textarea, settings) {
 			_this.zoom();
 		});
 		
-		
 		// 加载 image swfupload  file swfupload
 		if(settings.onhook) {
 			settings.onhook(_this);
