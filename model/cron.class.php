@@ -85,7 +85,7 @@ class cron extends base_model {
 				// 查找两天内的数据是否足够100条，不足则不予处理
 				$n = $this->thread_new->index_count(array('lastpost' => array('>'=>$_SERVER['time'] - 86400 * 2)));
 				if($n > 100) {
-					$this->thread_new->index_delete(array('lastpost' => array('<'=>$_SERVER['time'] - 86400 * 2)), TRUE);
+					$this->thread_new->index_delete(array('lastpost' => array('<'=>$_SERVER['time'] - 86400 * 2)));
 				}
 				/* 考虑到 sphinx 增量索引， thread_new 保存至少需要2天的数据
 				$newlist = $this->thread_new->index_fetch(array(), array('tid'=>-1), 0, 100);

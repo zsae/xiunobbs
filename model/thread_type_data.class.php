@@ -81,7 +81,7 @@ class thread_type_data extends base_model {
 	}
 	
 	public function delete_by_fid($fid) {
-		$this->index_delete(array('fid'=>$fid), TRUE);
+		$this->index_delete(array('fid'=>$fid));
 	}
 	
 	// 获取一个主题属于哪些 typeid 组合，用来删除

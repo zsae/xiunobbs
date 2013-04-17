@@ -14,7 +14,7 @@ class modlog extends base_model {
 	}
 	
 	public function delete_by_fid($fid) {
-		$this->index_delete(array('fid'=>$fid), TRUE);
+		$this->index_delete(array('fid'=>$fid));
 	}
 	
 	public function delete_by_fid_tid($fid, $tid) {
@@ -44,7 +44,6 @@ class modlog extends base_model {
 	
 	// 用来显示给用户
 	public function format(&$modlog) {
-		
 		$arr = array('digest'=>'加精华', 'undigest'=>'取消精华', 'top'=>'置顶', 'untop'=>'取消置顶', 'delete'=>'删除', 'move'=>'移动', 'type'=>'主题分类', 'rate'=>'评分');
 		$modlog['action_fmt'] = $arr[$modlog['action']];
 		$modlog['credits_fmt'] = $modlog['credits'] ? '+'.$modlog['credits'] : '---';
