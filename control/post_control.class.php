@@ -528,10 +528,8 @@ class post_control extends common_control {
 					$attach['tid'] = $post['tid'];
 					if($attach['isimage'] == 1) {
 						$imagenum++;
-						log::trace('imagenum++:'.$imagenum);
 					} else {
 						$attachnum++;
-						log::trace('attachnum++:'.$attachnum);
 					}
 					// 修改主键
 					$this->attach->db_cache_update("attach-fid-$fid-aid-$aid", $attach);
@@ -548,7 +546,6 @@ class post_control extends common_control {
 						$this->attach->unlink($attach);
 						$this->attach->delete($attach['fid'], $attach['aid']);
 						$imagenum--;
-						log::trace('imagenum--:'.$imagenum);
 						//var_dump('deleted: '.$attach['filename'].', imagenum:'.$imagenum);
 					} else {
 						//var_dump($attach['filename']);
@@ -558,7 +555,6 @@ class post_control extends common_control {
 				//var_dump($post['imagenum'].'-'.$imagenum);
 				$post['imagenum'] += $imagenum;
 				$post['attachnum'] += $attachnum;
-				log::trace('$post:'.print_r($post, 1));
 
 				// 如果为主题帖，则更新附件个数
 				if($isfirst) {
