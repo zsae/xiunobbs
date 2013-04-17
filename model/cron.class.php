@@ -98,7 +98,7 @@ class cron extends base_model {
 			// 清空
 			$this->runtime->xset('todayposts', 0);
 			$this->runtime->xset('todayusers', 0);
-			$this->runtime->xset('onlines', $this->online->count());	// 校对
+			$this->runtime->xset('onlines', $this->online->index_count());	// 校对
 			// $this->runtime->xsave();
 		}
 		
