@@ -169,6 +169,10 @@ class mod_control extends admin_control {
 			$this->view->assign('error', $error);
 			$this->view->display('mod_manageuser.htm');
 		} elseif($do == 'banuser') {
+			$deletepost = core::gpc('deletepost', 'P');
+			$banipstart = core::gpc('banipstart', 'P'); // 发帖IP，注册IP 段
+			$banipend = core::gpc('banipend', 'P');
+			
 			if(!$this->_group['allowbanuser']) {
 				$this->message('对不起，您没有禁止用户的权限', 0);
 			}

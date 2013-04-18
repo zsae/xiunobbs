@@ -298,8 +298,15 @@ class user_control extends common_control {
 							
 							$subject = "您的找回密码邮件！-".$this->conf['app_name'];
 							$message = "
-								<h2>尊敬的用户 $username, 您好！</h2>
-								<h3>点击以下链接找回您在【".$this->conf['app_name']."】的密码（该链接有效时间：三小时）：<br /><a href=\"$url\" target=\"_blank\">$url</a></h3>
+								<html>
+									<head>
+										<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />
+									</head>
+									<body>
+										<h2>尊敬的用户 $username, 您好！</h2>
+										<h3>点击以下链接找回您在【".$this->conf['app_name']."】的密码（该链接有效时间：三小时）：<br /><a href=\"$url\" target=\"_blank\">$url</a></h3>
+									</body>
+								</html>
 							";
 							$emailsend = $this->mmisc->sendmail($username, $email, $subject, $message);
 							if(empty($emailsend)) {
@@ -504,10 +511,17 @@ class user_control extends common_control {
 		$code = encrypt("$uid	$_SERVER[time]", $this->conf['auth_key']);
 		$url = "?user-active-code-$code.htm";
 		$subject = '请激活您在'.$this->conf['app_name'].'注册的账号！';
-		$message = "尊敬的用户 {$username}，您好！<br />
-			您在本站注册的账号还需一步完成注册，请点击以下链接激活您的账号：<br />
-			<a href=\"$url\">$url</a>";
-		
+		$message = "
+			<html>
+				<head>
+					<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />
+				</head>
+				<body>
+					尊敬的用户 {$username}，您好！<br />
+					您在本站注册的账号还需一步完成注册，请点击以下链接激活您的账号：<br />
+					<a href=\"$url\">$url</a>
+				</body>
+			</html>";
 		// hook user_send_active_mail_after.php
 		$error['emailsend'] = $this->mmisc->sendmail($username, $email, $subject, $message);
 	}

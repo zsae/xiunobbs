@@ -458,11 +458,6 @@ $.editor = function(textarea, settings) {
 			_this.save_bookmark();
 		});
 		
-		// 加载完成以后
-		$(function() {
-			//_this._focus();
-		});
-		
 		// 加载初始化的HTML
 		if(textarea.value) {
 			_this.set(textarea.value);
