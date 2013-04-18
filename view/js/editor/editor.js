@@ -289,7 +289,7 @@ $.editor = function(textarea, settings) {
 		var rangelink = null;
 		var trange = null;
 		$('a.link', toolbar).click(function() {
-			_this.save_bookmark();
+			//_this.save_bookmark();
 			_this.hide_menu();
 			trange = _this.get_range();
 			var pelement = is_ie ? trange.parentElement() : trange.startContainer;
@@ -313,8 +313,7 @@ $.editor = function(textarea, settings) {
 			var href = $('div.link input.href', menu).val();
 			var linktext = $('div.link input.text', menu).val();
 			var s = href ? '<a href="'+href+'" target="_blank">'+linktext+'</a>' : linktext;
-			var range = _this.load_bookmark(true);
-			_this.paste(s, range);
+			_this.paste(s);
 		        _this.hide_menu();
 		        _this.save();
 		});
@@ -325,7 +324,7 @@ $.editor = function(textarea, settings) {
 		
 		// insertcode
 		$('a.insertcode', toolbar).click(function() {
-			_this.save_bookmark();
+			//_this.save_bookmark();
 			_this.hide_menu();
 			//$('div.insertcode select', menu).val('').focus();
 			//$('div.insertcode textarea', menu).val('');
@@ -343,9 +342,8 @@ $.editor = function(textarea, settings) {
 				s = '<pre class="brush:'+type+'; tab-size:8">'+htmlspecialchars(s)+'</pre><br />';
 			}
 			//var s = href ? '<a href="'+href+'" target="_blank">'+linktext+'</a>' : linktext;
-			var range = _this.load_bookmark(true);
 			_this.hide_menu();
-			_this.paste(s, range);
+			_this.paste(s);
 		        _this.save();
 		});
 		$('div.insertcode input.close', menu).click(function() {
@@ -361,7 +359,7 @@ $.editor = function(textarea, settings) {
 		$('a.numberlist', toolbar).click(function() {_this.exec_cmd('InsertOrderedList');});
 		
 		$('a.video', toolbar).click(function() {
-			_this.save_bookmark();
+			//_this.save_bookmark();
 			_this.hide_menu();
 			$(this).xn_menu($('.video', menu), 0, 5000);
 			setTimeout(function() {
@@ -369,7 +367,6 @@ $.editor = function(textarea, settings) {
 			}, 100);
 		});
 		$('.video input.insert', menu).click(function() {
-			_this.load_bookmark(true);
 			var url = $('.video input.url', menu).val();
 			var width = $('.video input.w', menu).val();
 			var height = $('.video input.h', menu).val();
@@ -378,6 +375,7 @@ $.editor = function(textarea, settings) {
 		});
 		$('.video input.close', menu).click(function() {
 			_this.hide_menu();
+			_this.load_bookmark(true);
 			return true;
 		});
 		
@@ -388,14 +386,13 @@ $.editor = function(textarea, settings) {
 		
 			$('div.face', menu).html(facehtml);
 			$('a.face', toolbar).click(function() {
-				_this.save_bookmark();
+				//_this.save_bookmark();
 				_this.hide_menu();
 				$(this).xn_menu($('div.face', menu), 0, 1000);
 			});
 			$('div.face a', menu).click(function() {
-				var range = _this.load_bookmark(true);
 				var s = $(this).html();
-				_this.paste(s, range);
+				_this.paste(s);
 				_this.hide_menu();
 				$('div.face', menu).hide();
 			});
@@ -455,6 +452,10 @@ $.editor = function(textarea, settings) {
 			var e = e ? e : window.event;
 			_this.clear_paste(e);
 			//return false;
+		});
+		
+		$(_body).bind('blur', function() {
+			_this.save_bookmark();
 		});
 		
 		// 加载完成以后
@@ -549,8 +550,8 @@ $.editor = function(textarea, settings) {
 	}
 	
 	this.add_link = function(url) {
-		var range = _this.load_bookmark(true);
-		_this.paste('<a href="' + url + '" target="_blank">' + url + '</a>', range);
+		
+		_this.paste('<a href="' + url + '" target="_blank">' + url + '</a>');
 		
 		// 初始化内容
 		$('.link input[type=text]', _this.menu).val('');
@@ -563,8 +564,9 @@ $.editor = function(textarea, settings) {
 		width = intval(width);
 		height = intval(height);
 		var s = "<embed wmode=\"transparent\" src=\""+url+"\" style=\"z-index:0;\" width=\""+width+"\" height=\""+height+"\" type=\"application/x-shockwave-flash\" allowFullscreen=\"true\" class=\"border\" />";
-		var range = _this.load_bookmark(true);
-		_this.paste(s, range);
+		
+		_this.paste(s);
+		
 		$('div.video', _this.menu).hide();
 	};
 	
@@ -619,7 +621,7 @@ $.editor = function(textarea, settings) {
 	
 	this.clear_paste = function(e) {
 		if(is_ie) {
-			var bookmark = _this.save_bookmark();
+			//var bookmark = _this.save_bookmark();
 			var range = _this.get_range();
 			
 			var __iframe = _doc.createElement('iframe');
@@ -823,10 +825,11 @@ $.editor = function(textarea, settings) {
 	}
 
 	// select: 是否覆盖选中的区域
-	this.paste = function(s, range, overwrite) {
+	this.paste = function(s, range) {
 		_win.focus();
 		if(!range) {
-			range = this.get_range();
+			range = _this.load_bookmark(true);
+			if(!range) range = this.get_range();
 		}
 		if(!_win.getSelection) {
 			try {

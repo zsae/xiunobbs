@@ -80,6 +80,7 @@ if(!empty($m1[1])) {
                 $newfid = get_fid_by_policy($fid, $policy);
 
                 $newurl = $conf['app_url'].($conf['urlrewrite'] ? '' : '?')."forum-index-fid-$newfid-page-$page.htm";
+                header("HTTP/1.1 301 Moved Permanently");
                 header("Location: $newurl");
         }
 
@@ -100,6 +101,7 @@ if(!empty($m1[1])) {
                 $newfid = get_fid_by_policy($fid, $policy);
 
                 $newurl = $conf['app_url'].($conf['urlrewrite'] ? '' : '?')."thread-index-fid-$newfid-tid-$tid-page-$page.htm";
+		 header("HTTP/1.1 301 Moved Permanently");
                 header("Location: $newurl");
         }
 

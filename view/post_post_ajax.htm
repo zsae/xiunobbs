@@ -118,7 +118,6 @@ function delay_execute(dialog, recall) {
 						if(error = json_error(json)) {alert(error); return false;}
 						if(json.status <= 0) {alert(json.message); return false;}
 						var s = json.message;
-						_this._focus();
 						_this.paste(s);
 						return true;
 					},
