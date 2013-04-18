@@ -65,10 +65,10 @@ p {margin-top: 4px;}
 .thread-old.read, .thread-old.read:hover {color: #AAAAAA}
 .thread-hot, .thread-hot:hover {color: #EF4E1D;}
 .thread-hot.read, .thread-hot.read:hover {color: #F8AF99}
-.thread-digest-1, .thread-digest-1:hover {color: #F8AF99; font-weight: 800;}
-.thread-digest-1.read, .thread-digest-1.read:hover{color: #96dab3; font-weight: 800;}
-.thread-digest-2, .thread-digest-2:hover {color: #216dca; font-weight: 800;}
-.thread-digest-2.read, .thread-digest-2.read:hover {color: #9bbde7; font-weight: 800;}
+.thread-digest-1, .thread-digest-1:hover {color: #17AC56; font-weight: 800;}
+.thread-digest-1.read, .thread-digest-1.read:hover{color: #96DAB3; font-weight: 800;}
+.thread-digest-2, .thread-digest-2:hover {color: #216DCA; font-weight: 800;}
+.thread-digest-2.read, .thread-digest-2.read:hover {color: #9BBDE7; font-weight: 800;}
 .thread-digest-3, .thread-digest-3:hover {color: #E03D7E; font-weight: 800;}
 .thread-digest-3.read, .thread-digest-3.read:hover {color: #DE9FD9; font-weight: 800;}
 .subject_type.read {color: #AAAAAA}
