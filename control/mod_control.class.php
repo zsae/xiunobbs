@@ -198,10 +198,14 @@ class mod_control extends common_control {
 					$creditarr[$thread['uid']] += $this->conf['credits_policy_digest_'.$rank];
 					$goldarr[$thread['uid']] += $this->conf['golds_policy_digest_'.$rank];
 				}
+				// 加入精华
 				if($rank > 0 && $thread['digest'] == 0) {
 					$digestarr[$thread['uid']]++;
-				} elseif($rank < 0 && $thread['digest'] > 0) {
+					$this->thread_digest->create(array('fid'=>$fid, 'tid'=>$tid, 'digest'=>$rank));
+				// 取消精华
+				} elseif($rank == 0 && $thread['digest'] > 0) {
 					$digestarr[$thread['uid']]--;
+					$this->thread_digest->delete($fid, $tid);
 				}
 				
 				// 记录到版主操作日志
@@ -423,6 +427,7 @@ class mod_control extends common_control {
 				$this->attach->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2), TRUE);
 				$this->mypost->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2), TRUE);
 				$this->modlog->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2), TRUE);
+				$this->thread_digest->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2), TRUE);
 				$this->thread_new->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2), TRUE);
 				
 				// ----------->更新相关数据的 fid end

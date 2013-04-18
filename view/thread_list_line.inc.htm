@@ -6,25 +6,17 @@
 			<input type="checkbox" name="tidarr[]" value="$thread[fid]-$thread[tid]" />
 			<!--{/if}-->
 		
-			<!--{if 0}-->
-			<a href="?thread-index-fid-$thread[fid]-tid-$thread[tid].htm" target="_blank" title="点击图标，新窗口打开" style="margin-right: 1px;">	
-				<!--{if $thread[isnew]}-->
-				<span class="icon icon-post-blue" tid="$thread[tid]" lastpost="$thread[lastpost]"></span>
-				<!--{else}-->
-				<span class="icon icon-post-grey" tid="$thread[tid]" lastpost="$thread[lastpost]"></span>
-				<!--{/if}-->
+			<a href="?thread-index-fid-$thread[fid]-tid-$thread[tid].htm" target="_blank" title="点击图标，新窗口打开" class="thread_icon" style="margin-right: 1px;">	
+				<span class="icon $thread[icon]" tid="$thread[tid]" lastpost="$thread[lastpost]"></span>
 			</a>
-			<!--{/if}-->
 			
-			<!--{if $thread[top]}--><span class="icon icon-top-$thread[top]" style="margin-right: 2px;" title="置顶主题"></span><!--{/if}-->
-			<!--{if $thread[digest]}--><span class="icon icon-digest-$thread[digest]" style="margin-right: 2px;" title="精华主题"></span><!--{/if}-->
-		
 		<!--{loop $forum[types] $cateid $types}-->
 			<!--{if $thread[typename$cateid]}--><a href="?forum-index-fid-$thread[fid]-typeid$cateid-$thread[typeid$cateid].htm" class="grey middle subject_type">[{$thread[typename$cateid]}]</a><!--{/if}-->
 	 	<!--{/loop}-->
 		 	
 			 <!--{hook thread_list_line_inc_subject_before.htm}-->
 			<a href="?thread-index-fid-$thread[fid]-tid-$thread[tid].htm" class="subject_link $thread[color]">$thread[subject]</a>
+			<!--{if $thread['color'] == 'thread-hot'}--><span class="icon icon-post-fire"></span><!--{/if}-->
 			<!--{hook thread_list_line_inc_subject_after.htm}-->
 		</td>
 		<!--{hook thread_list_line_inc_subject_after.htm}-->

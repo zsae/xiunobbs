@@ -123,10 +123,10 @@ return array(
 	'click_server' => 'http://x.net/service/clickd/',	// 记录主题点击数，论坛点击数
 	
 	// 加密KEY，
-	'auth_key' => '0c5fb21b42c4270fedfcb0f2be3cf231',
+	'auth_key' => 'cf9ee011b82a64416b8ff7411db537d5',
 	
 	// 站点的ID，用来和官方通信，下载，安装插件。
-	'siteid' => 'd043b8c18aa8dd39d600e6feee1c58a4',
+	'siteid' => 'ae724744243e9edd79034eba3f6f1f23',
 	
 	'cookie_pre' => 'bbs_',
 	'cookie_domain' => '',

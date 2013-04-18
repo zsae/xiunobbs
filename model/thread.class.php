@@ -13,26 +13,19 @@ class thread extends base_model {
 		$this->maxcol = 'tid';
 	}
 	
-	public function get_threadlist_by_fid($fid, $digest, $orderby, $start, $limit, $total = 0) {
-		if($digest) {
-			$cond = array('fid'=>$fid, 'digest'=>array('>'=>0));
-			$orderby = array('tid'=>-1);
-			$threadlist = $this->index_fetch($cond, $orderby, $start, $limit);
+	public function get_threadlist_by_fid($fid, $orderby, $start, $limit, $total = 0) {
+		$cond = array('fid'=>$fid);
+		// 优化大数据翻页，倒排
+		if($start > 1000 && $total > 2000 && $start > $total / 2) {
+			$start = $total - $start;
+			$orderby = $orderby == 0 ? array('lastpost'=>1) : array('tid'=>1);
+			$threadlist = $this->index_fetch($cond, $orderby, max(0, $start - $limit), $limit);
+			$threadlist = array_reverse($threadlist, TRUE);
 			return $threadlist;
 		} else {
-			$cond = array('fid'=>$fid);
-			// 优化大数据翻页，倒排
-			if($start > 1000 && $total > 2000 && $start > $total / 2) {
-				$start = $total - $start;
-				$orderby = $orderby == 0 ? array('lastpost'=>1) : array('tid'=>1);
-				$threadlist = $this->index_fetch($cond, $orderby, max(0, $start - $limit), $limit);
-				$threadlist = array_reverse($threadlist, TRUE);
-				return $threadlist;
-			} else {
-				$orderby = $orderby == 0 ? array('lastpost'=>-1) : array('tid'=>-1);
-				$threadlist = $this->index_fetch($cond, $orderby, $start, $limit);
-				return $threadlist;
-			}
+			$orderby = $orderby == 0 ? array('lastpost'=>-1) : array('tid'=>-1);
+			$threadlist = $this->index_fetch($cond, $orderby, $start, $limit);
+			return $threadlist;
 		}
 	}
 	
@@ -94,6 +87,18 @@ class thread extends base_model {
 			$thread['color'] = "thread-new";
 		} else {
 			$thread['color'] = "thread-old";
+		}
+		
+		if($thread['top'] > 0) {
+			$thread['icon'] = "icon-top-$thread[top]";
+		} elseif($thread['digest'] > 0) {
+			$thread['icon'] = "icon-digest-$thread[digest]";
+		} elseif($thread['color'] == 'thread-new') {
+			$thread['icon'] = "icon-post-blue";
+		} elseif($thread['color'] == 'thread-old') {
+			$thread['icon'] = "icon-post-grey";
+		} elseif($thread['color'] == 'thread-hot') {
+			$thread['icon'] = "icon-post-red";
 		}
 		
 		// hook thread_model_format_end.php
@@ -167,8 +172,7 @@ class thread extends base_model {
 		
 		// 删除主题
 		$this->thread->delete($fid, $tid);
-		
-		// 删除最新主题，lastpost 为三天内
+		$this->thread_digest->delete($fid, $tid);
 		$this->thread_new->delete($tid);
 		
 		// 同时删除 thread_view, 这里为强关联

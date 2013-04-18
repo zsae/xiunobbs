@@ -44,6 +44,8 @@ if($step == 'alter_table') {
 	alter_table();
 } elseif($step == 'upgrade_attach_download') {
 	upgrade_attach_download();
+} elseif($step == 'upgrade_digest') {
+	upgrade_digest();
 } elseif($step == 'complete') {
 	complete();
 }
@@ -67,14 +69,22 @@ alter table bbs_attach_download add column fid int(10) unsigned NOT NULL default
 alter table bbs_attach_download drop key aid;
 alter table bbs_attach_download add key fidaid(fid,aid);
 alter table bbs_thread drop key tid;
-DROP TABLE IF EXISTS bbs_thread_new;
-CREATE TABLE bbs_thread_new (
+alter table bbs_thread drop key fid_2;
+CREATE TABLE IF NOT EXISTS bbs_thread_new (
   fid smallint(6) NOT NULL default '0',			# 版块id
   tid int(11) unsigned NOT NULL auto_increment,		# 主题id
   lastpost int(10) unsigned NOT NULL default '0',	# 最后回复时间
   PRIMARY KEY (tid),					# 
   UNIQUE KEY (fid, tid),				# 
   KEY (lastpost)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+CREATE TABLE NOT EXISTS bbs_thread_digest (
+  fid smallint(6) NOT NULL default '0',			# 版块id
+  tid int(11) unsigned NOT NULL auto_increment,		# 主题id
+  digest tinyint(3) unsigned NOT NULL auto_increment,	# 精华等级
+  PRIMARY KEY (tid),					# 
+  UNIQUE KEY (fid, tid)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 ";
 
@@ -109,7 +119,7 @@ CREATE TABLE bbs_thread_new (
 	if($conf['version'] == '2.0.0') {
 		message('升级表结构完成，接下来升级 upgrade_attach_download...', '?step=upgrade_attach_download');
 	} else {
-		message('升级即将完成', '?step=complete');
+		message('升级即将完成', '?step=upgrade_digest');
 	}
 }
 
@@ -140,6 +150,33 @@ function upgrade_attach_download() {
 		message('升级 upgrade_attach_download 完成', '?step=complete');
 	}
 }
+
+
+// 典型的跳转框架
+function upgrade_digest() {
+	global $start;
+	global $conf;
+	$db = new db_mysql($conf['db']['mysql']);
+	$count = core::gpc('count');
+	if(empty($count)) {
+		$count = $db->index_count('thread');
+	}
+	$mthread = new thread($conf);
+	$mdigest = new thread_digest($conf);
+	if($start < $count) {
+		$limit = DEBUG ? 20 : 2000;
+		$arrlist = $mthread->index_fetch(array(), array(), $start, $limit);
+		foreach($arrlist as $arr) {
+			if(empty($arr['digest'])) continue;
+			$mdigest->create(array('fid'=>$arr['fid'], 'tid'=>$arr['tid'], 'digest'=>$arr['digest']));
+		}
+		$start += $limit;
+		message("正在升级 upgrade_digest, 一共: $count, 当前: $start...", "?step=upgrade_digest&start=$start&count=$count", 0);
+	} else {
+		message('升级 upgrade_digest 完成', '?step=complete');
+	}
+}
+
 
 function complete() {
 	global $conf;

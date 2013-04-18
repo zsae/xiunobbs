@@ -119,6 +119,7 @@ $('#body table.thread').each(function() {
 	if(tid_is_read(tid, lastpost)) {
 		$('.subject_type', this).addClass('read');
 		$('a.subject_link', this).addClass('read');
+		$('a.thread_icon', this).addClass('xgrey');
 	}
 });
 

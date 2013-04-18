@@ -198,8 +198,16 @@ CREATE TABLE bbs_thread (
   lastuid int(11) unsigned NOT NULL default '0',	# 最近参与的 uid
   lastusername char(16) NOT NULL default '',		# 最近参与的 username
   PRIMARY KEY (fid, tid),				# 按照发帖时间排序
-  KEY (fid, lastpost),					# 按照顶贴时间排序
-  KEY (fid, digest, tid)				# 精华排序
+  KEY (fid, lastpost)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+DROP TABLE IF EXISTS bbs_thread_digest;
+CREATE TABLE bbs_thread_digest (
+  fid smallint(6) NOT NULL default '0',			# 版块id
+  tid int(11) unsigned NOT NULL,			# 主题id
+  digest tinyint(3) unsigned NOT NULL,			# 精华等级
+  PRIMARY KEY (tid),					# 
+  UNIQUE KEY (fid, tid)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 # 最新主题 v2.0.2 增加，用来取代 bbs_thread.tid 大索引，在数据量特别大的情况下，会有很好的效果，结合sphinx 可以做到分词。
