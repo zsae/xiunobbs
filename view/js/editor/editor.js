@@ -264,21 +264,25 @@ $.editor = function(textarea, settings) {
 		$('a.italic', toolbar).click(function() {_this.exec_cmd('Italic');});
 		$('a.underline', toolbar).click(function() {_this.exec_cmd('Underline');});
 		$('a.fontsize', toolbar).html('字体大小').click(function() {
+			//_this.save_bookmark();
 			_this.hide_menu();
 			$(this).xn_menu($('.fontsize', menu), 0, 1000);
 		});
 		$('div.fontsize a', menu).click(function() {
 			var size = $(this).attr('title');
 			_this.set_fontsize(size);
+			//_this.load_bookmark(false);
 		});
 		
 		$('a.fontcolor', toolbar).click(function() {
+			//_this.save_bookmark();
 			_this.hide_menu();
 			$(this).xn_menu($('.fontcolor', menu), 0, 1000);
 		});
 		$('div.fontcolor a', menu).click(function() {
 			var color = $(this).attr('title');
 			_this.set_fontcolor(color);
+			//_this.load_bookmark(false);
 		});
 		
 		// start link
@@ -532,6 +536,7 @@ $.editor = function(textarea, settings) {
 		
 		// 隐藏控件
 		$('div.fontcolor', _this.menu).hide();
+		
 	}
 	
 	this.set_fontsize = function(size) {
@@ -540,6 +545,7 @@ $.editor = function(textarea, settings) {
 		
 		// 隐藏控件
 		$('div.fontsize', _this.menu).hide();
+		
 	}
 	
 	this.add_link = function(url) {
@@ -719,6 +725,11 @@ $.editor = function(textarea, settings) {
 			}
 		} else {
 			var range = _doc.selection.createRange();
+			// fix: ie678, 如果为空，什么也没选择，则插入一个标志节点
+			if(range.htmlText == '') {
+				range.pasteHTML('<span id="__range_end__" style="width:0px; height: 0px;"></span>');
+				range.moveToElementText(_doc.getElementById('__range_end__'));
+			}
 			_this.bookmark = {top: top, range: range};
 		}
 		return range;
@@ -733,11 +744,8 @@ $.editor = function(textarea, settings) {
 		} else {
 			if(_this.bookmark.range) {
 				range = _this.bookmark.range;
-				_win.focus();
-	      			setTimeout(function() {
-	      				_win.myfocus();
-	      				range.select();
-	      			}, 50);
+	      			range.select();
+	      			$('#__range_end__', _doc).remove();
 			}
 		}
 		$(_body).scrollTop(_this.bookmark.top);
