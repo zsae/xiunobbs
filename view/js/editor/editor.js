@@ -515,7 +515,9 @@ $.editor = function(textarea, settings) {
 		
 		var cmds = new Array('fontsize', 'forecolor');//'fontname'
 		for(var i=0; i<cmds.length; i++) {
-			var value = _doc.queryCommandValue(cmds[i]);
+			try {
+				var value = _doc.queryCommandValue(cmds[i]);
+			} catch(e) { continue; }
 			if(cmds[i] == 'forecolor') {
 				value = _this.dec_to_rgb(value);
 				$('a.fontcolor', _this.toolbar).css('background-color', '#' + value);
@@ -729,8 +731,12 @@ $.editor = function(textarea, settings) {
 			var range = _doc.selection.createRange();
 			// fix: ie678, 如果为空，什么也没选择，则插入一个标志节点
 			if(range.htmlText == '') {
-				range.pasteHTML('<span id="__range_end__" style="width:0px; height: 0px;"></span>');
-				range.moveToElementText(_doc.getElementById('__range_end__'));
+				if(!_doc.getElementById('__range_end__')) {
+					try {
+					range.pasteHTML('<span id="__range_end__" style="width:0px; height: 0px;"></span>');
+					range.moveToElementText(_doc.getElementById('__range_end__'));
+					} catch(e) {}
+				}
 			}
 			_this.bookmark = {top: top, range: range};
 		}
@@ -747,8 +753,8 @@ $.editor = function(textarea, settings) {
 			if(_this.bookmark.range) {
 				range = _this.bookmark.range;
 	      			range.select();
-	      			$('#__range_end__', _doc).remove();
 			}
+			$('#__range_end__', _doc).remove();
 		}
 		$(_body).scrollTop(_this.bookmark.top);
 		if(clear) {
