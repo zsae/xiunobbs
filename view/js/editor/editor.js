@@ -391,7 +391,6 @@ $.editor = function(textarea, settings) {
 			$('div.face a', menu).click(function() {
 				var range = _this.load_bookmark(true);
 				var s = $(this).html();
-				alert('face range:' + range);
 				_this.paste(s, range);
 				_this.hide_menu();
 				$('div.face', menu).hide();
@@ -481,6 +480,136 @@ $.editor = function(textarea, settings) {
 
 		return true;
 	}
+	
+	// width 可能为 98% 1024 两种数据格式，这里只考虑像素
+	this.set_width = function(width) {
+		// 设置宽度，高度
+		editor.width(width - 2);
+		$(_iframe).width(width - 2);
+		$(textarea).width(width - 2);
+	}
+	
+	this.set_height = function(height) {
+		editor.height(height);
+//		alert('height:' + height + 'toolbar height:' + $('div.toolbar', editor).outerHeight() + 'footer height:' + $('div.footer', editor).outerHeight() + ' toolbar height' + $('div.toolbar', editor).height());
+		var toolbarh = $.browser.msie && $.browser.version == '6.0' ? 25 :  $('div.toolbar', editor).show().outerHeight();
+		toolbarh = toolbarh ? toolbarh : 25;
+		$(_iframe).height(height - toolbarh - $('div.footer', editor).outerHeight());
+		$(textarea).height(height - 18);	// 18 为 footer 高度
+	}
+	
+	// 设置 toolbar 选中状态
+	this.check_toolbar = function() {
+		var cmds = new Array('bold', 'italic', 'underline', 'justifyleft', 'justifycenter', 'justifyright');
+		for(var i=0; i<cmds.length; i++) {
+			try{
+				var status = _doc.queryCommandState(cmds[i]);
+				$('a.'+cmds[i], _this.toolbar).toggleClass('checked', status);
+			} catch(e) {}
+		}
+		
+		var cmds = new Array('fontsize', 'forecolor');//'fontname'
+		for(var i=0; i<cmds.length; i++) {
+			var value = _doc.queryCommandValue(cmds[i]);
+			if(cmds[i] == 'forecolor') {
+				value = _this.dec_to_rgb(value);
+				$('a.fontcolor', _this.toolbar).css('background-color', '#' + value);
+				// 设置颜色
+			} else if(cmds[i] == 'fontsize') {
+				value2 = parseInt(value);
+				$('a.fontsize', _this.toolbar).html(value ? value + '号字体' : '字体大小');
+			}
+		}
+	}
+	
+	
+	this.set_fontcolor = function(color) {
+		
+		// 设置选中状态的字体颜色
+		_this.exec_cmd('ForeColor', color);
+		
+		$('a.fontcolor', _this.toolbar).css('background-color', color);
+		
+		// 隐藏控件
+		$('div.fontcolor', _this.menu).hide();
+	}
+	
+	this.set_fontsize = function(size) {
+		_this.exec_cmd('FontSize', size);
+		$('a.fontsize', _this.toolbar).html(size ? size + '号字体' : '字体大小');
+		
+		// 隐藏控件
+		$('div.fontsize', _this.menu).hide();
+	}
+	
+	this.add_link = function(url) {
+		var range = _this.load_bookmark(true);
+		_this.paste('<a href="' + url + '" target="_blank">' + url + '</a>', range);
+		
+		// 初始化内容
+		$('.link input[type=text]', _this.menu).val('');
+		
+		// 隐藏控件
+		$('.link', _this.menu).hide();
+	}
+	
+	this.add_video = function(url, width, height) {
+		width = intval(width);
+		height = intval(height);
+		var s = "<embed wmode=\"transparent\" src=\""+url+"\" style=\"z-index:0;\" width=\""+width+"\" height=\""+height+"\" type=\"application/x-shockwave-flash\" allowFullscreen=\"true\" class=\"border\" />";
+		var range = _this.load_bookmark(true);
+		_this.paste(s, range);
+		$('div.video', _this.menu).hide();
+	};
+	
+	this.add_code = function() {
+		// 插入代码，弹出层
+		/*
+		if($.browser.mozilla || $.browser.safari) {
+			var s = '<br /><div class="code"><p>&nbsp;</p></div><br />';
+		} else {
+			var s = '<br /><div class="code"><p></p></div><br />';
+		}
+		_this._focus();
+		_this.paste(s);
+		*/
+	};
+	
+	this.set = function(html) {
+		$(_body).html(html)
+		$(textarea).val(html);
+		_this.save();
+	}
+	
+	this.get = function() {
+		return _issource ? $(textarea).val() : $(_body).html();
+	}
+	
+	// 保存HTML到 textarea
+	this.save = function() {
+		var s = _this.get();
+		
+		// fix chrome bug
+		if(s == '' || s == ' ' || s == "\r\n") {
+			s = '<div><br /></div>';
+		}
+		
+		if(_issource) {
+			$(_doc.body).html(s);
+		} else {
+			$(textarea).val(s);
+		}
+		$.pdata('editor_html_' + textarea.id, s);
+	}
+	
+	this.exec_cmd = function(cmd, arg) {
+		if(!arg) arg = null;
+		//_this._focus();
+		_doc.execCommand(cmd, false, arg);
+		_this.save();
+		_this.check_toolbar();
+	}
+	
 	
 	this.clear_paste = function(e) {
 		if(is_ie) {
@@ -590,25 +719,25 @@ $.editor = function(textarea, settings) {
 			}
 		} else {
 			var range = _doc.selection.createRange();
-			_this.bookmark = {top: top, range: range.getBookmark()};
+			_this.bookmark = {top: top, range: range};
 		}
 		return range;
 	}
 	
 	this.load_bookmark = function(clear) {
+		var range = null;
 		if(_win.getSelection) {
 			_win.getSelection().removeAllRanges();
 			_win.getSelection().addRange(_this.bookmark.range);
-			var range = _this.bookmark.range;
+			range = _this.bookmark.range;
 		} else {
-			var range = _doc.body.createTextRange();
 			if(_this.bookmark.range) {
-				try {
-				range.moveToBookmark(_this.bookmark.range);
-				} catch(e) {
-					alert(e.message);
-				}
-				range.select();
+				range = _this.bookmark.range;
+				_win.focus();
+	      			setTimeout(function() {
+	      				_win.myfocus();
+	      				range.select();
+	      			}, 50);
 			}
 		}
 		$(_body).scrollTop(_this.bookmark.top);
@@ -636,82 +765,6 @@ $.editor = function(textarea, settings) {
 			var range = sel.createRange ? sel.createRange() : sel.rangeCount > 0 ? sel.getRangeAt(0) : null;
 		}
 		return range;
-	}
-	
-	// width 可能为 98% 1024 两种数据格式，这里只考虑像素
-	this.set_width = function(width) {
-		// 设置宽度，高度
-		editor.width(width - 2);
-		$(_iframe).width(width - 2);
-		$(textarea).width(width - 2);
-	}
-	
-	this.set_height = function(height) {
-		editor.height(height);
-//		alert('height:' + height + 'toolbar height:' + $('div.toolbar', editor).outerHeight() + 'footer height:' + $('div.footer', editor).outerHeight() + ' toolbar height' + $('div.toolbar', editor).height());
-		var toolbarh = $.browser.msie && $.browser.version == '6.0' ? 25 :  $('div.toolbar', editor).show().outerHeight();
-		toolbarh = toolbarh ? toolbarh : 25;
-		$(_iframe).height(height - toolbarh - $('div.footer', editor).outerHeight());
-		$(textarea).height(height - 18);	// 18 为 footer 高度
-	}
-	
-	// 设置 toolbar 选中状态
-	this.check_toolbar = function() {
-		var cmds = new Array('bold', 'italic', 'underline', 'justifyleft', 'justifycenter', 'justifyright');
-		for(var i=0; i<cmds.length; i++) {
-			try{
-				var status = _doc.queryCommandState(cmds[i]);
-				$('a.'+cmds[i], _this.toolbar).toggleClass('checked', status);
-			} catch(e) {}
-		}
-		
-		var cmds = new Array('fontsize', 'forecolor');//'fontname'
-		for(var i=0; i<cmds.length; i++) {
-			var value = _doc.queryCommandValue(cmds[i]);
-			if(cmds[i] == 'forecolor') {
-				value = _this.dec_to_rgb(value);
-				$('a.fontcolor', _this.toolbar).css('background-color', '#' + value);
-				// 设置颜色
-			} else if(cmds[i] == 'fontsize') {
-				value2 = parseInt(value);
-				$('a.fontsize', _this.toolbar).html(value ? value + '号字体' : '字体大小');
-			}
-		}
-	}
-	
-	this.set = function(html) {
-		$(_body).html(html)
-		$(textarea).val(html);
-		_this.save();
-	}
-	
-	this.get = function() {
-		return _issource ? $(textarea).val() : $(_body).html();
-	}
-	
-	// 保存HTML到 textarea
-	this.save = function() {
-		var s = _this.get();
-		
-		// fix chrome bug
-		if(s == '' || s == ' ' || s == "\r\n") {
-			s = '<div><br /></div>';
-		}
-		
-		if(_issource) {
-			$(_doc.body).html(s);
-		} else {
-			$(textarea).val(s);
-		}
-		$.pdata('editor_html_' + textarea.id, s);
-	}
-	
-	this.exec_cmd = function(cmd, arg) {
-		if(!arg) arg = null;
-		//_this._focus();
-		_doc.execCommand(cmd, false, arg);
-		_this.save();
-		_this.check_toolbar();
 	}
 	
 	// 定位到最后。
@@ -763,6 +816,7 @@ $.editor = function(textarea, settings) {
 
 	// select: 是否覆盖选中的区域
 	this.paste = function(s, range, overwrite) {
+		_win.focus();
 		if(!range) {
 			range = this.get_range();
 		}
@@ -777,9 +831,8 @@ $.editor = function(textarea, settings) {
 				//alert('操作失败，请您尽量选中连续区域再试试。');
 			}
 		} else {
-			var sel = this.get_selection();
+			var sel = _this.get_selection();
 			try {
-				_win.focus();
 				range.deleteContents();
 				var range_start_id = '____range_start____';
 				s += '<span id="'+range_start_id+'" width="1" height="1" ></span>';
@@ -820,58 +873,6 @@ $.editor = function(textarea, settings) {
 		_this.save();
 	}
 	
-	this.set_fontcolor = function(color) {
-		
-		// 设置选中状态的字体颜色
-		_this.exec_cmd('ForeColor', color);
-		
-		$('a.fontcolor', _this.toolbar).css('background-color', color);
-		
-		// 隐藏控件
-		$('div.fontcolor', _this.menu).hide();
-	}
-	
-	this.set_fontsize = function(size) {
-		_this.exec_cmd('FontSize', size);
-		$('a.fontsize', _this.toolbar).html(size ? size + '号字体' : '字体大小');
-		
-		// 隐藏控件
-		$('div.fontsize', _this.menu).hide();
-	}
-	
-	this.add_link = function(url) {
-		var range = _this.load_bookmark(true);
-		_this.paste('<a href="' + url + '" target="_blank">' + url + '</a>', range);
-		
-		// 初始化内容
-		$('.link input[type=text]', _this.menu).val('');
-		
-		// 隐藏控件
-		$('.link', _this.menu).hide();
-	}
-	
-	this.add_video = function(url, width, height) {
-		width = intval(width);
-		height = intval(height);
-		var s = "<embed wmode=\"transparent\" src=\""+url+"\" style=\"z-index:0;\" width=\""+width+"\" height=\""+height+"\" type=\"application/x-shockwave-flash\" allowFullscreen=\"true\" class=\"border\" />";
-		var range = _this.load_bookmark(true);
-		_this.paste(s, range);
-		$('div.video', _this.menu).hide();
-	};
-	
-	this.add_code = function() {
-		// 插入代码，弹出层
-		/*
-		if($.browser.mozilla || $.browser.safari) {
-			var s = '<br /><div class="code"><p>&nbsp;</p></div><br />';
-		} else {
-			var s = '<br /><div class="code"><p></p></div><br />';
-		}
-		_this._focus();
-		_this.paste(s);
-		*/
-	};
-
 	this.clear_format = function() {
 		if(window.confirm('您确定自动调整文章格式吗？将会去掉字体颜色、大小、加粗、下划线、对齐、多余的换行等格式。')) {
 			var html = _this.get();
