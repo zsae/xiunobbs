@@ -93,28 +93,27 @@
 							<dd>$input[allowread]</dd>
 							
 							<dt><label for="expiry">截止日期：</label></dt>
-							<dd>$input[expiry] <span class="grey">日期格式：2012-5-1</span></dd>
+							<dd>$input[expiry] <span class="grey"> 默认一年</span></dd>
 							
 							<p>其他选项</p>
 							<hr />
 							
-							<dt><label for="deletepost"><b>删除所有帖子</b>：</label></dt>
-							<dd><input type="checkbox" name="deletepost" id="deletepost" value="1" /></dd>
-							
-							<dt><label for="regip"><b>禁止注册IP</b>：</label></dt>
+							<dt><label for="regip">禁止注册IP：</label></dt>
 							<dd>
-								<input type="checkbox" name="banregip" id="banregip" value="1" /> 
-								<input type="text" name="regip" id="regip" value="$regip" style="display: none;" />
+								<input type="checkbox" name="banregip" id="banregip" value="1" /> $regip <!--{if $regip_banned}--><span class="red">(已禁止)</span><!--{/if}-->
 							</dd>
 							
-							<dt><label for="postip"><b>禁止发帖IP</b>：</label></dt>
+							<dt><label for="postip">禁止发帖IP：</label></dt>
 							<dd>
-								<input type="checkbox" name="banpostip" id="banpostip" value="1" /> 
-								<input type="text" name="postip" id="postip" value="$postip" style="display: none;" />
+								<input type="checkbox" name="banpostip" id="banpostip" value="1" /> $postip <!--{if $postip_banned}--><span class="red">(已禁止)</span><!--{/if}-->
 							</dd>
 							
 							<dt><label for="expiry">截止日期：</label></dt>
-							<dd>$input[expiry_banip] <span class="grey">日期格式：2012-5-1</span></dd>
+							<dd>$input[expiry_banip] <span class="grey"> 默认三天</span></dd>
+							
+							
+							<dt><label for="deletepost"><b>删除所有帖子</b>：</label></dt>
+							<dd><input type="checkbox" name="deletepost" id="deletepost" value="1" /> $user[posts] 篇</dd>
 							
 							<dt></dt>
 							<dd>

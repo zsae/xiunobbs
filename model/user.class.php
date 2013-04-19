@@ -283,8 +283,10 @@ class user extends base_model{
 	
 	// 每次清理掉2000个相关帖子，调用多次
 	// 如果超时则 pagesize / 4
-	public function xdelete($uid) {
+	// $keepuser: 给 $user 留一个尸体
+	public function xdelete($uid, $keepuser = FALSE) {
 		
+		// 每次遍历的mypost数
 		$pagesize = 2000;
 		
 		// 防止超时
@@ -294,7 +296,7 @@ class user extends base_model{
 		
 		$user = $this->user->read($uid);
 		
-		// 最多 1w 篇，超出后可能会导致超时，遍历所有参与过的主题。
+		// 遍历所有参与过的主题。
 		$mypostlist = $this->mypost->get_list_by_uid($uid, 1, $pagesize);
 		
 		$thread_return = array();
@@ -337,7 +339,35 @@ class user extends base_model{
 		
 		$n  = count($mypostlist);
 		if($n < $pagesize) {
-			$this->delete($uid);
+			
+			// 清理 follow
+			$this->follow->index_delete(array('uid'=>$uid));
+			$this->follow->index_delete(array('fuid'=>$uid));
+			$this->pm->index_delete(array('uid1'=>$uid));
+			$this->pm->index_delete(array('uid2'=>$uid));
+			$this->pmcount->index_delete(array('uid1'=>$uid));
+			$this->pmcount->index_delete(array('uid2'=>$uid));
+			$this->pmnew->index_delete(array('recvuid'=>$uid));
+			$this->pmnew->index_delete(array('senduid'=>$uid));
+			$this->user_access->delete(array('uid'=>$uid));
+			// 清理精华
+			
+			// 清理 pm
+			if($keepuser) {
+				$user['groupid'] = 7;
+				$user['threads'] = 0;
+				$user['posts'] = 0;
+				$user['myposts'] = 0;
+				$user['credits'] = 0;
+				$user['golds'] = 0;
+				$user['newpms'] = 0;
+				$user['newfeeds'] = 0;
+				$user['follows'] = 0;
+				$user['followeds'] = 0;
+				$this->update($user);
+			} else {
+				$this->delete($uid);
+			}
 				
 			// 删除其主题
 			// 删除回帖

@@ -199,19 +199,21 @@ class mod_control extends admin_control {
 				$this->user_access->create($access);
 			}
 			
-			// 初始化
+			$input = $error = array();
+			
+			// 初始化其他选项的参数
 			$ip = $_SERVER['REMOTE_ADDR'];
-			
-			// 默认禁止2天
 			$post = $this->mypost->get_last_post($uid);
-			$input['expiry_banip'] = form::get_text('expiry_banip', date('Y-n-j', $_SERVER['time'] + 86400 * 2), 150);
-			
+			$input['expiry_banip'] = form::get_text('expiry_banip', date('Y-n-j', $_SERVER['time'] + 86400 * 3), 150);
 			$regip_view = long2ip($user['regip']);
-			$postip_view = long2ip($post['userip']);
+			$postip_view = $post ? long2ip($post['userip']) : '';
+			$regip_banned = $this->banip->get_banip($regip_view);
+			$postip_banned = $this->banip->get_banip($postip_view);
 			$this->view->assign('regip', $regip_view);
 			$this->view->assign('postip', $postip_view);
+			$this->view->assign('regip_banned', $regip_banned);
+			$this->view->assign('postip_banned', $postip_banned);
 			
-			$input = $error = array();
 			if($this->form_submit()) {
 				$post = array('uid'=>$uid);
 				$post['allowpost'] = intval(!core::gpc('allowpost', 'P'));
@@ -225,6 +227,27 @@ class mod_control extends admin_control {
 					$error = array();
 					$access = array_merge($access, $post);
 					$this->user_access->xupdate($access);
+				}
+				
+				$banregip = core::gpc('banregip', 'P');
+				$banpostip = core::gpc('banpostip', 'P');
+				$expiry_banip = core::gpc('expiry_banip', 'P');
+				if($banregip) {
+					$this->banip->add_banip($regip_view, $uid, strtotime($expiry_banip));
+				}
+				if($banpostip) {
+					$this->banip->add_banip($postip_view, $uid, strtotime($expiry_banip));
+				}
+				
+				$deletepost = core::gpc('deletepost', 'P');
+				if($deletepost) {
+					$r = $this->user->xdelete($uid, TRUE);
+					if($r) {
+						// hook admin_user_delete_after.php
+						$this->message('清理用户资料完毕。', 1, "?mod-manageuser-do-banuser-uid-$uid.htm");
+					} else {
+						$this->message('正在删除用户关联数据，请稍候...', 1, "?mod-manageuser-do-truncateuser-uid-$uid.htm");
+					}
 				}
 			}
 			
@@ -243,6 +266,28 @@ class mod_control extends admin_control {
 			// hook admin_user_access_view_before.php
 			
 			$this->view->display('mod_manageuser.htm');
+		
+		// 清空用户资源
+		} elseif($do == 'truncateuser') {
+			
+			if(!$this->_group['allowbanuser']) {
+				$this->message('对不起，您没有禁止用户的权限', 0);
+			}
+			
+			$uid = intval(core::gpc('uid'));
+			$user = $this->user->read($uid);
+			$this->check_user_exists($user);
+			
+			if($this->_group['groupid'] >= $user['groupid']) {
+				$this->message('对不起，您没有权限管理此用户', 0);
+			}
+			
+			$r = $this->user->xdelete($uid, TRUE);
+			if($r) {
+				$this->message('清理用户资料完毕。', 1, "?mod-manageuser-do-banuser-uid-$uid.htm");
+			} else {
+				$this->message('正在删除用户关联数据，请稍候...', 1, "?mod-manageuser-do-truncateuser-uid-$uid.htm");
+			}
 		} elseif($do == 'deleteuser') {
 			if(!$this->_group['allowdeleteuser']) {
 				$this->message('对不起，您没有删除用户的权限', 0);
