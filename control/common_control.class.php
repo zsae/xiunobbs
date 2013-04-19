@@ -39,7 +39,6 @@ class common_control extends base_control {
 		$this->init_pm();
 		$this->init_user();
 		$this->init_group();
-		$this->check_ip();
 		$this->check_domain();
 		$this->init_cron();
 		$this->init_online();
@@ -195,38 +194,6 @@ class common_control extends base_control {
 		}
 		
 		// hook common_control_init_group_after.php
-	}
-	
-	// 检查IP
-	private function check_ip() {
-		// IP 规则
-		if($this->conf['iptable_on']) {
-			$arr = $this->kv->get('iptable');
-			$blacklist = $arr['blacklist'];
-			$whitelist = $arr['whitelist'];
-			$ip = $_SERVER['REMOTE_ADDR'];
-			if(!empty($blacklist)) {
-				foreach($blacklist as $black) {
-					if(substr($ip, 0, strlen($black)) == $black) {
-						$this->message('对不起，您的IP ['.$ip.'] 已经被禁止，如果有疑问，请联系管理员。', 0);
-					}
-				}
-			}
-			if(!empty($whitelist)) {
-				$ipaccess = FALSE;
-				foreach($whitelist as $white) {
-					if(substr($ip, 0, strlen($white)) == $white) {
-						$ipaccess = TRUE;
-						break;
-					}
-				}
-				if(!$ipaccess) {
-					$this->message('对不起，您的IP ['.$ip.'] 不允许访问，如果有疑问，请联系管理员。', 0);
-				}
-			}
-		}
-		
-		// hook common_control_check_ip_after.php
 	}
 	
 	// 检查域名，如果不在安装域名下，跳转到安装域名。

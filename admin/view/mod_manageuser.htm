@@ -74,12 +74,9 @@
 				<input type="hidden" name="FORM_HASH" value="{FORM_HASH}" />
 				
 				<div class="div">
-					<div class="header">用户权限设置，会影响到用户全局的权限，优先级最高</div>
+					<div class="header">禁止的用户名：$user[username]</div>
 					<div class="body">
 						<dl>
-							<dt><label for="allowthread">用户名：</label></dt>
-							<dd>$user[username]</dd>
-							
 							<dt><label for="allowthread">禁止发帖：</label></dt>
 							<dd>$input[allowthread]</dd>
 							
@@ -98,10 +95,24 @@
 							<dt><label for="expiry">截止日期：</label></dt>
 							<dd>$input[expiry] <span class="grey">日期格式：2012-5-1</span></dd>
 							
+							<p>其他选项</p>
+							<hr />
+							
+							<dt><label for="deletepost"><b>删除所有帖子</b>：</label></dt>
+							<dd><input type="checkbox" name="deletepost" id="deletepost" value="1" /></dd>
+							
+							<dt><label for="regip"><b>禁止注册IP</b>：</label></dt>
+							<dd><input type="text" name="regip" id="regip" value="$regip" /></dd>
+							
+							<dt><label for="postip"><b>禁止发帖IP</b>：</label></dt>
+							<dd><input type="text" name="postip" id="postip" value="$postip" /></dd>
+							
+							<dt><label for="expiry">截止日期：</label></dt>
+							<dd>$input[expiry] <span class="grey">日期格式：2012-5-1</span></dd>
+							
 							<dt></dt>
 							<dd>
-								<input type="submit" class="button bigblue" id="user_access_submit" value="修改用户权限" />
-								<input type="button" class="button biggrey" value="返回" onclick="history.back()" />
+								<input type="submit" class="button bigblue" id="user_access_submit" value="确定" />
 								<div class="notice" id="notice" style="display: none;"></div>
 							</dd>
 						</dl>

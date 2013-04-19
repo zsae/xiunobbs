@@ -37,7 +37,7 @@
 						<span class="avatar_middle border bg1" {if $u[avatar_middle]}style="background-image: url($u[avatar_middle])"{/if}></span>
 					</a>
 				</div>
-				<div style="word-break:break-all;">$u[username]</div>
+				<div style="word-break:break-all;" aria-label="$u[username] $post[floor]楼">$u[username]</div>
 				<!--{hook thread_index_userinfo.htm}-->
 			</td>
 			<td width="15"></td>

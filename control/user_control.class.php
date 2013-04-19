@@ -15,6 +15,9 @@ class user_control extends common_control {
 		
 		// resetpw_on, reg_email_on, resetpw_on, reg_email_on
 		$this->conf += $this->kv->xget('conf_ext');
+		
+		// 检查IP 屏蔽
+		$this->check_ip();
 	}
 	
 	// ajax 登录

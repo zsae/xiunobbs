@@ -390,6 +390,23 @@ CREATE TABLE bbs_modlog (
   KEY (fid, tid)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+# 禁止的IP: IP段： 1,-1 / 1,2,-1  / 1,2,3,-1 / 1,2,3,4
+# 如果 count() < 50, 则取出来，挨个比较
+# 如果结果集很大，查询四次确定一个IP是否被禁止
+DROP TABLE IF EXISTS bbs_banip;
+CREATE TABLE bbs_banip (
+  banid bigint(11) unsigned NOT NULL auto_increment,	# banid
+  ip0 smallint(11) NOT NULL default '0',		# 
+  ip1 smallint(11) NOT NULL default '0',		# 
+  ip2 smallint(11) NOT NULL default '0',		# 
+  ip3 smallint(11) NOT NULL default '0',		# 
+  uid int(11) unsigned NOT NULL default '0',		# 添加人
+  dateline int(11) unsigned NOT NULL default '0',	# 添加时间
+  expiry int(11) unsigned NOT NULL default '0',		# 过期时间
+  PRIMARY KEY (ipid),
+  KEY (ip0, ip1, ip2, ip3)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
 # 版主评分日志，针对每一楼，实际上也可以是任意用户评分
 DROP TABLE IF EXISTS bbs_rate;
 CREATE TABLE bbs_rate (

@@ -849,8 +849,10 @@ function humansize(num) {
 	}
 }
 
-// 快捷键翻页
+// 快捷键翻页，只有当第一页，并且焦点不在表单控件上时候激发。
 function bind_document_keyup_page() {
+	//var arr = xn_parse_url(href);
+	//var currpage = arr['page'];
 	$(document).keyup(function(e) {
 		var url = window.location.toString();
 		var r = url.match(/page-(\d+)/i);
@@ -858,6 +860,18 @@ function bind_document_keyup_page() {
 		keycode = e.which || e.keyCode;
 		if(r && r[1]) {
 			page = r[1];
+			if(keycode == 33 || keycode == 37 || keycode == 34 || keycode == 39) {
+				// 没有弹出层
+				if($('#overlay').length > 0) return true;
+				try {
+					//$('div.dialog')
+					var pnode = window.getSelection ? window.getSelection().focusNode.parentNode : document.selection.createRange().parentElement();
+					if(pnode && (pnode.nodeName == 'input' || pnode.nodeName == 'textarea')) {
+						return true;
+					}
+				} catch(e) {}
+			}
+			
 			if(keycode == 33 || keycode == 37) {
 				if(page > 1) window.location = url.replace(/page-(\d+)/i, "page-"+(to_int(page)-1));
 			} else if(keycode == 34 || keycode == 39) {
@@ -865,7 +879,7 @@ function bind_document_keyup_page() {
 			}
 		}
 		// 显示正在加载...
-		return false;
+		return true;
 	});
 }
 

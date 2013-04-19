@@ -684,6 +684,8 @@ function upgrade_thread() {
 					$old['displayorder'] = 0;
 				}
 			}
+			$old['digest'] = misc::mid($old['digest'], 0, 3);
+			$old['displayorder'] = misc::mid($old['displayorder'], 0, 3);
 			
 			$arr = array (
 				'fid'=> $newfid,
@@ -711,6 +713,9 @@ function upgrade_thread() {
 			);
 			$db->set("thread-fid-$newfid-tid-$tid", $arr);
 			$db->set("thread_views-tid-$tid", array('tid'=>$tid, 'views'=>$old['views']));
+			
+			// 精华
+			$db->set("thread_digest-$newfid-tid-$tid", array('fid'=>$newfid, 'tid'=>$tid, 'digest'=>$old['digest']));
 			
 			// mypost
 			$arr = array (

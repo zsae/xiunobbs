@@ -170,8 +170,8 @@ class mod_control extends admin_control {
 			$this->view->display('mod_manageuser.htm');
 		} elseif($do == 'banuser') {
 			$deletepost = core::gpc('deletepost', 'P');
-			$banipstart = core::gpc('banipstart', 'P'); // 发帖IP，注册IP 段
-			$banipend = core::gpc('banipend', 'P');
+			$regip = core::gpc('regip', 'P');   // 注册IP
+			$postip = core::gpc('postip', 'P'); // 发帖IP
 			
 			if(!$this->_group['allowbanuser']) {
 				$this->message('对不起，您没有禁止用户的权限', 0);
@@ -198,6 +198,23 @@ class mod_control extends admin_control {
 				);
 				$this->user_access->create($access);
 			}
+			
+			// 初始化
+			$arr = $this->kv->get('iptable');
+			$blacklist = $arr['blacklist'];
+			$whitelist = $arr['whitelist'];
+			$ip = $_SERVER['REMOTE_ADDR'];
+			if(!empty($blacklist)) {
+				foreach($blacklist as $black) {
+					if(substr($ip, 0, strlen($black)) == $black) {
+				}
+			}
+			$regip_view = long2ip($user['regip']);
+			$post = $this->mypost->get_last_post($uid);
+			$postip_view = long2ip($post['userip']);
+			$input['expiry2'] = form::get_text('expiry', date('Y-n-j', $access['expiry']), 150);
+			$this->view->assign('regip', $regip_view);
+			$this->view->assign('postip', $postip_view);
 			
 			$input = $error = array();
 			if($this->form_submit()) {

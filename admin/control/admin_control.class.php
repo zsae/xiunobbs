@@ -19,6 +19,9 @@ class admin_control extends common_control {
 		global $bbsconf;
 		$this->view->assign('bbsconf', $bbsconf);
 		
+		// 检查IP 屏蔽
+		$this->check_ip();
+		
 		// 这里可能会有跨站脚本导致的提交，可以触发安全警报。管理员应该定期查看后台日志。
 		$this->check_mod_group();
 		$admin_auth = core::gpc($this->conf['cookie_pre'].'admin_auth', 'R');

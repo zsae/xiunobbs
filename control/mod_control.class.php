@@ -19,6 +19,9 @@ class mod_control extends common_control {
 		
 		// 加载精华积分策略
 		$this->conf += $this->kv->xget('conf_ext');
+		
+		// 检查IP 屏蔽
+		$this->check_ip();
 	}
 	
 	public function on_index() {

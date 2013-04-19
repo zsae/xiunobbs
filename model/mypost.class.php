@@ -29,6 +29,17 @@ class mypost extends base_model {
 		return $mypostlist;
 	}
 	
+	// 获取最后一个发帖
+	public function get_last_post($uid) {
+		$post = array();
+		$mypostlist = $this->get_list_by_uid($uid, 1, 1);
+		if(!empty($mypostlist)) {
+			$mypost = array_pop($mypostlist);
+			$post = $this->post->read($mypost['fid'], $mypost['pid']);
+		}
+		return $post;
+	}
+	
 	/*
 	foreach($mypostlist as &$mypost) {
 		$this->format($mypost);
