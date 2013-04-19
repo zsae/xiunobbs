@@ -39,8 +39,8 @@ class online extends base_model {
 		
 		// 修正非法数据：意外
 		if($this->conf['onlines'] < 1) {
-			$n = $this->online->index_count();
-			$this->online->count($n);
+			$n = $this->index_count();
+			$this->count($n);
 			$this->runtime->xset('onlines', $n);
 		} else {
 			$this->runtime->xset('onlines', $this->conf['onlines']);

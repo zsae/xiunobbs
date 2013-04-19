@@ -200,19 +200,14 @@ class mod_control extends admin_control {
 			}
 			
 			// 初始化
-			$arr = $this->kv->get('iptable');
-			$blacklist = $arr['blacklist'];
-			$whitelist = $arr['whitelist'];
 			$ip = $_SERVER['REMOTE_ADDR'];
-			if(!empty($blacklist)) {
-				foreach($blacklist as $black) {
-					if(substr($ip, 0, strlen($black)) == $black) {
-				}
-			}
-			$regip_view = long2ip($user['regip']);
+			
+			// 默认禁止2天
 			$post = $this->mypost->get_last_post($uid);
+			$input['expiry_banip'] = form::get_text('expiry_banip', date('Y-n-j', $_SERVER['time'] + 86400 * 2), 150);
+			
+			$regip_view = long2ip($user['regip']);
 			$postip_view = long2ip($post['userip']);
-			$input['expiry2'] = form::get_text('expiry', date('Y-n-j', $access['expiry']), 150);
 			$this->view->assign('regip', $regip_view);
 			$this->view->assign('postip', $postip_view);
 			

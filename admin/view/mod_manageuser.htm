@@ -102,13 +102,19 @@
 							<dd><input type="checkbox" name="deletepost" id="deletepost" value="1" /></dd>
 							
 							<dt><label for="regip"><b>禁止注册IP</b>：</label></dt>
-							<dd><input type="text" name="regip" id="regip" value="$regip" /></dd>
+							<dd>
+								<input type="checkbox" name="banregip" id="banregip" value="1" /> 
+								<input type="text" name="regip" id="regip" value="$regip" style="display: none;" />
+							</dd>
 							
 							<dt><label for="postip"><b>禁止发帖IP</b>：</label></dt>
-							<dd><input type="text" name="postip" id="postip" value="$postip" /></dd>
+							<dd>
+								<input type="checkbox" name="banpostip" id="banpostip" value="1" /> 
+								<input type="text" name="postip" id="postip" value="$postip" style="display: none;" />
+							</dd>
 							
 							<dt><label for="expiry">截止日期：</label></dt>
-							<dd>$input[expiry] <span class="grey">日期格式：2012-5-1</span></dd>
+							<dd>$input[expiry_banip] <span class="grey">日期格式：2012-5-1</span></dd>
 							
 							<dt></dt>
 							<dd>
@@ -132,6 +138,9 @@ $('#search_user_submit').click(function() {
 	$('#search_user_form').submit();
 	return false;
 });
+
+$('#banregip').click(function() {$('#regip').toggle();});
+$('#banpostip').click(function() {$('#postip').toggle();});
 
 {if !empty($error['email'])}
 $('#email').alert('$error['email']').focus();

@@ -35,11 +35,12 @@ class cron extends base_model {
 		if($time > $cron_1_next_time) {
 			$nexttime = $time + 300;
 			$this->runtime->xset('cron_1_next_time', $nexttime);
-			log::write('cron_1_next_time:'.date('Y-n-j H:i', $nexttime), 'cron.php');
 			
 			// gc online table
 			$this->online->gc();
 			// $this->runtime->xsave();
+			
+			log::write('cron_1_next_time:'.date('Y-n-j H:i', $nexttime), 'cron.php');
 		}
 		
 		// execute on 0:00 perday.
