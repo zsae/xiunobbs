@@ -244,6 +244,15 @@ class common_control extends base_control {
 		}
 	}
 	
+	public function check_ip() {
+		$ip = $_SERVER['ip'];
+		if($this->conf['iptable_on']) {
+			if($this->banip->is_banip($ip)) {
+				$this->message("您的IP $ip 已经被禁止。");
+			}
+		}
+	}
+	
 	private function init_cron() {
 		$cron_1_next_time = $this->conf['cron_1_next_time'];
 		$cron_2_next_time = $this->conf['cron_2_next_time'];

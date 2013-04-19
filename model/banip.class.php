@@ -22,17 +22,26 @@ class banip extends base_model {
 		foreach($baniplist as &$banip) {
 			$banip['dateline_fmt'] = date('Y-n-j', $banip['dateline']);
 			$banip['expiry_fmt'] = date('Y-n-j', $banip['expiry']);
+			$banip['ip0'] = $this->intvalip($banip['ip0']);
+			$banip['ip1'] = $this->intvalip($banip['ip1']);
+			$banip['ip2'] = $this->intvalip($banip['ip2']);
+			$banip['ip3'] = $this->intvalip($banip['ip3']);
+			$user = $this->user->read($banip['uid']);
+			$banip['username'] = $user['username'];
 		}
 		return $baniplist;
 	}
 	
 	// 获取对应的BAN记录，可能是某个IP段
 	public function get_banip($ip) {
-		$arr = explode('.', $ip);
+		$ip = explode('.', $ip);
+		foreach($ip as &$v) {
+			$v = intval($v);
+		}
 		if($this->count() < 50) {
 			$arrlist = $this->index_fetch(array(), array(), 0, 50);
 			foreach($arrlist as $arr) {
-				if($arr['ip0'] == $ip[0] && ($arr['ip1'] == -1 || $arr['ip1'] == $arr[1] &&  ($arr['ip2'] == -1 || $arr['ip2'] == $ip[2] &&  ($arr['ip3'] == -1 || $arr['ip3'] == $ip[3])))) {
+				if($arr['ip0'] == $ip[0] && ($arr['ip1'] == -1 || $arr['ip1'] == $ip[1] &&  ($arr['ip2'] == -1 || $arr['ip2'] == $ip[2] &&  ($arr['ip3'] == -1 || $arr['ip3'] == $ip[3])))) {
 					return $arr;
 				}
 			}
@@ -56,58 +65,13 @@ class banip extends base_model {
 			$v == '*' && $v = -1;
 			$v = intval($v);
 		}
-		$banid = $this->create(array('ip0'=>$arr[0], 'ip1'=>$arr[1], 'ip2'=>$arr[2], 'ip3'=>$arr[3], 'uid'=>$uid, 'datelie'=>$_SERVER['time'], 'expiry'=>$expiry));
+		$banid = $this->create(array('ip0'=>$arr[0], 'ip1'=>$arr[1], 'ip2'=>$arr[2], 'ip3'=>$arr[3], 'uid'=>$uid, 'dateline'=>$_SERVER['time'], 'expiry'=>$expiry));
 		return $banid;
 	}
 	
-	// 获取 groupid=>name
-	/*public function get_group_kv() {
-		$group_kv = $this->kv->get('group_kv');
-		if(empty($group_kv)) {
-			$group_kv = misc::arrlist_key_values();
-			$this->kv->set('group_kv', core::json_encode($group_kv));
-		}
-		return $group_kv;
-	}*/
-	
-	public function get_groupid_by_credits($groupid, $credits) {
-		// 根据用户组积分范围升级
-		if($groupid > 10) {
-			$grouplist = $this->get_list();
-			foreach($grouplist as $group) {
-				if($group['groupid'] < 11) continue;
-				if($credits >= $group['creditsfrom'] && $credits < $group['creditsto']) {
-					return $group['groupid'];
-				}
-			}
-		}
-		return $groupid;
-	}
-	
-	public function check_name(&$name) {
-		if(empty($name)) {
-			return '用户组名称不能为空。';
-		}
-		return '';
-	}
-	
-	public function check_creditsfrom(&$creditsfrom) {
-		if(empty($creditsfrom)) {
-			return '起始积分不能为空。';
-		}
-		return '';
-	}
-	
-	public function check_creditsto(&$creditsto) {
-		if(empty($creditsto)) {
-			return '截止积分不能为空。';
-		}
-		return '';
-	}
-	
-	// 用来显示给用户
-	public function format(&$group) {
-		// format data here.
+	private function intvalip($v) {
+		if($v == -1) return '*';
+		return intval($v);
 	}
 }
 ?>

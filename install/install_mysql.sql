@@ -403,7 +403,7 @@ CREATE TABLE bbs_banip (
   uid int(11) unsigned NOT NULL default '0',		# 添加人
   dateline int(11) unsigned NOT NULL default '0',	# 添加时间
   expiry int(11) unsigned NOT NULL default '0',		# 过期时间
-  PRIMARY KEY (ipid),
+  PRIMARY KEY (banid),
   KEY (ip0, ip1, ip2, ip3)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
