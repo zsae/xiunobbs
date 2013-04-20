@@ -204,8 +204,8 @@ CREATE TABLE bbs_thread (
 DROP TABLE IF EXISTS bbs_thread_digest;
 CREATE TABLE bbs_thread_digest (
   fid smallint(6) NOT NULL default '0',			# 版块id
-  tid int(11) unsigned NOT NULL,			# 主题id
-  digest tinyint(3) unsigned NOT NULL,			# 精华等级
+  tid int(11) unsigned NOT NULL default '0',		# 主题id
+  digest tinyint(3) unsigned NOT NULL default '0',	# 精华等级
   PRIMARY KEY (tid),					# 
   UNIQUE KEY (fid, tid)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
@@ -216,7 +216,7 @@ CREATE TABLE bbs_thread_digest (
 DROP TABLE IF EXISTS bbs_thread_new;
 CREATE TABLE bbs_thread_new (
   fid smallint(6) NOT NULL default '0',			# 版块id
-  tid int(11) unsigned NOT NULL auto_increment,		# 主题id
+  tid int(11) unsigned NOT NULL default '0',		# 主题id
   lastpost int(10) unsigned NOT NULL default '0',	# 最后回复时间
   PRIMARY KEY (tid),					# 
   UNIQUE KEY (fid, tid),				# 

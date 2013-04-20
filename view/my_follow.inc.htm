@@ -2,14 +2,15 @@
 			<!--{loop $userlist $user}-->
 				<li>
 					<div>
-						<a href="?you-index-uid-$user[uid].htm" target="_blank"><span class="avatar_middle border" style="{if $user[avatar_middle]}background-image: url($user[avatar_middle]){/if}"></span></a>
+						<!--{if $_user[uid] && $_user[uid] != $user[uid]}-->
+						<a href="?pm-ajaxlist-uid-$user[uid]-ajax-1.htm" class="ajaxdialog" ajaxdialog="{position: 'center', modal: false}" value="短消息" onclick="return false;" /><span class="avatar_middle border" style="{if $user[avatar_middle]}background-image: url($user[avatar_middle]){/if}" uid="$user[uid]"></span></a>
+						<!--{else}-->
+						<span class="avatar_middle border" uid="$user[uid]" style="{if $user[avatar_middle]}background-image: url($user[avatar_middle]){/if}"></span>
+						<!--{/if}-->
 					</div>
 					<div style="white-space: nowrap;">
 						<a href="?you-index-uid-$user[uid].htm" target="_blank"><span style="font-size: 12px; white-space: nowrap;" title="$user[username]">$user[username]</span>
 					</div>
-					<!--{if $_user[uid] && $_user[uid] != $user[uid]}-->
-					<input type="button" class="button smallblue ajaxdialog" href="?pm-ajaxlist-uid-$user[uid]-ajax-1.htm" ajaxdialog="{position: 'center', modal: false}" value="短消息" />
-					<!--{/if}-->
 					<!--{hook follow_user_info_end.htm}-->
 				</li>
 			<!--{/loop}-->

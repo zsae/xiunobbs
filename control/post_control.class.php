@@ -323,7 +323,9 @@ class post_control extends common_control {
 			// hook post_post_after.php
 			if(!array_filter($error)) {
 				$error = array();
-				$error['page'] = $page;
+				//$error['page'] = $page;
+				$error['post'] = $post;
+				$error['post']['posts'] = $thread['posts'] + 1;
 				
 				// hook post_post_post_create_before.php
 				$pid = $post['pid'] = $this->post->create($post);

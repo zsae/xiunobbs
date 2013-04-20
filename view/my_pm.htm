@@ -32,5 +32,21 @@
 
 $conf[footer_js]
 
+<script>
+var newuid = new Array();
+<!--{loop $newlist $new}-->
+newuid[$new[senduid]] = $new[senduid]; 
+<!--{/loop}-->
+
+$('ul.userlist').each(function() {
+	var javatar = $('span.avatar_middle', this);
+	var uid = javatar.attr('uid');
+	if(newuid[uid]) {
+		// javatar 跳动
+	}
+});
+
+</script>
+
 </body>
 </html>

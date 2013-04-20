@@ -29,7 +29,7 @@
 	<!--{loop $postlist $post}-->
 	<!--{php $u = isset($userlist[$post['uid']]) ? $userlist[$post['uid']] : array('uid'=>0, 'username'=>'', 'groupname'=>'', 'avatar_middle'=>'');}-->
 	<!--{hook thread_index_post_loop_start.htm}-->
-	<table border="0" cellpadding="0" cellspacing="0" width="100%" align="center" style="margin-top: 8px; margin-bottom: 8px; table-layout: fixed;">
+	<table border="0" cellpadding="0" cellspacing="0" width="100%" align="center" class="post_table">
 		<tr>
 			<td width="70" valign="top">
 				<div>
@@ -201,7 +201,6 @@
 			</td>
 		</tr>
 		<!--{/if}-->
-		
 	</table>
 	<!--{hook thread_index_post_loop_end.htm}-->
 	<!--{/loop}-->
@@ -224,7 +223,7 @@
 				<div class="bg1 border shadow" style="padding: 8px;">
 					<form action="?post-post-fid-$thread[fid]-tid-$thread[tid]-ajax-1-quickpost-1.htm" method="post" id="quick_post_form" target="_blank">
 						<input type="hidden" name="FORM_HASH" value="{FORM_HASH}" />
-						<textarea name="message" id="quick_message" style="width: 100%; height: 80px; font-size: 14px; overflow: hidden;"></textarea>
+						<textarea name="message" id="quick_message" style="width: 100%; height: 60px; font-size: 14px; overflow: hidden;"></textarea>
 						<div style="margin-top: 4px;">
 							<div style="width: 50%; float: left;">
 								<input type="submit" class="button smallblue" id="quick_post_submit" value="快速回复" />
@@ -404,8 +403,37 @@ $('#quick_post_submit').click(function() {
 					return false;
 				}
 				// hook thread_index_post_succeed_js.htm
-				var page = Math.max(1, intval(json.page));
-				window.location= '?thread-index-fid-$fid-tid-$tid-page-'+page+'-scrollbottom-1.htm';
+				
+				//var page = Math.max(1, intval(json.page));
+				//window.location= '?thread-index-fid-$fid-tid-$tid-page-'+page+'-scrollbottom-1.htm';
+				
+				var post = json.post;
+				// 结果直接显示在上面，不再跳转
+				var s = '<table border="0" cellpadding="0" cellspacing="0" width="100%" align="center" class="post_table">\
+					<tr>\
+						<td width="70" valign="top">\
+							<div>\
+								<a href_real="?you-index-uid-$_user[uid].htm" target="_blank" href="?you-profile-uid-$_user[uid]-ajax-1.htm" class="ajaxdialog_hover" ajaxdialog="{position: 5, modal: false, timeout: 1000, showtitle: false}" onclick="return false;" style="display: block" rel="nofollow">\
+									<span class="avatar_middle border bg1" {if !empty($_user[avatar_middle])}style="background-image: url($_user[avatar_middle])"{/if}></span>\
+								</a>\
+							</div>\
+							<div style="word-break:break-all;" aria-label="'+post.username+' '+post.posts+'楼">'+post.username+'</div>\
+						</td>\
+						<td width="15"></td>\
+						<td class="post_td" valign="top">\
+							<span class="icon icon-left-arrow" style="position: absolute; z-index: 9; float: left; margin-left: -9px; margin-top: 10px;"></span>\
+							<div class="bg1 border post" style="padding: 8px;">\
+								<div id="message_'+post.pid+'" class="message">'+post.message+'</div>\
+							</div>\
+						</td>\
+					</tr>\
+				</table>';
+				var jtable = $(s);
+				$('table.post_table:last').after(jtable);
+				//jtable.message = post.message;
+				$('#quick_message').val('').focus();
+				
+				$('#quick_post_submit').enable();
 			}
 		});
 	}

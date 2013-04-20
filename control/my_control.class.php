@@ -228,9 +228,12 @@ class my_control extends common_control {
 		$this->_title[] = '最近联系人';
 		$this->_nav[] = '最近联系人';
 		
+		$newlist = $this->pmnew->get_list_by_uid($uid);
+		
 		// hook my_pm_before.php
 		$userlist = $this->pmnew->get_recent_userlist($uid);
 		
+		$this->view->assign('newlist', $newlist);
 		$this->view->assign('userlist', $userlist);
 		// hook my_pm_after.php
 		$this->view->display('my_pm.htm');

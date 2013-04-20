@@ -347,9 +347,9 @@ class user extends base_model{
 			$this->pm->index_delete(array('uid2'=>$uid));
 			$this->pmcount->index_delete(array('uid1'=>$uid));
 			$this->pmcount->index_delete(array('uid2'=>$uid));
-			$this->pmnew->index_delete(array('recvuid'=>$uid));
-			$this->pmnew->index_delete(array('senduid'=>$uid));
-			$this->user_access->delete(array('uid'=>$uid));
+			//$this->pmnew->index_delete(array('recvuid'=>$uid)); // 强制清除可能导致消息提示不停的闪动
+			//$this->pmnew->index_delete(array('senduid'=>$uid)); // 强制清除可能导致消息提示不停的闪动
+			$this->user_access->delete($uid);
 			// 清理精华
 			
 			// 清理 pm
