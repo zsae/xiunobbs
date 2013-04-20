@@ -62,7 +62,7 @@ $.editor = function(textarea, settings) {
 	//var upload_queue_error = 0;		// 上传错误标志位（标示每轮）
 	
 	var is_pasting = false;			// 是否正在粘贴，ie 会两次激活 beforepaste
-	var bookmark = {top: 0, range: null};
+	this.bookmark = {top: 0, range: null};
 	
 	this.init = function() {
 		var s = '<div class="editor">\
@@ -264,7 +264,7 @@ $.editor = function(textarea, settings) {
 		$('a.italic', toolbar).click(function() {_this.exec_cmd('Italic');});
 		$('a.underline', toolbar).click(function() {_this.exec_cmd('Underline');});
 		$('a.fontsize', toolbar).html('字体大小').click(function() {
-			//_this.save_bookmark();
+			_this.save_bookmark();
 			_this.hide_menu();
 			$(this).xn_menu($('.fontsize', menu), 0, 1000);
 		});
@@ -275,7 +275,7 @@ $.editor = function(textarea, settings) {
 		});
 		
 		$('a.fontcolor', toolbar).click(function() {
-			//_this.save_bookmark();
+			_this.save_bookmark();
 			_this.hide_menu();
 			$(this).xn_menu($('.fontcolor', menu), 0, 1000);
 		});
@@ -289,7 +289,7 @@ $.editor = function(textarea, settings) {
 		var rangelink = null;
 		var trange = null;
 		$('a.link', toolbar).click(function() {
-			//_this.save_bookmark();
+			_this.save_bookmark();
 			_this.hide_menu();
 			trange = _this.get_range();
 			var pelement = is_ie ? trange.parentElement() : trange.startContainer;
@@ -324,7 +324,7 @@ $.editor = function(textarea, settings) {
 		
 		// insertcode
 		$('a.insertcode', toolbar).click(function() {
-			//_this.save_bookmark();
+			_this.save_bookmark();
 			_this.hide_menu();
 			//$('div.insertcode select', menu).val('').focus();
 			//$('div.insertcode textarea', menu).val('');
@@ -359,7 +359,7 @@ $.editor = function(textarea, settings) {
 		$('a.numberlist', toolbar).click(function() {_this.exec_cmd('InsertOrderedList');});
 		
 		$('a.video', toolbar).click(function() {
-			//_this.save_bookmark();
+			_this.save_bookmark();
 			_this.hide_menu();
 			$(this).xn_menu($('.video', menu), 0, 5000);
 			setTimeout(function() {
@@ -386,7 +386,7 @@ $.editor = function(textarea, settings) {
 		
 			$('div.face', menu).html(facehtml);
 			$('a.face', toolbar).click(function() {
-				//_this.save_bookmark();
+				_this.save_bookmark();
 				_this.hide_menu();
 				$(this).xn_menu($('div.face', menu), 0, 1000);
 			});
@@ -454,9 +454,9 @@ $.editor = function(textarea, settings) {
 			//return false;
 		});
 		
-		$(_body).bind('blur', function() {
+		/*$(_body).bind('blur', function() {
 			_this.save_bookmark();
-		});
+		});*/
 		
 		// 加载初始化的HTML
 		if(textarea.value) {
@@ -723,14 +723,19 @@ $.editor = function(textarea, settings) {
 				_this.bookmark = {top: top, range: range};
 			}
 		} else {
+			
+			_win.focus();
 			var range = _doc.selection.createRange();
 			// fix: ie678, 如果为空，什么也没选择，则插入一个标志节点
 			if(range.htmlText == '') {
-				if(!_doc.getElementById('__range_end__')) {
-					try {
-					range.pasteHTML('<span id="__range_end__" style="width:0px; height: 0px;"></span>');
+				if(_doc.getElementById('__range_end__')) {
+					$('#__range_end__', _doc).remove();
+				}
+				try {
+					range.pasteHTML('<span id="__range_end__" style="width: 1px; height: 1px;"></span>');
 					range.moveToElementText(_doc.getElementById('__range_end__'));
-					} catch(e) {}
+				} catch(e) {
+					alert('range.pasteHTML() error:' + e.message);
 				}
 			}
 			_this.bookmark = {top: top, range: range};

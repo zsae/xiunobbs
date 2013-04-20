@@ -113,7 +113,7 @@ class search_control extends common_control {
 	
 	private function get_list_by_title($keyword, $fid, $daterange, $orderby, $page, $pagesize) {
 		$cond = $fid ? array('fid'=>$fid) : array();
-		$daterange && $cond += array('lastpost'=>array('<'=>$_SERVER['time'] - $daterange * 86400));
+		$daterange && $cond += array('lastpost'=>array('>'=>$_SERVER['time'] - $daterange * 86400));
 		$cond += array('subject'=>array('LIKE'=>$keyword));
 		
 		$order = $orderby ? ($orderby == 'timeasc' ? array('tid'=>1) : array('tid'=>-1)) : array();
