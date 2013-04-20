@@ -139,6 +139,7 @@ a.icon:hover {background-image: url(image/icon-hover.gif)}
 .icon-post-fire {background-position: -32px -96px;}
 .icon-myhome {background-position: -80px -96px;}
 .icon-stat {background-position: -96px -96px;}
+.icon-lastpage {background-position: -112px -96px;}
 
 /* 其他动画图标 */
 a.icon-pm, a.icon-pm:hover{width: 13px; height: 9px; background-image: url(image/icon-pm.gif); _vertical-align: bottom;}

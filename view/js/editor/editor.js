@@ -596,7 +596,7 @@ $.editor = function(textarea, settings) {
 		
 		// fix chrome bug
 		if(s == '' || s == ' ' || s == "\r\n") {
-			s = '<div><br /></div>';
+			s = '<div></div>';
 		}
 		
 		if(_issource) {
@@ -778,7 +778,11 @@ $.editor = function(textarea, settings) {
 		if(is_ie) {
 			range = sel.createRange();
 		} else {
+			//var range = sel.createRange ? sel.createRange() : sel.rangeCount > 0 ? sel.getRangeAt(0) : null;
 			var range = sel.createRange ? sel.createRange() : sel.rangeCount > 0 ? sel.getRangeAt(0) : null;
+			/*if(range == null) {
+				window.getSelection().addRange(savedRange);
+			}*/
 		}
 		return range;
 	}
@@ -852,7 +856,7 @@ $.editor = function(textarea, settings) {
 			try {
 				range.deleteContents();
 				var range_start_id = '____range_start____';
-				s += '<span id="'+range_start_id+'" width="1" height="1" ></span>';
+				s += '<span id="'+range_start_id+'" width="0" height="0" ></span>';
 				if(range.createContextualFragment) {
 					var newnode = range.createContextualFragment(s);
 				} else {
@@ -1018,9 +1022,11 @@ $.editor = function(textarea, settings) {
 	}
 	
 	this.fix_tab = function(e) {
+		
 		var e = e ? e : window.event;
 		var keycode = e.keyCode ? e.keyCode : (e.which ? e.which : e.charCode);
 		if(keycode == 9) {
+			_this.save_bookmark();
 			_this.paste('&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;');
 			return false;
 		} else {
