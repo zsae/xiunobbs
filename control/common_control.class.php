@@ -246,9 +246,9 @@ class common_control extends base_control {
 	
 	public function check_ip() {
 		$ip = $_SERVER['ip'];
-		if($this->conf['iptable_on']) {
+		if(($this->_user['groupid'] == 0 || $this->_user['groupid'] > 4) && $this->conf['iptable_on']) {
 			if($this->banip->is_banip($ip)) {
-				$this->message("您的IP $ip 已经被禁止。");
+				$this->message("您的IP $ip 已经被禁止，如果有疑问，请联系管理员。", 0);
 			}
 		}
 	}

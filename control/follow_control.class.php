@@ -13,6 +13,9 @@ class follow_control extends common_control {
 	function __construct(&$conf) {
 		parent::__construct($conf);
 		$this->check_login();
+		
+		// 检查IP 屏蔽
+		$this->check_ip();
 	}
 	
 	// 添加关注

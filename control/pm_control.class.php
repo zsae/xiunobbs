@@ -12,6 +12,7 @@ class pm_control extends common_control {
 	
 	function __construct(&$conf) {
 		parent::__construct($conf);
+		
 	}
 	
 	// 获取新短消息，如果有，则返回
@@ -129,6 +130,9 @@ class pm_control extends common_control {
 	public function on_create() {
 		$this->check_login();
 		
+		// 检查IP 屏蔽
+		$this->check_ip();
+		
 		$touid = intval(core::gpc('touid'));
 		$message = htmlspecialchars(core::gpc('message', 'P'));
 		$message = misc::html_space($message);
@@ -160,6 +164,9 @@ class pm_control extends common_control {
 	
 	public function on_ajaxdelete() {
 		$this->check_login();
+		
+		// 检查IP 屏蔽
+		$this->check_ip();
 		
 		$pmid = intval(core::gpc('pmid'));
 		$pm = $this->pm->read($pmid);

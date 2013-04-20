@@ -72,6 +72,7 @@ function delay_execute(dialog, recall) {
 				
 				if(g_newpm_userlist && g_newpm_userlist[k])delete g_newpm_userlist[k];
 			} else {
+				alert(json.message);
 				g_newpm_userlist = null;
 			}
 			if(!g_newpm_userlist) {

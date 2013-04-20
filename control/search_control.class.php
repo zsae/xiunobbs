@@ -16,6 +16,9 @@ class search_control extends common_control {
 		
 		// search_type, sphinx_host, sphinx_port, sphinx_datasrc, sphinx_deltasrc
 		$this->conf += $this->kv->xget('conf_ext');
+		
+		// 检查IP 屏蔽
+		$this->check_ip();
 	}
 	
 	// 首页

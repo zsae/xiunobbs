@@ -16,8 +16,6 @@ class user_control extends common_control {
 		// resetpw_on, reg_email_on, resetpw_on, reg_email_on
 		$this->conf += $this->kv->xget('conf_ext');
 		
-		// 检查IP 屏蔽
-		$this->check_ip();
 	}
 	
 	// ajax 登录
@@ -117,6 +115,9 @@ class user_control extends common_control {
 	// ajax 注册
 	public function on_create() {
 		
+		// 检查IP 屏蔽
+		$this->check_ip();
+		
 		if(!$this->conf['reg_on']) {
 			$this->message('当前注册功能已经关闭。');
 		}
@@ -210,6 +211,10 @@ class user_control extends common_control {
 	
 	// 重新发送激活连接
 	public function on_reactive() {
+		
+		// 检查IP 屏蔽
+		$this->check_ip();
+		
 		// 检查是否已经激活
 		$user = $this->user->read($this->_user['uid']);
 		if(empty($user)) {
@@ -254,6 +259,9 @@ class user_control extends common_control {
 	// 重设密码，邮箱验证
 	public function on_resetpw() {
 		// 输入邮箱，发送重设密码连接
+		
+		// 检查IP 屏蔽
+		$this->check_ip();
 		
 		$mail = $this->kv->get('mail_conf');
 		
@@ -381,6 +389,10 @@ class user_control extends common_control {
 	
 	// email 激活
 	public function on_active() {
+		
+		// 检查IP 屏蔽
+		$this->check_ip();
+		
 		$code = core::gpc('code');
 		if(empty($code)) {
 			$this->message('缺少参数 code。');
@@ -414,6 +426,10 @@ class user_control extends common_control {
 	}
 	
 	public function on_uploadavatar() {
+		
+		// 检查IP 屏蔽
+		$this->check_ip();
+		
 		$uid = $this->_user['uid'];
 		$this->check_forbidden_group();
 		$user = $this->user->read($uid);
@@ -438,6 +454,10 @@ class user_control extends common_control {
 	}
 	
 	public function on_clipavatar() {
+		
+		// 检查IP 屏蔽
+		$this->check_ip();
+		
 		$uid = $this->_user['uid'];
 		$this->check_login();
 		$user = $this->user->read($uid);

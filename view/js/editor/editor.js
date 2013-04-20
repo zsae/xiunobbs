@@ -722,6 +722,16 @@ $.editor = function(textarea, settings) {
 				range = selection.getRangeAt(0);
 				_this.bookmark = {top: top, range: range};
 			}
+			
+			// fix: 这个时候往往是还没有聚焦到 _win
+			if(range == null) {
+				_win.focus();
+				var selection = _win.getSelection();
+				if(selection.rangeCount > 0) {
+					range = selection.getRangeAt(0);
+					_this.bookmark = {top: top, range: range};
+				}
+			}
 		} else {
 			
 			_win.focus();
