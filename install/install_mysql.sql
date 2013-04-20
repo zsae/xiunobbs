@@ -1,6 +1,5 @@
 #
 #	SQL + 注释用来定义自动生成的代码
-#	除了数据库外， conf/conf.php 保存配置数据，
 #
 
 DROP TABLE IF EXISTS bbs_group;
@@ -90,7 +89,7 @@ CREATE TABLE bbs_user_access (				# 字段中文名			# 控件属性					# 字�
   PRIMARY KEY (uid)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-# 板块表，结合 forum_access 控制权限，所有版块名均可见。
+# 板块表，结合 forum_access 控制权限。
 DROP TABLE IF EXISTS bbs_forum;
 CREATE TABLE bbs_forum (				# 字段中文名			# 控件属性					# 字段描述
   fid int(11) unsigned NOT NULL auto_increment,		# fid				#						#
@@ -130,11 +129,11 @@ CREATE TABLE bbs_forum_access (				# 字段中文名			# 控件属性					# 字�
   KEY (fid)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-# 存放大分类，小表，每个版块三个大分类，ID，1,2,3
+# 存放大分类，小表，每个版块4个大分类，ID，1,2,3,4
 DROP TABLE IF EXISTS bbs_thread_type_cate;
 CREATE TABLE bbs_thread_type_cate (
   fid smallint(6) NOT NULL default '0',			# 版块id
-  cateid int(11) NOT NULL default '0',			# 主题分类id，取值范围：1,2,3
+  cateid int(11) NOT NULL default '0',			# 主题分类id，取值范围：1,2,3,4
   catename char(16) NOT NULL default '',		# 主题分类
   rank int(11) unsigned NOT NULL default '0',		# 排序，越小越靠前，最大255
   enable tinyint(3) unsigned NOT NULL default '0',	# 是否启用，主要针对大分类
@@ -171,7 +170,7 @@ CREATE TABLE bbs_thread_type_data (
   KEY (fid, typeidsum, tid)				# 一个版块下的 typeid，主题列表按照符合条件查询列表
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
-# 论坛主题 fid->tid, 根据fid分区，todo:有三个索引分区有点问题，待解决
+# 论坛主题 fid->tid, 根据fid分区，已经完美解决分区问题
 DROP TABLE IF EXISTS bbs_thread;
 CREATE TABLE bbs_thread (
   fid smallint(6) NOT NULL default '0',			# 版块id
@@ -201,6 +200,7 @@ CREATE TABLE bbs_thread (
   KEY (fid, lastpost)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+# 精华主题，小表代替大索引，bbs_thread 的扩展表
 DROP TABLE IF EXISTS bbs_thread_digest;
 CREATE TABLE bbs_thread_digest (
   fid smallint(6) NOT NULL default '0',			# 版块id
