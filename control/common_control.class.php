@@ -383,6 +383,14 @@ class common_control extends base_control {
 		
 		if($user['accesson']) {
 			$access = $this->user_access->read($uid);
+			// 如果用户被删除
+			if(empty($access)) {
+				$user = $this->user->read($uid);
+				if(empty($user)) {
+					$message = '您的账户可能已经被删除。';
+					return FALSE;
+				}
+			}
 			// 判断过期时间，如果已经过期，则恢复权限。
 			if($access['expiry'] < $_SERVER['time']) {
 				$this->user_access->reset($uid);

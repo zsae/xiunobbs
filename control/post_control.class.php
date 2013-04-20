@@ -286,6 +286,10 @@ class post_control extends common_control {
 			// hook post_post_before.php
 			$this->view->display('post_post_ajax.htm');
 		} else {
+			
+			// 引用某帖
+			$pid = intval(core::gpc('pid'));
+			
 			$post = $error = array();
 			$subject = htmlspecialchars(core::gpc('subject', 'P')); // 废弃
 			$message = core::gpc('message', 'P');
@@ -400,10 +404,15 @@ class post_control extends common_control {
 				// 更新最新主题
 				$this->thread_new->set($tid, array('fid'=>$fid, 'tid'=>$tid, 'lastpost'=>$_SERVER['time']));
 				
-				// 斑竹回复的话， 短消息通知楼主，有人回帖，每个主题前10名用户
-				if($this->_user['groupid'] <= 5 && $this->_user['uid'] != $thread['uid']) {
+				// 斑竹回复的话， 短消息通知楼主，有人回帖，每个主题前10名用户，引用回复也发送，高级别会员回复通知。
+				$tuser = $this->user->read($thread['uid']);
+				if($this->_user['uid'] != $thread['uid'] && (
+						($this->_user['groupid'] <= 5) || 
+						($pid && ($thread['posts'] < 40 && $thread['dateline'] > $_SERVER['time'] - 86400 * 7)) || 
+						($this->_user['groupid'] > 10 && $this->_user['groupid'] > $tuser['groupid'] && $thread['posts'] < 20 && $thread['dateline'] > $_SERVER['time'] - 86400 * 7)
+				)) {
 					$pmsubject = utf8::substr($thread['subject'], 0, 16);
-					$pmmessage = "版主【{$this->_user['username']}】回复了您的主题：<a href=\"?thread-index-fid-$fid-tid-$tid.htm\" target=\"_blank\">【{$pmsubject}】</a>。";
+					$pmmessage = "【{$this->_user['username']}】回复了您的主题：<a href=\"?thread-index-fid-$fid-tid-$tid.htm\" target=\"_blank\">【{$pmsubject}】</a>。";
 					$this->pm->system_send($thread['uid'], $thread['username'], $pmmessage);
 				}
 				
