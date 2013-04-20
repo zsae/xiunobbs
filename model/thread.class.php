@@ -101,7 +101,7 @@ class thread extends base_model {
 			$thread['icon'] = "icon-post-red";
 		}
 		
-		$thread['lastpage'] = $thread['posts_fmt'] > $this->conf['forum_index_pagesize'] ? ceil($thread['posts_fmt'] / $this->conf['forum_index_pagesize']) : 1;
+		$thread['lastpage'] = $thread['posts_fmt'] > $this->conf['pagesize'] ? ceil($thread['posts_fmt'] / $this->conf['pagesize']) : 1;
 		
 		// hook thread_model_format_end.php
 	}
