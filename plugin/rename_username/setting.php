@@ -32,12 +32,12 @@ if(!$this->form_submit()) {
 	
 	$username = $user['username'];
 	
-	$this->user->index_update(array('username'=>$username), array('username'=>$newusername), TRUE);
-	$this->online->index_update(array('username'=>$username), array('username'=>$newusername), TRUE);
-	$this->modlog->index_update(array('username'=>$username), array('username'=>$newusername), TRUE);
-	$this->rate->index_update(array('username'=>$username), array('username'=>$newusername), TRUE);
-	$this->pm->index_update(array('username1'=>$username), array('username1'=>$newusername), TRUE);
-	$this->pm->index_update(array('username2'=>$username), array('username2'=>$newusername), TRUE);
+	$this->user->index_update(array('uid'=>$uid), array('username'=>$newusername), TRUE);
+	$this->online->index_update(array('uid'=>$uid), array('username'=>$newusername), TRUE);
+	$this->modlog->index_update(array('uid'=>$uid), array('username'=>$newusername), TRUE);
+	$this->rate->index_update(array('uid'=>$uid), array('username'=>$newusername), TRUE);
+	$this->pm->index_update(array('uid1'=>$uid), array('username1'=>$newusername), TRUE);
+	$this->pm->index_update(array('uid2'=>$uid), array('username2'=>$newusername), TRUE);
 	if($user['posts'] > 0) {
 		$this->post->index_update(array('uid'=>$uid), array('username'=>$newusername), TRUE);
 	}
