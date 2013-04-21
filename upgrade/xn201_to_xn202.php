@@ -100,6 +100,8 @@ CREATE TABLE bbs_banip (
   PRIMARY KEY (banid),
   KEY (ip0, ip1, ip2, ip3)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+UPDATE bbs_thread_type SET rank=0;
 ";
 
 	$db = new db_mysql($conf['db']['mysql']);
