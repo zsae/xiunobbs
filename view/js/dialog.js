@@ -185,7 +185,7 @@ if(!$.fn.dialog) {
 			}
 			
 			$(_div).show();
-			//$(_div).fadeIn('fast');
+			//$(_div).fadeIn('middle');
 			_this.set_top(_div);
 		};
 		
@@ -201,8 +201,8 @@ if(!$.fn.dialog) {
 				// 删除缓存 ?
 				$(_div).remove();
 			} else {
-				//$(_div).fadeOut('fast');
-				$(_div).hide();
+				$(_div).fadeOut('slow');
+				//$(_div).hide();
 			}
 		};
 		
