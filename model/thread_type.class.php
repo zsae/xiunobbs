@@ -64,42 +64,6 @@ class thread_type extends base_model {
 		return 0;
 	}
 	
-	// 将 endid, 插入到 startid 之前
-	public function update_rank($fid, $endid, $startid, $typecateid) {
-		
-		$typecateid = misc::mid($typecateid, 1, 4);
-		$arrlist = $this->get_list_by_fid_cateid($fid, $typecateid, TRUE);
-		$endtype = $arrlist[$endid];
-		$starttype = $arrlist[$startid];
-		
-		// 遍历数组，从 next, 到 type
-		$keys = array_keys($arrlist);
-		$values = array_values($arrlist);
-		$start = array_search($startid, $keys);
-		$end = array_search($endid, $keys);
-		
-		/*
-			更新 start - end 之间的元素的 rank 值
-			1	2	3	4	5	6
-			A	B	C	D	E	F
-				|start			end|
-		*/
-		// 朝前拖, end 放到 start 位置，更改 start-end 之间的元素的 rank
-		if($start < $end) {
-			$movelist = array_slice($values, $start, $end - $start + 1); // 中间一块的数据
-			foreach($movelist as $k=>$v) {
-				$t = isset($movelist[$k + 1]) ? $movelist[$k + 1] : $endtype;
-				//$s .= "start: $start, end: $end, k:$k, rank:".$t['rank'];
-				$v['rank'] = $t['rank'];
-				$this->update($v);
-			}
-			$endtype['rank'] = $starttype['rank'];
-			$this->update($endtype);
-		// 不支持往后拖。
-		} else {
-		}
-	}
-	
 	// 删除版块的时候清除
 	public function delete_by_fid($fid) {
 		$arrlist1 = $this->get_list_by_fid_cateid($fid, 1);

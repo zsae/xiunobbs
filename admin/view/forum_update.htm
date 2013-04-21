@@ -2,12 +2,6 @@
 <style type="text/css">
 dt{width: 15%;}
 dd{width: 84%;}
-.drag_item {border: 1px solid #FFFFFF; display: inline-block;}
-.red_border1 {border: 1px solid #FF3333;}
-.red_border2 {border: 1px solid #BB0000;}
-.green_border {border: 1px solid #00BB00;}
-.icon-drag {cursor: move;}
-.opacity {filter: alpha(opacity:50); opacity: 0.50;}
 </style>
 <div class="width">
 	<form action="?forum-update-fid-$forum[fid].htm" method="post" id="forum_update_form">
@@ -53,7 +47,7 @@ dd{width: 84%;}
 					
 					<!--{hook forum_update_threadtype_before.htm}-->
 					
-					<dt><label for="accesson">开启主题分类：</label></dt>
+					<dt>设置主题分类：</dt>
 					<dd class="grey">
 						<!--{if $forum[typelist]}-->
 							<input type="checkbox" name="typeon" id="typeon" value="1" checked="checked"/>
@@ -61,29 +55,40 @@ dd{width: 84%;}
 							<input type="checkbox" name="typeon" id="typeon" value="1" />
 						<!--{/if}-->
 					</dd>
-					<div id="typeon_div" {if empty($forum[typelist])} style="display: none;" {/if}>
-						<!--{loop $forum[typelist] $typecateid $typelist}-->
-						<div class="typecate" typecateid="$typecateid" unselectable="on">
-							<table unselectable="on">
-								<tr>
-									<td width="30" align="center">启用</td>
-									<td width="30" align="center">顺序</td>
-									<td width="60">大分类名称</td>
-									<td>小分类名称</td>
-								</tr>
-								<tr>
-									<td unselectable="on" valign="top" align="center"><input type="checkbox" name="typecateenable[$typecateid]" value="1" {if $forum[typecatelist][$typecateid][enable]}checked="checked"{/if} /></td>
-									<td unselectable="on" valign="top" align="center"><input type="text" name="typecaterank[$typecateid]" value="$forum[typecatelist][$typecateid][rank]" size="4" /></td>
-									<td unselectable="on" valign="top"><input type="text" name="typecatename[$typecateid]" value="$forum[typecatelist][$typecateid][catename]" size="4" /></td>
-									<td unselectable="on" class="drag_parent" typecateid="$typecateid">
-										<!--{loop $typelist $typeid $type}--><span class="border drag_item" typeid="$type[typeid]"><input type="text" name="typename[{$type[typeid]}]" value="$type[typename]" size="4" /></span><!--{/loop}-->
-									</td>
-								</tr>
-							</table>
-						</div>
-						<!--{/loop}-->
-					</div>
 					
+					<dt></dt>
+					<dd class="grey">
+						<div id="typeon_div" {if empty($forum[typelist])} style="display: none;" {/if}>
+							<!--{loop $forum[typelist] $typecateid $typelist}-->
+							<div class="div">
+								<div class="header">
+									大分类名称：<input type="text" name="typecatename[$typecateid]" value="$forum[typecatelist][$typecateid][catename]" size="8" />
+									顺序：<input type="text" name="typecaterank[$typecateid]" value="$forum[typecatelist][$typecateid][rank]" size="4" />
+									启用：<input type="checkbox" name="typecateenable[$typecateid]" value="1" {if $forum[typecatelist][$typecateid][enable]}checked="checked"{/if} />
+								</div>
+								<div class="body">
+									<table width="200">
+										<tr>
+											<td width="60">小分类名称</td>
+											<td width="60">顺序</td>
+											<td width="30" align="center">启用</td>
+										</tr>
+										<!--{loop $typelist $typeid $type}-->
+										<tr {if empty($type[typename])} style="display: none;"{/if} typeid="$type[typeid]" typename="$type[typename]">
+											<td><input type="text" name="typename[$type[typeid]]" value="$type[typename]" size="8" /></td>
+											<td><input type="text" name="typerank[$type[typeid]]" value="$type[rank]" size="4" /></td>
+											<td><input type="checkbox" name="typeenable[$type[typeid]]" value="1" {if $type[enable]}checked="checked"{/if} /></td>
+										</tr>
+										<!--{/loop}-->
+										<tr>
+											<td colspan="3"><a href="javascript: void(0)" class="addtype">[+]增加</a></td>
+										</tr>
+									</table>
+								</div>
+							</div>
+							<!--{/loop}-->
+						</div>
+					</dd>
 					<dt><label for="accesson">开启权限限制：</label></dt>
 					<dd>
 						<input type="checkbox" name="accesson" id="accesson" value="1" {if $forum[accesson]}checked="checked"{/if} />
@@ -191,7 +196,24 @@ $('#checkdown').click(function() {
 <!--{/if}-->
 
 // 主题分类
-$('p.typeid').each(function() {
+$('a.addtype').click(function() {
+	var find = 0;
+	var jtable = $(this).closest('table');
+	$('tr', jtable).each(function() {
+		var typeid = $(this).attr('typeid');
+		var typename = $(this).attr('typename');
+		if(!typeid) return;
+		if(find) return;
+		if($(this).css('display') == 'none') {
+			$(this).show();
+			find = 1;
+		}
+	})
+	if(!find) {
+		alert('每个大分类下只能有40个个小主题分类。');
+	}
+});
+/*$('p.typeid').each(function() {
 	var _this = this;
 	var typeid = $(this).attr('typeid');
 	$('a.delete', this).click(function() {
@@ -212,96 +234,12 @@ $('#addtype').click(function() {
 	$('p.typeid:last').before(newnode);
 	return false;
 });
-
-$.fn.mouseout_recall = function(timeout, obj, recall) {
-	if(!timeout) { return this;}
-	var _this = this; // 当前对象, 标签
-	// 如果有 obj, 一般为A标签，则鼠标放在A标签上时不启动定时器。
-	if(obj) {
-		$(obj).hover (
-			function() { if(_this.htime) { clearTimeout(_this.htime); _this.htime = false; } return false; },
-			function() { 
-				if(_this.htime) { clearTimeout(_this.htime); _this.htime = false; }
-				if(!_this.htime) { _this.htime = setTimeout(function() { recall(); _this.htime = false;}, timeout); window.last_timeout = _this.htime; return false;}
-			}
-		);
-	// 否则直接启动定时器
-	} else {
-		_this.htime = setTimeout(function() { recall(); _this.htime = false;}, timeout);
-		window.last_timeout = _this.htime;
-	}
-	$(this).hover (
-		function() { if(_this.htime) { clearTimeout(_this.htime); _this.htime = false; } return false; },
-		function() { 
-			if(_this.htime) { clearTimeout(_this.htime); _this.htime = false; }
-			if(!_this.htime) { _this.htime = setTimeout(function() { recall(); _this.htime = false; }, timeout); window.last_timeout = _this.htime; return false;}
-		}
-	);
-	return this;
-};
-
-// 用法:
-$(function() {
-	$('td.drag_parent').drag(function(curr) {
-		var jprev = $(curr).prev();
-		var jnext = $(curr).next();
-		
-		//alert($(curr).parent().attr('typecateid'));
-		
-		var nextid = jnext.attr('typeid');
-		var typeid = $(curr).attr('typeid');
-		var typecateid = $(curr).parent().attr('typecateid');
-		
-		// 根据
-		$.get('?forum-updatetyperank-fid-$fid-typeid-'+typeid+'-nextid-'+nextid+'-typecateid-'+typecateid+'-ajax-1.htm', function(s) {
-			var json = json_decode(s);
-			if(error = json_error(json)) {alert(error); return false;}
-			if(json.status <= 0) {alert(json.message); return false;}
-		});
-	});
-
-	/*
-	$.drag(, function(curr){
-		
-	});
-	$.drag('#typecate_2 span.drag_item', function(curr){
-		var jprev = $(curr).prev();
-		var jnext = $(curr).next();
-		
-		var nextid = jnext.attr('nextid');
-		var typeid = $(curr).attr('typeid');
-		
-		alert(typeid);
-		
-		// 根据
-		$.get('?forum-updatetyperank-fid-$fid-typeid-'+typeid+'-nextid-'+nextid+'-ajax-1.htm', function(s) {
-			alert(s);
-		});
-	});*/
-});
-
-/*
-$('typeon').click(function() {
-	$('#typeon_div').toggle();
-});
 */
-
-// 用法:
-/*$.drag('div.bigcate', function(curr){
-	var jprev = $(curr).prev();
-	var jnext = $(curr).next();
-});*/
-
-
 
 {if $forum[typelist]}
 $('#typeon').click(function() {
 	if(!$(this).attr('checked')) {
-		if(window.confirm('关闭主题分类，系统将自动删除已经设置的主题分类名称。')) {
-			$('#typeon_div').hide();
-		} else {
-			return false;
-		}
+		$('#typeon_div').hide();
 	} else {
 		$('#typeon_div').show();
 	}

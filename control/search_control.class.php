@@ -28,7 +28,7 @@ class search_control extends common_control {
 		
 		$keyword = urldecode(core::gpc('keyword', 'R'));
 		$orderby = core::gpc('orderby');
-		!in_array($orderby, array('match', 'timeasc', 'timedesc')) && $orderby = 'match';
+		!in_array($orderby, array('match', 'timeasc', 'timedesc')) && $orderby = 'timedesc';
 		$fid = intval(core::gpc('fid'));
 		$daterange = intval(core::gpc('daterange'));
 		$daterange = misc::mid($daterange, 0, 1095);
@@ -137,7 +137,7 @@ class search_control extends common_control {
                 $cl->SetServer($this->conf['sphinx_host'], $this->conf['sphinx_port']);
                 $cl->SetConnectTimeout(3);
                 $cl->SetArrayResult(TRUE);
-                $cl->SetWeights(array(100, 10, 1));     	// 标题权重100，内容权重1，作者权重10
+                $cl->SetWeights(array(100, 1, 5));     	// 标题权重100，内容权重1，作者权重10
                 $fid && $cl->SetFilter('fid', array($fid));
                 $daterange && $cl->setFilterRange('dateline', $_SERVER['time'] - $daterange * 86400, $_SERVER['time']);
                 $cl->SetMatchMode(SPH_MATCH_ALL);
@@ -159,9 +159,10 @@ class search_control extends common_control {
 		*/
 		
 		// --------------> 优先搜索增量索引
-		$deltamatch = array();
+		$pagesize = 10;
+		$newlist = array();
+		$forums = array();
 		if($page == 1) {
-			$pagesize = 10;
 			$cl->SetLimits(0, $pagesize, 1000);	// 最大结果集
 	                $res = $cl->Query($keyword, $this->conf['sphinx_deltasrc']); // * 为所有的索引
 	                if(!empty($cl->_error)) {
@@ -170,12 +171,29 @@ class search_control extends common_control {
 	                if(!empty($res) && !empty($res['total'])) {
 	                       $deltamatch = $res['matches'];
 	                }
+	                $res['matches'] && misc::arrlist_change_key($res['matches'], 'id');
 	                
-	                misc::arrlist_change_key($deltamatch, 'id');
+	                $newlist = array();
+	                $forums = array();
+	                foreach($res['matches'] as $v) {
+	                        if(empty($v['attrs'])) continue;
+	                        if(empty($v['attrs']['fid'])) continue;
+	                        $fid = $v['attrs']['fid'];
+	                        
+	                        $thread = $this->thread->read($v['attrs']['fid'], $v['attrs']['tid']);
+	                        if(empty($thread)) continue;
+	                        if(stripos($thread['subject'], $keyword) === FALSE) continue;
+	                        empty($forums[$fid]) && $forums[$fid] = $this->mcache->read('forum', $fid);
+	                        $forum = $forums[$fid];
+	                        $this->thread->format($thread, $forum);
+	                        $thread['forumname'] = isset($this->conf['forumarr'][$thread['fid']]) ? $this->conf['forumarr'][$thread['fid']] : '';
+	                        $thread['subject'] = str_replace($keyword, '<span class="red">'.$keyword.'</span>', $thread['subject']);
+	                        $newlist[] = $thread;
+	                }
 		}
 		
 		// --------------> 再搜索主索引
-                
+                $pagesize = 30;
                 $start = ($page - 1) * $pagesize;
                 $cl->SetLimits($start, $pagesize, 1000);	// 最大结果集
                 $res = $cl->Query($keyword, $this->conf['sphinx_datasrc']);
@@ -187,12 +205,9 @@ class search_control extends common_control {
                 } else {
                 	
                 	 misc::arrlist_change_key($res['matches'], 'id');
-                	// 合并两次搜索的结果，增量的放在后面。一般最佳结果不出现在增量里面。
-                	$res['matches'] = $deltamatch + $res['matches'];
                 }
 
                 $threadlist = array();
-                $forums = array();
                 foreach($res['matches'] as $v) {
                         if(empty($v['attrs'])) continue;
                         if(empty($v['attrs']['fid'])) continue;
@@ -207,7 +222,8 @@ class search_control extends common_control {
                         $thread['subject'] = str_replace($keyword, '<span class="red">'.$keyword.'</span>', $thread['subject']);
                         $threadlist[] = $thread;
                 }
-                return $threadlist;
+                $arrlist = $newlist + $threadlist;
+                return $arrlist;
         }
 	
 	// LIKE 采用下一页的方式。

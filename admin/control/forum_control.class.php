@@ -167,6 +167,8 @@ class forum_control extends admin_control {
 		$forum = $this->forum->read($fid);
 		$this->check_forum_exists($forum);
 		
+		// 检测 rank 重复
+		
 		$input = $error = array();
 		if($this->form_submit()) {
 			
@@ -326,18 +328,6 @@ class forum_control extends admin_control {
 		$this->view->display('forum_update.htm');
 	}
 	
-	public function on_updatetyperank() {
-		$fid = intval(core::gpc('fid'));
-		$typeid = intval(core::gpc('typeid'));
-		$nextid = intval(core::gpc('nextid'));
-		$typecateid = intval(core::gpc('typecateid'));
-		
-		// 将 typeid 移动到 nextid, nextid 批量后移，修改 rank 值
-		$this->thread_type->update_rank($fid, $typeid, $nextid, $typecateid);
-		
-		$this->message('设置成功', 1);
-	}
-	
 	public function on_delete() {
 		$this->_title[] = '删除板块';
 		$this->_nav[] = '删除板块';
@@ -394,13 +384,18 @@ class forum_control extends admin_control {
 	}
 	
 	private function process_threadtype($fid) {
+		$fid = intval($fid);
 		$typecateenables = (array)core::gpc('typecateenable', 'P');
 		$typecateranks = (array)core::gpc('typecaterank', 'P');
 		$typecatenames = (array)core::gpc('typecatename', 'P');
 		$typenames = (array)core::gpc('typename', 'P');
+		$typeranks = (array)core::gpc('typerank', 'P');
+		$typeenables = (array)core::gpc('typeenable', 'P');
 		
+		//print_r($typeenables);exit;
 		// 主题分类的大分类
 		foreach($typecateranks as $typecateid=>$_) {
+			$typecateid = intval($typecateid);
 			$enable = isset($typecateenables[$typecateid]) ? intval($typecateenables[$typecateid]) : 0;
 			$rank = intval($typecateranks[$typecateid]);
 			$name = $typecatenames[$typecateid];
@@ -425,19 +420,24 @@ class forum_control extends admin_control {
 		}
 		
 		foreach($typenames as $typeid=>$typename) {
+			$typeid = intval($typeid);
 			$type = $this->thread_type->read($fid, $typeid);
 			if($typename) {
+				$rank = isset($typeranks[$typeid]) ? intval($typeranks[$typeid]) : 0;
+				$enable = isset($typeenables[$typeid]) ? intval($typeenables[$typeid]) : 0;
 				if(empty($type)) {
 					$type = array(
 						'fid'=>$fid,
 						'typeid'=>$typeid,
 						'typename'=>$typename,
-						'rank'=>$typeid,
-						'enable'=>1,
+						'rank'=>$rank,
+						'enable'=>$enable,
 					);
 					$this->thread_type->create($type);
 				} else {
 					$type['typename'] = $typename;
+					$type['rank'] = $rank;
+					$type['enable'] = $enable;
 					$this->thread_type->update($type);
 				}
 			} else {
