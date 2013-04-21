@@ -82,6 +82,7 @@ class plugin_control extends admin_control {
 		$locallist = core::get_plugins($this->conf);
 		// 合并
 		foreach($pluginlist as $dir=>&$pconf) {
+			$pconf['official_version'] = $pconf['version'];
 			if(isset($locallist[$dir])) {
 				$lconf = $locallist[$dir];
 				empty($lconf['version']) && $lconf['version'] = 0;
@@ -381,6 +382,11 @@ class plugin_control extends admin_control {
 		$local = $this->get_local_plugin($dir);
 		if(empty($local)) {
 			$this->message('插件不存在。', 0);
+		}
+		
+		// 检查版本
+		if(version_compare($this->conf['version'], $local['bbs_version']) == -1) {
+			$this->message("此插件依赖的 Xiuno BBS 最低版本为 $local[bbs_version] ，您当前的版本：".$this->conf['version']);
 		}
 		
 		// 设置 installed 标记, 民间插件可能不包含 pluginid
