@@ -756,8 +756,10 @@ $.editor = function(textarea, settings) {
 	this.load_bookmark = function(clear) {
 		var range = null;
 		if(_win.getSelection) {
-			_win.getSelection().removeAllRanges();
-			_win.getSelection().addRange(_this.bookmark.range);
+			if(_this.bookmark.range) {
+				_win.getSelection().removeAllRanges();
+				_win.getSelection().addRange(_this.bookmark.range);
+			}
 			range = _this.bookmark.range;
 		} else {
 			if(_this.bookmark.range) {
