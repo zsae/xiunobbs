@@ -384,7 +384,6 @@ class forum_control extends admin_control {
 	}
 	
 	private function process_threadtype($fid) {
-		$fid = intval($fid);
 		$typecateenables = (array)core::gpc('typecateenable', 'P');
 		$typecateranks = (array)core::gpc('typecaterank', 'P');
 		$typecatenames = (array)core::gpc('typecatename', 'P');
@@ -392,7 +391,6 @@ class forum_control extends admin_control {
 		$typeranks = (array)core::gpc('typerank', 'P');
 		$typeenables = (array)core::gpc('typeenable', 'P');
 		
-		//print_r($typeenables);exit;
 		// 主题分类的大分类
 		foreach($typecateranks as $typecateid=>$_) {
 			$typecateid = intval($typecateid);

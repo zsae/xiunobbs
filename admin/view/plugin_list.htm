@@ -42,8 +42,8 @@
 					</td>
 					<td>
 						<p class="grey">$pconf[brief]</p>
-						$pconf[username]
-						<br /><span class="grey">$pconf[email]</span>
+						<!--{if $pconf[username]}-->$pconf[username]<!--{/if}-->
+						<!--{if $pconf[email]}--><br /><span class="grey">$pconf[email]</span><!--{/if}-->
 					</td>
 					<td width="150">
 						<!--{if !$pconf[local_version]}-->
