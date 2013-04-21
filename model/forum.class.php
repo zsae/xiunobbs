@@ -91,6 +91,9 @@ class forum extends base_model {
 		foreach($typecate as $k=>$cate) {
 			$forum['typecates'][$cate['cateid']] = $cate['catename'];
 			$arrlist = $this->thread_type->get_list_by_fid_cateid($fid, $cate['cateid'], FALSE);
+			foreach($arrlist as $k=>$v) {
+				if(!$v['enable']) unset($arrlist[$k]);
+			}
 			$forum['types'][$cate['cateid']] = misc::arrlist_key_values($arrlist, 'typeid', 'typename');
 		}
 	}
