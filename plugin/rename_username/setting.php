@@ -42,7 +42,8 @@ if(!$this->form_submit()) {
 		$this->post->index_update(array('uid'=>$uid), array('username'=>$newusername), TRUE);
 	}
 	if($user['threads'] > 0) {
-		$this->thread->index_update(array('uid'=>$uid), array('username'=>$newusername, 'lastuid'=>0, 'lastusername'=>''), TRUE);
+		$this->thread->index_update(array('uid'=>$uid), array('username'=>$newusername), TRUE);
+		$this->thread->index_update(array('lastusername'=>$username), array('lastusername'=>$newusername), TRUE);
 	}
 	
 	$this->message('恭喜，修改成功。', 1, "?plugin-setting-dir-$dir.htm");

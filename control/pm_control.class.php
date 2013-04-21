@@ -30,6 +30,11 @@ class pm_control extends common_control {
 			exit;
 		}
 		
+		// 用户名被修改。
+		if($user['username'] != $this->_user['username']) {
+			$this->user->set_login_cookie($user);
+		}
+		
 		// 五分钟更新一次
 		if($_SERVER['time'] - $user['lastactive'] > 300) {
 			$user['lastactive'] = $_SERVER['time'];
