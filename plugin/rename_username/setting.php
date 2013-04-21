@@ -23,6 +23,8 @@ if(!$this->form_submit()) {
 	$user = $this->user->get_user_by_username($username);
 	$this->check_user_exists($user);
 	
+	$uid = $user['uid'];
+	
 	$error = $this->user->check_username($newusername);
 	$error && $this->message($error);
 	$error = $this->user->check_username_exists($newusername);
@@ -37,10 +39,10 @@ if(!$this->form_submit()) {
 	$this->pm->index_update(array('username1'=>$username), array('username1'=>$newusername), TRUE);
 	$this->pm->index_update(array('username2'=>$username), array('username2'=>$newusername), TRUE);
 	if($user['posts'] > 0) {
-		$this->post->index_update(array('username'=>$username), array('username'=>$newusername), TRUE);
+		$this->post->index_update(array('uid'=>$uid), array('username'=>$newusername), TRUE);
 	}
 	if($user['threads'] > 0) {
-		$this->thread->index_update(array('username'=>$username, 'lastuid'=>0, 'lastusername'=>''), array('username'=>$newusername), TRUE);
+		$this->thread->index_update(array('uid'=>$uid), array('username'=>$newusername, 'lastuid'=>0, 'lastusername'=>''), TRUE);
 	}
 	
 	$this->message('恭喜，修改成功。', 1, "?plugin-setting-dir-$dir.htm");
