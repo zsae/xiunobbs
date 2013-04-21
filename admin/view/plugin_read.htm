@@ -12,11 +12,15 @@ dd {width: 84%;}
 		</div>
 		<div class="body">
 			<dl>
-				
 				<dt>插件名：</dt>
 				<dd>
 					$plugin[name] v$plugin[version]
 					<!--{if $local && $official && $plugin[have_new_version]}--><a href="?plugin-upgrade-dir-$dir.htm" target="_blank" title="点击升级"><span class="red small">(NEW! v$official[version])</span></a><!--{/if}-->
+				</dd>
+				
+				<dt>要求系统最低版本：</dt>
+				<dd>
+					$plugin[bbs_version]
 				</dd>
 				
 				<dt>目录：</dt>

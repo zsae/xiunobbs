@@ -34,7 +34,7 @@
 				<!--{loop $pluginlist $dir $pconf}-->
 				<tr valign="top" plugindir="$dir">
 					<td width="54"><a href="?plugin-read-pluginid-$pconf[pluginid]-dir-$dir.htm" target="_blank"><img src="$pconf[icon_url]" width="54" height="54" /></a></td>
-					<td width="160">
+					<td width="140">
 						<a href="?plugin-read-pluginid-$pconf[pluginid]-dir-$dir.htm"><b>$pconf[name] </b></a>v$pconf[version]
 						<!--{if $pconf[have_new_version]}--><a href="http://plugin.xiuno.net/?plugin-upgrade-dir-$dir.htm" target="_blank" title="点击升级"><span class="red small">(NEW! v$pconf[official_version])</span></a><!--{/if}-->
 						<br /><span class="small">$dir</span>
@@ -45,20 +45,24 @@
 						<!--{if $pconf[username]}-->$pconf[username]<!--{/if}-->
 						<!--{if $pconf[email]}--><br /><span class="grey">$pconf[email]</span><!--{/if}-->
 					</td>
-					<td width="150">
-						<!--{if !$pconf[local_version]}-->
+					<td width="200">
+					
+					<!--{if !$pconf[local_version]}-->
 						<input type="button" class="button smallblue" onclick="window.location='?plugin-install-dir-$dir.htm'" value="安装" />
+					<!--{else}-->
+						<!--{if $pconf[enable]}-->
+						<input type="button" class="button smallblue" onclick="window.location='?plugin-disable-dir-$dir.htm'" value="禁用" />
 						<!--{else}-->
-							<!--{if $pconf[enable]}-->
-							<input type="button" class="button smallblue" onclick="window.location='?plugin-disable-dir-$dir.htm'" value="禁用" />
-							<!--{else}-->
-							<input type="button" class="button smallblue" onclick="window.location='?plugin-enable-dir-$dir.htm'" value="启用" />
-							<!--{/if}-->
-							<input type="button" class="button smallgrey" onclick="window.location='?plugin-unstall-dir-$dir.htm'" value="删除" />
+						<input type="button" class="button smallblue" onclick="window.location='?plugin-enable-dir-$dir.htm'" value="启用" />
 						<!--{/if}-->
+						<input type="button" class="button smallgrey" onclick="window.location='?plugin-unstall-dir-$dir.htm'" value="删除" />
+					<!--{/if}-->
+						
 						<!--{if $pconf[have_setting]}-->
 						<input type="button" class="button smallblue" onclick="window.location='?plugin-setting-dir-$dir.htm'" value="设置" />
 						<!--{/if}-->
+						
+						
 					</td>
 				</tr>
 				<!--{/loop}-->

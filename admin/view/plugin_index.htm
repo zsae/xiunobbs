@@ -18,7 +18,7 @@
 				<!--{loop $installlist $dir $pconf}-->
 				<tr valign="top" plugindir="$dir">
 					<td width="54"><a href="?plugin-read-dir-$dir.htm"><img src="$pconf[icon_url]" width="54" height="54" /></a></td>
-					<td width="160">
+					<td width="140">
 						<a href="?plugin-read-dir-$dir.htm"><b>$pconf[name] </b></a>v$pconf[version]
 						<!--{if $pconf[have_new_version]}--><a href="?plugin-upgrade-dir-$dir.htm" target="_blank" title="点击升级"><span class="red small">(NEW! v$pconf[official_version])</span></a><!--{/if}-->
 						<br /><span class="small">$dir</span>
@@ -29,7 +29,7 @@
 						$pconf[username]
 						<br /><span class="grey">$pconf[email]</span>
 					</td>
-					<td width="150">
+					<td width="200">
 						<input type="button" class="button smallblue" onclick="window.location='?plugin-disable-dir-$dir.htm'" value="禁用" />
 						<input type="button" class="button smallgrey" onclick="window.location='?plugin-unstall-dir-$dir.htm'" value="删除" />
 						<!--{if $pconf[have_setting]}-->
@@ -49,7 +49,7 @@
 				<!--{loop $disablelist $dir $pconf}-->
 				<tr valign="top" plugindir="$dir">
 					<td width="54"><a href="?plugin-read-dir-$dir.htm"><img src="$pconf[icon_url]" width="54" height="54" /></a></td>
-					<td width="160">
+					<td width="140">
 						<a href="?plugin-read-dir-$dir.htm"><b>$pconf[name] </b></a>v$pconf[version]
 						<!--{if $pconf[have_new_version]}--><a href="http://plugin.xiuno.net/?plugin-upgrade-dir-$dir.htm" target="_blank" title="点击升级"><span class="red small">(NEW! v$pconf[official_version])</span></a><!--{/if}-->
 						<br /><span class="small">$dir</span>
@@ -60,7 +60,7 @@
 						$pconf[author]
 						<br /><span class="grey">$pconf[email]</span>
 					</td>
-					<td width="150">
+					<td width="200">
 						<input type="button" class="button smallblue" onclick="window.location='?plugin-enable-dir-$dir.htm'" value="启用" />
 						<input type="button" class="button smallgrey" onclick="if(window.confirm('确定删除?'))window.location='?plugin-unstall-dir-$dir.htm'" value="删除" />
 					
@@ -81,7 +81,7 @@
 				<!--{loop $unstalllist $dir $pconf}-->
 				<tr valign="top" plugindir="$dir">
 					<td width="54"><a href="?plugin-read-dir-$dir.htm"><img src="$pconf[icon_url]" width="54" height="54" /></a></td>
-					<td width="160">
+					<td width="140">
 						<a href="?plugin-read-dir-$dir.htm"><b>$pconf[name] </b>v$pconf[version]</a>
 						<!--{if $pconf[have_new_version]}--><span class="red small">(NEW! v<a href="http://plugin.xiuno.net/?plugin-upgrade-dir-$dir.htm" target="_blank">$pconf[official_version]</a>)</span><!--{/if}-->
 						<br /><span class="small">$dir</span>
@@ -91,7 +91,7 @@
 						<p class="grey">$pconf[brief]</p>
 						$pconf[author]
 						<br /><span class="grey">$pconf[email]</span></td>
-					<td width="150">
+					<td width="200">
 						<input type="button" class="button smallblue" onclick="window.location='?plugin-install-dir-$dir.htm'" value="安装" />
 						<input type="button" class="button smallgrey" onclick="if(window.confirm('确定删除?'))window.location='?plugin-unstall-dir-$dir.htm'" value="删除" />
 					</td>

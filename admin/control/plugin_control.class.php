@@ -246,7 +246,14 @@ class plugin_control extends admin_control {
 			$this->message("SAE 环境安装，需要<a href=\"$url\" target=\"\"><b>【下载压缩包】</b></a>，解压后，将文件上传到 tmp 目录，完成安装。", 1, $referer);
 		} else {
 			$this->clear_tmp();
-			$this->message('安装成功。', 1, $referer);
+			
+			// 统计安装次数
+			$siteid =  md5($this->conf['app_url'].$this->conf['auth_key']);
+			$app_url = core::urlencode($this->conf['app_url']);
+			$url = $this->official_plugin_site."plugin-installstat-dir-$dir-siteid-$siteid-ajax-1.htm?app_url=$app_url";
+			$script = "<script src=\"$url\"></script>";
+			
+			$this->message('安装成功。'.$script, 1, $referer);
 		}
 	}
 	
