@@ -54,10 +54,7 @@ dd{width: 84%;}
 						<!--{else}-->
 							<input type="checkbox" name="typeon" id="typeon" value="1" />
 						<!--{/if}-->
-					</dd>
-					
-					<dt></dt>
-					<dd class="grey">
+						<br />
 						<div id="typeon_div" {if empty($forum[typelist])} style="display: none;" {/if}>
 							<!--{loop $forum[typelist] $typecateid $typelist}-->
 							<div class="div">
@@ -89,6 +86,7 @@ dd{width: 84%;}
 							<!--{/loop}-->
 						</div>
 					</dd>
+					
 					<dt><label for="accesson">开启权限限制：</label></dt>
 					<dd>
 						<input type="checkbox" name="accesson" id="accesson" value="1" {if $forum[accesson]}checked="checked"{/if} />
@@ -213,30 +211,7 @@ $('a.addtype').click(function() {
 		alert('每个大分类下只能有40个个小主题分类。');
 	}
 });
-/*$('p.typeid').each(function() {
-	var _this = this;
-	var typeid = $(this).attr('typeid');
-	$('a.delete', this).click(function() {
-		if(window.confirm('您确定删除该主题分类吗？')) {
-			$.get('?forum-deletetype-typeid-'+typeid+'-ajax-1.htm', function(s) {
-				var json = json_decode(s);
-				if(error = json_error(json)) {alert(error); return false;}
-				if(json.status <= 0) {alert(json.message); return false;}
-				$(_this).remove();
-			});
-		}
-	});
-});
-$('#addtype').click(function() {
-	var newnode = $('p.typeid:last').clone().show();
-	$('input[name^=typename]', newnode).val('');
-	$('input[name^=rank]', newnode).val('0');
-	$('p.typeid:last').before(newnode);
-	return false;
-});
-*/
 
-{if $forum[typelist]}
 $('#typeon').click(function() {
 	if(!$(this).attr('checked')) {
 		$('#typeon_div').hide();
@@ -245,11 +220,6 @@ $('#typeon').click(function() {
 	}
 	return true;
 });
-{else}
-$('#typeon').click(function() {
-	$('#forum_update_form').submit();
-});
-{/if}
 
 </script>
 

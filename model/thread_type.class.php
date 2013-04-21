@@ -33,28 +33,6 @@ class thread_type extends base_model {
 		$this->primarykey = array('fid', 'typeid');
 	}
 	
-	/*
-	// 有了 init() 此方法作废。
-	public function xcreate($fid, $cateid, $typename) {
-		// 查找空位
-		$typeid = $this->find_empty_typeid($fid, $cateid);
-		if(empty($typeid)) {
-			return FALSE;
-		}
-		$arr = array(
-			'fid'=>$fid,
-			'typeid'=>$typeid,
-			'typename'=>$typename,
-			'rank'=>$typeid,
-			'enable'=>1,
-		);
-		if($this->set(array($fid, $typeid), $arr)) {
-			return $typeid;
-		} else {
-			return FALSE;
-		}
-	}*/
-	
 	private function find_empty_typeid($fid, $cateid) {
 		// 最多 40 次查询
 		foreach($this->map[$cateid] as $id) {
