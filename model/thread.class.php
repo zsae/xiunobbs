@@ -120,7 +120,7 @@ class thread extends base_model {
 		$uid = $thread['uid'];
 		
 		// 受影响的值。
-		$default_user = array('threads'=>0, 'posts'=>0, 'credits'=>0, 'golds'=>0, 'myposts'=>0);
+		$default_user = array('threads'=>0, 'posts'=>0, 'digests'=>0, 'credits'=>0, 'golds'=>0, 'myposts'=>0);
 		$default_forum = array('threads'=>0, 'posts'=>0, 'digests'=>0, 'todayposts'=>0);
 		$return = array(
 			'forum'=> array($fid=>$default_forum),
@@ -160,6 +160,7 @@ class thread extends base_model {
 		// 发表主题的积分策略不同于回帖的策略。
 		$ruser[$uid]['credits'] = $ruser[$uid]['credits'] - $this->conf['credits_policy_post'] +  - $this->conf['credits_policy_thread'];
 		$ruser[$uid]['golds'] = $ruser[$uid]['golds'] - $this->conf['golds_policy_post'] +  - $this->conf['golds_policy_thread'];
+		$thread['digest'] > 0 && $ruser[$uid]['digests']++;
 		$ruser[$uid]['threads']++;
 		
 		$rforum['threads']++;
@@ -221,6 +222,7 @@ class thread extends base_model {
 			$return['user'][$uid]['myposts'] += $arr['myposts'];
 			$return['user'][$uid]['credits'] += $arr['credits'];
 			$return['user'][$uid]['golds'] += $arr['golds'];
+			$return['user'][$uid]['digests'] += $arr['digests'];
 		}
 		foreach($return2['forum'] as $fid=>$arr) {
 			if(!$fid) continue;
@@ -246,6 +248,7 @@ class thread extends base_model {
 				$user['myposts'] -= $arr['myposts'];
 				$user['credits'] -= $arr['credits'];
 				$user['golds'] -= $arr['golds'];
+				$user['digests'] -= $arr['digests'];
 				$this->user->update($user);
 			}
 		}
