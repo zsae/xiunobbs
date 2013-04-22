@@ -75,7 +75,6 @@ class post_control extends common_control {
 			$this->view->display('post_thread_ajax.htm');
 		} else {
 			
-			$typeidsum = $typeid1 + $typeid2 + $typeid3 + $typeid4;	// 检查合法范围
 			$subject = htmlspecialchars(core::gpc('subject', 'P'));
 			
 			$message = core::gpc('message', 'P');
@@ -209,9 +208,6 @@ class post_control extends common_control {
 				
 				// 更新 user
 				$this->user->update($user);
-				
-				// 更新 threadtype
-				$typeidsum && $this->thread_type_count->inc($fid, $typeidsum);
 				
 				// 更新 $forum 板块的总贴数
 				$forum = $this->forum->read($fid);

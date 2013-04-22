@@ -363,9 +363,19 @@ class mod_control extends common_control {
 		$fid = intval(core::gpc('fid'));
 		$tidarr = $this->get_tidarr();
 		
-		$forum = $this->forum->read($fid);
+		$forum = $this->mcache->read('forum', $fid);
 
 		$this->check_access($forum, 'move');
+		
+		$typeid1 = intval(core::gpc('typeid1', 'R'));
+		$typeid2 = intval(core::gpc('typeid2', 'R'));
+		$typeid3 = intval(core::gpc('typeid3', 'R'));
+		$typeid4 = intval(core::gpc('typeid4', 'R'));
+		
+		$this->thread_type->check_typeid($typeid1, 1);
+		$this->thread_type->check_typeid($typeid2, 2);
+		$this->thread_type->check_typeid($typeid3, 3);
+		$this->thread_type->check_typeid($typeid4, 4);
 		
 		if(!$this->form_submit()) {
 			
@@ -375,7 +385,11 @@ class mod_control extends common_control {
 			$this->view->assign('forum', $forum);
 			$this->view->assign('fid', $fid);
 			
+			// 初始化 select 控件
+			$this->init_type_select($forum, $typeid1, $typeid2, $typeid3, $typeid4);
+			
 			// hook mod_move_before.php
+			
 			$this->view->display('mod_move_ajax.htm');
 		} else {
 			
@@ -391,6 +405,8 @@ class mod_control extends common_control {
 			if($fid == $fid2) {
 				$this->message('请选择其他板块。', 0);
 			}
+			
+			$typeidsum = $typeid1 + $typeid2 + $typeid3 + $typeid4;	// 检查合法范围
 			
 			// hook mod_move_after.php
 			
@@ -420,10 +436,14 @@ class mod_control extends common_control {
 				if($thread['typeid1'] > 0 ||$thread['typeid2'] > 0 ||$thread['typeid3'] > 0 ||$thread['typeid4'] > 0) {
 					$this->thread_type_data->xdelete($fid, $tid);
 				}
-				$thread['typeid1'] = 0;
-				$thread['typeid2'] = 0;
-				$thread['typeid3'] = 0;
-				$thread['typeid4'] = 0;
+				
+				// 加入到 thread_type
+				$this->thread_type_data->xcreate($fid, $tid, $typeid1, $typeid2, $typeid3, $typeid4);
+				
+				$thread['typeid1'] = $typeid1;
+				$thread['typeid2'] = $typeid2;
+				$thread['typeid3'] = $typeid3;
+				$thread['typeid4'] = $typeid4;
 				$this->thread->update($thread);
 				
 				$this->thread->index_update(array('fid'=>$fid, 'tid'=>$tid), array('fid'=>$fid2), TRUE);

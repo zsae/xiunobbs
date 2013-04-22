@@ -14,6 +14,12 @@
 			<select name="fid2" id="fid2"> 
 				$forumoptions
 			</select>
+			<span id="typeselect">
+			<!--{if $typeselect1}-->$typeselect1<!--{/if}-->
+			<!--{if $typeselect2}-->$typeselect2<!--{/if}-->
+			<!--{if $typeselect3}-->$typeselect3<!--{/if}-->
+			<!--{if $typeselect4}-->$typeselect4<!--{/if}-->
+			</span>
 		</dd>
 		
 		<dt><label for="rate_comment">版主备注：</label></dt>
@@ -60,6 +66,23 @@ function delay_execute(dialog, recall) {
 	
 	$('#mod_move_cancel').click(function() {
 		dialog.close(true);
+	});
+	
+	// 选择版块，AJAX 加载主题分类
+	$('#fid2').change(function() {
+		var fid = this.value;
+		$.get('?post-typeselect-fid-'+fid+'-ajax-1.htm', function(s) {
+			var json = json_decode(s);
+			if(error = json_error(json)) {alert(error); return false;}
+			if(json.status <=0) {
+				alert(json.message);
+				return false;
+			}
+			
+			json = json.message;
+			var typeslects = json.typeselect1 + json.typeselect2 + json.typeselect3 + json.typeselect4;
+			$('#typeselect').html(typeslects);
+		});
 	});
 }
 </script>

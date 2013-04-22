@@ -28,6 +28,7 @@ class thread_type_data extends base_model {
 		1 2 3 4 12 13 14 23 24 34 123 124 134 234 1234  18 种！
 	*/
 	public function xcreate($fid, $tid, $typeid1 = 0, $typeid2 = 0, $typeid3 = 0, $typeid4 = 0) {
+		if($typeid1 + $typeid2 + $typeid3 + $typeid4 <= 0) return FALSE;
 		$typeid1 && $this->_create($fid, $tid, $typeid1);
 		$typeid2 && $this->_create($fid, $tid, $typeid2);
 		$typeid3 && $this->_create($fid, $tid, $typeid3);
@@ -43,6 +44,7 @@ class thread_type_data extends base_model {
 		$typeid1 && $typeid3 && $typeid4 && $this->_create($fid, $tid, $typeid1 + $typeid3 + $typeid4);
 		$typeid2 && $typeid3 && $typeid4 && $this->_create($fid, $tid, $typeid2 + $typeid3 + $typeid4);
 		$typeid1 && $typeid2 && $typeid3 && $typeid4 && $this->_create($fid, $tid, $typeid1 + $typeid2 + $typeid3 + $typeid4);
+		return TRUE;
 	}
 	
 	public function _create($fid, $tid, $typeidsum) {
