@@ -235,7 +235,6 @@ class plugin_control extends admin_control {
 			$locallist = core::get_plugins($this->conf);
 			foreach($locallist as $_dir=>$plugin) {
 				if(substr($_dir, 0, 4) == 'view' && $_dir != $dir) {
-					var_dump($_dir);
 					$this->set_setting($_dir, array('enable'=>0));
 				}
 			}

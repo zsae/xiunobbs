@@ -405,7 +405,7 @@ class mod_control extends common_control {
 			}
 			
 			// 查找主题。更新 fid
-			$tidnum = $pidnum = 0;
+			$tidnum = $pidnum = $digestnum = 0;
 			foreach($tidarr as $v) {
 				list($fid, $tid) = explode('-', $v);
 				$tid = intval($tid);
@@ -414,6 +414,7 @@ class mod_control extends common_control {
 				$tidnum++;	// 帖子数
 				
 				// ----------->更新相关数据的 fid start
+				if($thread['digest'] > 0) $digestnum++;
 				
 				// 主题分类，从原来的主题分类中清除
 				if($thread['typeid1'] > 0 ||$thread['typeid2'] > 0 ||$thread['typeid3'] > 0 ||$thread['typeid4'] > 0) {
@@ -469,6 +470,8 @@ class mod_control extends common_control {
 			$forum2['threads'] += $tidnum;
 			$forum['posts'] -= $pidnum;
 			$forum2['posts'] += $pidnum;
+			$forum['digests'] -= $digestnum;
+			$forum2['digests'] += $digestnum;
 			
 			$this->forum->xupdate($forum);
 			$this->forum->xupdate($forum2);

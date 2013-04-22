@@ -121,7 +121,7 @@ class thread extends base_model {
 		
 		// 受影响的值。
 		$default_user = array('threads'=>0, 'posts'=>0, 'credits'=>0, 'golds'=>0, 'myposts'=>0);
-		$default_forum = array('threads'=>0, 'posts'=>0, 'todayposts'=>0);
+		$default_forum = array('threads'=>0, 'posts'=>0, 'digests'=>0, 'todayposts'=>0);
 		$return = array(
 			'forum'=> array($fid=>$default_forum),
 			'user' => array($uid=>$default_user)
@@ -165,6 +165,7 @@ class thread extends base_model {
 		$rforum['threads']++;
 		$rforum['posts'] += $thread['posts'];
 		$rforum['todayposts'] += $todayposts;
+		$thread['digest'] > 0 && $rforum['digests']--;
 		
 		// 删除置顶
 		if($thread['top']) {
