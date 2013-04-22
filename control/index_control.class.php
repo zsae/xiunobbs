@@ -37,26 +37,7 @@ class index_control extends common_control {
 		$readtids = '';
 		$page = misc::page();
 		$threadlist = $this->thread->get_newlist($page, $pagesize);
-		$digestlist = $this->thread_digest->get_newlist($page, $pagesize);
 		foreach($threadlist as $k=>&$thread) {
-			$this->thread->format($thread);
-			
-			// 去掉没有权限访问的版块数据
-			$fid = $thread['fid'];
-			if(!isset($this->conf['forumarr'][$fid])) {
-				unset($threadlist[$k]);
-				continue;
-			}
-			
-			$readtids .= ','.$thread['tid'];
-			if($thread['top'] == 3) {
-				unset($threadlist[$k]);
-				$toplist[] = $thread;
-				continue;
-			}
-		}
-		
-		foreach($digestlist as $k=>&$thread) {
 			$this->thread->format($thread);
 			
 			// 去掉没有权限访问的版块数据
@@ -92,7 +73,6 @@ class index_control extends common_control {
 		$this->view->assign('ismod', $ismod);
 		$this->view->assign('fid', $fid);
 		$this->view->assign('threadlist', $threadlist);
-		$this->view->assign('digestlist', $digestlist);
 		$this->view->assign('toplist', $toplist);
 		$this->view->assign('click_server', $click_server);
 		$this->view->assign('pages', $pages);
