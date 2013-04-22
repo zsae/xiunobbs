@@ -227,7 +227,7 @@ class plugin_control extends admin_control {
 		
 		// 如果为风格插件，则需要设置 view_path
 		if(substr($dir, 0, 4) == 'view') {
-			$viewpath = array($this->conf['plugin_path'].$dir, BBS_PATH.'view/');
+			$viewpath = array($this->conf['plugin_path'].$dir);
 			$this->kv->xset('view_path', $viewpath);
 			$this->runtime->xset('view_path', $viewpath);
 			
@@ -235,6 +235,7 @@ class plugin_control extends admin_control {
 			$locallist = core::get_plugins($this->conf);
 			foreach($locallist as $_dir=>$plugin) {
 				if(substr($_dir, 0, 4) == 'view' && $_dir != $dir) {
+					var_dump($_dir);
 					$this->set_setting($_dir, array('enable'=>0));
 				}
 			}
@@ -345,9 +346,8 @@ class plugin_control extends admin_control {
 		// 如果为风格插件，则需要设置 view_path
 		$conffile = BBS_PATH.'conf/conf.php';
 		if($isview) {
-			$viewpath = array(BBS_PATH.'view/');
-			$this->kv->xset('view_path', $viewpath);
-			$this->runtime->xset('view_path', $viewpath);
+			$this->kv->xset('view_path', array());
+			$this->runtime->xset('view_path', array());
 		}
 		
 		// 清空 tmp 目录下的 bbs_* bbsadmin_*
@@ -365,7 +365,7 @@ class plugin_control extends admin_control {
 			misc::rmdir($this->conf['plugin_path'].$dir);
 			$this->clear_tmp();
 			if($isview) {
-				$this->message('删除该风格 $dir 成功，已经还原为系统默认风格。', 1, $referer);
+				$this->message("删除该风格 $dir 成功，已经还原为系统默认风格。", 1, $referer);
 			} else {
 				$this->message("删除插件 $dir 成功。", 1, $referer);
 			}
@@ -394,7 +394,7 @@ class plugin_control extends admin_control {
 		
 		// 如果为风格插件，则需要设置 view_path
 		if(substr($dir, 0, 4) == 'view') {
-			$viewpath = array($this->conf['plugin_path'].$dir, BBS_PATH.'view/');
+			$viewpath = array($this->conf['plugin_path'].$dir);
 			$this->kv->xset('view_path', $viewpath);
 			$this->runtime->xset('view_path', $viewpath);
 			
@@ -434,8 +434,8 @@ class plugin_control extends admin_control {
 		$conffile = BBS_PATH.'conf/conf.php';
 		if($isview) {
 			$viewpath = array(BBS_PATH.'view/');
-			$this->kv->xset('view_path', $viewpath);
-			$this->runtime->xset('view_path', $viewpath);
+			$this->kv->xset('view_path', array());
+			$this->runtime->xset('view_path', array());
 		}
 		
 		// 清空 tmp 目录下的 bbs_* bbsadmin_*
