@@ -131,12 +131,14 @@ class forum_control extends admin_control {
 			$this->thread_type->delete_by_fid($fid2);
 			$this->thread_type_cate->delete_by_fid($fid2);
 			$this->thread_type_data->delete_by_fid($fid2);
+			$this->thread_type_count->delete_by_fid($fid2);
 			$this->modlog->delete_by_fid($fid2);
 			$this->thread_top->delete_top_3_by_fid($fid2);
 			
 			// 更新统计数
 			$forum1['posts'] += $forum2['posts'];
 			$forum1['threads'] += $forum2['threads'];
+			$forum1['digests'] += $forum2['digests'];
 			$this->forum->update($forum1);
 			
 			// 更新缓存
