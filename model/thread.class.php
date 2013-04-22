@@ -165,7 +165,7 @@ class thread extends base_model {
 		$rforum['threads']++;
 		$rforum['posts'] += $thread['posts'];
 		$rforum['todayposts'] += $todayposts;
-		$thread['digest'] > 0 && $rforum['digests']--;
+		$thread['digest'] > 0 && $rforum['digests']++;
 		
 		// 删除置顶
 		if($thread['top']) {
@@ -228,6 +228,7 @@ class thread extends base_model {
 			$return['forum'][$fid]['threads'] += $arr['threads'];
 			$return['forum'][$fid]['posts'] += $arr['posts'];
 			$return['forum'][$fid]['todayposts'] += $arr['todayposts'];
+			$return['forum'][$fid]['digests'] += $arr['digests'];
 		}
 		
 		// hook thread_model_xdelete_merge_return_end.php
@@ -256,6 +257,7 @@ class thread extends base_model {
 				$forum['threads'] -= $arr['threads'];
 				$forum['posts'] -= $arr['posts'];
 				$forum['todayposts'] -= $arr['todayposts'];
+				$forum['digests'] -= $arr['digests'];
 				$this->forum->xupdate($forum);
 				$this->forum->update_last($fid);
 				$this->runtime->xupdate('forumarr');
