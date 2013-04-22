@@ -75,7 +75,7 @@ class thread_type_data extends base_model {
 	public function xdelete($fid, $tid) {
 		$typelist = $this->get_list_by_fid_tid($fid, $tid);
 		foreach($typelist as $type) {
-			$this->delete($fid, $tid, $type['typeidsum']);
+			$this->_delete($fid, $tid, $type['typeidsum']);
 		}
 		return TRUE;
 	}
