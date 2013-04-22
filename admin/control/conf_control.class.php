@@ -247,12 +247,14 @@ class conf_control extends admin_control {
 		// 最新发帖
 		if($thread_new) {
 			// 从 thread 表中获取最新数据，取两天内的主题，可能会超时？内存不够？
-			// 估算内存：每日发帖 10w * 0.5k = 50000k = 50M * 2 = 100M， 所以最多只能取 10000 行，影响为 sphinx 漏掉部分数据的索引（可以采取重新索引来弥补）
-			// 非常用操作，暂时这么处理
 			$newlist = $this->thread->index_fetch(array('lastpost' => array('>'=>$_SERVER['time'] - 86400 * 2)), array(), 0, 10000);
+			if(count($newlist) < 30) {
+				$newlist = $this->thread->index_fetch(array('lastpost' => array('>'=>$_SERVER['time'] - 86400 * 30)), array(), 0, 10000);
+			}
 			foreach($newlist as $new) {
 				$this->thread_new->create(array('fid'=>$new['fid'], 'tid'=>$new['tid'], 'lastpost'=>$new['lastpost']));
 			}
+			
 			unset($newlist);
 			
 			/* 考虑到 sphinx 索引，不能这么做
