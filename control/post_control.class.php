@@ -124,7 +124,7 @@ class post_control extends common_control {
 				// hook post_thread_create_after.php
 				
 				$this->thread_views->create(array('tid'=>$tid, 'views'=>0));
-				if(!isset($this->conf['forumarr'][$fid])) {
+				if(isset($this->conf['forumarr'][$fid])) {
 					$this->thread_new->create(array('fid'=>$fid, 'tid'=>$tid, 'lastpost'=>$_SERVER['time']));
 				}
 				
