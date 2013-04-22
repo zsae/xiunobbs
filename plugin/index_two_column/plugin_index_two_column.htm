@@ -16,7 +16,7 @@
 				<!--{hook index_index_nav_center_after.htm}-->
 			</td>
 			<td width="80">
-				<input type="button" value=" 发新帖 " class="button smallblue ajaxdialog" href="?post-thread-fid-$fid-ajax-1.htm" ajaxdialog="{fullicon: true}" onclick="return false;" id="create_thread" />
+				<input type="button" value=" 发新帖 " class="button smallblue ajaxdialog" href="?post-thread-fid-0-ajax-1.htm" ajaxdialog="{fullicon: true}" onclick="return false;" id="create_thread" />
 			</td>
 			<td class="right"></td>
 		</tr>
@@ -144,6 +144,31 @@ $('table.forum').bind('mouseout', function() {$('td:gt(0)', this).removeClass('b
 </script>
 
 <!--{hook index_index_end.htm}-->
+
+<script type="text/javascript">
+
+// 鼠标背景变色
+$('#threadlist tr').bind('mouseover', function() {$(this).removeClass('bg1').addClass('bg2');});
+$('#threadlist tr').bind('mouseout', function() {$(this).removeClass('bg2').addClass('bg1');});
+
+// 最新贴，已读贴，比较最后阅读时间和帖子的最后回复时间
+$('#body table.thread').each(function() {
+	var tid = intval($(this).attr('tid'));
+	var lastpost = intval($(this).attr('lastpost'));
+	var k = tid_is_read(tid, lastpost);
+	if(tid_is_read(tid, lastpost)) {
+		$('.subject_type', this).addClass('read');
+		$('a.subject_link', this).addClass('read');
+		$('a.thread_icon', this).addClass('xgrey');
+	}
+});
+
+$('div.div div.body').find('hr:last').hide();// 隐藏最后一个 hr
+
+// 键盘翻页
+bind_document_keyup_page();
+
+</script>
 
 $conf[footer_js]
 

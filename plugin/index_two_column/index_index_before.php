@@ -1,6 +1,6 @@
 		$this->_checked['index'] = ' class="checked"';
 		
-		$pagesize = 40;
+		$pagesize = 50;
 		$toplist = array(); // only top 3
 		$readtids = '';
 		$page = misc::page();
