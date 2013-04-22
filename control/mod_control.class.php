@@ -438,7 +438,7 @@ class mod_control extends common_control {
 				}
 				
 				// 加入到 thread_type
-				$this->thread_type_data->xcreate($fid, $tid, $typeid1, $typeid2, $typeid3, $typeid4);
+				$this->thread_type_data->xcreate($fid2, $tid, $typeid1, $typeid2, $typeid3, $typeid4);
 				
 				$thread['typeid1'] = $typeid1;
 				$thread['typeid2'] = $typeid2;
