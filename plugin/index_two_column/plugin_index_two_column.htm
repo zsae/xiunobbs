@@ -1,0 +1,151 @@
+<!--{include header.htm}-->
+
+<!--{hook index_index_start.htm}-->
+
+<div class="width">
+
+	<!--{hook index_index_nav_before.htm}-->
+	
+	<table id="nav" cellpadding="0" cellspacing="0" style="margin-bottom: 4px;">
+		<tr>
+			<td class="left"></td>
+			<td class="center">
+				<a class="icon icon-home" href="./"></a>
+				<span class="sep"></span>
+				<span>最新贴</span>
+				<!--{hook index_index_nav_center_after.htm}-->
+			</td>
+			<td width="80">
+				<input type="button" value=" 发新帖 " class="button smallblue ajaxdialog" href="?post-thread-fid-$fid-ajax-1.htm" ajaxdialog="{fullicon: true}" onclick="return false;" id="create_thread" />
+			</td>
+			<td class="right"></td>
+		</tr>
+	</table>
+	
+	<!--{hook index_index_nav_after.htm}-->
+	
+	<table width="100%">
+		<tr>
+			<td width="50%" valign="top">
+				<div class="div">
+					<div class="header">最新主题</div>
+					<div class="body threadlist">
+						<!--{loop $threadlist $thread}-->
+						<table width="100%" cellspacing="0" cellpadding="0" tid="$thread[tid]" class="thread" lastpost="$thread[lastpost]" style="table-layout: fixed;">
+							<tr height="32">
+								<td valign="middle" class="subject">
+								
+									<a href="?thread-index-fid-$thread[fid]-tid-$thread[tid].htm" target="_blank" title="点击图标，新窗口打开" class="thread_icon" style="margin-right: 1px;">	
+										<span class="icon $thread[icon]" tid="$thread[tid]" lastpost="$thread[lastpost]"></span>
+									</a>
+									
+									<a href="?forum-index-fid-$thread[fid].htm" target="_blank" class="grey">【$thread[forumname]】</a>
+									
+									<a href="?thread-index-fid-$thread[fid]-tid-$thread[tid].htm" class="subject_link $thread[color]" title="$thread[subject]">$thread[subject_fmt]</a>
+									<!--{if $thread['color'] == 'thread-hot'}--><span class="icon icon-post-fire"></span><!--{/if}-->
+									
+									<!--{if $thread[lastpage] > 1}-->
+									<a href="?thread-index-fid-$thread[fid]-tid-$thread[tid]-page-$thread[lastpage].htm" class="grey2 small"><span class="icon icon-lastpage"></span>$thread[lastpage]</a>
+									<!--{/if}-->
+									
+									<span class="grey middle"><a href="?you-profile-uid-$thread[uid]-ajax-1.htm" target="_blank" class="ajaxdialog" ajaxdialog="{position: 6, modal: false}" title="$thread[username]">$thread[username]</a></span>
+									<span class="tiny grey2">$thread[dateline_fmt]</span>
+								</td>
+							</tr>
+						</table>
+						<hr />
+						<!--{/loop}-->
+						<div class="page" style="text-align: center; margin-top: 8px;">$pages</div>
+					</div>
+				</div>
+			</td>
+			<td width="50%" valign="top">
+				<div class="div">
+					<div class="header">精华主题</div>
+					<div class="body threadlist">
+						<!--{loop $digestlist $thread}-->
+						<table width="100%" cellspacing="0" cellpadding="0" tid="$thread[tid]" class="thread" lastpost="$thread[lastpost]" style="table-layout: fixed;">
+							<tr height="32">
+								<td valign="middle" class="subject">
+								
+									<a href="?thread-index-fid-$thread[fid]-tid-$thread[tid].htm" target="_blank" title="点击图标，新窗口打开" class="thread_icon" style="margin-right: 1px;">	
+										<span class="icon $thread[icon]" tid="$thread[tid]" lastpost="$thread[lastpost]"></span>
+									</a>
+									
+									<a href="?forum-index-fid-$thread[fid].htm" target="_blank" class="grey">【$thread[forumname]】</a>
+									
+									<a href="?thread-index-fid-$thread[fid]-tid-$thread[tid].htm" class="subject_link $thread[color]" title="$thread[subject]">$thread[subject_fmt]</a>
+									<!--{if $thread['color'] == 'thread-hot'}--><span class="icon icon-post-fire"></span><!--{/if}-->
+									
+									<!--{if $thread[lastpage] > 1}-->
+									<a href="?thread-index-fid-$thread[fid]-tid-$thread[tid]-page-$thread[lastpage].htm" class="grey2 small"><span class="icon icon-lastpage"></span>$thread[lastpage]</a>
+									<!--{/if}-->
+									
+									<span class="grey middle"><a href="?you-profile-uid-$thread[uid]-ajax-1.htm" target="_blank" class="ajaxdialog" ajaxdialog="{position: 6, modal: false}" title="$thread[username]">$thread[username]</a></span>
+									<span class="tiny grey2">$thread[dateline_fmt]</span>
+								</td>
+							</tr>
+						</table>
+						<hr />
+						<!--{/loop}-->
+						<div class="page" style="text-align: center; margin-top: 8px;">$pages2</div>
+					</div>
+				</div>
+			</td>
+		</tr>
+	</table>
+	
+	<!--{hook index_thread_list_after.htm}-->
+	
+	<div class="div">
+		<div class="header"><span class="icon icon-stat"></span> 站点统计</div>
+		<div class="body">
+			<div style="margin-top: 8px; line-height: 12px; margin-bottom: 4px;">
+				<span class="grey">帖子：</span><span>$conf[posts]</span> <span class="small grey2">|</span>
+				<span class="grey">会员：</span><span>$conf[users]</span>
+				<!--{if $conf[todayusers]}-->
+				<span class="small grey2">|</span>
+				<span class="grey">今日发帖：</span><span class="new bold">$conf[todayposts]</span>
+				<!--{/if}-->
+				<!--{if $conf[todayusers]}-->
+				<span class="small grey2">|</span>
+				<span class="grey">今日注册：</span><span class="new bold">$conf[todayusers]</span>
+				<!--{/if}-->
+				<!--{if $conf[newusername]}-->
+				<span class="small grey2">|</span>
+				<span class="grey">新会员:</span> <a href="?you-profile-uid-$conf[newuid]-ajax-1.htm" target="_blank" class="ajaxdialog" ajaxdialog="{position: 6, modal: false}" rel="nofollow">$conf[newusername]</a>
+				<!--{/if}-->
+				<span class="small grey2">|</span>
+				<span class="grey">在线：</span><span class="new bold">$conf[onlines]</span>
+				<!--{hook index_index_stat_after.htm}-->
+			</div>
+		</div>
+		<div class="footer"></div>
+	</div>
+	
+	<!--{hook index_index_online_before.htm}-->
+	
+</div>
+
+<!--{hook index_index_footer_before.htm}-->
+
+<!--{include footer.htm}-->
+
+<!--{require thread_list_js.inc.htm}-->
+
+<script type="text/javascript">
+$('#friendlink_img img').hover(function() {$(this).removeClass('xgrey')}, function() {$(this).addClass('xgrey')});
+$('div.div div.body').find('div.hr:last').hide();// 隐藏最后一个 hr
+
+// 鼠标背景变色
+$('table.forum').bind('mouseover', function() {$('td:gt(0)', this).removeClass('bg1').addClass('bg2');});
+$('table.forum').bind('mouseout', function() {$('td:gt(0)', this).removeClass('bg2').addClass('bg1');});
+
+</script>
+
+<!--{hook index_index_end.htm}-->
+
+$conf[footer_js]
+
+</body>
+</html>
