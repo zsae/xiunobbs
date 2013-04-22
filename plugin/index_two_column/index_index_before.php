@@ -6,6 +6,7 @@
 		$page = misc::page();
 		$page2 = misc::page('page2');
 		$threadlist = $this->thread->get_newlist($page, $pagesize);
+		$unset1 = 0;
 		foreach($threadlist as $k=>&$thread) {
 			$this->thread->format($thread);
 			
@@ -13,6 +14,7 @@
 			$fid = $thread['fid'];
 			if(!isset($this->conf['forumarr'][$fid])) {
 				unset($threadlist[$k]);
+				$unset1++;
 				continue;
 			}
 			
@@ -20,6 +22,7 @@
 			if($thread['top'] == 3) {
 				unset($threadlist[$k]);
 				$toplist[] = $thread;
+				$unset1++;
 				continue;
 			}
 			
@@ -33,7 +36,7 @@
                         $readtids .= ','.$thread['tid'];
                 }
                 
-		$pages = misc::simple_pages("?index-index-page2-$page2.htm", count($threadlist), $page, $pagesize, 'page');
+		$pages = misc::simple_pages("?index-index-page2-$page2.htm", count($threadlist) + $unset1, $page, $pagesize, 'page');
 
 		// 在线会员
 		$ismod = ($this->_user['groupid'] > 0 && $this->_user['groupid'] <= 4);
@@ -46,7 +49,7 @@
 		
 		// hook index_bbs_after.php
 		
-		
+		$unset2 = 0;
 		$digestlist = $this->thread_digest->get_newlist($page2, $pagesize);
 		foreach($digestlist as $k=>&$thread) {
 			$this->thread->format($thread);
@@ -55,6 +58,7 @@
 			$fid = $thread['fid'];
 			if(!isset($this->conf['forumarr'][$fid])) {
 				unset($threadlist[$k]);
+				$unset2++;
 				continue;
 			}
 			
@@ -62,6 +66,7 @@
 			if($thread['top'] == 3) {
 				unset($threadlist[$k]);
 				$toplist[] = $thread;
+				$unset2++;
 				continue;
 			}
 			$thread['subject_fmt'] = utf8::substr($thread['subject'], 0, 32);
@@ -70,7 +75,7 @@
 		$readtids = substr($readtids, 1); 
 		$click_server = $this->conf['click_server']."?db=tid&r=$readtids";
 		
-		$pages2 = misc::simple_pages("?index-index-page-$page.htm", count($digestlist), $page2, $pagesize, 'page2');
+		$pages2 = misc::simple_pages("?index-index-page-$page.htm", count($digestlist) + $unset2, $page2, $pagesize, 'page2');
 		$this->view->assign('digestlist', $digestlist);
 		$this->view->assign('pages2', $pages2);
 		$this->view->assign('click_server', $click_server);
