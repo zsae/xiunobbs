@@ -19,13 +19,6 @@
 			}
 			
 			$readtids .= ','.$thread['tid'];
-			if($thread['top'] == 3) {
-				unset($threadlist[$k]);
-				$toplist[] = $thread;
-				$unset1++;
-				continue;
-			}
-			
 			$thread['subject_fmt'] = utf8::substr($thread['subject'], 0, 26);
 		}
 		
@@ -63,12 +56,6 @@
 			}
 			
 			$readtids .= ','.$thread['tid'];
-			if($thread['top'] == 3) {
-				unset($threadlist[$k]);
-				$toplist[] = $thread;
-				$unset2++;
-				continue;
-			}
 			$thread['subject_fmt'] = utf8::substr($thread['subject'], 0, 26);
 		}
 		

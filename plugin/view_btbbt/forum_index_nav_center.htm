@@ -1,4 +1,11 @@
 <form action="?search-index.htm" method="get" id="indexsrchform" style="display: inline-block;">
 	<input type="text" id="indexkeyword" name="keyword" value="" style="width: 128px; height: 14px; margin-left: 16px;" />
-	<input type="submit" value="搜索" id="indexsrchsubmit" onclick="document.getElementById('indexsrchform').submit();" style="height: 22px;">
+	<input type="submit" value="搜索" id="indexsrchsubmit" style="height: 22px;">
 </form>
+<script>
+document.getElementById('indexsrchform').onsubmit = function() {
+	var keyword = encodeURIComponent(document.getElementById('indexkeyword').value);
+	window.location='?search-index-keyword-'+keyword+'.htm'; return false;
+	return false;
+}
+</script>
