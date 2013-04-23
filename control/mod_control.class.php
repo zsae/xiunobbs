@@ -208,7 +208,7 @@ class mod_control extends common_control {
 				// 取消精华
 				} elseif($rank == 0 && $thread['digest'] > 0) {
 					$digestarr[$thread['uid']]--;
-					$this->thread_digest->delete($fid, $tid);
+					$this->thread_digest->delete($tid);
 				}
 				
 				// 记录到版主操作日志

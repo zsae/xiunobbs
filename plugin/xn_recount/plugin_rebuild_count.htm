@@ -7,12 +7,15 @@
 			<div class="header">重建统计数</div>
 			<div class="body">
 				<dl>
-					<dt><label for="forum">重建主题分类：</label></dt>
-					<dd><input type="text" name="username" id="username" size="32" /></dd>
+					<dt><label for="forum">重建版块帖数，精华数：</label></dt>
+					<dd><input type="checkbox" value="1" name="forum" id="forum" /></dd>
 				
-					<dt><label for="newusername">修改为：</label></dt>
-					<dd><input type="text" name="newusername" id="newusername" size="32" /></dd>
+					<dt><label for="user">重建用户帖数，精华数：</label></dt>
+					<dd><input type="checkbox" value="1" name="user" id="user" /></dd>
 					
+					<dt><label for="threadtype">重新统计主题分类数：</label></dt>
+					<dd><input type="checkbox" value="1" name="threadtype" id="threadtype" /></dd>
+				
 					<dt></dt>
 					<dd>
 						<input type="submit" class="button bigblue" id="conf_submit" value="确定" />
@@ -37,8 +40,6 @@ $('#conf_submit').click(function() {
 	$('#conf_form').submit();
 	return false;
 });
-
-$('#username').focus();
 
 </script>
 </body>

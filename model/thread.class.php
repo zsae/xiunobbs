@@ -175,7 +175,7 @@ class thread extends base_model {
 		
 		// 删除主题
 		$this->thread->delete($fid, $tid);
-		$this->thread_digest->delete($fid, $tid);
+		$this->thread_digest->delete($tid);
 		$this->thread_new->delete($tid);
 		
 		// 同时删除 thread_view, 这里为强关联

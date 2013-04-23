@@ -715,7 +715,7 @@ function upgrade_thread() {
 			$db->set("thread_views-tid-$tid", array('tid'=>$tid, 'views'=>$old['views']));
 			
 			// 精华
-			$db->set("thread_digest-fid-$newfid-tid-$tid", array('fid'=>$newfid, 'tid'=>$tid, 'digest'=>$old['digest']));
+			$db->set("thread_digest-tid-$tid", array('fid'=>$newfid, 'tid'=>$tid, 'digest'=>$old['digest']));
 			
 			// mypost
 			$arr = array (
