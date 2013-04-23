@@ -50,7 +50,7 @@
 			// 去掉没有权限访问的版块数据
 			$fid = $thread['fid'];
 			if(!isset($this->conf['forumarr'][$fid])) {
-				unset($threadlist[$k]);
+				unset($digestlist[$k]);
 				$unset2++;
 				continue;
 			}
