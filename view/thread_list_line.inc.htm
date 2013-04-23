@@ -17,6 +17,8 @@
 			 <!--{hook thread_list_line_inc_subject_before.htm}-->
 			<a href="?thread-index-fid-$thread[fid]-tid-$thread[tid].htm" class="subject_link $thread[color]">$thread[subject]</a>
 			<!--{if $thread['color'] == 'thread-hot'}--><span class="icon icon-post-fire"></span><!--{/if}-->
+			<!--{if $thread['color'] == 'thread-new'}--><span class="icon icon-post-new"></span><!--{/if}-->
+			
 			<!--{hook thread_list_line_inc_subject_after.htm}-->
 			
 			<!--{if $thread[lastpage] > 1}-->
@@ -32,7 +34,12 @@
 		<!--{/if}-->
 		<td width="80" class="username">
 			<span class="grey"><a href="?you-profile-uid-$thread[uid]-ajax-1.htm" target="_blank" class="ajaxdialog" ajaxdialog="{position: 6, modal: false}" title="$thread[username]" rel="nofollow">$thread[username]</a></span>
-			<br /><span class="tiny grey2">$thread[dateline_fmt]</span>
+			<br />
+			<!--{if $thread['color'] == 'thread-new'}-->
+			<span class="tiny blue">$thread[dateline_fmt]</span>
+			<!--{else}-->
+			<span class="tiny grey2">$thread[dateline_fmt]</span>
+			<!--{/if}-->
 		</td>
 		<td width="80" class="lastpost">
 			<!--{if $thread[lastuid]}-->
