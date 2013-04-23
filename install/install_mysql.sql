@@ -26,7 +26,7 @@ CREATE TABLE bbs_group (				# 字段中文名			# 控件属性					# 字段描�
   allowviewip int(10) NOT NULL default '0',		# 允许查看用户敏感信息
   PRIMARY KEY (groupid)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-INSERT INTO bbs_group SET groupid='0', name="游客组", creditsfrom='0', creditsto='0', maxcredits='0', maxgolds='0', allowread='1', allowthread='0', allowpost='0', allowreply='0', allowattach='0', allowdown='0', allowtop='0', allowdigest='0', allowupdate='0', allowdelete='0', allowmove='0', allowbanuser='0', allowdeleteuser='0', allowviewip='0';
+INSERT INTO bbs_group SET groupid='0', name="游客组", creditsfrom='0', creditsto='0', maxcredits='0', maxgolds='0', allowread='1', allowthread='0', allowpost='0', allowreply='0', allowattach='0', allowdown='1', allowtop='0', allowdigest='0', allowupdate='0', allowdelete='0', allowmove='0', allowbanuser='0', allowdeleteuser='0', allowviewip='0';
 
 INSERT INTO bbs_group SET groupid='1', name="管理员组", creditsfrom='0', creditsto='0', maxcredits='10000', maxgolds='10000', allowread='1', allowthread='1', allowpost='1', allowreply='1', allowattach='1', allowdown='1', allowtop='1', allowdigest='1', allowupdate='1', allowdelete='1', allowmove='1', allowbanuser='1', allowdeleteuser='1', allowviewip='1';
 INSERT INTO bbs_group SET groupid='2', name="超级版主组", creditsfrom='0', creditsto='0', maxcredits='200', maxgolds='200', allowread='1', allowthread='1', allowpost='1', allowreply='1', allowattach='1', allowdown='1', allowtop='1', allowdigest='1', allowupdate='1', allowdelete='1', allowmove='1', allowbanuser='1', allowdeleteuser='1', allowviewip='1';

@@ -2,7 +2,7 @@
 
 $db_data = array(
 	'group'=> array (
-		array('groupid'=>0, 'name'=>'游客组', 'creditsfrom'=>0, 'creditsto'=>0, 'maxcredits'=>0, 'maxgolds'=>0, 'allowread'=>1, 'allowthread'=>0, 'allowpost'=>0, 'allowattach'=>0, 'allowdown'=>0, 'allowtop'=>0, 'allowdigest'=>0, 'allowupdate'=>0, 'allowdelete'=>0, 'allowmove'=>0, 'allowbanuser'=>0, 'allowdeleteuser'=>0, 'allowviewip'=>0),
+		array('groupid'=>0, 'name'=>'游客组', 'creditsfrom'=>0, 'creditsto'=>0, 'maxcredits'=>0, 'maxgolds'=>0, 'allowread'=>1, 'allowthread'=>0, 'allowpost'=>0, 'allowattach'=>0, 'allowdown'=>1, 'allowtop'=>0, 'allowdigest'=>0, 'allowupdate'=>0, 'allowdelete'=>0, 'allowmove'=>0, 'allowbanuser'=>0, 'allowdeleteuser'=>0, 'allowviewip'=>0),
 		
 		array('groupid'=>1, 'name'=>'管理员组', 'creditsfrom'=>0, 'creditsto'=>0, 'maxcredits'=>10000, 'maxgolds'=>10000, 'allowread'=>1, 'allowthread'=>1, 'allowpost'=>1, 'allowattach'=>1, 'allowdown'=>1, 'allowtop'=>1, 'allowdigest'=>1, 'allowupdate'=>1, 'allowdelete'=>1, 'allowmove'=>1, 'allowbanuser'=>1, 'allowdeleteuser'=>1, 'allowviewip'=>1),
 		array('groupid'=>2, 'name'=>'超级版主组', 'creditsfrom'=>0, 'creditsto'=>0, 'maxcredits'=>200, 'maxgolds'=>200, 'allowread'=>1, 'allowthread'=>1, 'allowpost'=>1, 'allowattach'=>1, 'allowdown'=>1, 'allowtop'=>1, 'allowdigest'=>1, 'allowupdate'=>1, 'allowdelete'=>1, 'allowmove'=>1, 'allowbanuser'=>1, 'allowdeleteuser'=>1, 'allowviewip'=>1),
