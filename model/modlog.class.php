@@ -46,8 +46,8 @@ class modlog extends base_model {
 	public function format(&$modlog) {
 		$arr = array('digest'=>'加精华', 'undigest'=>'取消精华', 'top'=>'置顶', 'untop'=>'取消置顶', 'delete'=>'删除', 'move'=>'移动', 'type'=>'主题分类', 'rate'=>'评分');
 		$modlog['action_fmt'] = $arr[$modlog['action']];
-		$modlog['credits_fmt'] = $modlog['credits'] ? '+'.$modlog['credits'] : '---';
-		$modlog['golds_fmt'] = $modlog['golds'] ? '+'.$modlog['golds'] : '---';
+		$modlog['credits_fmt'] = $modlog['credits'] ? ($modlog['credits'] > 0 ? '+' : '&nbsp;').$modlog['credits'] : '---';
+		$modlog['golds_fmt'] = $modlog['golds'] ? ($modlog['golds'] > 0 ? '+' : '&nbsp;').$modlog['golds'] : '---';
 		$modlog['dateline_fmt'] = misc::humandate($modlog['dateline']);
 		$modlog['forumname'] = $this->conf['forumarr'][$modlog['fid']];
 	}
