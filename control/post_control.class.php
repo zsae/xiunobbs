@@ -399,9 +399,6 @@ class post_control extends common_control {
 				$thread['lastusername'] = $username;
 				$this->thread->update($thread);
 				
-				// 更新最新主题
-				$this->thread_new->set($tid, array('fid'=>$fid, 'tid'=>$tid, 'lastpost'=>$_SERVER['time']));
-				
 				// 斑竹回复的话， 短消息通知楼主，有人回帖，每个主题前10名用户，引用回复也发送，高级别会员回复通知。
 				$tuser = $this->user->read($thread['uid']);
 				if($this->_user['uid'] != $thread['uid'] && $this->_user['groupid'] <= 5) {
