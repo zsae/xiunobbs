@@ -11,9 +11,9 @@
 2. 修改 csft.conf 中的如下参数:  vim csft.conf
     type                     = mysql
     sql_host                 = 127.0.0.1
-    sql_user                 = 9dalu
-    sql_pass                 = 9dalu
-    sql_db                   = 9dalu
+    sql_user                 = root
+    sql_pass                 = root
+    sql_db                   = test
     sql_port                 = 3306
 2.1 修改 jobs.cron
 
