@@ -136,7 +136,7 @@ a.icon:hover {background-image: url(image/icon-hover.gif)}
 .icon-move {width: 14px; height: 12px; background-position: -112px -80px;}
 
 /* 第七行 */
-.icon-post-fire {background-position: -32px -96px;}
+.icon-post-fire {background: url(image/fire.gif); width: 11px; height: 19px; margin-top: -2px;}
 .icon-post-new {background: url(image/new.gif); width: 26px; height: 12px;}
 .icon-myhome {background-position: -80px -96px;}
 .icon-stat {background-position: -96px -96px;}
