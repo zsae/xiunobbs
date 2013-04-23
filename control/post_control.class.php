@@ -125,7 +125,7 @@ class post_control extends common_control {
 				
 				$this->thread_views->create(array('tid'=>$tid, 'views'=>0));
 				if(isset($this->conf['forumarr'][$fid])) {
-					$this->thread_new->create(array('fid'=>$fid, 'tid'=>$tid, 'lastpost'=>$_SERVER['time']));
+					$this->thread_new->create(array('fid'=>$fid, 'tid'=>$tid, 'dateline'=>$_SERVER['time'], 'lastpost'=>$_SERVER['time']));
 				}
 				
 				// -----------> 添加到 post

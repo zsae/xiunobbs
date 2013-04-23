@@ -88,12 +88,6 @@ class cron extends base_model {
 				if($n > 100) {
 					$this->thread_new->index_delete(array('dateline' => array('<'=>$_SERVER['time'] - 86400 * 2)));
 				}
-				/* 考虑到 sphinx 增量索引， thread_new 保存至少需要2天的数据
-				$newlist = $this->thread_new->index_fetch(array(), array('tid'=>-1), 0, 100);
-				$this->thread_new->truncate();
-				foreach($newlist as $new) {
-					$this->thread_new->create(array('fid'=>$new['fid'], 'tid'=>$new['tid'], 'lastpost'=>$new['lastpost']));
-				}*/
 			}
 			
 			// 清空

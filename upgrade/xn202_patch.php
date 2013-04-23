@@ -44,5 +44,10 @@ $kv->xset('view_path', array());
 $kv->save_changed();
 $runtime->save_changed();
 
+$db = new db_mysql($conf['db']['mysql']);
+try {
+	$db->query("ALTER TABLE {$db->tablepre}thread_new ADD column dateline int(10) unsigned NOT NULL default '0';");
+} catch (Exception $e) {
+}
 echo '卸载所有风格，修补完毕。';
 ?>

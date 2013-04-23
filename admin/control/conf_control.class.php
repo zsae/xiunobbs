@@ -247,28 +247,15 @@ class conf_control extends admin_control {
 		// 最新发帖
 		if($thread_new) {
 			// 从 thread 表中获取最新数据，取两天内的主题，可能会超时？内存不够？
-			$newlist = $this->thread->index_fetch(array('lastpost' => array('>'=>$_SERVER['time'] - 86400 * 2)), array(), 0, 10000);
+			$newlist = $this->thread->index_fetch(array('dateline' => array('>'=>$_SERVER['time'] - 86400 * 2)), array(), 0, 10000);
 			if(count($newlist) < 30) {
-				$newlist = $this->thread->index_fetch(array('lastpost' => array('>'=>$_SERVER['time'] - 86400 * 30)), array(), 0, 10000);
+				$newlist = $this->thread->index_fetch(array('dateline' => array('>'=>$_SERVER['time'] - 86400 * 30)), array(), 0, 10000);
 			}
 			foreach($newlist as $new) {
-				$this->thread_new->create(array('fid'=>$new['fid'], 'tid'=>$new['tid'], 'lastpost'=>$new['lastpost']));
+				$this->thread_new->create(array('fid'=>$new['fid'], 'tid'=>$new['tid'], 'dateline'=>$new['dateline'], 'lastpost'=>$new['lastpost']));
 			}
 			
 			unset($newlist);
-			
-			/* 考虑到 sphinx 索引，不能这么做
-			$forumarr = $this->conf['forumarr'];
-			$newlist = array();
-			foreach($forumarr as $fid=>$name) {
-				if(count($newlist) > 300) break; 
-				$newlist = array_merge($threadlist, $this->thread->index_fetch(array('fid'=>$fid), array('lastpost'=>-1), 0, 20));
-			}
-			count($newlist) > 100 && $newlist = array_slice($newlist, 0, 100);
-			$this->thread_new->truncate();
-			foreach($newlist as $new) {
-				$this->thread_new->create(array('fid'=>$new['fid'], 'tid'=>$new['tid'], 'lastpost'=>$new['lastpost']));
-			}*/
 		}
 		
 		// 校对 framework 的 count, maxid

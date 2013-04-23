@@ -217,6 +217,7 @@ DROP TABLE IF EXISTS bbs_thread_new;
 CREATE TABLE bbs_thread_new (
   fid smallint(6) NOT NULL default '0',			# 版块id
   tid int(11) unsigned NOT NULL default '0',		# 主题id
+  dateline int(10) unsigned NOT NULL default '0',	# 发帖时间
   lastpost int(10) unsigned NOT NULL default '0',	# 最后回复时间
   PRIMARY KEY (tid),					# 
   UNIQUE KEY (fid, tid),				# 
