@@ -6,12 +6,12 @@
 			<input type="checkbox" name="tidarr[]" value="$thread[fid]-$thread[tid]" />
 			<!--{/if}-->
 		
-			<a href="?thread-index-fid-$thread[fid]-tid-$thread[tid].htm" target="_blank" title="点击图标，新窗口打开" class="thread_icon" style="margin-right: 1px;">	
+			<a href="?thread-index-fid-$thread[fid]-tid-$thread[tid].htm" target="_blank" title="点击图标，新窗口打开" class="thread_icon" style="margin-right: 1px;" rel="nofollow">	
 				<span class="icon $thread[icon]" tid="$thread[tid]" lastpost="$thread[lastpost]"></span>
 			</a>
 			
 		<!--{loop $forum[types] $cateid $types}-->
-			<!--{if $thread[typename$cateid]}--><a href="?forum-index-fid-$thread[fid]-typeid$cateid-$thread[typeid$cateid].htm" class="grey middle subject_type">[{$thread[typename$cateid]}]</a><!--{/if}-->
+			<!--{if $thread[typename$cateid]}--><a href="?forum-index-fid-$thread[fid]-typeid$cateid-$thread[typeid$cateid].htm" class="grey middle subject_type" rel="nofollow">[{$thread[typename$cateid]}]</a><!--{/if}-->
 	 	<!--{/loop}-->
 		 	
 			 <!--{hook thread_list_line_inc_subject_before.htm}-->

@@ -181,6 +181,8 @@ class attach_control extends common_control {
 		
 		$this->check_forum_exists($forum);
 		$this->check_access($forum, 'attach');
+		
+		// hook attach_uploadimage_before.php
 
 		if(isset($_FILES['Filedata']['tmp_name']) && is_file($_FILES['Filedata']['tmp_name'])) {
 			$file = $_FILES['Filedata'];
@@ -271,6 +273,8 @@ class attach_control extends common_control {
 		$this->check_forum_exists($forum);
 		$this->check_access($forum, 'attach');
 
+		// hook attach_uploadfile_before.php
+		
 		if(isset($_FILES['Filedata']['tmp_name']) && is_file($_FILES['Filedata']['tmp_name'])) {
 			$file = $_FILES['Filedata'];
 			$file['name'] = htmlspecialchars($file['name']);
@@ -353,6 +357,8 @@ class attach_control extends common_control {
 			$this->check_access($forum, 'update');
 		}
 		
+		// hook attach_updatefile_before.php
+		
 		if(isset($_FILES['Filedata']['tmp_name']) && is_file($_FILES['Filedata']['tmp_name'])) {
 			$file = $_FILES['Filedata'];
 			$attach['filesize'] = filesize($file['tmp_name']);
@@ -380,6 +386,8 @@ class attach_control extends common_control {
 		$forum = $this->mcache->read('forum', $fid);
 		$this->check_forum_exists($forum);
 		$this->check_access($forum, 'attach');
+		
+		// hook attach_deletefile_before.php
 		
 		$ismod = $this->is_mod($forum, $this->_user);
 		$attach = $this->attach->read($fid, $aid);
@@ -410,6 +418,7 @@ class attach_control extends common_control {
 		$this->attach->delete($fid, $aid);
 		
 		// hook attach_deletefile_after.php
+		
 		$this->message('删除成功');
 	}
 	
