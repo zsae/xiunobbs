@@ -20,7 +20,7 @@
 			}
 			
 			$readtids .= ','.$thread['tid'];
-			$thread['subject_fmt'] = utf8::substr($thread['subject'], 0, 26);
+			$thread['subject_fmt'] = utf8::substr($thread['subject'], 0, 32);
 		}
 		
 		$toplist = $page == 1 ? $this->get_toplist() : array();
@@ -58,7 +58,7 @@
 			}
 			
 			$readtids .= ','.$thread['tid'];
-			$thread['subject_fmt'] = utf8::substr($thread['subject'], 0, 26);
+			$thread['subject_fmt'] = utf8::substr($thread['subject'], 0, 32);
 		}
 		
 		$readtids = substr($readtids, 1); 
