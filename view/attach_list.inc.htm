@@ -1,6 +1,7 @@
-<div class="dialog bg2 border shadow" title="上传文件" id="file_upload_$pid" style="width: 640px; height: 400px; overflow: visible;">
+<div class="dialog bg2 border shadow" title="上传文件" id="file_upload_$pid" style="width: 680px; height: 400px; overflow: visible;">
 	<form action="?attach-updategold-fid-$fid-ajax-1.htm" id="file_upload_form_$pid" method="post">
 		<input type="hidden" name="FORM_HASH" value="{FORM_HASH}" />
+		<div style="width: 600px; max-height: 400px; overflow-y: auto; overflow-x: hidden;">
 		<table width="597" style="table-layout: fixed;">
 			<tr class="header" align="left">
 				<td>文件名</td>
@@ -44,6 +45,7 @@
 			</tr>
 			<tr style="display: none;"><td colspan="5"><hr /></td></tr>
 		</table>
+		</div>
 		<div>
 			<div style="width: 40%; height:; float: left;"><span id="file_upload_button_$pid"></span></div>
 			<div style="width: 60%; height:; float: left;">
