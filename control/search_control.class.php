@@ -175,7 +175,7 @@ class search_control extends common_control {
 	                
 	                $newlist = array();
 	                $forums = array();
-	                foreach($res['matches'] as $v) {
+	                foreach((array)$res['matches'] as $v) {
 	                        if(empty($v['attrs'])) continue;
 	                        if(empty($v['attrs']['fid'])) continue;
 	                        $fid = $v['attrs']['fid'];
@@ -208,7 +208,7 @@ class search_control extends common_control {
                 }
 
                 $threadlist = array();
-                foreach($res['matches'] as $v) {
+                foreach((array)$res['matches'] as $v) {
                         if(empty($v['attrs'])) continue;
                         if(empty($v['attrs']['fid'])) continue;
                         $fid = $v['attrs']['fid'];
