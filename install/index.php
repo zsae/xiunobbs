@@ -383,7 +383,7 @@ if(empty($step) || $step == 'checklicense') {
 				'footer_js' => '',			// 页脚额外的代码，放用于统计JS之类代码。
 				'iptable_on' => 0,			// IP 规则，白名单，黑名单
 				'badword_on' => 0,			// 关键词过滤
-				'online_hold_time' => 900,		// 在线时间，15分钟
+				'online_hold_time' => 1800,		// 在线时间，30分钟
 			);
 			$kv->set('conf', $kvconf);
 			
