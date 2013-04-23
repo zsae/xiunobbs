@@ -12,7 +12,8 @@
 					<dt>Web Server: </dt><dd> $info[SERVER_SOFTWARE]</dd>
 					<dt>PHP: </dt><dd> {PHP_VERSION} (<a href="?index-phpinfo.htm">查看PHP.ini</a>)</dd>
 					<dt>DB: </dt><dd> $conf[db][type] ($info[dbversion])</dd>
-					<dt>disable_functions: </dt><dd style="white-space: normal;">$info[disable_functions] <br /> <span class="grey" style="white-space: normal;"> 建议禁用如下函数：<br />exec,system,passthru,shell_exec,system,cmd,popen,dl,proc_open,curl_exec,<br />curl_multi_exec,parse_ini_file,show_source</span></dd>
+					<dt>disable_functions: </dt><dd style="white-space: normal; word-break: break-word;">$info[disable_functions] exec,system,passthru,shell_exec,system,cmd,popen,dl,proc_open,curl_execexec,system,passthru,shell_exec,system,cmd,popen,dl,proc_open,curl_execexec,system,passthru,shell_exec,system,cmd,popen,dl,proc_open,curl_execexec,system,passthru,shell_exec,system,cmd,popen,dl,proc_open,curl_exec<br /> 
+						<br /><span class="grey" style="white-space: normal; word-break:break-word;">建议禁用如下函数：<br />passthru,exec,system,chroot,scandir,chgrp,chown,shell_exec,proc_open,proc_get_status,ini_alter,ini_alter,ini_restore,dl,pfsockopen,openlog,syslog,readlink,symlink,popepassthru,stream_socket_server</span></dd>
 					<dt>upload_max_filesize: </dt><dd>$info[upload_max_filesize]</dd>
 					<dt>post_max_size: </dt><dd>$info[post_max_size]</dd>
 					<dt>allow_url_fopen: </dt><dd>$info[allow_url_fopen] <span class="grey">(建议不要开启，某些主机会导致CPU 100%，并且导致不安全)</span></dd>
