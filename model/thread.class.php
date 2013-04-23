@@ -30,8 +30,7 @@ class thread extends base_model {
 	}
 	
 	// 按照 tid 倒序，获取最新的列表
-	public function get_newlist($page = 1, $pagesize = 30) {
-		$start = ($page - 1) * $pagesize;
+	public function get_newlist($start = 0, $pagesize = 30) {
 		$newlist = $threadlist = array();
 		$newlist = $this->thread_new->index_fetch(array(), array('tid'=>-1), $start, $pagesize);
 		foreach($newlist as $new) {

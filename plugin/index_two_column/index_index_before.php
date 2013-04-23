@@ -5,7 +5,8 @@
 		$readtids = '';
 		$page = misc::page();
 		$page2 = misc::page('page2');
-		$threadlist = $this->thread->get_newlist($page, $pagesize);
+		$start = ($page - 1) * $pagesize;
+		$threadlist = $this->thread->get_newlist($start, $pagesize);
 		$unset1 = 0;
 		foreach($threadlist as $k=>&$thread) {
 			$this->thread->format($thread);
@@ -43,7 +44,8 @@
 		// hook index_bbs_after.php
 		
 		$unset2 = 0;
-		$digestlist = $this->thread_digest->get_newlist($page2, $pagesize);
+		$start = ($page2 - 1) * $pagesize;
+		$digestlist = $this->thread_digest->get_newlist($start, $pagesize);
 		foreach($digestlist as $k=>&$thread) {
 			$this->thread->format($thread);
 			

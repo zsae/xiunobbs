@@ -23,7 +23,7 @@ class thread_digest extends base_model {
 	}
 	
 	// 按照 tid 倒序，获取最新的列表
-	public function get_newlist($start = 1, $limit = 30) {
+	public function get_newlist($start = 0, $limit = 30) {
 		$threadlist = array();
 		$arrlist = $this->index_fetch(array(), array('tid'=>-1), $start, $limit);
 		foreach($arrlist as $arr) {
