@@ -705,7 +705,7 @@ class post_control extends common_control {
 		$s = str_ireplace(array('<br>', '<br />', '<br  />'), "\n", $s);
 		$s = preg_replace('#<div\s*class=\"quote\">.*?</div>#ism', "", $s); // 避免引用嵌套！
 		$s = strip_tags($s);
-		$s = preg_replace('#[\r\n]{2,}#', "<br />", $s);
+		$s = preg_replace('#[\r\n]{2,999}#', "<br />", $s);
 		$s = utf8::substr($s, 0, 200);
 		$s = "<div class=\"quote\"><span class=\"grey\">引用 $post[username]：</span><p>$s</p></div><br /><br />";
 		return $s;

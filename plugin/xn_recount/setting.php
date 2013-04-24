@@ -14,7 +14,7 @@ if(!$this->form_submit()) {
 	$conf = $this->conf;
 	
 	if(empty($start)) {
-		$this->mthread->index_create();
+		$this->mthread->index_create('index');
 	}
 	// 建立索引
 	

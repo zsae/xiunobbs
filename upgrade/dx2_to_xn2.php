@@ -25,7 +25,7 @@
 
 @set_time_limit(0);
 
-define('DEBUG', 2);
+define('DEBUG', 0);
 
 define('BBS_PATH', './');
 
@@ -630,6 +630,7 @@ function upgrade_thread() {
 			$fup = $policy['fuparr'][$fid];			// 大区也不升级
 			if($fup == 0) continue;
 			if(isset($policy['fuparr'][$fup]) && $policy['fuparr'][$fup] != 0) continue; // type = sub
+			//if($old['replies'] > 30000) continue;
 			
 			$lastuid = 0;
 			$lastuser = '';
@@ -1525,7 +1526,7 @@ catename color stripvtags
 function bbcode2html($s, $parseurl=1) {
 	$s = str_replace(array("\t", '   ', '  '), array('&nbsp; &nbsp; &nbsp; &nbsp; ', '&nbsp; &nbsp;', '&nbsp;&nbsp;'), $s);
 	$s = nl2br($s);
-	$s = preg_replace('#(<br\s*/?>\s*){3,}#', '<br /><br />', $s);
+	$s = preg_replace('#(<br\s*/?>\s*){3,999}#', '<br /><br />', $s);
 	
 	$s = str_replace(array(
 		'[b]', '[/b]','[i]', '[i=s]', '[/i]', '[u]', '[/u]', '[/color]', '[/size]', '[/font]', 

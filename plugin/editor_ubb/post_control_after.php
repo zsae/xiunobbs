@@ -2,7 +2,7 @@
 	private function bbcode2html($s) {
 		$s = str_replace(array("\t", '   ', '  '), array('&nbsp; &nbsp; &nbsp; &nbsp; ', '&nbsp; &nbsp;', '&nbsp;&nbsp;'), $s);
 		$s = nl2br($s);
-		$s = preg_replace('#(<br\s*/?>\s*){3,}#', '<br /><br />', $s);
+		$s = preg_replace('#(<br\s*/?>\s*){3,999}#', '<br /><br />', $s);
 		
 		$s = str_replace(array(
 			'[b]', '[/b]','[i]', '[i=s]', '[/i]', '[u]', '[/u]', '[/color]', '[/size]', '[/font]', 
