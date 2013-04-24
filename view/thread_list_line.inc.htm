@@ -15,15 +15,16 @@
 	 	<!--{/loop}-->
 		 	
 			 <!--{hook thread_list_line_inc_subject_before.htm}-->
+			 
 			<a href="?thread-index-fid-$thread[fid]-tid-$thread[tid].htm" class="subject_link $thread[color]">$thread[subject]</a>
-			<!--{if $thread['color'] == 'thread-hot'}--><span class="icon icon-post-fire"></span><!--{/if}-->
-			<!--{if $thread['color'] == 'thread-new'}--><span class="icon icon-post-new"></span><!--{/if}-->
 			
 			<!--{hook thread_list_line_inc_subject_after.htm}-->
-			
+				
 			<!--{if $thread[lastpage] > 1}-->
 			<a href="?thread-index-fid-$thread[fid]-tid-$thread[tid]-page-$thread[lastpage].htm" class="grey2 small"><span class="icon icon-lastpage"></span>$thread[lastpage]</a>
 			<!--{/if}-->
+			
+			<!--{hook thread_list_line_inc_lastpage_after.htm}-->
 			
 		</td>
 		<!--{hook thread_list_line_inc_subject_after.htm}-->
