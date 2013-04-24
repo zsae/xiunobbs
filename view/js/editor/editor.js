@@ -617,7 +617,7 @@ $.editor = function(textarea, settings) {
 	
 	
 	this.clear_paste = function(e) {
-		if(is_ie) {
+		if(!_win.getSelection) {
 			//var bookmark = _this.save_bookmark();
 			var range = _this.get_range();
 			
@@ -777,7 +777,7 @@ $.editor = function(textarea, settings) {
 	}
 	
 	this.get_selection = function() {
-		return _doc.selection ? _doc.selection : _win.getSelection();
+		return !_win.getSelection ? _doc.selection : _win.getSelection();
 	}
 		
 	this.create_range = function() {
@@ -787,7 +787,7 @@ $.editor = function(textarea, settings) {
 	
 	this.get_range = function() {
 		var sel = _this.get_selection();
-		if(is_ie) {
+		if(!_win.getSelection) {
 			range = sel.createRange();
 		} else {
 			//var range = sel.createRange ? sel.createRange() : sel.rangeCount > 0 ? sel.getRangeAt(0) : null;
