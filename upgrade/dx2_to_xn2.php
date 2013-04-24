@@ -1159,7 +1159,7 @@ function upgrade_postpage() {
 		//$count2 = $dx2->index_count('forum_post', array('tid'=>1));
 		
 		// 保证一次能取出 $limit2 个 post，$limit2 次用完，则进入下一轮跳转循环。
-		$pidkeys = $dx2->index_fetch_id('forum_post', array('pid'), array('tid'=>$tid, 'pid'=>array('>'=>$startpid)), array('pid'=>1), 0, $limit2);
+		$pidkeys = $dx2->index_fetch_id('forum_post', array('pid'), array('tid'=>$tid, 'pid'=>array('>'=>$startpid)), array('dateline'=>1), 0, $limit2);
 		$n = count($pidkeys);
 		
 		// 进入下一轮 tid 循环
