@@ -102,8 +102,8 @@ CREATE TABLE bbs_forum (				# 字段中文名			# 控件属性					# 字段描�
   lasttid int(11) NOT NULL default '0',			# 最后发表的tid
   brief text NOT NULL default '',			# 版块简介 允许HTML		# type="text"
   accesson tinyint(1) NOT NULL default '0',		# 是否启用访问规则
-  modids char(73) NOT NULL default '',			# 版主 uid，最多6个，逗号隔开
-  modnames char(103) NOT NULL default '',		# 版主 username，最多6个，逗号隔开
+  modids char(255) NOT NULL default '',			# 版主 uid，最多15个，逗号隔开
+  modnames char(255) NOT NULL default '',		# 版主 username，最多15个，逗号隔开
   toptids char(240) NOT NULL default '',		# 置顶主题，分区可以置顶，板块可以置顶，格式：2-5 2-10 ，全局置顶放在 tmp/top_3.txt 
   orderby tinyint(11) NOT NULL default '0',		# 默认列表排序，0: 顶贴时间 floortime， 1: 发帖时间 dateline
   seo_title char(64) NOT NULL default '',		# SEO 标题，如果设置会代替版块名称

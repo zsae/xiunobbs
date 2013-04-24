@@ -205,7 +205,7 @@ class forum_control extends admin_control {
 			$post['modnames'] = str_replace(array('　', "\t", '  '), ' ', $post['modnames']);
 			$modnamearr = explode(' ', $post['modnames']);
 			$modnamearr = array_unique($modnamearr);
-			$modnamearr = array_slice($modnamearr, 0, 6);	// 最多6个
+			$modnamearr = array_slice($modnamearr, 0, 15);	// 最多6个
 			foreach($modnamearr as $modname) {
 				$_user = $this->user->get_user_by_username($modname);
 				if($_user) {
