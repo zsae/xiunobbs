@@ -7,7 +7,7 @@
 <div>
 	<form action="?pm-create-touid-$touser[uid]-ajax-1.htm" method="post" id="pm_add_form_$touser[uid]">
 		<input type="hidden" name="FORM_HASH" value="{FORM_HASH}" />
-		<div><textarea name="message" class="message" style="width: 664px; height: 60px;"></textarea></div>
+		<div><textarea name="message" class="message" style="width: 664px; height: 52px;"></textarea></div>
 		<div style="margin-top: 4px;">
 			<div style="width: 180px; float: left;">
 				<input type="submit" class="button smallblue submit" value="发送" />
@@ -20,7 +20,7 @@
 <div>
 	<form action="?pm-create-touid-$touser[uid]-ajax-1.htm" method="post" id="pm_add_form_$touser[uid]">
 		<input type="hidden" name="FORM_HASH" value="{FORM_HASH}" />
-		<div><textarea name="message" class="message" style="width: 664px; height: 60px;" disabled="disabled">不能回复给系统用户</textarea></div>
+		<div><textarea name="message" class="message" style="width: 564px; height: 60px;" disabled="disabled">不能回复给系统用户</textarea></div>
 		<div style="margin-top: 4px;">
 			<div style="width: 180px; float: left;">
 				<input type="button" class="button smallgrey cancel" value="关闭" />
@@ -107,7 +107,7 @@ function delay_execute(dialog, recall) {
 	var window_height = $(window).height() - 20;
 	dialog.set_height(window_height - 35);
 	dialog.set_position('center');
-	var subheight = is_ie6 ? 280 : 195;
+	var subheight = is_ie6 ? 280 : 215;
 	jpmlist.height(window_height - subheight);
 	
 	// 给 page 区域追加事件
