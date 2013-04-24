@@ -42,6 +42,11 @@ class attach_download extends base_model {
 		return $downlist;
 	}
 	
+	// 删除附件的时候删除
+	public function delete_by_fid_aid($fid, $aid) {
+		return $this->index_delete(array('fid'=>$fid, 'aid'=>$aid));
+	}
+	
 	// 用来显示给用户
 	public function format(&$down) {
 		// format data here.

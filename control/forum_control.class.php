@@ -86,7 +86,7 @@ class forum_control extends common_control {
 			$this->thread->format($thread, $topforum);
 		}
 		foreach($threadlist as $k=>&$thread) {
-			if($thread['top'] > 0) {
+			if($thread['top'] > 0 && $typeidsum == 0) {
 				unset($threadlist[$k]);
 				continue;
 			}

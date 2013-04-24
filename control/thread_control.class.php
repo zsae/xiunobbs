@@ -39,6 +39,7 @@ class thread_control extends common_control {
 		$this->_title[] = $thread['subject'];
 		$this->_title[] = $forum['name'];
 		
+		
 		// hook thread_index_fetch_before.php
 		
 		// 只缓存了 第一页20个pid，超出则查询 db
@@ -55,6 +56,7 @@ class thread_control extends common_control {
 		// 附件，用户
 		$uids = $uid ? array($uid) : array();
 		$i = ($page - 1) * $this->conf['pagesize'] + 1;
+		$firstpost = array();
 		foreach($postlist as &$post) {
 			$this->post->format($post);
 			if($post['attachnum'] > 0) {
@@ -66,7 +68,12 @@ class thread_control extends common_control {
 			if($post['rates'] > 0) {
 				$post['ratelist'] = $this->rate->get_list_by_fid_pid($fid, $post['pid']);
 			}
+			empty($firstpost) && $firstpost = $post;
 		}
+		
+		// 此处浪费一点点性能，为了迎合搜索引擎，现代搜索引擎应该无视这两个标签的。
+		$this->_seo_keywords = htmlspecialchars($thread['subject']);
+		$this->_seo_description = htmlspecialchars(utf8::substr(strip_tags($firstpost['message']), 0, 64));
 		
 		$uids = array_unique($uids);
 		$userlist = $this->user->mget($uids);

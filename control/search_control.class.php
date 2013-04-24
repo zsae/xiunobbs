@@ -57,6 +57,9 @@ class search_control extends common_control {
 			$this->check_access($forum, 'read');
 		}
 		
+		$this->_title[] = $this->conf['seo_title'].'-搜索';
+		$this->_seo_keywords = $this->conf['seo_title'].'-搜索';
+		
 		$pagesize = 30; // 搜索结果大小
 		$nextpage = 0;
 		$page = misc::page();
