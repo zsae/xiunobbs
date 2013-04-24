@@ -292,10 +292,10 @@ $.editor = function(textarea, settings) {
 			_this.save_bookmark();
 			_this.hide_menu();
 			trange = _this.get_range();
-			var pelement = is_ie ? trange.parentElement() : trange.startContainer;
+			var pelement = !is_w3c ? trange.parentElement() : trange.startContainer;
 			rangelink = $(pelement).closest('a').get(0);
 			var href = rangelink ? rangelink.href : 'http://';
-			var rangetext = trange ? (is_ie ? trange.text : trange.toString()) : '链接';
+			var rangetext = trange ? (!is_w3c ? trange.text : trange.toString()) : '链接';
 			var linktext = rangelink ? rangelink.innerHTML : rangetext;
 			$('div.link input.href', menu).val(href).focus();
 			$('div.link input.text', menu).val(linktext);
@@ -617,7 +617,7 @@ $.editor = function(textarea, settings) {
 	
 	
 	this.clear_paste = function(e) {
-		if(!_win.getSelection) {
+		if(!is_w3c) {
 			//var bookmark = _this.save_bookmark();
 			var range = _this.get_range();
 			
@@ -716,7 +716,7 @@ $.editor = function(textarea, settings) {
 	this.save_bookmark = function() {
 		var top = $(_body).scrollTop();
 		var range = null;
-		if(_win.getSelection) {
+		if(is_w3c) {
 			var selection = _win.getSelection();
 			if(selection.rangeCount > 0) {
 				range = selection.getRangeAt(0);
@@ -755,7 +755,7 @@ $.editor = function(textarea, settings) {
 	
 	this.load_bookmark = function(clear) {
 		var range = null;
-		if(_win.getSelection) {
+		if(is_w3c) {
 			if(_this.bookmark.range) {
 				_win.getSelection().removeAllRanges();
 				_win.getSelection().addRange(_this.bookmark.range);
@@ -777,7 +777,7 @@ $.editor = function(textarea, settings) {
 	}
 	
 	this.get_selection = function() {
-		return !_win.getSelection ? _doc.selection : _win.getSelection();
+		return !is_w3c ? _doc.selection : _win.getSelection();
 	}
 		
 	this.create_range = function() {
@@ -787,7 +787,7 @@ $.editor = function(textarea, settings) {
 	
 	this.get_range = function() {
 		var sel = _this.get_selection();
-		if(!_win.getSelection) {
+		if(!is_w3c) {
 			range = sel.createRange();
 		} else {
 			//var range = sel.createRange ? sel.createRange() : sel.rangeCount > 0 ? sel.getRangeAt(0) : null;
@@ -808,7 +808,7 @@ $.editor = function(textarea, settings) {
 	        var sel = this.get_selection();
         	range = this.get_range();
         	
-	        if(_win.getSelection) {
+	        if(is_w3c) {
 	        	
 	        	// copy from .paste()
 	        	range.deleteContents();
@@ -853,7 +853,7 @@ $.editor = function(textarea, settings) {
 			range = _this.load_bookmark(true);
 			if(!range) range = this.get_range();
 		}
-		if(!_win.getSelection) {
+		if(!is_w3c) {
 			try {
 				// 如果没有选中范围，则会产生异常, todo: 待解决
 				range.pasteHTML(s);
