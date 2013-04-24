@@ -980,6 +980,18 @@ function upgrade_user() {
 				$old1['email'] = $old1['uid'].'@'.$_SERVER['HTTP_HOST'];
 			}
 			
+			// utf8_general_ci
+			if(strpos($old1['username'], 'ü') !== FALSE || strpos($old1['username'], 'u') !== FALSE) {
+				$srchlist = $db->index_fetch('user', 'uid', array('username'=>$old1['username']), array(), 0, 1);
+				if(count($srchlist) > 0) {
+					$srchuser = array_pop($srchlist);
+					// 对当前用户名改名，改为 uid
+					$newname = $old1['uid'].rand(1000, 9999);
+					$old1['username'] = $newname;
+					log::write("rename $old1[username] to $newname");
+				}
+			}
+			
 			$arr = array (
 				'uid'=> intval($uid),
 				'regip'=> ip2long($old4['regip']),
@@ -1115,7 +1127,7 @@ function upgrade_postpage() {
 	$tidkeys = $dx2->index_fetch_id('forum_thread', array('tid'), array('tid'=>array('>'=>$starttid)), array('tid'=>1), 0, $limit);
 	// 结束循环
 	if(empty($tidkeys)) {
-		message('升级 upgrade_postpage 完成，接下来升级 upgrade_forum2 ...', '?step=upgrade_forum2&start=0');
+		message('升级 upgrade_postpage 完成，接下来升级 upgrade_postpid ...', '?step=upgrade_postpid&start=0');
 	}
 	foreach($tidkeys as $key) {
 		list($table, $_, $tid) = explode('-', $key);
@@ -1212,6 +1224,75 @@ function upgrade_postpage() {
 	}
 
 	message("正在升级 post.page, 进度 starttid: $starttid, startpid: $startpid...", "?step=upgrade_postpage&startpid=$startpid&starttid=$starttid&floor=$floor", 0);
+}
+
+/*
+	mysql_insert_id() 返回的为非最大值，这里需要修正。
+*/
+function upgrade_postpid() {
+	global $start, $conf;
+	$dx2 = get_dx2();
+	$db = get_db();
+	$uc = get_uc();
+	
+	$policy = load_upgrade_policy();
+	
+	$maxtid = intval(core::gpc('maxtid'));
+	!isset($_GET['maxtid']) && $maxtid = $dx2->index_maxid('forum_thread-tid');
+	
+	$forum_types = array();
+	$thread_type_data = new thread_type_data($conf);
+	$thread_type_count = new thread_type_count($conf);
+	$mkv = new kv($conf);
+	$mforum = new forum($conf);
+	
+	if($start < $maxtid) {
+		$limit = DEBUG ? 10 : 50;	// 每次升级 100
+		$arrlist = $dx2->index_fetch_id('forum_thread', 'tid', array('tid'=>array('>'=>$start)), array('tid'=>1), 0, $limit);
+		foreach($arrlist as $key) {
+			list($table, $_, $tid) = explode('-', $key);
+			$old = $dx2->get("forum_thread-tid-$tid");
+			
+			$start = $tid;
+			
+			if(empty($old)) continue;
+			$fid = $old['fid'];
+			//if($old['status'] == 0) continue;
+			if($old['displayorder'] < 0) continue;
+			if($old['displayorder'] == 2) $old['displayorder'] = 1;
+			if(!isset($policy['fuparr'][$fid]) ) continue; // 版块不存在，则不升级
+			$fup = $policy['fuparr'][$fid];			// 大区也不升级
+			if($fup == 0) continue;
+			if(isset($policy['fuparr'][$fup]) && $policy['fuparr'][$fup] != 0) continue; // type = sub
+			//if($old['replies'] > 30000) continue;
+			
+			
+			
+			$newfid = get_fid_by_policy($fid, $policy);
+			// 翻页, 8w 主题，翻页4000次。大概16秒, 30秒超时，这种高楼主题只能有2个。
+			$posts = $old['replies'];
+			$totalpage = ceil($posts / 20);
+			for($i=1; $i<=$totalpage; $i++) {
+				$postlist = $db->index_fetch('post', array('fid', 'pid'), array('fid'=>$newfid, 'tid'=>$tid, 'page'=>$i), array(), 0, 20);
+				// 按照 dateline 排序
+				misc::arrlist_multisort($postlist, 'dateline', TRUE);
+				// 获取 pid
+				$pids = array_keys(misc::arrlist_key_values($postlist, 'pid', 'dateline'));
+				sort($pids);
+				
+				$j = 0;
+				foreach($postlist as $post) {
+					$j++;
+					$newpid = $pids[$k];
+					$db->query("UPDATE {$db->tablepre}post SET pid='$newpid' WHERE fid='$post[fid]' AND pid='$post[pid]'");
+				}
+			}
+		}
+		
+		message("正在升级 upgrade_postpid, maxtid: $maxtid, 当前: $start...", "?step=upgrade_postpid&start=$start&maxtid=$maxtid", 0);
+	} else {	
+		message('升级 thread 完成，接下来升级 upgrade_postpid...', '?step=upgrade_forum2&start=0', 5);
+	}
 }
 
 // 第二次升级 forum
