@@ -46,6 +46,10 @@ class thread_type_count extends base_model {
 		return $this->update($arr);
 	}
 	
+	public function delete_by_fid($fid) {
+		$this->index_delete(array('fid'=>$fid));
+	}
+	
 	public function get_threads($fid, $typeidsum) {
 		$arr =  $this->read($fid, $typeidsum);
 		return empty($arr) ? 0 : $arr['threads'];
