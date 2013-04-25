@@ -1671,7 +1671,7 @@ function bbcode2html($s, $parseurl=1) {
 function get_groupid($credits, $groupid, $adminid) {
 	if($adminid == 1) return 1;
 	if($adminid == 2) return 2;
-	if($adminid == 3) return 3;
+	if($adminid == 3) return 4;
 	$grouplist = array(11=>array(0, 50), 12=>array(50, 200), 13=>array(200, 1000), 14=>array(1000, 10000), 15=>array(10000, 10000000));
 	foreach($grouplist as $groupid=>$group) {
 		if($credits >= $group[0] && $credits < $group[1]) {
