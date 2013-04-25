@@ -356,7 +356,8 @@ class forum_control extends admin_control {
 			$this->forum_access->delete_by_fid($fid);
 			$this->thread_type->delete_by_fid($fid);
 			$this->thread_type_cate->delete_by_fid($fid);
-			//$this->thread_type_data->delete_by_fid($_fid); // thread->xdelete() 已经包含此删除
+			$this->thread_type_data->delete_by_fid($fid);
+			$this->thread_type_count->delete_by_fid($fid);
 			$this->modlog->delete_by_fid($fid);
 			
 			$this->forum->delete($fid);

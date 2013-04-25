@@ -103,6 +103,8 @@ if(empty($step)) {
 	upgrade_stat();
 } elseif($step == 'upgrade_postpage') {
 	upgrade_postpage();
+} elseif($step == 'upgrade_postpid') {
+	upgrade_postpid();
 } elseif($step == 'upgrade_forum2') {
 	upgrade_forum2();
 } elseif($step == 'laststep') {

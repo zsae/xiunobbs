@@ -51,7 +51,7 @@ class thread_control extends common_control {
 		
 		// php order by pid，一般情况下不用排序，但是偶尔数据库返回的数据为乱序。这里排序有问题！
 		//ksort($postlist);	// key 为字符串，排序不稳定。 fid-2-pid-999 fid-2-pid-1000 这种情况
-		misc::arrlist_multisort($postlist, 'pid', TRUE);
+		misc::arrlist_multisort($postlist, 'dateline', TRUE);
 		
 		// 附件，用户
 		$uids = $uid ? array($uid) : array();
